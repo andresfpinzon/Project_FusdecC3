@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+header {
+    background-color: #3498db;
+    min-height: 7vh;
+    display: flex;
+    align-items: center;
+}
+
+.header-asist {
+    background-color: #3498db;
+    min-height: 9vh;
+    display: flex;
+    align-items: center;
+}
+
+.menu {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.menu .navbar ul li {
+    position: relative;
+    float: left;
+}
+
+.menu .navbar ul li a {
+    font-size: 18px;
+    padding: 10px 35px;
+    color: #ffffff;
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a:hover {
+    background-color: black;
+}
+
+.menu .navbar-asist ul li a {
+    font-size: 18px;
+    padding: 10px 35px;
+    color: #ffffff;
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a {
+    font-size: 20px;
+    padding: 10px 10px;
+    color: rgb(251, 251, 251);
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a:hover {
+    background-color: black;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-transform: capitalize;
+    text-decoration: none;
+    list-style: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.select-registro 
+{
+    width: 100%;
+    display: inline-block;
+    border: 2px solid #98cce4;
+    box-sizing: border-box;
+}
+
+.select-registro[type=date] 
+{
+    width: 100%;
+    display: inline-block;
+    border: 2px solid #98cce4;
+    box-sizing: border-box;
+}
+
+.input-registro[type=text],
+.input-registro[type=password],
+.input-registro[type=date]
+{
+    width: 100%;
+    display: inline-block;
+    border: 2px solid #98cce4;
+    box-sizing: border-box;
+}
+.body-form {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('../../imagenes/fusdecFondo.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+}
+
+.formulario {
+    max-width: 400px;
+    padding: 20px;
+    border: 3px solid #f1f1f1;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-label {
+    display: block;
+    border-color: #f1f1f1 ;
+    margin-top: 10px;
+}
+
+.formulario-buttons {
+    
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formulario-button {
+    width: 48%;
+    color: rgb(255, 255, 255);
+    background-color: #98cce4;
+    border: none;
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Control de Asistencia</title>
+    <link rel="stylesheet" href="asistencia.style.css" />
+  </head>
+  <body class="asistencia-body">
+    <header>
+      <div class="menu container">
+        <input type="checkbox" id="menu" />
+
+        <nav class="navbar">
+          <ul>
+            <li><a href="../index/index.html">Inicio</a></li>
+            <li><a href="../nosotros/nosotros.html">Nosotros</a></li>
+            <li><a href="../asistencia/asistencia.html">Asistencia</a></li>
+            <li><a href="../asignaciones/asignaciones.html">Asignaciones</a></li>
+            <li><a href="../perfil/perfil.html">Perfil</a></li>
+          </ul>
+        </nav>
+        <nav class="navbar">
+          <ul>
+            <li><a href="../index/index.html">Salir</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    
+    <img src="../../imagenes/logofusdec.jpg" width="200" />
+    
+      <h1>Registro de asistencia</h1>
+      <h2 id="fechaActual">00/00/0000</h2>
+
+      <!-- Botón para mostrar el combo box de selección de grupo -->
+      <button type="button" id="btnBrigadaPerdomo">Brigada Perdomo</button>
+
+      <!-- Combo box para seleccionar el grupo, inicialmente oculto -->
+      <div id="seleccionGrupo" style="display: none;">
+          <label for="grupo">Selecciona un Grupo:</label>
+          <select id="grupo">
+              <option value="Grupo 1">Unidad 1</option>
+              <option value="Grupo 2">unidad 2</option>
+              <option value="Grupo 3">unidad 3</option>
+          </select>
+          <button type="button" id="generarAsistencia">Generar Lista de Asistencia</button>
+      </div>
+      <!-- Botón para cargar la asistencia -->
+      <button type="button" id="cargarAsistencia">Cargar Asistencia</button>
+
+      <div id="attendanceList">
+        <h2>Lista de Asistencia</h2>
+        <p>Total de Aprendices Registrados: <span id="count">0</span></p>
+        <table id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>colegio</th>
+              <th>Tipo de Documento</th>
+              <th>Número de Documento</th>
+              <th>Asistencia</th>
+            </tr>
+          </thead>
+          <tbody id="list"></tbody>
+        </table>
+      </div>
+
+      <script>
+        document.getElementById('btnBrigadaPerdomo').addEventListener('click', function() {
+            document.getElementById('seleccionGrupo').style.display = 'block';
+        });
+        
+        document.getElementById('generarAsistencia').addEventListener('click', function() {
+            const grupoSeleccionado = document.getElementById('grupo').value;
+            console.log(`Generando lista para ${grupoSeleccionado}`); // Puedes quitar este log después
+            llenarListaAsistencia();
+        });
+        
+        const nombres = ['Juan', 'Maria', 'Carlos', 'Ana', 'Luis', 'Sofia', 'Jorge', 'Lucia', 'Pedro', 'Carmen'];
+        const apellidos = ['García', 'Fernández', 'López', 'Martínez', 'Sánchez', 'Pérez', 'Gómez', 'Ruiz', 'Hernández', 'Jiménez'];
+        const colegios = ['Liceo Campo David', 'Colegio Colombo Americano CAS', 'Colegio Los Nogales', 'Colegio San Jorge de Inglaterra', 'Gimnasio Colombo Británico','Colegio Helvetia de Bogotá','Colegio Anglo Colombiano'];
+
+
+        function llenarListaAsistencia() {
+        const tiposDocumento = ['CC', 'TI'];
+        const tbody = document.getElementById('list');
+        tbody.innerHTML = ''; 
+
+          for (let i = 0; i < 10; i++) { 
+              const nombreAleatorio = nombres[Math.floor(Math.random() * nombres.length)];
+              const apellidoAleatorio = apellidos[Math.floor(Math.random() * apellidos.length)];
+              const colegioAleatorio = colegios[Math.floor(Math.random() * colegios.length)]; // Colegio aleatorio
+              const tipoDocAleatorio = tiposDocumento[Math.floor(Math.random() * tiposDocumento.length)];
+              const numeroDocumentoAleatorio = Math.floor(1000000000 + Math.random() * 9000000000);
+
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                  <td>${nombreAleatorio}</td>
+                  <td>${apellidoAleatorio}</td>
+                  <td>${colegioAleatorio}</td>
+                  <td>${tipoDocAleatorio}</td>
+                  <td>${numeroDocumentoAleatorio}</td>
+                  <td><input type="checkbox"></td>
+              `;
+              tbody.appendChild(tr);
+          }
+        }
+
+      </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const fechaElemento = document.getElementById('fechaActual');
+          const fecha = new Date();
+          const opcionesFecha = { year: 'numeric', month: '2-digit', day: '2-digit' };
+          const fechaFormateada = fecha.toLocaleDateString('es', opcionesFecha);
+          fechaElemento.textContent = fechaFormateada;
+        });
+      </script>        
+  </body>
+</html>
