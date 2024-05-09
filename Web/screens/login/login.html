@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inicio de sesion</title>
+    <link rel="stylesheet" href="login.style.css" />
+  </head>
+
+  <body class="body-login">
+    <form class="form-login" action="../perfil/perfil.html">
+      <div class="container-login">
+        <label>Correo :</label>
+        <input
+          class="input-logintxt"
+          type="text"
+          placeholder="Enter Username"
+          name="username"
+          required
+        />
+        <label>Contraseña :</label>
+        <input
+          class="input-loginpsw"
+          type="password"
+          placeholder="Enter Password"
+          name="password"
+          required
+        />
+        <button class="button-login" type="submit">Login</button>
+        <input type="checkbox" checked="checked" /> Recordarme
+        <button class="cancelbtn" type="button" onclick="history.back()">
+          Cancelar
+        </button>
+        Recuperar<a href="#"> contraseña</a>
+      </div>
+    </form>
+  </body>
+</html>

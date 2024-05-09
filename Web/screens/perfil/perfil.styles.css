@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+header {
+    background-color: #3498db;
+    min-height: 7vh;
+    display: flex;
+    align-items: center;
+}
+
+.header-asist {
+    background-color: #3498db;
+    min-height: 9vh;
+    display: flex;
+    align-items: center;
+}
+
+/*.container {
+    max-width: 1100px;
+    margin: auto;
+    
+}*/
+
+#menu {
+    display: none;
+}
+
+.menu {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.menu .navbar ul li {
+    position: relative;
+    float: left;
+}
+
+.menu .navbar ul li a {
+    font-size: 18px;
+    padding: 10px 35px;
+    color: #ffffff;
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a:hover {
+    background-color: black;
+}
+
+.menu .navbar-asist ul li a {
+    font-size: 18px;
+    padding: 10px 35px;
+    color: #ffffff;
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a {
+    font-size: 20px;
+    padding: 10px 10px;
+    color: rgb(251, 251, 251);
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a:hover {
+    background-color: black;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-transform: capitalize;
+    text-decoration: none;
+    list-style: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.body-perfil {
+    background-image: url('imagenes/Fusdecfondo6.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}   
+
+.page-container {
+    background-color: #ccc;
+    padding: 20px;
+}
+
+.section-container {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 0;
+    flex: 0 0 30%; 
+    margin-top: 10px;
+}
+.data-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#certificados {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+button {
+    background-color: #98cce4;
+    border: none;
+}
+
+button:hover {
+    background-color: #98cce4;
+    border: none;
+}
+
+.input-perfil[type="text"],
+.input-perfil[type="email"],
+.input-perfil[type="file"] {
+    width: 70%;
+    border: 1px solid #3498db; 
+    padding: 8px; 
+    border-radius: 4px; 
+    margin-bottom: 10px; 
+    color: #555; 
+}
+
+.input-perfil[type="text"]:read-only,
+.input-perfil[type="email"]:read-only,
+.input-perfil[type="file"]:read-only {
+    background-color: #ecf0f1;
+}
+
+.avatar-contenedor {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3498db; /* Color del borde */
+}
+
+.avatar-contenedor h6 {
+    margin-top: 10px;
+}
+
+.file-upload {
+    display: block;
+    margin: 10px auto;
+}
+
+.info-horarios {
+    background-color: #fff; 
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    margin-top: 20px; 
+}
+
+.select-certificado select {
+    width: 100%; 
+    border: none; 
+    outline: none; 
+    background: transparent; 
+    color: #555; 
+}
+.select-certificado  {
+    background-color: #fff; 
+    padding: 8px; 
+    border-radius: 4px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    margin-top: 10px; 
+    width: 100%; 
+}
+
+#certificados-contenedor {
+    width: 300px; 
+    margin: 20px auto; 
+    padding: 15px;
+    background-color: #ffffff; 
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  #certificados {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  
+  #certificados-contenedor:focus-within {
+    border: 2px solid #3498db; 
+  }
+
+  input[type="file"] {
+    width: auto;
+    padding: 10px 18px;
+    margin: 10px 5px;
+    background-color: #98cce4;
+    border: none;
+    color: #fff;
+    cursor: pointer; 
+}
+
+
+input[type="file"]:hover {
+    background-color: #77a9c5;
+    
+}
+
+#certificados-contenedor {
+    margin-top: 20px;
+}
+
+
+.custom-file-input {
+    display: none;
+}
+
+.custom-file-label {
+    background-color: #98cce4;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+}
+
+.custom-file-label:hover {
+    background-color: #77a9c5;
+}
+
+#foto-contenedor {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.custom-file-input {
+    display: none; 
+}
+
+.custom-file-label {
+    background-color: #98cce4;
+    padding: 10px;
+    margin-top: 10px;
+
+
+    
+    border-radius: 8px;
+    cursor: pointer;
+    display: block; 
+}
+
+.custom-file-label:hover {
+    background-color: #77a9c5;
+    
+}
