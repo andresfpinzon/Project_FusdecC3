@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+header {
+    background-color: #3498db;
+    min-height: 7vh;
+    display: flex;
+    align-items: center;
+}
+
+.header-asist {
+    background-color: #3498db;
+    min-height: 9vh;
+    display: flex;
+    align-items: center;
+}
+
+.menu {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.menu .navbar ul li {
+    position: relative;
+    float: left;
+}
+
+.menu .navbar ul li a {
+    font-size: 18px;
+    padding: 10px 35px;
+    color: #ffffff;
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a:hover {
+    background-color: black;
+}
+
+.menu .navbar-asist ul li a {
+    font-size: 18px;
+    padding: 10px 35px;
+    color: #ffffff;
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbarr ul li a {
+    font-size: 20px;
+    padding: 10px 10px;
+    color: rgb(251, 251, 251);
+    border-radius: 15px;
+    display: block;
+}
+
+.menu .navbar ul li a:hover {
+    background-color: black;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-transform: capitalize;
+    text-decoration: none;
+    list-style: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.body-login {
+    font-family: Calibri, Helvetica, sans-serif;
+    background: url('../../imagenes/fondo2.jpg') center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+.button-login {
+    background-color: #98cce4;
+    width: 100%;
+    color: rgb(255, 255, 255);
+    padding: 15px;
+    margin: 10px 0px;
+    border: none;
+    cursor: pointer;
+}
+
+.form-login {
+    border: 3px solid #f1f1f1;
+    max-width: 600px;
+    margin: 0 auto; 
+    background-color: white; 
+    padding: 20px;
+    margin-top: 50px; 
+    border-radius: 10px; 
+}
+
+.input-logintxt[type=text],
+.input-loginpsw[type=password] {
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px 20px;
+    display: inline-block;
+    border: 2px solid #98cce4;
+    box-sizing: border-box;
+}
+
+button:hover {
+    opacity: 0.7;
+}
+
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    margin: 10px 5px;
+    background-color: #98cce4;
+    border: none;
+    color: rgb(255, 255, 255);
+}
+
+.container-login {
+    padding: 25px;
+}

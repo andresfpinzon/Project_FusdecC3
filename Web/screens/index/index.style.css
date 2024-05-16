@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing:border-box;
+    text-transform: capitalize;
+    text-decoration: none;
+    list-style: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.body-index {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('../../imagenes/fusdecfondo4.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
+}
+
+/*.container {
+    max-width: 1100px;
+    margin: auto;
+    
+}*/
+
+#menu {
+    display: none;
+}
+
+.menu {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.menu .navbar ul li {
+    position: relative;
+    float: left;
+}
+
+.menu .navbar ul li a {
+    font-size: 18px;
+    padding: 10px 35px;
+    color:#ffffff;
+    border-radius: 15px;
+    display: block;
+}
+
+header {
+    background-color: #3498db;
+    min-height: 7vh;
+    display:flex;
+    align-items: center;
+}
+
+.menu .navbar ul li a:hover {
+    background-color: black;
+}
+
+.section-index {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9); 
+    border-radius: 10px; 
+    margin-top: 20px;
+    text-align: center;
+}
+
+.container img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+}
+
+.content h1 {
+    color: black;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 70px;
+    text-align: center;
+}
+
+.servicio h3 {
+    text-align: center;
+    position: relative;
+}
+
+.voluntaried h3 {
+    text-align: center;
+    position: relative;
+}
+
+.turism {
+    text-align: center;
+    position: relative;
+}
+
+.center-text1 {
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.center-text {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}

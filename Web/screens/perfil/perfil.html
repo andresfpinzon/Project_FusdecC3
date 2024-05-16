@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Perfil de usuario</title>
+    <link rel="stylesheet" href="perfil.styles.css" />
+  </head>
+
+  <body class="body-perfil">
+    <header>
+      <div class="menu container">
+        <input type="checkbox" id="menu" />
+
+        <nav class="navbar">
+          <ul>
+            <li><a href="../index/index.html">Inicio</a></li>
+            <li><a href="../nosotros/nosotros.html">Nosotros</a></li>
+            <li><a href="../asistencia/asistencia.html">Asistencia</a></li>
+            <li><a href="../asignaciones/asignaciones.html">Asignaciones</a></li>
+            <li><a href="../perfil/perfil.html">Perfil</a></li>
+          </ul>
+        </nav>
+        <nav class="navbar">
+          <ul>
+            <li><a href="../index/index.html">Salir</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row">
+        <div class="section-container">
+          <div>
+            <div id="foto-contenedor" class="text-center">
+              <img
+                id="perfilImagen"
+                src="../../imagenes/perfildefecto.jpg"
+                class="avatar"
+                alt="avatar"
+              />
+
+              <label for="subirFoto" class="custom-file-label">
+                Subir foto
+                <input
+                  type="file"
+                  id="subirFoto"
+                  class="custom-file-input"
+                  onchange="handlePhotoUpload()"
+                />
+              </label>
+            </div>
+            <hr />
+            <br />
+
+            <div id="certificados-contenedor">
+              <select id="certificados" onchange="openPDF()">
+                <option value="" disabled selected>
+                  Selecciona un certificado
+                </option>
+                <option value="../../imagenes/certi.pdf">Certificado 1</option>
+                <!-- <option value="certificado-2.pdf">Certificado 2</option>-->
+                <!--<option value="certificado-3.pdf">Certificado 3</option>-->
+
+              </select>
+              <label for="subirCertificado" class="custom-file-label">
+                Subir certificado
+                <input
+                  type="file"
+                  id="subirCertificado"
+                  class="custom-file-input"
+                  onchange="handleFileUpload()"
+                />
+              </label>
+            </div>
+
+            <div class="info-horarios">
+              <ul>
+                <li>Asistencia</li>
+                <li>
+                  <strong>Brigada Perdomo</strong><br />
+                  Fecha: 10 de octubre de 2021<br />
+                  Hora: 8:00 AM - 10:00 AM<br />
+                  Lugar: Campo de entrenamiento
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-column section-container">
+          <div>
+            <div id="home">
+              <hr />
+              <form action="##" method="post" id="registrationForm">
+                <div>
+                  <label for="nombre"><h4>Nombre</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="nombre"
+                      id="nombre"
+                      placeholder="Andres"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="apellido"><h4>Apellidos</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="apellido"
+                      id="apellido"
+                      placeholder="Felipe"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="genero"><h4>Genero</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="genero"
+                      id="genero"
+                      placeholder="Hombre"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="fechaNacimiento"
+                    ><h4>Fecha de Nacimiento</h4></label
+                  >
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="fechaNacimiento"
+                      id="fechaNacimiento"
+                      placeholder="05/02/2000"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="tipoDeSangre"><h4>Tipo de sangre</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="tipoDeSangre"
+                      id="tipoDeSangre"
+                      placeholder="Tipo"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="tipoDocumento"><h4>Tipo de documento</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="tipoDocumento"
+                      id="tipoDocumento"
+                      placeholder="C.C"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="numeroDocumento"
+                    ><h4>Numero de Documento</h4></label
+                  >
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="numeroDocumento"
+                      id="numeroDocumento"
+                      placeholder="123456789"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="brigada"><h4>Brigada</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="brigada"
+                      id="brigada"
+                      placeholder="Perdomo"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="rango"><h4>Rago</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="rango"
+                      id="rango"
+                      placeholder="Cadete"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="telefono"><h4>Teléfono fijo</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="telefono"
+                      id="telefono"
+                      placeholder="telefono"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="movil"><h4>Teléfono Movil</h4></label>
+                  <div>
+                    <input
+                      type="text"
+                      class="input-perfil"
+                      name="movil"
+                      id="movil"
+                      placeholder="movil"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label for="correo"><h4>Correo Electronico</h4></label>
+                  <div>
+                    <input
+                      type="email"
+                      class="input-perfil"
+                      name="correo"
+                      id="correo"
+                      placeholder="correo@gmail.com"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div>
+                    <br />
+                    <button type="submit"><i></i> Guardar</button>
+                  </div>
+                </div>
+              </form>
+              <hr />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function handleFileUpload() {
+        var input = document.getElementById("subirCertificado");
+
+        if (input.files.length > 0) {
+          var fileName = input.files[0].name;
+
+          var select = document.getElementById("certificados");
+
+          var nuevaOpcion = document.createElement("option");
+          nuevaOpcion.value = fileName;
+          nuevaOpcion.text = fileName;
+
+          select.add(nuevaOpcion);
+
+          input.value = "";
+        }
+      }
+      function openPDF() {
+        var selectBox = document.getElementById("certificados");
+        var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+
+        if (selectedValue !== "") {
+          /*window.open(selectedValue, "_blank");*/
+          window.location.href = selectedValue;
+        }
+      }
+    </script>
+    <script>
+      function handlePhotoUpload() {
+        var input = document.getElementById("subirFoto");
+        var image = document.getElementById("perfilImagen");
+
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+            image.src = e.target.result;
+          };
+
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+    </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Nombre
+    if (localStorage.getItem("nombre")) {
+      document.getElementById("nombre").value = localStorage.getItem("nombre");
+    }
+
+    // Apellido
+    if (localStorage.getItem("apellido")) {
+      document.getElementById("apellido").value = localStorage.getItem("apellido");
+    }
+
+    // Género
+    if (localStorage.getItem("genero")) {
+      document.getElementById("genero").value = localStorage.getItem("genero");
+    }
+
+    // Correo
+    if (localStorage.getItem("correo")) {
+      document.getElementById("correo").value = localStorage.getItem("correo");
+    }
+
+    // Fecha de Nacimiento
+    if (localStorage.getItem("fechaNacimiento")) {
+      document.getElementById("fechaNacimiento").value = localStorage.getItem("fechaNacimiento");
+    }
+
+    // Tipo de Documento
+    if (localStorage.getItem("tipoDocumento")) {
+      document.getElementById("tipoDocumento").value = localStorage.getItem("tipoDocumento");
+    }
+
+    // Número de Documento
+    if (localStorage.getItem("numeroDocumento")) {
+      document.getElementById("numeroDocumento").value = localStorage.getItem("numeroDocumento");
+    }
+
+    // Brigada
+    if (localStorage.getItem("brigada")) {
+      document.getElementById("brigada").value = localStorage.getItem("brigada");
+    }
+
+    // Rango
+    if (localStorage.getItem("rango")) {
+      document.getElementById("rango").value = localStorage.getItem("rango");
+    }
+  });
+</script>
+
+      
+  </body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario de Registro</title>
+    <link rel="stylesheet" href="registro.style.css" />
+  </head>
+  <body class="body-form">
+    <form class="formulario" action="../perfil/perfil.html" method="post">
+      <label class="formulario-label" for="nombre">Nombres:</label>
+      <input
+        class="input-registro"
+        type="text"
+        id="nombre"
+        name="nombre"
+        required
+      />
+
+      <label class="formulario-label" for="apellido">Apellidos:</label>
+      <input
+        class="input-registro"
+        type="text"
+        id="apellido"
+        name="apellido"
+        required
+      />
+
+      <label class="formulario-label" for="genero">Genero:</label>
+      <select class="select-registro" id="genero" name="genero" required>
+        <option value="hombre">Hombre</option>
+        <option value="mujer">Mujer</option>
+        <option value="otro">Otro</option>
+      </select>
+
+      <label class="formulario-label" for="correo">Correo Electronico:</label>
+      <input
+        class="input-registro"
+        type="text"
+        id="correo"
+        name="correo"
+        required
+      />
+
+      <label class="formulario-label" for="ConfirmarCorreo"
+        >Confirmar Correo Electronico:</label
+      >
+      <input
+        class="input-registro"
+        type="text"
+        id="confirmarCorreo"
+        name="confirmarCorreo"
+        required
+      />
+
+      <label class="formulario-label" for="contraseña">Contraseña:</label>
+      <input
+        class="input-registro"
+        type="password"
+        id="contraseña"
+        name="contraseña"
+        required
+      />
+
+      <label class="formulario-label" for="confirmarContraseña"
+        >Confirmar Contraseña:</label
+      >
+      <input
+        class="input-registro"
+        type="password"
+        id="confirmarContraseña"
+        name="confirmarContraseña"
+        required
+      />
+
+      <label class="formulario-label" for="fechaNacimiento"
+        >Fecha de Nacimiento:</label
+      >
+      <input
+        class="input-registro"
+        type="date"
+        id="fechaNacimiento"
+        name="fechaNacimiento"
+        required
+      />
+
+      <label class="formulario-label" for="tipoDocumento"
+        >Tipo de Documento:</label
+      >
+      <select
+        class="select-registro"
+        id="tipoDocumento"
+        name="tipoDocumento"
+        required
+      >
+        <option value="cc">Cédula de Ciudadanía (CC)</option>
+        <option value="ti">Tarjeta de Identidad (TI)</option>
+        <option value="ce">Cédula de Extranjería (CE)</option>
+      </select>
+
+      <label class="formulario-label" for="numeroDocumento"
+        >Número de Documento:</label
+      >
+      <input
+        class="input-registro"
+        type="text"
+        id="numeroDocumento"
+        name="numeroDocumento"
+        required
+      />
+
+      <label class="formulario-label" for="brigada">Brigada: </label>
+      <select class="select-registro" id="brigada" name="brigada">
+        <option value="perdomo">Perdomo</option>
+        <option value="ensueño">Ensueño</option>
+        <option value="paraíso">Paraiso</option>
+        <option value="vista hermosa">Vista Hermosa</option>
+        <option value="candelaria">Candelaria</option>
+      </select>
+
+      <label class="formulario-label" for="rango">Rango:</label>
+      <select class="select-registro" id="rango" name="rango">
+        <option value="servicio social">Servicio Social</option>
+        <option value="cadete">Instructor</option>
+      </select>
+
+      <div class="formulario-label" class="formulario-buttons">
+        <button
+          class="formulario-button"
+          type="button"
+          onclick="history.back()"
+        >
+          Volver
+        </button>
+        <button class="formulario-button" type="submit">Registrarme</button>
+      </div>
+    </form>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var form = document.querySelector("form");
+        var correo = document.getElementById("correo");
+        var confirmarCorreo = document.getElementById("confirmarCorreo");
+        var contraseña = document.getElementById("contraseña");
+        var confirmarContraseña = document.getElementById(
+          "confirmarContraseña"
+        );
+
+        form.addEventListener("submit", function (event) {
+          if (correo.value !== confirmarCorreo.value) {
+            alert("Las casillas de correo no coinciden");
+            event.preventDefault();
+          }
+
+          if (contraseña.value !== confirmarContraseña.value) {
+            alert("Las casillas de contraseña no coinciden");
+            event.preventDefault();
+          }
+
+          if(correo.value === confirmarCorreo.value && contraseña.value === confirmarContraseña.value) {
+            localStorage.setItem("nombre", document.getElementById("nombre").value);
+            localStorage.setItem("apellido", document.getElementById("apellido").value);
+            localStorage.setItem("genero", document.getElementById("genero").value);
+            localStorage.setItem("correo", correo.value);
+            localStorage.setItem("fechaNacimiento", document.getElementById("fechaNacimiento").value);
+            localStorage.setItem("tipoDocumento", document.getElementById("tipoDocumento").value);
+            localStorage.setItem("numeroDocumento", document.getElementById("numeroDocumento").value);
+            localStorage.setItem("brigada", document.getElementById("brigada").value);
+            localStorage.setItem("rango", document.getElementById("rango").value);
+
+            // Opcional: Redirigir al perfil después de guardar los datos
+            window.location.href = "../perfil/perfil.html";
+          }
+
+        });
+      });
+    </script>
+  </body>
+</html>
