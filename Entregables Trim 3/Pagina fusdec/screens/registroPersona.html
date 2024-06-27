@@ -14,7 +14,8 @@
           <a href="../screens/index.html">
             <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
           </a>
-          <ul>
+          <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+          <ul id="nav-links">
             <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
             <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
             <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
@@ -30,7 +31,7 @@
       <div class="persona-box">
         <h1>Registro</h1>
 
-        <form id="registroPersonaForm">
+        <form id="registroPersonaForm" onsubmit="handleFormSubmit(event)">
           <label for="firstName">Nombres:</label>
           <input type="text" id="firstName" name="firstName" required />
 
@@ -44,12 +45,7 @@
           </select>
 
           <label for="documentNumber">Número de Documento:</label>
-          <input
-            type="text"
-            id="documentNumber"
-            name="documentNumber"
-            required
-          />
+          <input type="text" id="documentNumber" name="documentNumber" required />
 
           <label for="email">Correo Electrónico:</label>
           <input type="email" id="email" name="email" required />
@@ -67,39 +63,52 @@
           <label for="school">Colegio:</label>
           <select id="school" name="school" required>
             <option value="liceoCampoDavid">Liceo Campo David</option>
-            <option value="colegioColomboAmericano">
-              Colegio Colombo Americano CAS
-            </option>
+            <option value="colegioColomboAmericano">Colegio Colombo Americano CAS</option>
             <option value="colegioLosNogales">Colegio Los Nogales</option>
-            <option value="colegioSanJorge">
-              Colegio San Jorge de Inglaterra
-            </option>
-            <option value="gimnasioColomboBritanico">
-              Gimnasio Colombo Británico
-            </option>
+            <option value="colegioSanJorge">Colegio San Jorge de Inglaterra</option>
+            <option value="gimnasioColomboBritanico">Gimnasio Colombo Británico</option>
             <option value="colegioHelvetia">Colegio Helvetia de Bogotá</option>
-            <option value="colegioAngloColombiano">
-              Colegio Anglo Colombiano
-            </option>
+            <option value="colegioAngloColombiano">Colegio Anglo Colombiano</option>
           </select>
 
-            <label for="Comando">Comando:</label>
-            <select id="Comando" name="Comando" required>
-              <option value="Comando 1">Comando 1</option>
-              <option value="Comando 2">Comando 2</option>
-              <option value="Comando 3">Comando 3</option>
-            </select>
-
-            <label for="Brigada">Brigada:</label>
-            <select id="Brigada" name="Brigada" required>
-              <option value="Perdomo">Perdomo</option>
-              <option value="Paraiso">Paraiso</option>
-              <option value="Bella Vista">Bella Vista</option>
-            </select>
-
+          <label for="Comando">Comando:</label>
+          <select id="Comando" name="Comando" required>
+            <option value="Comando 1">Comando 1</option>
+            <option value="Comando 2">Comando 2</option>
+            <option value="Comando 3">Comando 3</option>
           </select>
+
+          <label for="Brigada">Brigada:</label>
+          <select id="Brigada" name="Brigada" required>
+            <option value="Perdomo">Perdomo</option>
+            <option value="Paraiso">Paraiso</option>
+            <option value="Bella Vista">Bella Vista</option>
+          </select>
+
           <button type="submit">Registrar</button>
         </form>
+
+        <h2>Lista de Personas Registradas</h2>
+        <table id="personaTable">
+          <thead>
+            <tr>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Tipo de Documento</th>
+              <th>Número de Documento</th>
+              <th>Correo Electrónico</th>
+              <th>Género</th>
+              <th>Fecha de Nacimiento</th>
+              <th>Colegio</th>
+              <th>Comando</th>
+              <th>Brigada</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Aquí se agregarán las filas dinámicamente -->
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -134,5 +143,123 @@
         <p>Copyright © 2024 Fusdec</p>
       </div>
     </footer>
+
+    <script>
+      const personaForm = document.getElementById('registroPersonaForm');
+      const personaTable = document.getElementById('personaTable').getElementsByTagName('tbody')[0];
+
+      let personas = [
+        {
+          firstName: 'Juan',
+          lastName: 'Pérez',
+          documentType: 'CC',
+          documentNumber: '12345678',
+          email: 'juan.perez@example.com',
+          gender: 'masculino',
+          birthDate: '2000-01-01',
+          school: 'Liceo Campo David',
+          comando: 'Comando 1',
+          brigada: 'Perdomo'
+        },
+        {
+          firstName: 'Ana',
+          lastName: 'García',
+          documentType: 'TI',
+          documentNumber: '87654321',
+          email: 'ana.garcia@example.com',
+          gender: 'femenino',
+          birthDate: '2002-05-15',
+          school: 'Colegio Colombo Americano CAS',
+          comando: 'Comando 2',
+          brigada: 'Paraiso'
+        },
+        {
+          firstName: 'Carlos',
+          lastName: 'Martínez',
+          documentType: 'CC',
+          documentNumber: '11223344',
+          email: 'carlos.martinez@example.com',
+          gender: 'masculino',
+          birthDate: '1998-11-30',
+          school: 'Colegio Los Nogales',
+          comando: 'Comando 3',
+          brigada: 'Bella Vista'
+        }
+      ];
+
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const formData = new FormData(personaForm);
+        const persona = {
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          documentType: formData.get('documentType'),
+          documentNumber: formData.get('documentNumber'),
+          email: formData.get('email'),
+          gender: formData.get('gender'),
+          birthDate: formData.get('birthDate'),
+          school: formData.get('school'),
+          comando: formData.get('Comando'),
+          brigada: formData.get('Brigada')
+        };
+
+        personas.push(persona);
+        renderTable();
+        personaForm.reset();
+      }
+
+      function renderTable() {
+        personaTable.innerHTML = '';
+        personas.forEach((persona, index) => {
+          const row = personaTable.insertRow();
+          row.insertCell(0).textContent = persona.firstName;
+          row.insertCell(1).textContent = persona.lastName;
+          row.insertCell(2).textContent = persona.documentType;
+          row.insertCell(3).textContent = persona.documentNumber;
+          row.insertCell(4).textContent = persona.email;
+          row.insertCell(5).textContent = persona.gender;
+          row.insertCell(6).textContent = persona.birthDate;
+          row.insertCell(7).textContent = persona.school;
+          row.insertCell(8).textContent = persona.comando;
+          row.insertCell(9).textContent = persona.brigada;
+
+          const actionsCell = row.insertCell(10);
+          const editButton = document.createElement('button');
+          editButton.textContent = 'Editar';
+          editButton.onclick = () => editPersona(index);
+          actionsCell.appendChild(editButton);
+
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Eliminar';
+          deleteButton.onclick = () => deletePersona(index);
+          actionsCell.appendChild(deleteButton);
+        });
+      }
+
+      function editPersona(index) {
+        const persona = personas[index];
+        document.getElementById('firstName').value = persona.firstName;
+        document.getElementById('lastName').value = persona.lastName;
+        document.getElementById('documentType').value = persona.documentType;
+        document.getElementById('documentNumber').value = persona.documentNumber;
+        document.getElementById('email').value = persona.email;
+        document.getElementById('gender').value = persona.gender;
+        document.getElementById('birthDate').value = persona.birthDate;
+        document.getElementById('school').value = persona.school;
+        document.getElementById('Comando').value = persona.comando;
+        document.getElementById('Brigada').value = persona.brigada;
+
+        deletePersona(index);
+      }
+
+      function deletePersona(index) {
+        personas.splice(index, 1);
+        renderTable();
+      }
+
+      personaForm.addEventListener('submit', handleFormSubmit);
+      document.addEventListener('DOMContentLoaded', renderTable);
+    </script>
   </body>
 </html>

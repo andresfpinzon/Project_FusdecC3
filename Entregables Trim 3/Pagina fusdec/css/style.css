@@ -69,6 +69,43 @@ header {
   background-color: black;
 }
 
+/* Estilos para resoluciones pequeñas */
+
+@media (max-width: 768px) {
+  .navbar ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #20343f;
+  }
+
+  .navbar ul.show {
+    display: flex;
+  }
+
+  .navbar ul li {
+    margin: 0;
+    width: 100%;
+  }
+
+  .navbar ul li a {
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #ffffff;
+  }
+
+  .navbar ul li a:hover {
+    background-color: #172a32;
+  }
+
+  .menu-toggle {
+    display: block;
+    cursor: pointer;
+    font-size: 24px;
+    color: #ffffff;
+  }
+}
+
 /* Footer */
 
 .footer {
@@ -157,7 +194,13 @@ header {
 .body-index {
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+      to right,
+      rgba(24, 59, 81, 0.773),
+      rgba(24, 59, 81, 0.773),
+      rgba(20, 182, 31, 0)
+    ),
+    url("../imagenes/fusdecFondo.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -175,7 +218,7 @@ main {
   padding: 20px;
 }
 
-.white-box {
+.container-index {
   width: 600px;
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
@@ -206,11 +249,21 @@ main {
 /* Login */
 
 .body-login {
-  background: url("../imagenes/fondo2.jpg") center center fixed;
+  background-image: linear-gradient(
+      to right,
+      rgba(24, 59, 81, 0.773),
+      rgba(24, 59, 81, 0.773),
+      rgba(20, 182, 31, 0)
+    ),
+    url("../imagenes/fusdecFondo.jpg");
   background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   margin: 0;
   padding: 0;
   flex: 1;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -220,6 +273,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
 }
 
 .button-login {
@@ -274,7 +328,13 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+      to right,
+      rgba(24, 59, 81, 0.773),
+      rgba(24, 59, 81, 0.773),
+      rgba(20, 182, 31, 0)
+    ),
+    url("../imagenes/fusdecFondo4.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -352,15 +412,22 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo5.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container-control-asistencia {
   display: flex;
   justify-content: center;
@@ -368,6 +435,7 @@ button:hover {
   padding: 20px;
   flex-grow: 1;
 }
+
 .asistencia-box {
   background-color: #fff;
   border-radius: 10px;
@@ -375,17 +443,21 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 80%;
 }
+
 .asistencia-box h1 {
   text-align: center;
 }
+
 .asistencia-box h2 {
   text-align: center;
 }
+
 .asistencia-box label {
   display: block;
   margin-top: 20px;
   font-weight: bold;
 }
+
 .asistencia-box select {
   width: 100%;
   padding: 10px;
@@ -393,6 +465,7 @@ button:hover {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .asistencia-box button {
   padding: 10px;
   background-color: #172a32;
@@ -401,14 +474,17 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .asistencia-box button:hover {
   background-color: #172a20;
 }
+
 .asistencia-box table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
+
 .asistencia-box table,
 .asistencia-box th,
 .asistencia-box td {
@@ -416,6 +492,7 @@ button:hover {
   padding: 10px;
   text-align: left;
 }
+
 .asistencia-box th {
   background-color: #f2f2f2;
 }
@@ -426,15 +503,22 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo5.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container-control-asignaciones {
   display: flex;
   justify-content: center;
@@ -442,6 +526,7 @@ button:hover {
   padding: 20px;
   flex-grow: 1;
 }
+
 .asignaciones-box {
   background-color: #fff;
   border-radius: 10px;
@@ -449,17 +534,21 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 80%;
 }
+
 .asignaciones-box h1 {
   text-align: center;
 }
+
 .asignaciones-box h2 {
   text-align: center;
 }
+
 .asignaciones-box label {
   display: block;
   margin-top: 20px;
   font-weight: bold;
 }
+
 .asignaciones-box select {
   width: 100%;
   padding: 10px;
@@ -467,12 +556,14 @@ button:hover {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .buttons-container {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-top: 20px;
 }
+
 .asignaciones-box button {
   padding: 10px;
   background-color: #172a32;
@@ -481,14 +572,17 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .asignaciones-box button:hover {
   background-color: #172a20;
 }
+
 .asignaciones-box table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
+
 .asignaciones-box table,
 .asignaciones-box th,
 .asignaciones-box td {
@@ -496,6 +590,7 @@ button:hover {
   padding: 10px;
   text-align: left;
 }
+
 .asignaciones-box th {
   background-color: #f2f2f2;
 }
@@ -506,20 +601,29 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo5.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
+
 .container-reporte {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
+
 .report-box {
   background-color: #fff;
   border-radius: 10px;
@@ -528,16 +632,20 @@ button:hover {
   width: 40%;
   height: 80vh;
 }
+
 .report-box h1 {
   text-align: center;
 }
+
 .report-box form {
   display: flex;
   flex-direction: column;
 }
+
 .report-box form label {
   margin-top: 10px;
 }
+
 .report-box form select,
 .report-box form input,
 .report-box form textarea {
@@ -547,6 +655,7 @@ button:hover {
   border-radius: 5px;
   width: 100%;
 }
+
 .report-box form button {
   margin-top: 20px;
   padding: 10px;
@@ -556,12 +665,15 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .report-box form button:hover {
   background-color: #172a20;
 }
+
 .report-box p {
   margin: 10px 0;
 }
+
 .report-box p span {
   font-weight: bold;
 }
@@ -572,15 +684,22 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo6.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container-crear-usuario {
   display: flex;
   justify-content: center;
@@ -588,6 +707,7 @@ button:hover {
   padding: 20px;
   flex-grow: 1;
 }
+
 .user-box {
   background-color: #fff;
   border-radius: 10px;
@@ -595,16 +715,20 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 40%;
 }
+
 .user-box h1 {
   text-align: center;
 }
+
 .user-box form {
   display: flex;
   flex-direction: column;
 }
+
 .user-box form label {
   margin-top: 10px;
 }
+
 .user-box form input,
 .user-box form select {
   margin-top: 5px;
@@ -613,6 +737,7 @@ button:hover {
   border-radius: 5px;
   width: 100%;
 }
+
 .user-box form button {
   margin-top: 20px;
   padding: 10px;
@@ -622,6 +747,7 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .user-box form button:hover {
   background-color: #172a20;
 }
@@ -632,15 +758,22 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo6.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container-registro-persona {
   display: flex;
   justify-content: center;
@@ -648,31 +781,39 @@ button:hover {
   padding: 20px;
   flex-grow: 1;
 }
+
 .persona-box {
   background-color: #fff;
+  align-items: center;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 40%;
+  width: 80%;
 }
+
 .persona-box h1 {
   text-align: center;
 }
+
 .persona-box form {
   display: flex;
   flex-direction: column;
 }
+
 .persona-box form label {
   margin-top: 10px;
 }
+
 .persona-box form input,
 .persona-box form select {
   margin-top: 5px;
+  align-items: center;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
 }
+
 .persona-box form button {
   margin-top: 20px;
   padding: 10px;
@@ -682,7 +823,47 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .persona-box form button:hover {
+  background-color: #172a20;
+}
+
+#personaTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#personaTable th, #personaTable td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+#personaTable th {
+  background-color: #172a32;
+  color: #fff;
+  font-weight: bold;
+}
+
+#personaTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#personaTable tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+#personaTable button {
+  background-color: #172a32;
+  border: none;
+  padding: 5px 10px;
+  color: white;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+#personaTable button:hover {
   background-color: #172a20;
 }
 
@@ -692,15 +873,22 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo6.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container-registro-curso {
   display: flex;
   justify-content: center;
@@ -708,6 +896,7 @@ button:hover {
   padding: 20px;
   flex-grow: 1;
 }
+
 .curso-box {
   background-color: #fff;
   border-radius: 10px;
@@ -716,16 +905,20 @@ button:hover {
   width: 40%;
   height: 60vh;
 }
+
 .curso-box h1 {
   text-align: center;
 }
+
 .curso-box form {
   display: flex;
   flex-direction: column;
 }
+
 .curso-box form label {
   margin-top: 10px;
 }
+
 .curso-box form input,
 .curso-box form select {
   margin-top: 5px;
@@ -734,6 +927,7 @@ button:hover {
   border-radius: 5px;
   width: 100%;
 }
+
 .curso-box form button {
   margin-top: 20px;
   padding: 10px;
@@ -743,6 +937,7 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .curso-box form button:hover {
   background-color: #172a20;
 }
@@ -753,15 +948,22 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container-gestion-fundacion {
   display: flex;
   justify-content: center;
@@ -769,6 +971,7 @@ button:hover {
   padding: 20px;
   flex-grow: 1;
 }
+
 .gestion-box {
   background-color: #fff;
   border-radius: 10px;
@@ -776,16 +979,20 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 50%;
 }
+
 .gestion-box h1 {
   text-align: center;
 }
+
 .gestion-box form {
   display: flex;
   flex-direction: column;
 }
+
 .gestion-box form label {
   margin-top: 10px;
 }
+
 .gestion-box form input,
 .gestion-box form select {
   margin-top: 5px;
@@ -794,6 +1001,7 @@ button:hover {
   border-radius: 5px;
   width: 100%;
 }
+
 .gestion-box form button {
   margin-top: 20px;
   padding: 10px;
@@ -803,8 +1011,71 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .gestion-box form button:hover {
   background-color: #172a20;
+}
+
+#dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#dataTable th,
+#dataTable td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+#dataTable th {
+  background-color: #172a32;
+  color: #fff;
+  font-weight: bold;
+}
+
+#dataTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#dataTable tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+#dataTable button {
+  background-color: #172a32;
+  border: none;
+  padding: 5px 10px;
+  color: white;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+#dataTable button:hover {
+  background-color: #172a20;
+}
+
+.hidden {
+  display: none;
+}
+
+.filters-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.filters-container label {
+  margin-right: 10px;
+}
+
+.filters-container input,
+.filters-container select {
+  margin: 0 10px;
+}
+
+.list-container {
+  margin-top: 20px;
 }
 
 /* Generar Certificados */
@@ -813,15 +1084,22 @@ button:hover {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-image: linear-gradient(
+    to right,
+    rgba(24, 59, 81, 0.773),
+    rgba(24, 59, 81, 0.773),
+    rgba(20, 182, 31, 0)
+  ),
+  url("../imagenes/fusdecFondo.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container-aprobar-certificados {
   display: flex;
   justify-content: center;
@@ -829,6 +1107,7 @@ button:hover {
   padding: 20px;
   flex-grow: 1;
 }
+
 .certificados-box {
   background-color: #fff;
   border-radius: 10px;
@@ -836,14 +1115,17 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 80%;
 }
+
 .certificados-box h1 {
   text-align: center;
 }
+
 .certificados-box label {
   display: block;
   margin-top: 20px;
   font-weight: bold;
 }
+
 .certificados-box select {
   width: 100%;
   padding: 10px;
@@ -851,12 +1133,14 @@ button:hover {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .buttons-container {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-top: 20px;
 }
+
 .certificados-box button {
   padding: 10px;
   background-color: #172a32;
@@ -865,14 +1149,17 @@ button:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .certificados-box button:hover {
   background-color: #172a20;
 }
+
 .certificados-box table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
+
 .certificados-box table,
 .certificados-box th,
 .certificados-box td {
@@ -880,6 +1167,7 @@ button:hover {
   padding: 10px;
   text-align: left;
 }
+
 .certificados-box th {
   background-color: #f2f2f2;
 }

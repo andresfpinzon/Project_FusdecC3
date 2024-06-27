@@ -1,167 +1,169 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registro de Curso</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
-  <body class="body-registro-curso">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../screens/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
-            <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
-            <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
-            <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
-            <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
-            <li><a href="../screens/index.html">Salir</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
 
-    <div class="container-registro-curso">
-      <div class="curso-box">
-        <h1>Registro de Curso</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Curso</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
 
-        <form id="buscarPersonaForm">
-          <label for="documentNumber">Número de Documento:</label>
-          <input
-            type="text"
-            id="documentNumber"
-            name="documentNumber"
-            required
-          />
-          <button type="button" onclick="buscarPersona()">
-            Buscar Persona
-          </button>
-        </form>
+<body class="body-registro-curso">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../screens/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
+          <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
+          <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
+          <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
+          <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
+          <li><a href="../screens/index.html">Salir</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-        <div id="datosPersona" style="display: none; margin-top: 20px">
-          <p><strong>Nombres:</strong> <span id="nombres"></span></p>
-          <p><strong>Apellidos:</strong> <span id="apellidos"></span></p>
-          <p><strong>Colegio:</strong> <span id="colegio"></span></p>
-          <p><strong>Brigada:</strong> <span id="brigada"></span></p>
+  <div class="container-registro-curso">
+    <div class="curso-box">
+      <h1>Registro de Curso</h1>
 
-          <form id="registroCursoForm">
-            <label for="course">Curso:</label>
-            <select id="course" name="course" required>
-              <option value="curso1">Curso 1</option>
-              <option value="curso2">Curso 2</option>
-              <option value="curso3">Curso 3</option>
+      <form id="buscarPersonaForm">
+        <label for="documentNumber">Número de Documento:</label>
+        <input type="text" id="documentNumber" name="documentNumber" required />
+        <button type="button" onclick="buscarPersona()">
+          Buscar Persona
+        </button>
+      </form>
+
+      <div id="datosPersona" style="display: none; margin-top: 20px">
+        <p><strong>Nombres:</strong> <span id="nombres"></span></p>
+        <p><strong>Apellidos:</strong> <span id="apellidos"></span></p>
+        <p><strong>Colegio:</strong> <span id="colegio"></span></p>
+        <p><strong>Brigada:</strong> <span id="brigada"></span></p>
+
+        <form id="registroCursoForm">
+          <label for="course">Curso:</label>
+          <select id="course" name="course" required>
+            <option value="curso1">Elija Un curso</option>
+            <option value="curso2">Servicio Solcial</option>
+          </select>
+
+          <div id="edicionSeleccion" style="display: none">
+            <label for="edicion">Edición:</label>
+            <select id="edicion" name="edicion" required>
+              <option value="edicion1">Edición 2024-1</option>
+              <option value="edicion2">Edición 2024-2</option>
             </select>
+          </div>
 
-            <div id="edicionSeleccion" style="display: none">
-              <label for="edicion">Edición:</label>
-              <select id="edicion" name="edicion" required>
-                <option value="edicion1">Edición 1</option>
-                <option value="edicion2">Edición 2</option>
-                <option value="edicion3">Edición 3</option>
-              </select>
-            </div>
+          <button type="submit">Registrar Curso</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
-            <button type="submit">Registrar Curso</button>
-          </form>
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
         </div>
       </div>
     </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
 
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
+  <script>
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
+    const personas = [
+      {
+        documentNumber: "123456789",
+        nombres: "Juan",
+        apellidos: "García",
+        colegio: "Liceo Campo David",
+        brigada: "Perdomo",
+      },
+      {
+        documentNumber: "987654321",
+        nombres: "Maria",
+        apellidos: "Fernández",
+        colegio: "Colegio Colombo Americano CAS",
+        brigada: "Paraíso",
+      },
+      // Agrega más personas según sea necesario
+    ];
 
-    <script>
-      const personas = [
-        {
-          documentNumber: "123456789",
-          nombres: "Juan",
-          apellidos: "García",
-          colegio: "Liceo Campo David",
-          brigada: "Perdomo",
-        },
-        {
-          documentNumber: "987654321",
-          nombres: "Maria",
-          apellidos: "Fernández",
-          colegio: "Colegio Colombo Americano CAS",
-          brigada: "Paraíso",
-        },
-        // Agrega más personas según sea necesario
-      ];
+    function buscarPersona() {
+      const documentNumber = document.getElementById("documentNumber").value;
+      const persona = personas.find(
+        (p) => p.documentNumber === documentNumber
+      );
 
-      function buscarPersona() {
-        const documentNumber = document.getElementById("documentNumber").value;
-        const persona = personas.find(
-          (p) => p.documentNumber === documentNumber
-        );
-
-        if (persona) {
-          document.getElementById("nombres").textContent = persona.nombres;
-          document.getElementById("apellidos").textContent = persona.apellidos;
-          document.getElementById("colegio").textContent = persona.colegio;
-          document.getElementById("brigada").textContent = persona.brigada;
-          document.getElementById("datosPersona").style.display = "block";
-        } else {
-          alert("Persona no encontrada");
-        }
+      if (persona) {
+        document.getElementById("nombres").textContent = persona.nombres;
+        document.getElementById("apellidos").textContent = persona.apellidos;
+        document.getElementById("colegio").textContent = persona.colegio;
+        document.getElementById("brigada").textContent = persona.brigada;
+        document.getElementById("datosPersona").style.display = "block";
+      } else {
+        alert("Persona no encontrada");
       }
+    }
 
-      document.getElementById("course").addEventListener("change", function () {
-        const edicionSeleccion = document.getElementById("edicionSeleccion");
-        if (this.value) {
-          edicionSeleccion.style.display = "block";
-        } else {
-          edicionSeleccion.style.display = "none";
-        }
+    document.getElementById("course").addEventListener("change", function () {
+      const edicionSeleccion = document.getElementById("edicionSeleccion");
+      if (this.value) {
+        edicionSeleccion.style.display = "block";
+      } else {
+        edicionSeleccion.style.display = "none";
+      }
+    });
+
+    document
+      .getElementById("registroCursoForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        const cursoData = {
+          nombres: document.getElementById("nombres").textContent,
+          apellidos: document.getElementById("apellidos").textContent,
+          colegio: document.getElementById("colegio").textContent,
+          brigada: document.getElementById("brigada").textContent,
+          course: document.getElementById("course").value,
+          edicion: document.getElementById("edicion").value,
+        };
       });
+  </script>
+</body>
 
-      document
-        .getElementById("registroCursoForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          const cursoData = {
-            nombres: document.getElementById("nombres").textContent,
-            apellidos: document.getElementById("apellidos").textContent,
-            colegio: document.getElementById("colegio").textContent,
-            brigada: document.getElementById("brigada").textContent,
-            course: document.getElementById("course").value,
-            edicion: document.getElementById("edicion").value,
-          };
-        });
-    </script>
-  </body>
 </html>

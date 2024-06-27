@@ -1,109 +1,115 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crear Usuario</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
-  <body class="body-crear-usuario">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../screens/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/asistencia.html">Asistencia</a></li>
-            <li><a href="../screens/reporte.html">Reporte</a></li>
-            <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
-            <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
-            <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
-            <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
-            <li><a href="../screens/perfilSA.html">Perfil</a></li>
-            <li><a href="../screens/index.html">Salir</a></li>
-          </ul>
-        </nav>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear Usuario</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
+
+<body class="body-crear-usuario">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../screens/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/asistencia.html">Asistencia</a></li>
+          <li><a href="../screens/reporte.html">Reporte</a></li>
+          <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
+          <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
+          <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
+          <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
+          <li><a href="../screens/perfilSA.html">Perfil</a></li>
+          <li><a href="../screens/index.html">Salir</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container-crear-usuario">
+    <div class="user-box">
+      <h1>Crear Usuario</h1>
+
+      <form id="crearUsuarioForm">
+        <label for="username">Nombre de Usuario:</label>
+        <input type="text" id="username" name="username" required />
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required />
+
+        <label for="password">Confirmar Contraseña:</label>
+        <input type="password" id="password" name="password" required />
+
+        <label for="role">Rol:</label>
+        <select id="role" name="role" required>
+          <option value="">Seleccione un rol</option>
+          <option value="instructor">Instructor</option>
+          <option value="administrador">Administrador</option>
+        </select>
+
+        <label for="firstName">Nombres:</label>
+        <input type="text" id="firstName" name="firstName" required />
+
+        <label for="lastName">Apellidos:</label>
+        <input type="text" id="lastName" name="lastName" required />
+
+        <label for="documentType">Tipo de Documento:</label>
+        <select id="documentType" name="documentType" required>
+          <option value="CC">Cédula de Ciudadanía</option>
+          <option value="TI">Tarjeta de Identidad</option>
+        </select>
+
+        <label for="documentNumber">Número de Documento:</label>
+        <input type="text" id="documentNumber" name="documentNumber" required />
+
+        <button type="submit">Crear Usuario</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
       </div>
-    </header>
-
-    <div class="container-crear-usuario">
-      <div class="user-box">
-        <h1>Crear Usuario</h1>
-
-        <form id="crearUsuarioForm">
-          <label for="username">Nombre de Usuario:</label>
-          <input type="text" id="username" name="username" required />
-
-          <label for="password">Contraseña:</label>
-          <input type="password" id="password" name="password" required />
-
-          <label for="password">Confirmar Contraseña:</label>
-          <input type="password" id="password" name="password" required />
-
-          <label for="role">Rol:</label>
-          <select id="role" name="role" required>
-            <option value="">Seleccione un rol</option>
-            <option value="instructor">Instructor</option>
-            <option value="administrador">Administrador</option>
-          </select>
-
-          <label for="firstName">Nombres:</label>
-          <input type="text" id="firstName" name="firstName" required />
-
-          <label for="lastName">Apellidos:</label>
-          <input type="text" id="lastName" name="lastName" required />
-
-          <label for="documentType">Tipo de Documento:</label>
-          <select id="documentType" name="documentType" required>
-            <option value="CC">Cédula de Ciudadanía</option>
-            <option value="TI">Tarjeta de Identidad</option>
-          </select>
-
-          <label for="documentNumber">Número de Documento:</label>
-          <input
-            type="text"
-            id="documentNumber"
-            name="documentNumber"
-            required
-          />
-
-          <button type="submit">Crear Usuario</button>
-        </form>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
+        </div>
       </div>
     </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
+  <script>
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
+  </script>
+</body>
 
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
-  </body>
 </html>
