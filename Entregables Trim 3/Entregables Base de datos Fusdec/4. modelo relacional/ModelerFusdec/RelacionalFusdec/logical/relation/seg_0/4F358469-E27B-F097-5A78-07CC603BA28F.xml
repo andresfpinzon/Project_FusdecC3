@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Unidad_Brigada" directorySegmentName="seg_0" id="4F358469-E27B-F097-5A78-07CC603BA28F">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:53:53 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>069DEE4C-06FA-A4BF-C976-B6CB17104209</sourcePk>
+<targetPk>BEE34592-04E6-D27D-CA75-E75D5E1600DA</targetPk>
+<identifying>false</identifying>
+<optionalSource>false</optionalSource>
+<optionalTarget>true</optionalTarget>
+<sourceCardinality>*</sourceCardinality>
+<sourceEntity>F2994838-C959-B89B-BE84-4631ECE3632A</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>2D26FD44-5BAB-5EE1-583F-30883A9F3C93</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

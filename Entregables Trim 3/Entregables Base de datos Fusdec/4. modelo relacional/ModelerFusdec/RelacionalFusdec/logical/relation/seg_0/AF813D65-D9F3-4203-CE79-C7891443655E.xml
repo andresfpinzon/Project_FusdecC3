@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Fundacion_Colegio" directorySegmentName="seg_0" id="AF813D65-D9F3-4203-CE79-C7891443655E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:15:50 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>6C54AB68-377A-F94F-0423-8CC7BA030C3B</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>B2F09DFF-4DCD-82C8-07C5-377C73F7F984</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>8C418991-244F-3881-4AC9-8AD3C300C796</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

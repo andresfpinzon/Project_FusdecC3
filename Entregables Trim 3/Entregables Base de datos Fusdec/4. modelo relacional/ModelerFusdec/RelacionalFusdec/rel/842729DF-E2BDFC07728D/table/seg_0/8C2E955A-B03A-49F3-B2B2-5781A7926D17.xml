@@ -1,0 +1,77 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="8C2E955A-B03A-49F3-B2B2-5781A7926D17" name="Reporte">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>B90FA509-97AD-2BA3-294B-DF3EC35AB60F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdReporte" id="FC5C329E-1CDD-027C-850F-C1DFA760DBD0">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del reporte]]></commentInRDBMS>
+<generatorID>EFCDABBF-03AF-0B06-F800-9F889C06D801</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombreReporte" id="6D2F6CEB-B6F9-D37B-CA87-0DA1389743CF">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el contenido del reporte]]></commentInRDBMS>
+<generatorID>DD7B3F37-FB1B-3BA1-02A2-D8C07F81B5AA</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Instructor_IdInstructor" id="ACD99ADF-6F77-B6D6-FEC9-86C62F0342AB">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>2AC97BD0-3B3B-507D-0E04-4B66718D3F43</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="1C4B21BB-48B6-A24E-6F97-C5B55294EFE3" referredColumn="659E5517-537F-6D14-B1D8-2F72DA321D1B"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="FD02F232-C212-5C0D-6DA5-EE784C926C80" name="Reporte_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>F5A2729B-6006-CB04-2ED2-9BB04A590E20</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="FC5C329E-1CDD-027C-850F-C1DFA760DBD0"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="8DB1064D-2B4B-180F-DAC9-137EC640E183" name="Reporte_Instructor_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>BB0122A6-EFE9-6FDB-EE2C-D332DED5A3D0</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="ACD99ADF-6F77-B6D6-FEC9-86C62F0342AB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

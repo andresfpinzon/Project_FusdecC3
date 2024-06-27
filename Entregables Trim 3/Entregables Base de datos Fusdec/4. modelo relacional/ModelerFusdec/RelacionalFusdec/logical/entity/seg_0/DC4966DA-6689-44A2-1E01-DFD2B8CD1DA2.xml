@@ -1,0 +1,74 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="DC4966DA-6689-44A2-1E01-DFD2B8CD1DA2" name="SuperAdministrador">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-04 16:13:03 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdSA" id="38470C93-C83D-0246-54B7-DACFE7C83510">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-04 16:13:20 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del super administrador]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreUsuario" id="8A1CAC22-DC68-AA74-F402-0159FEE82B55">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-04 16:13:49 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del super administrador]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Contraseña" id="6862E463-284C-B1CD-5E4B-F8E6181EBC31">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-04 16:14:22 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la contraseña del super administrador]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="E57A3F83-E5AD-E2E5-783B-38264E1F9B77" name="SuperAdministrador PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-04 16:13:38 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>38470C93-C83D-0246-54B7-DACFE7C83510</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

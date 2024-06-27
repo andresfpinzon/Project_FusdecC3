@@ -1,0 +1,90 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="133B2F20-504D-8039-C623-EB2E47E6E386" name="Persona_Calificacion">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="persona_IdPersona" id="D17CA5B9-AB9E-2CF4-2430-20F10251EDB5">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="66CB8DC1-A350-AEA1-BC45-94E941C14662" referredColumn="E1792742-366E-01DA-9FFA-54165A94869E"/>
+</associations>
+</Column>
+<Column name="Calificacion_IdReporte" id="67118587-F401-A806-B412-980F53250A5E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="DF5E18E2-A0CE-BC94-0375-8B398DCDC32F" referredColumn="E6E722A3-8958-BB76-699D-AC7B25014D80"/>
+</associations>
+</Column>
+<Column name="Calificacion_IdCalificacion" id="07A17DCF-9985-3603-3BD3-28F3E1E2CBC2">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:30:25 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="DF5E18E2-A0CE-BC94-0375-8B398DCDC32F" referredColumn="D639F45B-95BA-3576-31B7-01656FFFB3EF"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="4F2B02DD-2D28-EAAB-5F01-AF2B58D3409D" name="Persona_Calificacion_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D17CA5B9-AB9E-2CF4-2430-20F10251EDB5"/>
+<colUsage columnID="67118587-F401-A806-B412-980F53250A5E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="54364DB5-9707-A970-0C1C-EE03E381C489" name="Persona_Calificacion_persona_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>71539B34-E367-097F-B1B3-234B2E2E3712</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D17CA5B9-AB9E-2CF4-2430-20F10251EDB5"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A3A2EA80-8BD5-3713-76AF-19D557029B2E" name="Persona_Calificacion_Calificacion_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>71539B34-E367-097F-B1B3-234B2E2E3712</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="67118587-F401-A806-B412-980F53250A5E"/>
+<colUsage columnID="07A17DCF-9985-3603-3BD3-28F3E1E2CBC2"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

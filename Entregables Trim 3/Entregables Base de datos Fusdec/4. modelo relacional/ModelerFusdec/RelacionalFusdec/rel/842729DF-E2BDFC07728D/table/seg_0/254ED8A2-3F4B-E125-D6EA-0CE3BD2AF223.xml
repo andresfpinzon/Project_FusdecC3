@@ -1,0 +1,64 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="254ED8A2-3F4B-E125-D6EA-0CE3BD2AF223" name="SuperAdministrador">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>DC4966DA-6689-44A2-1E01-DFD2B8CD1DA2</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdSA" id="B0A66BB0-D024-F2C3-8E6C-CEB2B8DA8835">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del super administrador]]></commentInRDBMS>
+<generatorID>38470C93-C83D-0246-54B7-DACFE7C83510</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombreUsuario" id="BF80851C-7D07-E542-241A-50D9872EC6B7">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del super administrador]]></commentInRDBMS>
+<generatorID>8A1CAC22-DC68-AA74-F402-0159FEE82B55</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Contraseña" id="4415BA7B-765A-FA27-F2CB-408387708941">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la contraseña del super administrador]]></commentInRDBMS>
+<generatorID>6862E463-284C-B1CD-5E4B-F8E6181EBC31</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="3B180C3F-5058-A2BF-BD50-C8B4972AA33B" name="SuperAdministrador_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>E57A3F83-E5AD-E2E5-783B-38264E1F9B77</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B0A66BB0-D024-F2C3-8E6C-CEB2B8DA8835"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,122 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="7C6BEEE7-9ACF-E554-1EF3-AFD1A3E6F716" name="perfil">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>29999B89-E2D1-8977-8FD9-789DD7205288</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdPerfil" id="79F1781C-6746-7214-CD47-E361BFEA8F33">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el id del perfil ]]></commentInRDBMS>
+<generatorID>798E591F-09D8-2AAA-FC96-FB0FCF31FB75</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Nombres" id="09B1B213-3050-FD69-28B0-EB7C5702C0D9">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el telefono del usuario]]></commentInRDBMS>
+<generatorID>132E6431-C8F8-F33E-4AC1-BD09AC45A06E</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Apellidos" id="E7CC82D9-5D8B-C3A3-6C37-A298A139D6F2">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el estado del usuario]]></commentInRDBMS>
+<generatorID>74BEFBD2-7596-6895-041A-D7670219F912</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="TipoDocumento" id="22D5FC0B-4B66-EF32-9843-AE321A34D195">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el tipo de sangre del usuario]]></commentInRDBMS>
+<generatorID>BC1AC2FE-D740-D005-BF92-268CFF6A8353</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NumeroDocumentoUsuario" id="D540169C-8526-E479-E93F-B9D5F0B113FB">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 16:01:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene la foto que ira en el perfil del usuario]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdUsuario" id="B7018780-D59E-5D9C-54B4-7DB8302DCC6F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 23:43:56 UTC</createdTime>
+<generatorID>2F20E4B3-D8A5-B39E-B212-72C187E48B75</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>4CB27C51-24FA-F898-6872-EC4482945127</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="C1903D0C-B890-5B18-20EA-6BBA8582E475" name="perfil PK">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>F42E5798-C45E-D50C-7B03-A319F627C3A6</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>79F1781C-6746-7214-CD47-E361BFEA8F33</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

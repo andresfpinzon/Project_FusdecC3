@@ -1,0 +1,16 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="RelacionalFusdec" id="48485A24-4C89-1A69-6D18-812D3F635A80" version="3.5">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:19:10 UTC</createdTime>
+<ownerDesignName>trabajoslogicalfinal</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>48485A24-4C89-1A69-6D18-812D3F635A80</designId>
+<usedDesignStorageDescriptors>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="FA37F636-9B60-1884-25CA-5C377D8309D5">
+<designStoragePath>C:\se</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="1F3BFCA3-6090-5F7C-2A2C-A278F02124EE">
+<designStoragePath>C:\se</designStoragePath>
+</designDescr>
+</usedDesignStorageDescriptors>
+</OSDM_Design>

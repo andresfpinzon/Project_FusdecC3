@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Colegio_AsigRep" directorySegmentName="seg_0" id="2E2236ED-604E-717F-FC38-30A8CCE2B3F6">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 23:27:35 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>93F5D074-6ED4-9EC0-2218-B4E790165220</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>8C418991-244F-3881-4AC9-8AD3C300C796</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>546BD3EA-3249-CFB4-CA38-6D5D02C00334</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

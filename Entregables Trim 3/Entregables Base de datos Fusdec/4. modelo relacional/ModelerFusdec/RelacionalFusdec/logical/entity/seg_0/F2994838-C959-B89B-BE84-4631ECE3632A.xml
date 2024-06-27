@@ -1,0 +1,102 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="F2994838-C959-B89B-BE84-4631ECE3632A" name="Unidad">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:51:34 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdUnidad" id="1F4DEA2F-0374-1A77-AF59-816D0E2F84FC">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:51:42 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id de la unidad]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreUnidad" id="6D923E72-FCDB-FFDA-B762-9BA47CF55699">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:51:58 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la unidad]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="EstadoUnidad" id="A93DE9C8-9C5E-6132-1B79-186A8B86DB4F">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:52:19 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el estado de la unidad]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1 CHAR</dataTypeSize>
+<ownDataTypeParameters>1 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdBrigada" id="8B1EDA29-43D5-C0C8-63A1-6E677659786C">
+<createdBy>Andre</createdBy>
+<createdTime>2024-05-12 17:15:55 UTC</createdTime>
+<generatorID>4F358469-E27B-F097-5A78-07CC603BA28F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>FBD1B4E8-4FDE-0E92-5442-4F65047B8869</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="UbicacionUnidad" id="999A8FEB-97DF-B5BF-7178-779B5A74A4EC">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:25:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la ubicacion de la unidad]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="069DEE4C-06FA-A4BF-C976-B6CB17104209" name="Unidad PK">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 21:40:11 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>1F4DEA2F-0374-1A77-AF59-816D0E2F84FC</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

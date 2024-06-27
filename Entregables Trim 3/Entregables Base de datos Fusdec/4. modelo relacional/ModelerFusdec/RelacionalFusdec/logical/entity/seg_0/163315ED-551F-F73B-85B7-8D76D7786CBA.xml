@@ -1,0 +1,87 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="163315ED-551F-F73B-85B7-8D76D7786CBA" name="Auditoria">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:39:58 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdAuditoria" id="5C0EC879-D77E-2AA8-AA05-36ED86112028">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:40:26 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el uid de la auditoria para cada certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="FechaAuditoria" id="86BCEFAE-89C1-8B47-95A3-21EC42CAAEF8">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:40:45 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la fecha en que el certificado fue expedido]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreQuienExpidio" id="FC4F267B-FB18-F20E-CC99-40FCA807DA13">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:41:58 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la persona que expidio el certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdCertificado" id="AE6D36AE-729C-6B28-E919-FE8F9FAD5FE7">
+<createdBy>Andre</createdBy>
+<createdTime>2024-05-12 17:00:08 UTC</createdTime>
+<generatorID>A62571AC-D6F8-2744-37CE-0D066FF2E8D2</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>688480FE-4263-3442-96AB-510FEC510C1D</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="7D32BD98-44C4-B02E-6CF5-466D0CF55D0E" name="Auditoria PK">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:40:43 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>5C0EC879-D77E-2AA8-AA05-36ED86112028</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

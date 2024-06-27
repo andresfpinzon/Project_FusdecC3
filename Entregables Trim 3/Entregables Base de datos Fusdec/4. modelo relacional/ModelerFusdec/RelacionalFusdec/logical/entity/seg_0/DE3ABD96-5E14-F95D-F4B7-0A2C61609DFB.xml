@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="DE3ABD96-5E14-F95D-F4B7-0A2C61609DFB" name="AsignacionRol">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 02:26:31 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdUsuario" id="A33FC471-7988-2994-FF38-C9D0E0A7282E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 02:27:29 UTC</createdTime>
+<generatorID>776BAAB0-02E0-F7FE-C1C5-0E3E650A56FD</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>4CB27C51-24FA-F898-6872-EC4482945127</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdRol" id="82631D89-4A97-6989-B546-6AE612A854FC">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 02:27:47 UTC</createdTime>
+<generatorID>1258DEB0-5EB7-AAF2-AB12-ACA9E1462C0B</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>436B0569-2F3C-1972-39A4-A2F3995E09AC</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="EFA11140-DA91-6600-5560-917CF1709DE4" name="Usuario_Rol PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 02:28:30 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>82631D89-4A97-6989-B546-6AE612A854FC</attributeRef>
+<attributeRef>A33FC471-7988-2994-FF38-C9D0E0A7282E</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

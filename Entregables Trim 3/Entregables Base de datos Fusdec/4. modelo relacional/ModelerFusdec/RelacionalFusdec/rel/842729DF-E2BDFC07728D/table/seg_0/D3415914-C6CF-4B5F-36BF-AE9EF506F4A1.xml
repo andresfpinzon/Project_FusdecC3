@@ -1,0 +1,103 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="D3415914-C6CF-4B5F-36BF-AE9EF506F4A1" name="Comando">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>946A1021-A7F1-2A86-D2D8-1904D17F8F79</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdComando" id="70EA2855-B2BC-1B0A-FA39-8B980FF17AA4">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del comando]]></commentInRDBMS>
+<generatorID>E34597DC-12FD-916A-3997-0F6CE715FAD5</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Estado" id="54F13001-49E7-8DF3-723D-E5C58611071E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el estado del comando]]></commentInRDBMS>
+<generatorID>902D3965-A55D-696F-20E2-F70FE599DFB0</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1 CHAR</dataTypeSize>
+<ownDataTypeParameters>1 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombreComando" id="2D64C294-42B1-0B7B-457A-E769F3961724">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del comando]]></commentInRDBMS>
+<generatorID>3ACC61F8-A5ED-C9B8-7266-0BE90FBA423F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="UbicacionComando" id="3C233476-0590-3ABB-CB2F-0EA3D080D84E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la ubicacion del comando]]></commentInRDBMS>
+<generatorID>4E5D1F84-45B6-04B0-8043-777E52575E8A</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="fundacion_IdFundacion" id="7109E6F3-14E5-7762-35DA-428D81FC06FC">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>2F96887C-2D3A-8E14-70BF-0ECB481E8393</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="A8C6EC4F-242B-861C-5DE9-16A7AD53F4CC" referredColumn="BAA82877-83F9-1F2E-032D-9CA905C34F84"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="7EABC05E-E460-0C09-B4B7-5A3F6EE75DF2" name="Comando_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>8002FA8E-A2EC-6A1A-A54D-91718968E6F5</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="70EA2855-B2BC-1B0A-FA39-8B980FF17AA4"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A5C6FC27-D614-132F-BC6B-2606A72C3717" name="Comando_fundacion_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>D9242CAA-40AA-CC57-11A7-BE510CDF1A85</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="7109E6F3-14E5-7762-35DA-428D81FC06FC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
