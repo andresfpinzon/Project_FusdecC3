@@ -1,0 +1,887 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-transform: capitalize;
+  text-decoration: none;
+  list-style: none;
+  font-family: "Poppins", sans-serif;
+}
+
+#menu {
+  display: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: #20343f;
+  min-height: 7vh;
+  display: flex;
+  align-items: center;
+}
+
+.menu {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.logo-navbar {
+  height: 50px;
+  width: auto;
+}
+
+.navbar ul {
+  display: flex;
+  align-items: center;
+}
+
+.navbar ul li {
+  margin-left: 20px;
+}
+
+.navbar ul li a {
+  font-size: 18px;
+  padding: 10px 15px;
+  color: #ffffff;
+  border-radius: 15px;
+  display: block;
+}
+
+.navbar ul li a:hover {
+  background-color: black;
+}
+
+/* Footer */
+
+.footer {
+  background-color: #20343f;
+  color: #ffffff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
+}
+
+.footer-column h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin: 5px 0;
+}
+
+.footer-column ul li a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.footer-column ul li a:hover {
+  text-decoration: underline;
+}
+
+.footer-logo {
+  width: 150px;
+  border-radius: 50%;
+}
+
+.social-media a {
+  margin: 0 10px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.social-media a:hover {
+  background-color: #172a20;
+}
+
+.footer-bottom {
+  background-color: #172a32;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.footer-bottom p {
+  margin: 5px 0;
+}
+
+.footer-bottom a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.footer-bottom a:hover {
+  text-decoration: underline;
+}
+
+/* Index */
+
+.body-index {
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.white-box {
+  width: 600px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+.certificate-results {
+  margin-top: 20px;
+}
+
+.certificate-results table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.certificate-results th,
+.certificate-results td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.certificate-results th {
+  background-color: #f2f2f2;
+}
+
+/* Login */
+
+.body-login {
+  background: url("../imagenes/fondo2.jpg") center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-login {
+  background-color: #172a32;
+  width: 100%;
+  color: rgb(255, 255, 255);
+  padding: 15px;
+  margin: 10px 0px;
+  border: none;
+  cursor: pointer;
+}
+
+.form-login {
+  border: 3px solid #f1f1f1;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 20px;
+  margin-top: 50px;
+  border-radius: 10px;
+}
+
+.input-logintxt[type="text"],
+.input-loginpsw[type="password"] {
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px 20px;
+  display: inline-block;
+  border: 2px solid #172a32;
+  box-sizing: border-box;
+}
+
+button:hover {
+  background-color: #172a20;
+}
+
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  margin: 10px 5px;
+  background-color: #172a32;
+  border: none;
+  color: rgb(255, 255, 255);
+}
+
+.container-login {
+  padding: 25px;
+}
+
+/* Perfil */
+.body-perfil {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container-Perfil {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #172a32;
+}
+
+.custom-file-input {
+  display: none;
+}
+
+.custom-file-label {
+  background-color: #172a32;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  color: white;
+}
+
+.input-perfil {
+  width: 100%;
+  border: 1px solid #172a32;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  color: #555;
+  background-color: #ecf0f1;
+}
+
+button {
+  background-color: #172a32;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #172a20;
+}
+
+/*Asistencia */
+
+.body-control-asistencia {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container-control-asistencia {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-grow: 1;
+}
+.asistencia-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+}
+.asistencia-box h1 {
+  text-align: center;
+}
+.asistencia-box h2 {
+  text-align: center;
+}
+.asistencia-box label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+}
+.asistencia-box select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.asistencia-box button {
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.asistencia-box button:hover {
+  background-color: #172a20;
+}
+.asistencia-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.asistencia-box table,
+.asistencia-box th,
+.asistencia-box td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+.asistencia-box th {
+  background-color: #f2f2f2;
+}
+
+/* Asignaciones */
+
+.body-control-asignaciones {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container-control-asignaciones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-grow: 1;
+}
+.asignaciones-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+}
+.asignaciones-box h1 {
+  text-align: center;
+}
+.asignaciones-box h2 {
+  text-align: center;
+}
+.asignaciones-box label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+}
+.asignaciones-box select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.asignaciones-box button {
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.asignaciones-box button:hover {
+  background-color: #172a20;
+}
+.asignaciones-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.asignaciones-box table,
+.asignaciones-box th,
+.asignaciones-box td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+.asignaciones-box th {
+  background-color: #f2f2f2;
+}
+
+/* Reporte */
+
+.body-reporte {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+}
+.container-reporte {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.report-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 40%;
+  height: 80vh;
+}
+.report-box h1 {
+  text-align: center;
+}
+.report-box form {
+  display: flex;
+  flex-direction: column;
+}
+.report-box form label {
+  margin-top: 10px;
+}
+.report-box form select,
+.report-box form input,
+.report-box form textarea {
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+.report-box form button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.report-box form button:hover {
+  background-color: #172a20;
+}
+.report-box p {
+  margin: 10px 0;
+}
+.report-box p span {
+  font-weight: bold;
+}
+
+/* Registro Usuario*/
+
+.body-crear-usuario {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container-crear-usuario {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-grow: 1;
+}
+.user-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 40%;
+}
+.user-box h1 {
+  text-align: center;
+}
+.user-box form {
+  display: flex;
+  flex-direction: column;
+}
+.user-box form label {
+  margin-top: 10px;
+}
+.user-box form input,
+.user-box form select {
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+.user-box form button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.user-box form button:hover {
+  background-color: #172a20;
+}
+
+/* Registro Persona */
+
+.body-registro-persona {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container-registro-persona {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-grow: 1;
+}
+.persona-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 40%;
+}
+.persona-box h1 {
+  text-align: center;
+}
+.persona-box form {
+  display: flex;
+  flex-direction: column;
+}
+.persona-box form label {
+  margin-top: 10px;
+}
+.persona-box form input,
+.persona-box form select {
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+.persona-box form button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.persona-box form button:hover {
+  background-color: #172a20;
+}
+
+/* Registro Curso */
+
+.body-registro-curso {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container-registro-curso {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-grow: 1;
+}
+.curso-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 40%;
+  height: 60vh;
+}
+.curso-box h1 {
+  text-align: center;
+}
+.curso-box form {
+  display: flex;
+  flex-direction: column;
+}
+.curso-box form label {
+  margin-top: 10px;
+}
+.curso-box form input,
+.curso-box form select {
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+.curso-box form button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.curso-box form button:hover {
+  background-color: #172a20;
+}
+
+/* Gestionar Fundacion*/
+
+.body-gestion-fundacion {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container-gestion-fundacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-grow: 1;
+}
+.gestion-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 50%;
+}
+.gestion-box h1 {
+  text-align: center;
+}
+.gestion-box form {
+  display: flex;
+  flex-direction: column;
+}
+.gestion-box form label {
+  margin-top: 10px;
+}
+.gestion-box form input,
+.gestion-box form select {
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+.gestion-box form button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.gestion-box form button:hover {
+  background-color: #172a20;
+}
+
+/* Generar Certificados */
+
+.body-aprobar-certificados {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url("../imagenes/fusdecfondo4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.container-aprobar-certificados {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-grow: 1;
+}
+.certificados-box {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 80%;
+}
+.certificados-box h1 {
+  text-align: center;
+}
+.certificados-box label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+}
+.certificados-box select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.certificados-box button {
+  padding: 10px;
+  background-color: #172a32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.certificados-box button:hover {
+  background-color: #172a20;
+}
+.certificados-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.certificados-box table,
+.certificados-box th,
+.certificados-box td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+.certificados-box th {
+  background-color: #f2f2f2;
+}
+
+/**/
