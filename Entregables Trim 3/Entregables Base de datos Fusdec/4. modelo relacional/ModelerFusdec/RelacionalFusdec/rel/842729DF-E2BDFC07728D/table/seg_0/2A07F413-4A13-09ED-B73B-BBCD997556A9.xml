@@ -1,0 +1,115 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="2A07F413-4A13-09ED-B73B-BBCD997556A9" name="Calificacion">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>80D1A4A4-071E-41BE-5DE6-4AB230599A82</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdReporte" id="E6E722A3-8958-BB76-699D-AC7B25014D80">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del reporte]]></commentInRDBMS>
+<generatorID>EFCDABBF-03AF-0B06-F800-9F889C06D801</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="77D7E5B3-D3D0-A07A-EB1E-578D63BC4271" referredColumn="FC5C329E-1CDD-027C-850F-C1DFA760DBD0"/>
+</associations>
+</Column>
+<Column name="IdCalificacion" id="D639F45B-95BA-3576-31B7-01656FFFB3EF">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id de la edicion]]></commentInRDBMS>
+<generatorID>1DCBFFFC-B586-304F-D634-97D5939EF414</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NotaCalificacion" id="1B50D7E5-C61C-7C72-970F-6F4E590811F7">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la calificacion (aprobado, no aprobado)]]></commentInRDBMS>
+<generatorID>3A82C0D8-B5A1-DDD4-E84B-F2A561D1C5C1</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1 CHAR</dataTypeSize>
+<ownDataTypeParameters>1 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Administrador_IdAdministrador" id="6F59C8D4-9781-1012-6AF9-3A54B5ACEC5F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>AD541ECF-85AE-C0E9-A370-754B9BF72533</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="332657D0-2ED6-4EFC-2245-ED1ADDBFACC5" referredColumn="8AF91991-045C-BF55-969F-9BC65F4C710A"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="9E956C6A-C1AA-C2BF-252A-0A70E1F53B76" name="Calificacion_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>F5A2729B-6006-CB04-2ED2-9BB04A590E20</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E6E722A3-8958-BB76-699D-AC7B25014D80"/>
+<colUsage columnID="D639F45B-95BA-3576-31B7-01656FFFB3EF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="AB6ADF2C-DE69-9DA4-8F2B-24658EFA06D4" name="Calificacion_PKv1">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>447B6028-CFF8-DA01-FE16-595EBA56A995</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D639F45B-95BA-3576-31B7-01656FFFB3EF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="5678743A-BBB7-2708-23AB-3AADAD816E03" name="Calificacion_Reporte_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>59B946C1-D846-39C2-6899-F13140D22FAE</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E6E722A3-8958-BB76-699D-AC7B25014D80"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A1315870-11D0-3F99-0D86-4BE36A72911B" name="Calificacion_Administrador_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>14BC273D-A235-52DF-2122-4BB717B922E5</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="6F59C8D4-9781-1012-6AF9-3A54B5ACEC5F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

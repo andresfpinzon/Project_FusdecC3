@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Ceertificado_Auditoria" directorySegmentName="seg_0" id="A62571AC-D6F8-2744-37CE-0D066FF2E8D2">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:43:44 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>A4315A74-F323-D9B2-72B8-69645F9BFA9D</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>9AC56BC5-774C-53D4-971B-AB01B018251F</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>163315ED-551F-F73B-85B7-8D76D7786CBA</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

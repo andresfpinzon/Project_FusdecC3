@@ -1,0 +1,115 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="DDAE17AC-B856-9B76-67AC-C9EB13B3B6E5" name="Inasistencia">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>C2594976-331F-6E6C-AF0D-F680F451027C</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdReporte" id="9B2D135C-B7A3-BEB6-8EC6-4F803E643DB4">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del reporte]]></commentInRDBMS>
+<generatorID>EFCDABBF-03AF-0B06-F800-9F889C06D801</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="D34234A7-1111-174D-EAEE-F3AB0DF584FF" referredColumn="FC5C329E-1CDD-027C-850F-C1DFA760DBD0"/>
+</associations>
+</Column>
+<Column name="IdInasistencia" id="95855499-A29A-7F00-041C-B73B362CB5BF">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id de la inasistencia]]></commentInRDBMS>
+<generatorID>FED3EB0D-762F-F6D6-0712-24D250CCD8CF</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombrePersona" id="08640168-67C5-C4F7-AD1E-90740AC366CB">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la persona relacionada al reporte]]></commentInRDBMS>
+<generatorID>43ECBC76-A2C8-4A7A-A6E8-34B81C04C70C</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ApellidoPersona" id="D6CA6061-DA93-0771-D796-27B0307C0F7A">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el apellido de la persona relacionada al reporte]]></commentInRDBMS>
+<generatorID>D06F8461-269C-BED1-56AF-7E09A52C8BC3</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombreColegio" id="0DBF01EE-109D-1EC8-110E-F9770CE2D03F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del colegio al que esta asociado la persona ]]></commentInRDBMS>
+<generatorID>58A54DD9-CE6C-2017-BCB7-1B177A23E7A7</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="E1687512-A281-4A3D-3C5D-3AA7BA2653B2" name="Inasistencia_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>F5A2729B-6006-CB04-2ED2-9BB04A590E20</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9B2D135C-B7A3-BEB6-8EC6-4F803E643DB4"/>
+<colUsage columnID="95855499-A29A-7F00-041C-B73B362CB5BF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="9D0D1AC3-91B5-436B-9CFA-99A7646BE3F6" name="Inasistencia_PKv1">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>87691223-1A5E-668C-D884-5F9E6BFC7250</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="95855499-A29A-7F00-041C-B73B362CB5BF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="321A99FF-E855-8FB1-2A66-C4E6CE154371" name="Inasistencia_Reporte_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>966A62F6-1947-2125-E818-3E39B120F17F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9B2D135C-B7A3-BEB6-8EC6-4F803E643DB4"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

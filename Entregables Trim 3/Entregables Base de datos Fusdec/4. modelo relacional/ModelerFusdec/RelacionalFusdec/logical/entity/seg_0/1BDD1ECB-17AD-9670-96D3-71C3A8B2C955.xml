@@ -1,0 +1,47 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="1BDD1ECB-17AD-9670-96D3-71C3A8B2C955" name="Instructor">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 21:55:01 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<hierarchicalParent>8DE73124-13FF-37AD-D9FD-5A84FB891A03</hierarchicalParent>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdInstructor" id="1C82C9D5-A5AC-F7F5-29ED-CB49959E4E62">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 02:10:56 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del instrcutor]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="8A8D3811-DB04-FC3B-5FF6-A996CCD3BBA4" name="Administrador PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 21:55:01 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>1C82C9D5-A5AC-F7F5-29ED-CB49959E4E62</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

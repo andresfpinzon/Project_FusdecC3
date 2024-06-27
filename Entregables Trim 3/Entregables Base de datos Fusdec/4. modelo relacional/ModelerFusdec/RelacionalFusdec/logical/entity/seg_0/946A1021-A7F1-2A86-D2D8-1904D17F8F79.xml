@@ -1,0 +1,102 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="946A1021-A7F1-2A86-D2D8-1904D17F8F79" name="Comando">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:22:50 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdComando" id="E34597DC-12FD-916A-3997-0F6CE715FAD5">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:23:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del comando]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Estado" id="902D3965-A55D-696F-20E2-F70FE599DFB0">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:23:35 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el estado del comando]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1 CHAR</dataTypeSize>
+<ownDataTypeParameters>1 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreComando" id="3ACC61F8-A5ED-C9B8-7266-0BE90FBA423F">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:24:27 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del comando]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="UbicacionComando" id="4E5D1F84-45B6-04B0-8043-777E52575E8A">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:27:32 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la ubicacion del comando]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdFundacion" id="2F96887C-2D3A-8E14-70BF-0ECB481E8393">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:10:02 UTC</createdTime>
+<generatorID>D9242CAA-40AA-CC57-11A7-BE510CDF1A85</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>E92795FA-08DC-E359-363E-0E3FB635FC72</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="8002FA8E-A2EC-6A1A-A54D-91718968E6F5" name="Comando PK">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:23:33 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>E34597DC-12FD-916A-3997-0F6CE715FAD5</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

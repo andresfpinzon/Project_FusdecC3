@@ -1,0 +1,101 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="A6C70B05-280F-C113-B55B-07FBD23D36EE" name="Curso">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:45:12 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdCurso" id="6C66BA57-F024-A790-EDA7-C7A750B53614">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:48:21 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del curso]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreCurso" id="3010690C-E7D1-3C17-1CE0-3D47F6237022">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:49:58 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del curso]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="DescripcionCurso" id="F9250301-B839-CD71-FECB-9E4302ED0153">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:50:25 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene una breve descripcion del curso]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT036</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IntensidadHorariaCurso" id="E059B4AB-1214-3202-D035-437BB0F66434">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:51:19 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la intensidad horaria del curso]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdFundacion" id="46EEDC2F-7D9B-6FE8-3955-B107D8905A94">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:04:19 UTC</createdTime>
+<generatorID>91D107D9-3295-34B8-F637-54B38B8BE3C1</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>E92795FA-08DC-E359-363E-0E3FB635FC72</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="7D599DE1-8580-DBE7-1B9B-4726086B5EA8" name="Curso PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 22:48:31 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>6C66BA57-F024-A790-EDA7-C7A750B53614</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Colegio_Persona" directorySegmentName="seg_0" id="F505BF3B-3CFE-70A9-F86A-CBEFD24BDA77">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:06:18 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>93F5D074-6ED4-9EC0-2218-B4E790165220</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>8C418991-244F-3881-4AC9-8AD3C300C796</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>D461A1C8-4AB6-0FC0-5686-E9B73222442C</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

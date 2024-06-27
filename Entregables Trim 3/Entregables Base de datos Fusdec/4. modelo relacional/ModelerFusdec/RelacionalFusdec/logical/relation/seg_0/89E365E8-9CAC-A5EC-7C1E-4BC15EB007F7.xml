@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Persona_Certificado" directorySegmentName="seg_0" id="89E365E8-9CAC-A5EC-7C1E-4BC15EB007F7">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:17:06 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>FB732A98-F05C-A488-FD58-A015114F9A58</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>D461A1C8-4AB6-0FC0-5686-E9B73222442C</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>9AC56BC5-774C-53D4-971B-AB01B018251F</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

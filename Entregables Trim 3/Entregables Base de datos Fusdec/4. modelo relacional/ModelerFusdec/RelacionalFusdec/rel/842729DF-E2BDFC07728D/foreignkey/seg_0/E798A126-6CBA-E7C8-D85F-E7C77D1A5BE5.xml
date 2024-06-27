@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="E798A126-6CBA-E7C8-D85F-E7C77D1A5BE5" containerWithKeyObject="2E876157-C90E-16A4-A6EC-856C41C1F350" localFKIndex="C8E80881-D74F-A2E2-6AF1-047E30F7BD1A" name="Funciones_Rol_Funcion_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>5177FFA9-87CC-862D-F060-7FF0C2C8AD15</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<referredTableLongName>Funcion</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>B24F9D95-6C9A-B31D-103B-15E501D0333B</referredTableID>
+<keyObject>2FC9846E-B50A-52F7-F060-D4BE5069FFC6</keyObject>
+<referredKeyID>2FC9846E-B50A-52F7-F060-D4BE5069FFC6</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>IdFunciones</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

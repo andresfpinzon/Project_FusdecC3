@@ -1,0 +1,178 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="D461A1C8-4AB6-0FC0-5686-E9B73222442C" name="persona">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>69FEE51A-5660-4CC0-A2C2-53A0B2154FF7</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdPersona" id="2CD95D7B-2EB6-0728-E1C3-06D677B2D575">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id de la persona]]></commentInRDBMS>
+<generatorID>98114AE4-DAB1-A54A-5202-48535F1A3A09</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="nombrePer" id="819EB5A4-7DC5-0209-BA00-C35C144CCE31">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la persona]]></commentInRDBMS>
+<generatorID>0F9B296A-B577-5441-75A3-D97A661C1B00</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="apellidosPer" id="3C86664F-D6B9-6FFF-EDF9-A243DD59612F">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:56:19 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el apellido de la persona]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="TipoDocumentoPer" id="87DDD3D5-CEFE-5CC7-483D-7411EF44B71E">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el tipo de documento de la persona]]></commentInRDBMS>
+<generatorID>F7075DA0-CA88-7F43-FE07-146419FD10DC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NumeroDocumentoPer" id="6355981B-35BA-91DF-F8F4-C22C28675019">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:56:50 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el numero de documento de la persona]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="CorreoElectronico" id="42373666-A784-41C6-96D3-42E17201FF11">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:54:43 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el correo electronico de la persona]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="GeneroPer" id="D724B4F6-F304-18B8-E12A-8EC2F588C1D0">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el genero de la persona]]></commentInRDBMS>
+<generatorID>9D096FC7-0DF2-4FC0-9C1D-EFEA26B4E0A9</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="FechaNacimientoPer" id="CDDB9E37-B6C3-AF61-21B6-95AD89379965">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la fecha de nacimiento de la persona]]></commentInRDBMS>
+<generatorID>9DD12FBF-E422-F7B2-89F2-E2DBDA781BB2</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdColegio" id="52BD7534-B6CD-FE57-ACDB-5197A4DB7D88">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:06:18 UTC</createdTime>
+<generatorID>F505BF3B-3CFE-70A9-F86A-CBEFD24BDA77</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>184A60EE-1FFE-0A19-AB32-6F0CE9FE933F</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdUnidad" id="E6BCE43A-1495-7F8F-0CD3-C2C178496203">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:08:38 UTC</createdTime>
+<generatorID>BA308EAE-6423-8B62-4F4F-A16350D12548</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>1F4DEA2F-0374-1A77-AF59-816D0E2F84FC</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="FB732A98-F05C-A488-FD58-A015114F9A58" name="persona PK">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>A2C5CADB-841F-6D96-328E-A079F94473BF</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>2CD95D7B-2EB6-0728-E1C3-06D677B2D575</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

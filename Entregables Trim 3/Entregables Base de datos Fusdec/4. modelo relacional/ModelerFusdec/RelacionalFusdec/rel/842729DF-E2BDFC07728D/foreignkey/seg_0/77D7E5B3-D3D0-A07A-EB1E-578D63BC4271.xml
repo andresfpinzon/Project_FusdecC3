@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="77D7E5B3-D3D0-A07A-EB1E-578D63BC4271" containerWithKeyObject="2A07F413-4A13-09ED-B73B-BBCD997556A9" localFKIndex="5678743A-BBB7-2708-23AB-3AADAD816E03" name="Calificacion_Reporte_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>59B946C1-D846-39C2-6899-F13140D22FAE</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<referredTableLongName>Reporte</referredTableLongName>
+<arc>030727EC-3F68-CE63-47F9-FE3655EB8B56</arc>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>8C2E955A-B03A-49F3-B2B2-5781A7926D17</referredTableID>
+<keyObject>FD02F232-C212-5C0D-6DA5-EE784C926C80</keyObject>
+<referredKeyID>FD02F232-C212-5C0D-6DA5-EE784C926C80</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>IdReporte</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

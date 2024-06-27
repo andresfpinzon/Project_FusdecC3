@@ -1,0 +1,89 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="5C47B72C-D379-9F4E-EABD-AE84E7EBA80E" name="Persona_Horario">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="persona_IdPersona" id="3BA76FAE-28DD-9B63-CC99-6B05D46BDFE7">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="3FCEEE71-CDF7-2139-8EE0-B8F463BAB832" referredColumn="E1792742-366E-01DA-9FFA-54165A94869E"/>
+</associations>
+</Column>
+<Column name="Horario_IdHorario" id="BFC29D00-2775-B13D-825E-C051A675AAE2">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="9E0484F4-6998-04A8-BA89-C9B1FF096D6D" referredColumn="7CD19953-8F4B-42A5-6792-A12B988E6922"/>
+</associations>
+</Column>
+<Column name="Fecha" id="C9DB2702-97B5-C393-A8A4-38197C47D01F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<comment><![CDATA[Contiene la fecha de la asistencia]]></comment>
+<generatorID>EE7A2858-3DDF-2057-DCAA-3949CA4FD249</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<isRelationshipColumn>true</isRelationshipColumn>
+<isDependOnFK_AsMandatory>true</isDependOnFK_AsMandatory>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="D31C2F56-9F3B-5E2B-FFAD-80C410E6EC30" name="Persona_Horario_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="3BA76FAE-28DD-9B63-CC99-6B05D46BDFE7"/>
+<colUsage columnID="BFC29D00-2775-B13D-825E-C051A675AAE2"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="0FD231E3-B37D-B297-ED2F-979513F121C7" name="Persona_Horario_persona_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>9F37660A-E035-C75A-9342-03EEB33C5CDC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="3BA76FAE-28DD-9B63-CC99-6B05D46BDFE7"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="7FDDBC3F-EBBA-2CD3-C77B-911B6E727415" name="Persona_Horario_Horario_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>9F37660A-E035-C75A-9342-03EEB33C5CDC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BFC29D00-2775-B13D-825E-C051A675AAE2"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

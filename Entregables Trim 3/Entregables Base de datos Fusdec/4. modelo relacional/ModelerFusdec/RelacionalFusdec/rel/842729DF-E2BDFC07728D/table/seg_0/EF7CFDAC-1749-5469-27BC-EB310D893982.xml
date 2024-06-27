@@ -1,0 +1,90 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="EF7CFDAC-1749-5469-27BC-EB310D893982" name="Administrador_Colegio">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="Administrador_IdRol" id="52D8938F-68A1-2C95-BF61-E87993B8F98B">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="7FC26B2D-05BD-BA18-E870-6248D1048732" referredColumn="7CF558D8-990A-1C41-03B0-4BABAC1901F5"/>
+</associations>
+</Column>
+<Column name="colegio_IdColegio" id="A287F4C7-DA50-7793-62EB-35084FD9654B">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="3170F421-A536-754E-89C1-F2B92D566414" referredColumn="0CBD3FC1-995B-0EDB-1EA7-C0762D81ABEB"/>
+</associations>
+</Column>
+<Column name="Administrador_IdAdministrador" id="D2A3AE9A-7A25-830B-818F-63401F5E0283">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:30:07 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="7FC26B2D-05BD-BA18-E870-6248D1048732" referredColumn="8AF91991-045C-BF55-969F-9BC65F4C710A"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="C84E3DE1-5DA5-0587-3386-73FDCDB73088" name="Administrador_Colegio_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="52D8938F-68A1-2C95-BF61-E87993B8F98B"/>
+<colUsage columnID="A287F4C7-DA50-7793-62EB-35084FD9654B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="76239B70-2117-D17F-95E7-1348D508C10A" name="Administrador_Colegio_Administrador_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>2C4639E4-C80D-A8FA-4A36-7BE77AE9DC70</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="52D8938F-68A1-2C95-BF61-E87993B8F98B"/>
+<colUsage columnID="D2A3AE9A-7A25-830B-818F-63401F5E0283"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="9CBC2AD9-0044-F069-A175-7B39927CF490" name="Administrador_Colegio_colegio_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>2C4639E4-C80D-A8FA-4A36-7BE77AE9DC70</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A287F4C7-DA50-7793-62EB-35084FD9654B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,66 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="98E8287A-77BB-C0F0-35C3-51EA6B16AFD7" name="AsignacionReporteIn">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>546BD3EA-3249-CFB4-CA38-6D5D02C00334</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="Inasistencia_IdInasistencia" id="0953402D-E6D4-2690-8763-CD552081133E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>6FB48405-D3E7-9B7D-F61A-6ABA38B0CE3C</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="6BC14071-6912-7FB4-AC11-4E28541B66FF" referredColumn="95855499-A29A-7F00-041C-B73B362CB5BF"/>
+</associations>
+</Column>
+<Column name="colegio_IdColegio" id="1F53B440-D6A7-9E64-A74D-60076790EC4D">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>03287025-4308-95B8-2276-DADB80C1E4D1</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="29C4348E-F3AD-5D88-FAC2-1E76CB79E24F" referredColumn="0CBD3FC1-995B-0EDB-1EA7-C0762D81ABEB"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="6923A6E5-7AEB-E646-4AFD-706930464A83" name="AsignacionReporteIn_colegio_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>2E2236ED-604E-717F-FC38-30A8CCE2B3F6</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1F53B440-D6A7-9E64-A74D-60076790EC4D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="389C3B02-208A-7428-6785-7B1F1E5D179C" name="AsignacionReporteIn_Inasistencia_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>56801A9F-6BB7-64C6-A72A-65AA3DEC0641</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0953402D-E6D4-2690-8763-CD552081133E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

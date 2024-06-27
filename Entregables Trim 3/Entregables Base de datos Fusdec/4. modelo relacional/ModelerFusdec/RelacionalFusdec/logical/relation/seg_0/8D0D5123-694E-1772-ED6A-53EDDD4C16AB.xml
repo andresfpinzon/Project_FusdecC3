@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Curso_Edicion" directorySegmentName="seg_0" id="8D0D5123-694E-1772-ED6A-53EDDD4C16AB">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:03:36 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>7D599DE1-8580-DBE7-1B9B-4726086B5EA8</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>A6C70B05-280F-C113-B55B-07FBD23D36EE</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>77863CE4-8D84-6A8E-8D29-EDCA7AEC0AED</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>
