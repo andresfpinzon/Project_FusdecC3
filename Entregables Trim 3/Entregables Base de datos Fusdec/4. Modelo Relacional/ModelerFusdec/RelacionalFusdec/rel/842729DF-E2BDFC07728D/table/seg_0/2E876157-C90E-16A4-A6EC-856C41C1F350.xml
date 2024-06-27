@@ -1,0 +1,75 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="2E876157-C90E-16A4-A6EC-856C41C1F350" name="Funciones_Rol">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="Funcion_IdFunciones" id="28E38B52-850D-645C-47F9-FF7C16B931B6">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="E798A126-6CBA-E7C8-D85F-E7C77D1A5BE5" referredColumn="5D1D1A1B-506C-FB27-41B4-02DB42E4F1A7"/>
+</associations>
+</Column>
+<Column name="Rol_IdRol" id="F770F757-EDFB-9C19-C7BA-A7EC23AC3E1D">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="D1AAD759-163F-8325-A85F-348640AA9AD0" referredColumn="730C0E03-60B0-9B62-E1AE-6361928BE014"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="57BC5E53-3D17-6B9E-CF9B-C8744FBC2F42" name="Funciones_Rol_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="28E38B52-850D-645C-47F9-FF7C16B931B6"/>
+<colUsage columnID="F770F757-EDFB-9C19-C7BA-A7EC23AC3E1D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="C8E80881-D74F-A2E2-6AF1-047E30F7BD1A" name="Funciones_Rol_Funcion_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>5177FFA9-87CC-862D-F060-7FF0C2C8AD15</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="28E38B52-850D-645C-47F9-FF7C16B931B6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="9A3F6AFC-3F36-4D35-20D3-B5F94FBA02FB" name="Funciones_Rol_Rol_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>5177FFA9-87CC-862D-F060-7FF0C2C8AD15</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F770F757-EDFB-9C19-C7BA-A7EC23AC3E1D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

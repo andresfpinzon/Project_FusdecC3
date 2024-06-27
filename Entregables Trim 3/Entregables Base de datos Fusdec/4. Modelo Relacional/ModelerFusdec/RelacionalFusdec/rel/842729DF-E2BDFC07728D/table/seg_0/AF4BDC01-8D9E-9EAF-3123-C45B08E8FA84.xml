@@ -1,0 +1,76 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AF4BDC01-8D9E-9EAF-3123-C45B08E8FA84" name="Instructor">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>1BDD1ECB-17AD-9670-96D3-71C3A8B2C955</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdRol" id="5EFC189F-488B-752A-FDE9-88B8D5CDDA94">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del rol]]></commentInRDBMS>
+<generatorID>436B0569-2F3C-1972-39A4-A2F3995E09AC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="455F3D24-0FFB-3C03-DD88-3134E874657D" referredColumn="730C0E03-60B0-9B62-E1AE-6361928BE014"/>
+</associations>
+</Column>
+<Column name="IdInstructor" id="659E5517-537F-6D14-B1D8-2F72DA321D1B">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del instrcutor]]></commentInRDBMS>
+<generatorID>1C82C9D5-A5AC-F7F5-29ED-CB49959E4E62</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="2234B729-B0C5-18DF-5C4D-24B57A325F30" name="Instructor_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>7E90BEDC-BB8B-7986-4CB2-ED5DD56CCE19</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5EFC189F-488B-752A-FDE9-88B8D5CDDA94"/>
+<colUsage columnID="659E5517-537F-6D14-B1D8-2F72DA321D1B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="F6E8E584-6344-A8A9-E2CF-51D9A2D53364" name="Instructor_PKv1">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>8A8D3811-DB04-FC3B-5FF6-A996CCD3BBA4</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="659E5517-537F-6D14-B1D8-2F72DA321D1B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="D7EB67A3-EE65-4FD1-06BD-E885365E4888" name="Instructor_Rol_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>E164E273-C3E4-DE56-56B6-8CCD43F42D3D</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5EFC189F-488B-752A-FDE9-88B8D5CDDA94"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

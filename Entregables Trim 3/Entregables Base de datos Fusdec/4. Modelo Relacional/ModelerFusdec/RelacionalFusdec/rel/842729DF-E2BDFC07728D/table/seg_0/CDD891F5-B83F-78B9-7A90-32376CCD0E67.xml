@@ -1,0 +1,90 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="CDD891F5-B83F-78B9-7A90-32376CCD0E67" name="Curso_Administrador">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="Curso_IdCurso" id="42B35258-3F2D-D7F4-0782-E4EC578BFDA4">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="B1198E35-F00B-042A-0E15-1BD77B724CE8" referredColumn="CE975C6E-1C5F-2FDA-BB5E-7350D804FAE6"/>
+</associations>
+</Column>
+<Column name="Administrador_IdRol" id="7A2185D2-96A1-0A03-89E0-CD88115BF4D1">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="E9B8B690-09C0-B55C-7811-615E183125A8" referredColumn="7CF558D8-990A-1C41-03B0-4BABAC1901F5"/>
+</associations>
+</Column>
+<Column name="Administrador_IdAdministrador" id="1CFAAFFD-E56A-11C2-86B1-E0A66681B337">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:30:07 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="E9B8B690-09C0-B55C-7811-615E183125A8" referredColumn="8AF91991-045C-BF55-969F-9BC65F4C710A"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="F732A0FE-69C6-C920-BF88-42A325151395" name="Curso_Administrador_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="42B35258-3F2D-D7F4-0782-E4EC578BFDA4"/>
+<colUsage columnID="7A2185D2-96A1-0A03-89E0-CD88115BF4D1"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="C3B8681E-A4D2-06BA-0AF1-81DC1F37D147" name="Curso_Administrador_Curso_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>8430CFB6-58C1-77A2-3E8B-A539E89196BB</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="42B35258-3F2D-D7F4-0782-E4EC578BFDA4"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="7BEB9A6B-4238-BFB9-92AC-752A11ED7353" name="Curso_Administrador_Administrador_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>8430CFB6-58C1-77A2-3E8B-A539E89196BB</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="7A2185D2-96A1-0A03-89E0-CD88115BF4D1"/>
+<colUsage columnID="1CFAAFFD-E56A-11C2-86B1-E0A66681B337"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,51 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AB1266B7-FD3F-ADFF-70EB-F64718E6D371" name="fundacion">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>B2F09DFF-4DCD-82C8-07C5-377C73F7F984</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdFundacion" id="BAA82877-83F9-1F2E-032D-9CA905C34F84">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id de la fundcion]]></commentInRDBMS>
+<generatorID>E92795FA-08DC-E359-363E-0E3FB635FC72</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombreFundacion" id="06BEB11B-5BB5-8FB1-DBEA-875CAB954C69">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la fundacion]]></commentInRDBMS>
+<generatorID>57BF781C-EC38-BF3A-C5AF-B03A35987085</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="7E57A883-FF4B-0AC1-E578-D7BBA79D01A4" name="fundacion_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>6C54AB68-377A-F94F-0423-8CC7BA030C3B</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BAA82877-83F9-1F2E-032D-9CA905C34F84"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

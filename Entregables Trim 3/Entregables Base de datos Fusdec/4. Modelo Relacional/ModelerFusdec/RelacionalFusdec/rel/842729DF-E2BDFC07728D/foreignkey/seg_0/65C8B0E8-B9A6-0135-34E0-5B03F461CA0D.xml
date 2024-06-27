@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="65C8B0E8-B9A6-0135-34E0-5B03F461CA0D" containerWithKeyObject="23D2DEFE-B77A-D98F-2337-D8C892C146F3" localFKIndex="3361D994-43C6-A61A-6936-7F486EFAD284" name="AsignarCalificacion_Registro_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>31ECB836-7024-9D04-2B7E-E454E84C4290</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<referredTableLongName>Registro</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>A6EC8F53-4BD7-5A96-61DF-F28DCDB2FD71</referredTableID>
+<keyObject>3E44414C-A01C-E7AA-4563-4B716E1670BF</keyObject>
+<referredKeyID>3E44414C-A01C-E7AA-4563-4B716E1670BF</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>IdRegistro</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

@@ -1,0 +1,72 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="A7AF3726-1698-0CE6-715D-D70364BB9E4F" name="Horario">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:36:10 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdHorario" id="21D1FDB7-3228-915F-5DFD-44355D73B06A">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:36:19 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del horario]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="FechaInicioHorario" id="9F4461D0-B3AE-EF14-CD01-657C39F60A99">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:36:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene los dias a venir]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT008</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="FechaFinHorario" id="9A011A72-E494-5EE8-BD26-D57928D974B6">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:37:23 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene los diferentes espacios para realziar las actividades]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT008</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="DD168381-87A0-C672-2AF1-ACFE1A0C62F3" name="Horarios PK">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:36:44 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>21D1FDB7-3228-915F-5DFD-44355D73B06A</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

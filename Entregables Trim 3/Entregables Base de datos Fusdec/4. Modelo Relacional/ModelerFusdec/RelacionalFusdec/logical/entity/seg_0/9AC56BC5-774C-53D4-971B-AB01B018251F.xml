@@ -1,0 +1,158 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="9AC56BC5-774C-53D4-971B-AB01B018251F" name="Certificado">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:18:33 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdCertificado" id="688480FE-4263-3442-96AB-510FEC510C1D">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:18:48 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el uid del certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Nombres" id="F18DFA0A-8AD8-750E-47FD-131114A22AEF">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:20:45 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene los nombres del usuario que obtuvo el certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Apellidos" id="32101755-7887-9888-387D-710F8610F554">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:19:51 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene los apellidos del usuario que obtuvo el certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="CodigoVerificador" id="4399912E-B8C2-0685-FC87-6DD6C156AF8B">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:19:18 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el codigo verificador del certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="QuienExpidio" id="9C7A654F-294F-1E6E-CEB3-4F940D661D85">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:20:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la persona que expidio el certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NumeroDocumentoUsuario" id="180AF67E-59F5-EF9B-B693-6178CCDE1EDD">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:21:11 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el numero de cocumento del usuario que obtuvo el certificado]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdPersona" id="EFB82C8C-B44A-F606-83CC-0A6523926FB1">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:17:06 UTC</createdTime>
+<generatorID>89E365E8-9CAC-A5EC-7C1E-4BC15EB007F7</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>2CD95D7B-2EB6-0728-E1C3-06D677B2D575</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdAdministrador" id="FAC9FAEF-855D-4940-350C-B2B18CFDF6CC">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 02:10:51 UTC</createdTime>
+<generatorID>ACAE0A4B-C7DA-2324-A60C-CC4F4873A07E</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>18F50E99-4341-0807-BD62-8121224A7A28</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdCurso" id="C77AF674-545E-52A5-B119-75A2DF0989E5">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-18 21:22:30 UTC</createdTime>
+<generatorID>4C73B9E1-A74E-3267-4C34-B4EE99D4E9CD</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>6C66BA57-F024-A790-EDA7-C7A750B53614</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="A4315A74-F323-D9B2-72B8-69645F9BFA9D" name="Certificado PK">
+<createdBy>Aprendiz</createdBy>
+<createdTime>2024-05-09 20:19:17 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>688480FE-4263-3442-96AB-510FEC510C1D</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Comando_Brigada" directorySegmentName="seg_0" id="E298EAC2-BD9A-E334-16B5-797C25934ECA">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-10 03:29:10 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>8002FA8E-A2EC-6A1A-A54D-91718968E6F5</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>946A1021-A7F1-2A86-D2D8-1904D17F8F79</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>2D26FD44-5BAB-5EE1-583F-30883A9F3C93</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

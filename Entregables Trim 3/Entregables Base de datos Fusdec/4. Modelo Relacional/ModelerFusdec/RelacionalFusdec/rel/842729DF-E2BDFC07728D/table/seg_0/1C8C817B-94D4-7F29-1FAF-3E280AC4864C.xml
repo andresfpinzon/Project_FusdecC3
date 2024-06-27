@@ -1,0 +1,79 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="1C8C817B-94D4-7F29-1FAF-3E280AC4864C" name="AsignacionRol">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>DE3ABD96-5E14-F95D-F4B7-0A2C61609DFB</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="Usuario_IdUsuario" id="81BBFF84-519C-9AC6-87A5-570B5CE673C6">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>A33FC471-7988-2994-FF38-C9D0E0A7282E</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="15EF75EB-1287-D3A9-BAC9-0F034F00031C" referredColumn="6207FA22-B838-84FC-2168-6859648A6839"/>
+</associations>
+</Column>
+<Column name="Rol_IdRol" id="95FA939C-69C8-DD4C-83C6-DF6E15017B0B">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>82631D89-4A97-6989-B546-6AE612A854FC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="2CE29264-47DC-83A9-E4B7-062C60B0167C" referredColumn="730C0E03-60B0-9B62-E1AE-6361928BE014"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="03A58901-7D2B-7D37-3E46-F335332056B7" name="AsignacionRol_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>EFA11140-DA91-6600-5560-917CF1709DE4</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="95FA939C-69C8-DD4C-83C6-DF6E15017B0B"/>
+<colUsage columnID="81BBFF84-519C-9AC6-87A5-570B5CE673C6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A2380057-0FDA-64B3-C7F1-914A23B57158" name="AsignacionRol_Rol_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>1258DEB0-5EB7-AAF2-AB12-ACA9E1462C0B</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="95FA939C-69C8-DD4C-83C6-DF6E15017B0B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="42CE74E7-A3EF-6968-DEA0-BD819A1B3ACD" name="AsignacionRol_Usuario_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>776BAAB0-02E0-F7FE-C1C5-0E3E650A56FD</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="81BBFF84-519C-9AC6-87A5-570B5CE673C6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

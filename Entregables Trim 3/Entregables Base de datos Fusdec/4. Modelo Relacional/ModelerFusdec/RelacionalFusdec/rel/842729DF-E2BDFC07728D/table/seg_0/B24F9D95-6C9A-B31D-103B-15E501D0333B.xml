@@ -1,0 +1,89 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="B24F9D95-6C9A-B31D-103B-15E501D0333B" name="Funcion">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>DC4442D4-93ED-028D-17C4-4BCCA53B61AA</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdFunciones" id="5D1D1A1B-506C-FB27-41B4-02DB42E4F1A7">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id de la funcion]]></commentInRDBMS>
+<generatorID>65A83971-D989-600A-D492-B49A42924C3E</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombreFuncion" id="DBA7DEC2-088B-2266-3403-60679A4F0BFB">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la funcion]]></commentInRDBMS>
+<generatorID>A3B615DA-C7C9-68D3-AC65-DCF8E50A2CFE</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DescripcionFuncion" id="522A4351-665B-A491-9A47-94E9DF42D0EA">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene una explicacion de la funcion]]></commentInRDBMS>
+<generatorID>D58CF15A-361E-E79E-648D-15573A4E634A</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT036</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SuperAdministrador_IdSA" id="53EE7380-E3AD-9E43-8CD9-AF4E533FC61F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>6C4E2B98-92AA-F02F-B778-F47001F43A5B</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="D1CF9BFB-E321-07B7-9A47-3324A82F52B9" referredColumn="B0A66BB0-D024-F2C3-8E6C-CEB2B8DA8835"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="2FC9846E-B50A-52F7-F060-D4BE5069FFC6" name="Funcion_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>6846086D-2DD6-85CD-965C-AF2268502CEA</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5D1D1A1B-506C-FB27-41B4-02DB42E4F1A7"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="F9E46976-C0D7-46C3-57F8-A3D4350C55F5" name="Funcion_SuperAdministrador_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>F543D95E-D50A-D313-D954-4CD5E686815C</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="53EE7380-E3AD-9E43-8CD9-AF4E533FC61F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

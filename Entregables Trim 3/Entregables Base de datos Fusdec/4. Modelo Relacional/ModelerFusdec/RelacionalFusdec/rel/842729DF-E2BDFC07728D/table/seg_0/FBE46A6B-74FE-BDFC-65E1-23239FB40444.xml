@@ -1,0 +1,127 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="FBE46A6B-74FE-BDFC-65E1-23239FB40444" name="perfil">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>7C6BEEE7-9ACF-E554-1EF3-AFD1A3E6F716</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdPerfil" id="7FD397B4-F060-368B-BE77-7EC99B78FC1E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el id del perfil ]]></commentInRDBMS>
+<generatorID>79F1781C-6746-7214-CD47-E361BFEA8F33</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Nombres" id="425F23D5-46FD-020E-449A-5651657776C3">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el telefono del usuario]]></commentInRDBMS>
+<generatorID>09B1B213-3050-FD69-28B0-EB7C5702C0D9</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Apellidos" id="FEE56B65-DC07-2A5D-3A6B-F3450FD39D2F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el estado del usuario]]></commentInRDBMS>
+<generatorID>E7CC82D9-5D8B-C3A3-6C37-A298A139D6F2</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TipoDocumento" id="9B80383D-705A-48DA-1ED4-5BCEEC6804C2">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene el tipo de sangre del usuario]]></commentInRDBMS>
+<generatorID>22D5FC0B-4B66-EF32-9843-AE321A34D195</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NumeroDocumentoUsuario" id="C4C3D770-6563-C340-4577-B864E7D7578B">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[contiene la foto que ira en el perfil del usuario]]></commentInRDBMS>
+<generatorID>D540169C-8526-E479-E93F-B9D5F0B113FB</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Usuario_IdUsuario" id="A531774F-61A9-8EC0-CA9E-4BBCBA1F8626">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>B7018780-D59E-5D9C-54B4-7DB8302DCC6F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="7BB9A166-2778-7C7F-28F6-34BECE6A4378" referredColumn="6207FA22-B838-84FC-2168-6859648A6839"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="258096E6-CA0B-C09C-DD15-0687B5269BB6" name="perfil_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>C1903D0C-B890-5B18-20EA-6BBA8582E475</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="7FD397B4-F060-368B-BE77-7EC99B78FC1E"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="9A10F145-6E7D-E091-3BBC-94D3AD94805B" name="perfil__IDX">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<relationGeneratorID>2F20E4B3-D8A5-B39E-B212-72C187E48B75</relationGeneratorID>
+<indexColumnUsage>
+<colUsage columnID="A531774F-61A9-8EC0-CA9E-4BBCBA1F8626"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="790F01EF-B46B-ED86-4480-6690ECC3E173" name="perfil_Usuario_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>2F20E4B3-D8A5-B39E-B212-72C187E48B75</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A531774F-61A9-8EC0-CA9E-4BBCBA1F8626"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

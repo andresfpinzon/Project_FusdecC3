@@ -1,0 +1,128 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="A6EC8F53-4BD7-5A96-61DF-F28DCDB2FD71" name="Registro">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>200A95AA-2C75-C4E1-8E5A-A1D57885F70D</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdRegistro" id="A7187F26-7D9F-DF1E-7AE0-AF8AD528320D">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del registro]]></commentInRDBMS>
+<generatorID>327DC658-7131-589F-5F5D-AA24B230A89F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="FechaRegistro" id="CC3F69FF-D297-470F-8450-E0E0BA9BD6CB">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la fecha del registro]]></commentInRDBMS>
+<generatorID>5B6AD9EA-7D66-D872-CEC1-FE99B5C1B1CE</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="persona_IdPersona" id="D1E80DA6-061C-1A02-38A4-3EEBCE2D1753">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>95586691-D77F-21F8-8211-6352B6ED859D</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="34FFD3A4-D753-F833-E4E8-545401450A25" referredColumn="E1792742-366E-01DA-9FFA-54165A94869E"/>
+</associations>
+</Column>
+<Column name="Edicion_IdEdicion" id="683298C8-8992-FEC3-4B00-0CA903ED61C8">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>8E799E30-D43A-7C50-BC39-A8E095FF9176</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="071B21B6-AAB0-8A26-7718-3582BBE8AD7F" referredColumn="F5ED86C7-4C43-972A-F17D-10F1C62FA077"/>
+</associations>
+</Column>
+<Column name="Administrador_IdAdministrador" id="C8811417-F1ED-51F3-15A5-3E3641A685AC">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>3C7E6461-026E-8759-9E94-CCB775C8842F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="2AAD6986-C284-27F9-11F1-EC2E5A31A4D0" referredColumn="8AF91991-045C-BF55-969F-9BC65F4C710A"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="3E44414C-A01C-E7AA-4563-4B716E1670BF" name="Registro_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>A02BBFF5-4A58-68CB-B755-3D3AF4AF8ECB</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A7187F26-7D9F-DF1E-7AE0-AF8AD528320D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="69D3B8F8-4D7E-357A-62D1-03CE9FF94221" name="Registro_Administrador_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>C1CEB648-18CC-80E6-96A4-039D80BC6EAC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C8811417-F1ED-51F3-15A5-3E3641A685AC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="AF8236F7-6CF3-7849-EC7A-926C3E84C7F9" name="Registro_Edicion_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>57BEEEB8-72FC-8526-736D-3267FAD58B14</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="683298C8-8992-FEC3-4B00-0CA903ED61C8"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="185A9B5D-3C2F-BA81-55B3-85EC4EC05910" name="Registro_persona_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>790DD8A2-CCD7-51C1-C1E3-600BF2AD1891</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D1E80DA6-061C-1A02-38A4-3EEBCE2D1753"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

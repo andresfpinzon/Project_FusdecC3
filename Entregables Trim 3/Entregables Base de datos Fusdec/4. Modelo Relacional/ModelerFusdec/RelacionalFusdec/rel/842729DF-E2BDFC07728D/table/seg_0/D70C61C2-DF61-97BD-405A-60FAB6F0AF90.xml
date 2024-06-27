@@ -1,0 +1,192 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="D70C61C2-DF61-97BD-405A-60FAB6F0AF90" name="Certificado">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>9AC56BC5-774C-53D4-971B-AB01B018251F</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdCertificado" id="B7998C6B-25D6-C887-9938-1ABAC41C7C2A">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el uid del certificado]]></commentInRDBMS>
+<generatorID>688480FE-4263-3442-96AB-510FEC510C1D</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Nombres" id="A079698C-8A05-9F55-8A22-5D3B15207D78">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene los nombres del usuario que obtuvo el certificado]]></commentInRDBMS>
+<generatorID>F18DFA0A-8AD8-750E-47FD-131114A22AEF</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Apellidos" id="84D38FF3-E00E-2131-F66F-D4EA563F7284">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene los apellidos del usuario que obtuvo el certificado]]></commentInRDBMS>
+<generatorID>32101755-7887-9888-387D-710F8610F554</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="CodigoVerificador" id="80719770-6C3A-F1D2-8626-273741FA79B9">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el codigo verificador del certificado]]></commentInRDBMS>
+<generatorID>4399912E-B8C2-0685-FC87-6DD6C156AF8B</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="QuienExpidio" id="5863E3DD-CAC9-976E-A94C-334122AE39B0">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la persona que expidio el certificado]]></commentInRDBMS>
+<generatorID>9C7A654F-294F-1E6E-CEB3-4F940D661D85</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NumeroDocumentoUsuario" id="6BC4D487-0C9C-6A60-DC4C-ADFDB91D2A30">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el numero de cocumento del usuario que obtuvo el certificado]]></commentInRDBMS>
+<generatorID>180AF67E-59F5-EF9B-B693-6178CCDE1EDD</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="persona_IdPersona" id="71C644C6-0488-069C-ED6B-973116CA3CFC">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>EFB82C8C-B44A-F606-83CC-0A6523926FB1</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="5C6DE330-AC8B-462E-6867-D7DDE8B1D4E4" referredColumn="E1792742-366E-01DA-9FFA-54165A94869E"/>
+</associations>
+</Column>
+<Column name="Administrador_IdAdministrador" id="A7B9BEF7-EECF-8C03-8461-FEC468B7F047">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>FAC9FAEF-855D-4940-350C-B2B18CFDF6CC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="8EE83D49-74DC-1D9D-BD8C-9A21A1E49FF1" referredColumn="8AF91991-045C-BF55-969F-9BC65F4C710A"/>
+</associations>
+</Column>
+<Column name="Curso_IdCurso" id="89F3B604-4147-F190-648A-C35917D59AEF">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>C77AF674-545E-52A5-B119-75A2DF0989E5</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="AECDB23D-4910-40F0-5B29-0BA2B201D6FE" referredColumn="CE975C6E-1C5F-2FDA-BB5E-7350D804FAE6"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="4AC094FC-FB53-E179-6603-D2D40B586513" name="Certificado_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>A4315A74-F323-D9B2-72B8-69645F9BFA9D</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B7998C6B-25D6-C887-9938-1ABAC41C7C2A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="91B828E7-034F-78FC-8548-48E8FCD91941" name="Certificado__IDX">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<relationGeneratorID>89E365E8-9CAC-A5EC-7C1E-4BC15EB007F7</relationGeneratorID>
+<indexColumnUsage>
+<colUsage columnID="71C644C6-0488-069C-ED6B-973116CA3CFC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="7683834F-B8EA-8ED7-F9DD-BB7D829C0230" name="Certificado_Administrador_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>ACAE0A4B-C7DA-2324-A60C-CC4F4873A07E</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A7B9BEF7-EECF-8C03-8461-FEC468B7F047"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="6F759EAC-C556-DC19-0AB1-94F21EFF0452" name="Certificado_Curso_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>4C73B9E1-A74E-3267-4C34-B4EE99D4E9CD</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="89F3B604-4147-F190-648A-C35917D59AEF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="6B8B75F0-1BFA-EF0F-53F3-2CED83A7B8BF" name="Certificado_persona_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>89E365E8-9CAC-A5EC-7C1E-4BC15EB007F7</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="71C644C6-0488-069C-ED6B-973116CA3CFC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

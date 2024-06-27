@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="5FD06B12-93E2-4929-C306-E375153D693C" containerWithKeyObject="23D2DEFE-B77A-D98F-2337-D8C892C146F3" localFKIndex="0FB4A5B6-1CA0-C3AD-1705-4990E174E763" name="AsignarCalificacion_Calificacion_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>1DE16E03-B676-3706-3C39-95E131AD3011</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<referredTableLongName>Calificacion</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>2A07F413-4A13-09ED-B73B-BBCD997556A9</referredTableID>
+<keyObject>AB6ADF2C-DE69-9DA4-8F2B-24658EFA06D4</keyObject>
+<referredKeyID>AB6ADF2C-DE69-9DA4-8F2B-24658EFA06D4</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>IdCalificacion</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>
