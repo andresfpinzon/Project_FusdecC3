@@ -1,199 +1,368 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestión Fundación</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <style>
-      
-    </style>
-  </head>
-  <body class="body-gestion-fundacion">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../screens/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
-            <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
-            <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
-            <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
-            <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
-            <li><a href="../screens/index.html">Salir</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
 
-    <div class="container-gestion-fundacion">
-      <div class="gestion-box">
-        <h1>Fusdec</h1>
-        <form id="gestionForm">
-          <label for="registroTipo">Seleccione que desea registrar:</label>
-          <select id="registroTipo" name="registroTipo" required>
-            <option value="">Seleccione una opción</option>
-            <option value="comando">Comando</option>
-            <option value="brigada">Brigada</option>
-            <option value="unidad">Unidad</option>
-            <option value="curso">Curso</option>
-            <option value="colegio">Colegio</option>
-            <option value="horario">Horario</option>
-          </select>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión Fundación</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
 
-          <div id="registroCampos" style="display: none;">
+<body class="body-gestion-fundacion">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../screens/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
+          <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
+          <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
+          <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
+          <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
+          <li><a href="../screens/index.html">Salir</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-            <div id="camposComandoBrigada" style="display: none;">
-              <label for="nombre">Nombre:</label>
-              <input type="text" id="nombre" name="nombre" required />
+  <div class="container-gestion-fundacion">
+    <div class="gestion-box">
+      <h1>Fusdec</h1>
+      <form id="gestionForm" onsubmit="handleFormSubmit(event)">
+        <label for="registroTipo">Seleccione que desea registrar:</label>
+        <select id="registroTipo" name="registroTipo" required>
+          <option value="">Seleccione una opción</option>
+          <option value="comando">Comando</option>
+          <option value="brigada">Brigada</option>
+          <option value="unidad">Unidad</option>
+          <option value="curso">Curso</option>
+          <option value="colegio">Colegio</option>
+          <option value="horario">Horario</option>
+        </select>
 
-              <label for="calle">Calle:</label>
-              <input type="text" id="calle" name="calle" required />
+        <div id="registroCampos" style="display: none;">
+          <div id="camposComandoBrigada" style="display: none;">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required />
 
-              <label for="zona">Zona:</label>
-              <input type="text" id="zona" name="zona" required />
+            <label for="calle">Calle:</label>
+            <input type="text" id="calle" name="calle" required />
 
-              <label for="numero">Número:</label>
-              <input type="text" id="numero" name="numero" required />
+            <label for="zona">Zona:</label>
+            <input type="text" id="zona" name="zona" required />
 
-              <label for="ciudad">Ciudad:</label>
-              <input type="text" id="ciudad" name="ciudad" required />
-            </div>
+            <label for="numero">Número:</label>
+            <input type="text" id="numero" name="numero" required />
 
-            <div id="camposUnidad" style="display: none;">
-              <label for="nombreUnidad">Nombre:</label>
-              <input type="text" id="nombreUnidad" name="nombreUnidad" required />
-
-              <label for="brigadaUnidad">Brigada:</label>
-              <select id="brigadaUnidad" name="brigadaUnidad" required>
-                <option value="perdomo">Perdomo</option>
-                <option value="ensueno">Ensueño</option>
-                <option value="paraiso">Paraíso</option>
-              </select>
-            </div>
-
-
-            <div id="camposCurso" style="display: none;">
-              <label for="nombreCurso">Nombre:</label>
-              <input type="text" id="nombreCurso" name="nombreCurso" required />
-
-              <label for="intensidadHoraria">Intensidad Horaria:</label>
-              <input type="number" id="intensidadHoraria" name="intensidadHoraria" required />
-            </div>
-
-
-            <div id="camposColegio" style="display: none;">
-              <label for="nombreColegio">Nombre:</label>
-              <input type="text" id="nombreColegio" name="nombreColegio" required />
-
-              <label for="codigoColegio">Código:</label>
-              <input type="text" id="codigoColegio" name="codigoColegio" required />
-
-              <label for="calleColegio">Calle:</label>
-              <input type="text" id="calleColegio" name="calleColegio" required />
-
-              <label for="zonaColegio">Zona:</label>
-              <input type="text" id="zonaColegio" name="zonaColegio" required />
-
-              <label for="numeroColegio">Número:</label>
-              <input type="text" id="numeroColegio" name="numeroColegio" required />
-
-              <label for="ciudadColegio">Ciudad:</label>
-              <input type="text" id="ciudadColegio" name="ciudadColegio" required />
-
-              <label for="correoColegio">Correo Electrónico:</label>
-              <input type="email" id="correoColegio" name="correoColegio" required />
-
-              <label for="telefonoColegio">Número de Teléfono:</label>
-              <input type="text" id="telefonoColegio" name="telefonoColegio" required />
-            </div>
-
-            <div id="camposHorario" style="display: none;">
-              <label for="nombreHorario">Nombre:</label>
-              <input type="text" id="nombreHorario" name="nombreHorario" required />
-            </div>
-
-            <button type="submit">Registrar</button>
+            <label for="ciudad">Ciudad:</label>
+            <input type="text" id="ciudad" name="ciudad" required />
           </div>
-        </form>
+
+          <div id="camposUnidad" style="display: none;">
+            <label for="nombreUnidad">Nombre:</label>
+            <input type="text" id="nombreUnidad" name="nombreUnidad" required />
+
+            <label for="brigadaUnidad">Brigada:</label>
+            <select id="brigadaUnidad" name="brigadaUnidad" required>
+              <option value="perdomo">Perdomo</option>
+              <option value="ensueno">Ensueño</option>
+              <option value="paraiso">Paraíso</option>
+            </select>
+          </div>
+
+          <div id="camposCurso" style="display: none;">
+            <label for="nombreCurso">Nombre:</label>
+            <input type="text" id="nombreCurso" name="nombreCurso" required />
+
+            <label for="intensidadHoraria">Intensidad Horaria:</label>
+            <input type="number" id="intensidadHoraria" name="intensidadHoraria" required />
+          </div>
+
+          <div id="camposColegio" style="display: none;">
+            <label for="nombreColegio">Nombre:</label>
+            <input type="text" id="nombreColegio" name="nombreColegio" required />
+
+            <label for="codigoColegio">Código:</label>
+            <input type="text" id="codigoColegio" name="codigoColegio" required />
+
+            <label for="calleColegio">Calle:</label>
+            <input type="text" id="calleColegio" name="calleColegio" required />
+
+            <label for="zonaColegio">Zona:</label>
+            <input type="text" id="zonaColegio" name="zonaColegio" required />
+
+            <label for="numeroColegio">Número:</label>
+            <input type="text" id="numeroColegio" name="numeroColegio" required />
+
+            <label for="ciudadColegio">Ciudad:</label>
+            <input type="text" id="ciudadColegio" name="ciudadColegio" required />
+
+            <label for="correoColegio">Correo Electrónico:</label>
+            <input type="email" id="correoColegio" name="correoColegio" required />
+
+            <label for="telefonoColegio">Número de Teléfono:</label>
+            <input type="text" id="telefonoColegio" name="telefonoColegio" required />
+          </div>
+
+          <div id="camposHorario" style="display: none;">
+            <label for="nombreHorario">Nombre:</label>
+            <input type="text" id="nombreHorario" name="nombreHorario" required />
+
+            <label for="fechaInicio">Fecha y Hora de Inicio:</label>
+            <input type="datetime-local" id="fechaInicio" name="fechaInicio" required />
+
+            <label for="fechaFin">Fecha y Hora de Fin:</label>
+            <input type="datetime-local" id="fechaFin" name="fechaFin" required />
+          </div>
+
+          <button type="submit">Registrar</button>
+        </div>
+      </form>
+
+      <div class="list-container">
+        <h2>Lista de Datos Registrados</h2>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Nombre</th>
+              <th>Detalles</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Datos de tablas -->
+          </tbody>
+        </table>
       </div>
     </div>
+  </div>
 
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-          </div>
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
 
-    <script>
-      document.getElementById('registroTipo').addEventListener('change', function() {
-        const registroCampos = document.getElementById('registroCampos');
-        const camposComandoBrigada = document.getElementById('camposComandoBrigada');
-        const camposUnidad = document.getElementById('camposUnidad');
-        const camposCurso = document.getElementById('camposCurso');
-        const camposColegio = document.getElementById('camposColegio');
-        const camposHorario = document.getElementById('camposHorario');
+  <script>
+    let data = [
+      {
+        tipo: 'comando',
+        nombre: 'Comando 3',
+        detalles: 'Calle: 1, Zona: A, Número: 100, Ciudad: Bogotá'
+      },
+      {
+        tipo: 'brigada',
+        nombre: 'Perdomo',
+        detalles: 'Calle: 3, Zona: C, Número: 300, Ciudad: Bogota'
+      },
+      {
+        tipo: 'unidad',
+        nombre: 'Unidad 1',
+        detalles: 'Brigada: Perdomo'
+      },
+      {
+        tipo: 'curso',
+        nombre: 'Servicio Social',
+        detalles: 'Intensidad Horaria: 120 horas'
+      },
+      {
+        tipo: 'colegio',
+        nombre: 'Liceo Tamarindo',
+        detalles: 'Código: 001, Calle: 5, Zona: E, Número: 500, Ciudad: Bogota, Correo: colegio1@example.com, Teléfono: 1234567890'
+      },
+      {
+        tipo: 'horario',
+        nombre: 'Horario servicio social ',
+        detalles: 'Inicio: 2024-06-26T09:00, Fin: 2024-06-26T12:00'
+      },
+    ];
 
-        camposComandoBrigada.style.display = 'none';
-        camposUnidad.style.display = 'none';
-        camposCurso.style.display = 'none';
-        camposColegio.style.display = 'none';
-        camposHorario.style.display = 'none';
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
 
-        switch (this.value) {
-          case 'comando':
-          case 'brigada':
-            camposComandoBrigada.style.display = 'block';
-            break;
-          case 'unidad':
-            camposUnidad.style.display = 'block';
-            break;
-          case 'curso':
-            camposCurso.style.display = 'block';
-            break;
-          case 'colegio':
-            camposColegio.style.display = 'block';
-            break;
-          case 'horario':
-            camposHorario.style.display = 'block';
-            break;
-        }
+    document.getElementById('registroTipo').addEventListener('change', function () {
+      const registroCampos = document.getElementById('registroCampos');
+      const camposComandoBrigada = document.getElementById('camposComandoBrigada');
+      const camposUnidad = document.getElementById('camposUnidad');
+      const camposCurso = document.getElementById('camposCurso');
+      const camposColegio = document.getElementById('camposColegio');
+      const camposHorario = document.getElementById('camposHorario');
 
-        if (this.value) {
-          registroCampos.style.display = 'block';
-        } else {
-          registroCampos.style.display = 'none';
-        }
+      camposComandoBrigada.style.display = 'none';
+      camposUnidad.style.display = 'none';
+      camposCurso.style.display = 'none';
+      camposColegio.style.display = 'none';
+      camposHorario.style.display = 'none';
+
+      switch (this.value) {
+        case 'comando':
+        case 'brigada':
+          camposComandoBrigada.style.display = 'block';
+          break;
+        case 'unidad':
+          camposUnidad.style.display = 'block';
+          break;
+        case 'curso':
+          camposCurso.style.display = 'block';
+          break;
+        case 'colegio':
+          camposColegio.style.display = 'block';
+          break;
+        case 'horario':
+          camposHorario.style.display = 'block';
+          break;
+      }
+
+      if (this.value) {
+        registroCampos.style.display = 'block';
+      } else {
+        registroCampos.style.display = 'none';
+      }
+    });
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const formData = new FormData(document.getElementById('gestionForm'));
+      const tipo = formData.get('registroTipo');
+      const nombre = formData.get('nombre') || formData.get('nombreUnidad') || formData.get('nombreCurso') || formData.get('nombreColegio') || formData.get('nombreHorario');
+      let detalles = '';
+
+      switch (tipo) {
+        case 'comando':
+        case 'brigada':
+          detalles = `Calle: ${formData.get('calle')}, Zona: ${formData.get('zona')}, Número: ${formData.get('numero')}, Ciudad: ${formData.get('ciudad')}`;
+          break;
+        case 'unidad':
+          detalles = `Brigada: ${formData.get('brigadaUnidad')}`;
+          break;
+        case 'curso':
+          detalles = `Intensidad Horaria: ${formData.get('intensidadHoraria')} horas`;
+          break;
+        case 'colegio':
+          detalles = `Código: ${formData.get('codigoColegio')}, Calle: ${formData.get('calleColegio')}, Zona: ${formData.get('zonaColegio')}, Número: ${formData.get('numeroColegio')}, Ciudad: ${formData.get('ciudadColegio')}, Correo: ${formData.get('correoColegio')}, Teléfono: ${formData.get('telefonoColegio')}`;
+          break;
+        case 'horario':
+          detalles = `Inicio: ${formData.get('fechaInicio')}, Fin: ${formData.get('fechaFin')}`;
+          break;
+      }
+
+      const entry = { tipo, nombre, detalles };
+      data.push(entry);
+      renderTable();
+      document.getElementById('gestionForm').reset();
+      document.getElementById('registroCampos').style.display = 'none';
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+      tbody.innerHTML = '';
+      data.forEach((item, index) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).textContent = item.tipo;
+        row.insertCell(1).textContent = item.nombre;
+        row.insertCell(2).textContent = item.detalles;
+
+        const actionsCell = row.insertCell(3);
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Editar';
+        editButton.onclick = () => editData(index);
+        actionsCell.appendChild(editButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.onclick = () => deleteData(index);
+        actionsCell.appendChild(deleteButton);
       });
-    </script>
-  </body>
+    }
+
+    function editData(index) {
+      const item = data[index];
+      document.getElementById('registroTipo').value = item.tipo;
+      document.getElementById('registroTipo').dispatchEvent(new Event('change'));
+
+      switch (item.tipo) {
+        case 'comando':
+        case 'brigada':
+          const [calle, zona, numero, ciudad] = item.detalles.match(/Calle: (.*?), Zona: (.*?), Número: (.*?), Ciudad: (.*)/).slice(1);
+          document.getElementById('nombre').value = item.nombre;
+          document.getElementById('calle').value = calle;
+          document.getElementById('zona').value = zona;
+          document.getElementById('numero').value = numero;
+          document.getElementById('ciudad').value = ciudad;
+          break;
+        case 'unidad':
+          document.getElementById('nombreUnidad').value = item.nombre;
+          document.getElementById('brigadaUnidad').value = item.detalles.match(/Brigada: (.*)/)[1];
+          break;
+        case 'curso':
+          document.getElementById('nombreCurso').value = item.nombre;
+          document.getElementById('intensidadHoraria').value = item.detalles.match(/Intensidad Horaria: (.*) horas/)[1];
+          break;
+        case 'colegio':
+          const [codigoColegio, calleColegio, zonaColegio, numeroColegio, ciudadColegio, correoColegio, telefonoColegio] = item.detalles.match(/Código: (.*?), Calle: (.*?), Zona: (.*?), Número: (.*?), Ciudad: (.*?), Correo: (.*?), Teléfono: (.*)/).slice(1);
+          document.getElementById('nombreColegio').value = item.nombre;
+          document.getElementById('codigoColegio').value = codigoColegio;
+          document.getElementById('calleColegio').value = calleColegio;
+          document.getElementById('zonaColegio').value = zonaColegio;
+          document.getElementById('numeroColegio').value = numeroColegio;
+          document.getElementById('ciudadColegio').value = ciudadColegio;
+          document.getElementById('correoColegio').value = correoColegio;
+          document.getElementById('telefonoColegio').value = telefonoColegio;
+          break;
+        case 'horario':
+          const [fechaInicio, fechaFin] = item.detalles.match(/Inicio: (.*), Fin: (.*)/).slice(1);
+          document.getElementById('nombreHorario').value = item.nombre;
+          document.getElementById('fechaInicio').value = fechaInicio;
+          document.getElementById('fechaFin').value = fechaFin;
+          break;
+      }
+
+      deleteData(index);
+    }
+
+    function deleteData(index) {
+      data.splice(index, 1);
+      renderTable();
+    }
+
+    document.getElementById('gestionForm').addEventListener('submit', handleFormSubmit);
+    document.addEventListener('DOMContentLoaded', renderTable);
+  </script>
+</body>
+
 </html>

@@ -1,0 +1,135 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="81F78CB6-1EFB-124F-F0BE-0FA7A39E7AC9" name="Usuario">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>00D80626-8D12-62BD-E940-1C187C485AAE</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdUsuario" id="4CB27C51-24FA-F898-6872-EC4482945127">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la id del usuario]]></commentInRDBMS>
+<generatorID>90217F0A-2C85-4321-F843-00AFCCE72591</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreUsuario" id="8CFA5100-BBF2-9337-501C-1D17CD575FDD">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del usuario]]></commentInRDBMS>
+<generatorID>B6DD15A1-FB9E-B4D0-8F92-16DA4E42B906</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="contraseñaUsuario" id="E59AD4A8-4F7D-776F-4864-EE6412A1999E">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la contraseña del usuario]]></commentInRDBMS>
+<generatorID>F8F309BF-F4DE-7CE2-12E6-91EEAA743D0C</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="UltimaFechaDeAccesoU" id="DB8F6744-82A0-B8E2-4353-DA3C71D3BD9F">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la ultima fecha de acceso del usuario]]></commentInRDBMS>
+<generatorID>BDF82C10-95EC-CC39-3DED-1A92467AB671</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="FechaDeCreacionU" id="ACD84706-92BE-5387-B362-2D8979CAC2C9">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la fecha de creacion del usuario]]></commentInRDBMS>
+<generatorID>EE6C3024-CE5A-0184-1988-ABE3F8C58BD9</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="EstadoUsuario" id="24A8FA69-15FC-57D2-1421-5625A76EE4D4">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-04 16:03:50 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el estado del usuario]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1 CHAR</dataTypeSize>
+<ownDataTypeParameters>1 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdSA" id="8AE63D1A-005B-F5F9-98A6-8CBC5953CA57">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 23:44:22 UTC</createdTime>
+<generatorID>21E764B3-11B6-DF62-FCCC-6CCE43EC64D7</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>38470C93-C83D-0246-54B7-DACFE7C83510</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="F2F2822C-894F-9854-2E2C-05A868CE93EE" name="USUARIO PK">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>17868AE9-0621-E177-E0AA-6B362A5B1953</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>4CB27C51-24FA-F898-6872-EC4482945127</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

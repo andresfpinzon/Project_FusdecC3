@@ -1,220 +1,224 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reporte de Asignaciones</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
-  <body class="body-reporte">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../screens/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/controlAsistencia.html">Asistencia</a></li>
-            <li><a href="../screens/asignaciones.html">Asignaciones</a></li>
-            <li><a href="../screens/perfilInstructor.html">Perfil</a></li>
-            <li><a href="../screens/index.html">Salir</a></li>
-          </ul>
-        </nav>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reporte de Asignaciones</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
+
+<body class="body-reporte">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../screens/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/controlAsistencia.html">Asistencia</a></li>
+          <li><a href="../screens/asignaciones.html">Asignaciones</a></li>
+          <li><a href="../screens/perfilInstructor.html">Perfil</a></li>
+          <li><a href="../screens/index.html">Salir</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container-reporte">
+    <div class="report-box">
+      <h1>Registro De Reportes</h1>
+
+      <form id="reporteForm">
+        <label for="brigada">Brigada:</label>
+        <select id="brigada" name="brigada" required>
+          <option value="">Seleccione una brigada</option>
+          <option value="perdomo">Perdomo</option>
+          <option value="ensueno">Ensueño</option>
+          <option value="paraiso">Paraíso</option>
+        </select>
+
+        <label for="unidad">Unidad:</label>
+        <select id="unidad" name="unidad" required>
+          <option value="">Seleccione una unidad</option>
+          <option value="unidad1">Unidad 1</option>
+          <option value="unidad2">Unidad 2</option>
+          <option value="unidad3">Unidad 3</option>
+        </select>
+
+        <div id="personaSeleccion" style="display: none">
+          <label for="persona">Seleccione una persona:</label>
+          <select id="persona" name="persona" required>
+            <option value="">Seleccione una persona</option>
+          </select>
+        </div>
+
+        <div id="datosPersona" style="display: none">
+          <p><strong>Cédula:</strong> <span id="cedula"></span></p>
+          <p><strong>Nombres:</strong> <span id="nombres"></span></p>
+          <p><strong>Apellidos:</strong> <span id="apellidos"></span></p>
+          <p><strong>Colegio:</strong> <span id="colegio"></span></p>
+        </div>
+
+        <div id="tipoReporteSeleccion" style="display: none">
+          <label for="tipoReporte">Tipo de Reporte:</label>
+          <select id="tipoReporte" name="tipoReporte" required>
+            <option value="">Seleccione</option>
+            <option value="calificacion">Calificación</option>
+            <option value="inasistencia">Inasistencia</option>
+          </select>
+        </div>
+
+        <div id="reporteCalificacion" style="display: none">
+          <label for="aprobo">¿Aprobó?</label>
+          <select id="aprobo" name="aprobo">
+            <option value="si">Sí</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        <div id="reporteInasistencia" style="display: none">
+          <label for="descripcion">Descripción:</label>
+          <textarea id="descripcion" name="descripcion" rows="4" cols="50"></textarea>
+        </div>
+
+        <button type="submit">Enviar Reporte</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
       </div>
-    </header>
-
-    <div class="container-reporte">
-      <div class="report-box">
-        <h1>Registro De Reportes</h1>
-
-        <form id="reporteForm">
-          <label for="brigada">Brigada:</label>
-          <select id="brigada" name="brigada" required>
-            <option value="">Seleccione una brigada</option>
-            <option value="perdomo">Perdomo</option>
-            <option value="ensueno">Ensueño</option>
-            <option value="paraiso">Paraíso</option>
-          </select>
-
-          <label for="unidad">Unidad:</label>
-          <select id="unidad" name="unidad" required>
-            <option value="">Seleccione una unidad</option>
-            <option value="unidad1">Unidad 1</option>
-            <option value="unidad2">Unidad 2</option>
-            <option value="unidad3">Unidad 3</option>
-          </select>
-
-          <div id="personaSeleccion" style="display: none">
-            <label for="persona">Seleccione una persona:</label>
-            <select id="persona" name="persona" required>
-              <option value="">Seleccione una persona</option>
-            </select>
-          </div>
-
-          <div id="datosPersona" style="display: none">
-            <p><strong>Cédula:</strong> <span id="cedula"></span></p>
-            <p><strong>Nombres:</strong> <span id="nombres"></span></p>
-            <p><strong>Apellidos:</strong> <span id="apellidos"></span></p>
-            <p><strong>Colegio:</strong> <span id="colegio"></span></p>
-          </div>
-
-          <div id="tipoReporteSeleccion" style="display: none">
-            <label for="tipoReporte">Tipo de Reporte:</label>
-            <select id="tipoReporte" name="tipoReporte" required>
-              <option value="">Seleccione</option>
-              <option value="calificacion">Calificación</option>
-              <option value="inasistencia">Inasistencia</option>
-            </select>
-          </div>
-
-          <div id="reporteCalificacion" style="display: none">
-            <label for="aprobo">¿Aprobó?</label>
-            <select id="aprobo" name="aprobo">
-              <option value="si">Sí</option>
-              <option value="no">No</option>
-            </select>
-          </div>
-
-          <div id="reporteInasistencia" style="display: none">
-            <label for="descripcion">Descripción:</label>
-            <textarea
-              id="descripcion"
-              name="descripcion"
-              rows="4"
-              cols="50"
-            ></textarea>
-          </div>
-
-          <button type="submit">Enviar Reporte</button>
-        </form>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
+        </div>
       </div>
     </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
 
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
+  <script>
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
+    const personas = [
+      {
+        cedula: "123456789",
+        nombres: "Juan",
+        apellidos: "García",
+        colegio: "Liceo Campo David",
+      },
+      {
+        cedula: "987654321",
+        nombres: "Maria",
+        apellidos: "Fernández",
+        colegio: "Colegio Colombo Americano CAS",
+      },
+    ];
 
-    <script>
-      const personas = [
-        {
-          cedula: "123456789",
-          nombres: "Juan",
-          apellidos: "García",
-          colegio: "Liceo Campo David",
-        },
-        {
-          cedula: "987654321",
-          nombres: "Maria",
-          apellidos: "Fernández",
-          colegio: "Colegio Colombo Americano CAS",
-        },
-      ];
+    document.getElementById("unidad").addEventListener("change", function () {
+      const brigada = document.getElementById("brigada").value;
+      const unidad = this.value;
 
-      document.getElementById("unidad").addEventListener("change", function () {
-        const brigada = document.getElementById("brigada").value;
-        const unidad = this.value;
+      if (brigada && unidad) {
+        document.getElementById("personaSeleccion").style.display = "block";
+        const personaSelect = document.getElementById("persona");
+        personaSelect.innerHTML =
+          '<option value="">Seleccione una persona</option>';
+        personas.forEach((persona) => {
+          const option = document.createElement("option");
+          option.value = persona.cedula;
+          option.textContent = `${persona.nombres} ${persona.apellidos}`;
+          personaSelect.appendChild(option);
+        });
+      }
+    });
 
-        if (brigada && unidad) {
-          document.getElementById("personaSeleccion").style.display = "block";
-          const personaSelect = document.getElementById("persona");
-          personaSelect.innerHTML =
-            '<option value="">Seleccione una persona</option>';
-          personas.forEach((persona) => {
-            const option = document.createElement("option");
-            option.value = persona.cedula;
-            option.textContent = `${persona.nombres} ${persona.apellidos}`;
-            personaSelect.appendChild(option);
-          });
+    document
+      .getElementById("persona")
+      .addEventListener("change", function () {
+        const cedula = this.value;
+        const persona = personas.find((p) => p.cedula === cedula);
+
+        if (persona) {
+          document.getElementById("cedula").textContent = persona.cedula;
+          document.getElementById("nombres").textContent = persona.nombres;
+          document.getElementById("apellidos").textContent =
+            persona.apellidos;
+          document.getElementById("colegio").textContent = persona.colegio;
+          document.getElementById("datosPersona").style.display = "block";
+          document.getElementById("tipoReporteSeleccion").style.display =
+            "block";
         }
       });
 
-      document
-        .getElementById("persona")
-        .addEventListener("change", function () {
-          const cedula = this.value;
-          const persona = personas.find((p) => p.cedula === cedula);
+    document
+      .getElementById("tipoReporte")
+      .addEventListener("change", function () {
+        const tipoReporte = this.value;
+        document.getElementById("reporteCalificacion").style.display =
+          tipoReporte === "calificacion" ? "block" : "none";
+        document.getElementById("reporteInasistencia").style.display =
+          tipoReporte === "inasistencia" ? "block" : "none";
+      });
 
-          if (persona) {
-            document.getElementById("cedula").textContent = persona.cedula;
-            document.getElementById("nombres").textContent = persona.nombres;
-            document.getElementById("apellidos").textContent =
-              persona.apellidos;
-            document.getElementById("colegio").textContent = persona.colegio;
-            document.getElementById("datosPersona").style.display = "block";
-            document.getElementById("tipoReporteSeleccion").style.display =
-              "block";
-          }
-        });
+    document
+      .getElementById("reporteForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        const brigada = document.getElementById("brigada").value;
+        const unidad = document.getElementById("unidad").value;
+        const personaCedula = document.getElementById("persona").value;
+        const tipoReporte = document.getElementById("tipoReporte").value;
+        let reporteData;
 
-      document
-        .getElementById("tipoReporte")
-        .addEventListener("change", function () {
-          const tipoReporte = this.value;
-          document.getElementById("reporteCalificacion").style.display =
-            tipoReporte === "calificacion" ? "block" : "none";
-          document.getElementById("reporteInasistencia").style.display =
-            tipoReporte === "inasistencia" ? "block" : "none";
-        });
+        if (tipoReporte === "calificacion") {
+          const aprobo = document.getElementById("aprobo").value;
+          reporteData = {
+            brigada: brigada,
+            unidad: unidad,
+            personaCedula: personaCedula,
+            tipoReporte: tipoReporte,
+            aprobo: aprobo,
+          };
+        } else if (tipoReporte === "inasistencia") {
+          const descripcion = document.getElementById("descripcion").value;
+          reporteData = {
+            brigada: brigada,
+            unidad: unidad,
+            personaCedula: personaCedula,
+            tipoReporte: tipoReporte,
+            descripcion: descripcion,
+          };
+        }
+      });
+  </script>
+</body>
 
-      document
-        .getElementById("reporteForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-          const brigada = document.getElementById("brigada").value;
-          const unidad = document.getElementById("unidad").value;
-          const personaCedula = document.getElementById("persona").value;
-          const tipoReporte = document.getElementById("tipoReporte").value;
-          let reporteData;
-
-          if (tipoReporte === "calificacion") {
-            const aprobo = document.getElementById("aprobo").value;
-            reporteData = {
-              brigada: brigada,
-              unidad: unidad,
-              personaCedula: personaCedula,
-              tipoReporte: tipoReporte,
-              aprobo: aprobo,
-            };
-          } else if (tipoReporte === "inasistencia") {
-            const descripcion = document.getElementById("descripcion").value;
-            reporteData = {
-              brigada: brigada,
-              unidad: unidad,
-              personaCedula: personaCedula,
-              tipoReporte: tipoReporte,
-              descripcion: descripcion,
-            };
-          }
-        });
-    </script>
-  </body>
 </html>

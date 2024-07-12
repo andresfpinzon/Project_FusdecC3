@@ -1,0 +1,100 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="CF4A17AC-68C0-2E41-D80C-4A4462C4F40D" name="Auditoria">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>163315ED-551F-F73B-85B7-8D76D7786CBA</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="IdAuditoria" id="148141F4-49DE-0F59-BF93-601D38BA3BE0">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el uid de la auditoria para cada certificado]]></commentInRDBMS>
+<generatorID>5C0EC879-D77E-2AA8-AA05-36ED86112028</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="FechaAuditoria" id="F3CFB594-C451-2C32-6E4E-5BD89767B4D1">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la fecha en que el certificado fue expedido]]></commentInRDBMS>
+<generatorID>86BCEFAE-89C1-8B47-95A3-21EC42CAAEF8</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NombreQuienExpidio" id="34E4A009-622E-9D4C-C809-9304526DF770">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la persona que expidio el certificado]]></commentInRDBMS>
+<generatorID>FC4F267B-FB18-F20E-CC99-40FCA807DA13</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Certificado_IdCertificado" id="4DA4BB02-22EC-5330-38C6-51DC57F57173">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>AE6D36AE-729C-6B28-E919-FE8F9FAD5FE7</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="2E9A89E1-C2FD-D049-3511-05DD405A7427" referredColumn="B7998C6B-25D6-C887-9938-1ABAC41C7C2A"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="7EB62FD6-0E87-A69F-93D7-D61C68FDA39C" name="Auditoria_PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>7D32BD98-44C4-B02E-6CF5-466D0CF55D0E</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="148141F4-49DE-0F59-BF93-601D38BA3BE0"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="A6C708E1-B8B9-7B15-B21A-27EAB83AF0C2" name="Auditoria__IDX">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<relationGeneratorID>A62571AC-D6F8-2744-37CE-0D066FF2E8D2</relationGeneratorID>
+<indexColumnUsage>
+<colUsage columnID="4DA4BB02-22EC-5330-38C6-51DC57F57173"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="3850475D-3933-9700-CD1D-C66EBCA8F019" name="Auditoria_Certificado_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>A62571AC-D6F8-2744-37CE-0D066FF2E8D2</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="4DA4BB02-22EC-5330-38C6-51DC57F57173"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Inasistencia_AsigRep" directorySegmentName="seg_0" id="56801A9F-6BB7-64C6-A72A-65AA3DEC0641">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 23:27:16 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<sourcePk>87691223-1A5E-668C-D884-5F9E6BFC7250</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>C2594976-331F-6E6C-AF0D-F680F451027C</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>546BD3EA-3249-CFB4-CA38-6D5D02C00334</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

@@ -1,143 +1,151 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aprobar Certificados</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
-  <body class="body-aprobar-certificados">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../screens/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
-            <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
-            <li><a href="../screens/ControlAsignaciones.html">Asignar Unidad</a></li>
-            <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
-            <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
-            <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
-            <li><a href="../screens/index.html">Salir</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
 
-    <div class="container-aprobar-certificados">
-      <div class="certificados-box">
-        <h1>Certificados</h1>
-        
-        <label for="curso">Seleccione un curso:</label>
-        <select id="curso" onchange="mostrarEdicion()">
-          <option value="">Seleccione un curso</option>
-          <option value="Servicio Social">Servicio Social</option>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aprobar Certificados</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
+
+<body class="body-aprobar-certificados">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../screens/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
+          <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
+          <li><a href="../screens/ControlAsignaciones.html">Asignar Unidad</a></li>
+          <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
+          <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
+          <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
+          <li><a href="../screens/index.html">Salir</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container-aprobar-certificados">
+    <div class="certificados-box">
+      <h1>Certificados</h1>
+
+      <label for="curso">Seleccione un curso:</label>
+      <select id="curso" onchange="mostrarEdicion()">
+        <option value="">Seleccione un curso</option>
+        <option value="Servicio Social">Servicio Social</option>
+      </select>
+
+      <div id="seleccionEdicion" style="display: none; margin-top: 20px;">
+        <label for="edicion">Seleccione una edición:</label>
+        <select id="edicion" onchange="mostrarBotones()">
+          <option value="">Seleccione una edición</option>
+          <option value="1">Edición 1</option>
+          <option value="2">Edición 2</option>
         </select>
+      </div>
 
-        <div id="seleccionEdicion" style="display: none; margin-top: 20px;">
-          <label for="edicion">Seleccione una edición:</label>
-          <select id="edicion" onchange="mostrarBotones()">
-            <option value="">Seleccione una edición</option>
-            <option value="1">Edición 1</option>
-            <option value="2">Edición 2</option>
-          </select>
+      <div class="buttons-container" id="buttonsContainer" style="display: none;">
+        <button onclick="listarReportes()">Listar Reportes de Calificación</button>
+      </div>
+
+      <table id="reportesTable" style="display: none;">
+        <thead>
+          <tr>
+            <th>Tipo de Documento</th>
+            <th>Número de Documento</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Curso</th>
+            <th>Aprobado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="reportesBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
         </div>
-
-        <div class="buttons-container" id="buttonsContainer" style="display: none;">
-          <button onclick="listarReportes()">Listar Reportes de Calificación</button>
-        </div>
-
-        <table id="reportesTable" style="display: none;">
-          <thead>
-            <tr>
-              <th>Tipo de Documento</th>
-              <th>Número de Documento</th>
-              <th>Nombres</th>
-              <th>Apellidos</th>
-              <th>Curso</th>
-              <th>Aprobado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="reportesBody">
-          </tbody>
-        </table>
       </div>
     </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
 
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
+  <script>
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
+    const reportes = [
+      { tipoDocumento: 'CC', numeroDocumento: '123456789', nombres: 'Juan', apellidos: 'García', curso: 'Servicio Social', aprobado: true },
+      { tipoDocumento: 'TI', numeroDocumento: '987654321', nombres: 'Maria', apellidos: 'Fernández', curso: 'Servicio Social', aprobado: false },
+    ];
 
-    <script>
-      const reportes = [
-        { tipoDocumento: 'CC', numeroDocumento: '123456789', nombres: 'Juan', apellidos: 'García', curso: 'Servicio Social', aprobado: true },
-        { tipoDocumento: 'TI', numeroDocumento: '987654321', nombres: 'Maria', apellidos: 'Fernández', curso: 'Servicio Social', aprobado: false },
-      ];
+    function mostrarEdicion() {
+      const curso = document.getElementById('curso').value;
+      const seleccionEdicion = document.getElementById('seleccionEdicion');
 
-      function mostrarEdicion() {
-        const curso = document.getElementById('curso').value;
-        const seleccionEdicion = document.getElementById('seleccionEdicion');
-
-        if (curso) {
-          seleccionEdicion.style.display = 'block';
-        } else {
-          seleccionEdicion.style.display = 'none';
-          document.getElementById('buttonsContainer').style.display = 'none';
-        }
+      if (curso) {
+        seleccionEdicion.style.display = 'block';
+      } else {
+        seleccionEdicion.style.display = 'none';
+        document.getElementById('buttonsContainer').style.display = 'none';
       }
+    }
 
-      function mostrarBotones() {
-        const edicion = document.getElementById('edicion').value;
-        const buttonsContainer = document.getElementById('buttonsContainer');
+    function mostrarBotones() {
+      const edicion = document.getElementById('edicion').value;
+      const buttonsContainer = document.getElementById('buttonsContainer');
 
-        if (edicion) {
-          buttonsContainer.style.display = 'flex';
-        } else {
-          buttonsContainer.style.display = 'none';
-        }
+      if (edicion) {
+        buttonsContainer.style.display = 'flex';
+      } else {
+        buttonsContainer.style.display = 'none';
       }
+    }
 
-      function listarReportes() {
-        const reportesTable = document.getElementById('reportesTable');
-        const reportesBody = document.getElementById('reportesBody');
-        reportesBody.innerHTML = '';
+    function listarReportes() {
+      const reportesTable = document.getElementById('reportesTable');
+      const reportesBody = document.getElementById('reportesBody');
+      reportesBody.innerHTML = '';
 
-        reportes.forEach(reporte => {
-          const row = document.createElement('tr');
+      reportes.forEach(reporte => {
+        const row = document.createElement('tr');
 
-          row.innerHTML = `
+        row.innerHTML = `
             <td>${reporte.tipoDocumento}</td>
             <td>${reporte.numeroDocumento}</td>
             <td>${reporte.nombres}</td>
@@ -149,13 +157,12 @@
             </td>
           `;
 
-          reportesBody.appendChild(row);
-        });
+        reportesBody.appendChild(row);
+      });
 
-        reportesTable.style.display = 'table';
-      }
-    </script>
-  </body>
+      reportesTable.style.display = 'table';
+    }
+  </script>
+</body>
+
 </html>
-
-

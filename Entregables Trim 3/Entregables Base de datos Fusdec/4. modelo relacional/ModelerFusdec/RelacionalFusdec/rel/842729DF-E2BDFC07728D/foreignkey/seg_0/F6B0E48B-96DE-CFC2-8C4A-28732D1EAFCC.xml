@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="F6B0E48B-96DE-CFC2-8C4A-28732D1EAFCC" containerWithKeyObject="A9D167E8-B616-C03B-D74E-F244F59F32BB" localFKIndex="6DE5C84A-8561-D401-1395-21B6F599A3AF" name="brigada_Comando_FK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-20 15:28:13 UTC</createdTime>
+<generatorID>E298EAC2-BD9A-E334-16B5-797C25934ECA</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<referredTableLongName>Comando</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>D3415914-C6CF-4B5F-36BF-AE9EF506F4A1</referredTableID>
+<keyObject>7EABC05E-E460-0C09-B4B7-5A3F6EE75DF2</keyObject>
+<referredKeyID>7EABC05E-E460-0C09-B4B7-5A3F6EE75DF2</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>IdComando</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

@@ -1,139 +1,125 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Perfil de usuario</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
 
-  <body class="body-perfil">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../index/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
-            <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
-            <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
-            <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
-            <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
-            <li><a href="../screens/index.html">Salir</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfil de usuario</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
 
-    <main>
-      <div class="container-perfil">
-        <div class="profile-box">
-          <div class="text-center">
-            <img
-              id="perfilImagen"
-              src="../imagenes/perfildefecto.jpg"
-              class="avatar"
-              alt="avatar"
-            />
-            <label for="subirFoto" class="custom-file-label">
-              Subir foto
-              <input
-                type="file"
-                id="subirFoto"
-                class="custom-file-input"
-                onchange="handlePhotoUpload()"
-              />
+<body class="body-perfil">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../index/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/registroPersona.html">Registro Estudiante</a></li>
+          <li><a href="../screens/registroCurso.html">Registro Curso</a></li>
+          <li><a href="../screens/aprobarCertificados.html">Aprobar Certificado</a></li>
+          <li><a href="../screens/gestionarFundacion.html">Gestionar Fundacion</a></li>
+          <li><a href="../screens/perfilAdmin.html">Perfil</a></li>
+          <li><a href="../screens/index.html">Salir</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container-perfil">
+      <div class="profile-box">
+        <div class="text-center">
+          <img id="perfilImagen" src="../imagenes/perfildefecto.jpg" class="avatar" alt="avatar" />
+          <br>
+          <label for="subirFoto" class="custom-file-label">
+            Subir foto
+            <input type="file" id="subirFoto" class="custom-file-input" onchange="handlePhotoUpload()" />
+          </label>
+        </div>
+        <br>
+        <hr />
+        <form action="##" method="post" id="registrationForm">
+          <div class="form-group">
+            <label for="usuario">
+              <h4>Administrador</h4>
             </label>
           </div>
-          <hr />
-          <form action="##" method="post" id="registrationForm">
-            <div class="form-group">
-              <label for="usuario"><h4>Administrador</h4></label>
-            </div>
-            <div class="form-group">
-              <label for="nombre"><h4>Nombre</h4></label>
-              <input
-                type="text"
-                class="input-perfil"
-                name="nombre"
-                id="nombre"
-                placeholder="Andres"
-                readonly
-              />
-            </div>
-            <div class="form-group">
-              <label for="apellido"><h4>Apellidos</h4></label>
-              <input
-                type="text"
-                class="input-perfil"
-                name="apellido"
-                id="apellido"
-                placeholder="Felipe"
-                readonly
-              />
-            </div>
-            <div class="form-group">
-              <label for="tipoDocumento"><h4>Tipo de documento</h4></label>
-              <input
-                type="text"
-                class="input-perfil"
-                name="tipoDocumento"
-                id="tipoDocumento"
-                placeholder="C.C"
-                readonly
-              />
-            </div>
-            <div class="form-group">
-              <label for="numeroDocumento"><h4>Numero de Documento</h4></label>
-              <input
-                type="text"
-                class="input-perfil"
-                name="numeroDocumento"
-                id="numeroDocumento"
-                placeholder="123456789"
-                readonly
-              />
-            </div>
-            <div class="form-group">
-              <button type="submit"><i></i> Guardar</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
+          <div class="form-group">
+            <label for="nombre">
+              <h4>Nombre</h4>
+            </label>
+            <input type="text" class="input-perfil" name="nombre" id="nombre" placeholder="Andres" readonly />
           </div>
+          <div class="form-group">
+            <label for="apellido">
+              <h4>Apellidos</h4>
+            </label>
+            <input type="text" class="input-perfil" name="apellido" id="apellido" placeholder="Felipe" readonly />
+          </div>
+          <div class="form-group">
+            <label for="tipoDocumento">
+              <h4>Tipo de documento</h4>
+            </label>
+            <input type="text" class="input-perfil" name="tipoDocumento" id="tipoDocumento" placeholder="C.C"
+              readonly />
+          </div>
+          <div class="form-group">
+            <label for="numeroDocumento">
+              <h4>Numero de Documento</h4>
+            </label>
+            <input type="text" class="input-perfil" name="numeroDocumento" id="numeroDocumento" placeholder="123456789"
+              readonly />
+          </div>
+          <div class="form-group">
+            <button type="submit"><i></i> Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
-  </body>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
+  <script>
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
+  </script>
+</body>
+
 </html>

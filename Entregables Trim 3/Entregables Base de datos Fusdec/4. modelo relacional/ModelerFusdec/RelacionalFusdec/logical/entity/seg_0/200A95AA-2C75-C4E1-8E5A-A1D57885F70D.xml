@@ -1,0 +1,101 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="200A95AA-2C75-C4E1-8E5A-A1D57885F70D" name="Registro">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 23:03:48 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdRegistro" id="327DC658-7131-589F-5F5D-AA24B230A89F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 23:03:55 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del registro]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="FechaRegistro" id="5B6AD9EA-7D66-D872-CEC1-FE99B5C1B1CE">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 23:04:59 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la fecha del registro]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdPersona" id="95586691-D77F-21F8-8211-6352B6ED859D">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:00:34 UTC</createdTime>
+<generatorID>790DD8A2-CCD7-51C1-C1E3-600BF2AD1891</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>2CD95D7B-2EB6-0728-E1C3-06D677B2D575</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdEdicion" id="8E799E30-D43A-7C50-BC39-A8E095FF9176">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:00:58 UTC</createdTime>
+<generatorID>57BEEEB8-72FC-8526-736D-3267FAD58B14</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>C64D54DD-D1E0-1719-CF03-681F704E9182</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdAdministrador" id="3C7E6461-026E-8759-9E94-CCB775C8842F">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 02:10:51 UTC</createdTime>
+<generatorID>C1CEB648-18CC-80E6-96A4-039D80BC6EAC</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>18F50E99-4341-0807-BD62-8121224A7A28</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="A02BBFF5-4A58-68CB-B755-3D3AF4AF8ECB" name="Registro PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 23:04:06 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>327DC658-7131-589F-5F5D-AA24B230A89F</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

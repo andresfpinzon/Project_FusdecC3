@@ -1,0 +1,87 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="DC4442D4-93ED-028D-17C4-4BCCA53B61AA" name="Funcion">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 21:37:14 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdFunciones" id="65A83971-D989-600A-D492-B49A42924C3E">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 21:37:23 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id de la funcion]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreFuncion" id="A3B615DA-C7C9-68D3-AC65-DCF8E50A2CFE">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 21:38:14 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre de la funcion]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="DescripcionFuncion" id="D58CF15A-361E-E79E-648D-15573A4E634A">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 21:38:52 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene una explicacion de la funcion]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT036</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdSA" id="6C4E2B98-92AA-F02F-B778-F47001F43A5B">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 23:46:02 UTC</createdTime>
+<generatorID>F543D95E-D50A-D313-D954-4CD5E686815C</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>38470C93-C83D-0246-54B7-DACFE7C83510</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="6846086D-2DD6-85CD-965C-AF2268502CEA" name="Funciones PK">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-08 21:37:56 UTC</createdTime>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>65A83971-D989-600A-D492-B49A42924C3E</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

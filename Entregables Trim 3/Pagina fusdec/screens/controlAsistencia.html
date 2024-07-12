@@ -1,170 +1,178 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Control de Asistencia</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
-  <body class="body-control-asistencia">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../screens/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/controlAsistencia.html">Asistencia</a></li>
-            <li><a href="../screens/reporte.html">Reporte</a></li>
-            <li><a href="../screens/perfilInstructor.html">Perfil</a></li>
-            <li><a href="../screens/index.html">Salir</a></li>
-          </ul>
-        </nav>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control de Asistencia</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
+
+<body class="body-control-asistencia">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../screens/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/controlAsistencia.html">Asistencia</a></li>
+          <li><a href="../screens/reporte.html">Reporte</a></li>
+          <li><a href="../screens/perfilInstructor.html">Perfil</a></li>
+          <li><a href="../screens/index.html">Salir</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container-control-asistencia">
+    <div class="asistencia-box">
+      <h1>Registro de Asistencia</h1>
+      <h2 id="fechaActual">00/00/0000</h2>
+
+      <label for="brigada">Seleccione una brigada:</label>
+      <select id="brigada" onchange="mostrarBotones()">
+        <option value="">Seleccione una brigada</option>
+        <option value="Perdomo">Perdomo</option>
+        <option value="Paraíso">Paraíso</option>
+      </select>
+
+      <div class="buttons-container" id="buttonsContainer" style="display: none;">
+        <button type="button" id="btnBrigada">Generar Asistencia</button>
       </div>
-    </header>
 
-    <div class="container-control-asistencia">
-      <div class="asistencia-box">
-        <h1>Registro de Asistencia</h1>
-        <h2 id="fechaActual">00/00/0000</h2>
-
-        <label for="brigada">Seleccione una brigada:</label>
-        <select id="brigada" onchange="mostrarBotones()">
-          <option value="">Seleccione una brigada</option>
-          <option value="Perdomo">Perdomo</option>
-          <option value="Paraíso">Paraíso</option>
+      <div id="seleccionGrupo" style="display: none; margin-top: 20px;">
+        <label for="grupo">Selecciona una Unidad:</label>
+        <select id="grupo">
+          <option value="Unidad 1">Unidad 1</option>
+          <option value="Unidad 2">Unidad 2</option>
+          <option value="Unidad 3">Unidad 3</option>
         </select>
-
-        <div class="buttons-container" id="buttonsContainer" style="display: none;">
-          <button type="button" id="btnBrigada">Generar Asistencia</button>
+        <div class="buttons-container" id="buttonsContainer">
+          <button type="button" id="generarAsistencia">Generar Lista de Asistencia</button>
         </div>
+      </div>
 
-        <div id="seleccionGrupo" style="display: none; margin-top: 20px;">
-          <label for="grupo">Selecciona una Unidad:</label>
-          <select id="grupo">
-            <option value="Unidad 1">Unidad 1</option>
-            <option value="Unidad 2">Unidad 2</option>
-            <option value="Unidad 3">Unidad 3</option>
-          </select>
-          <div class="buttons-container" id="buttonsContainer" >
-            <button type="button" id="generarAsistencia">Generar Lista de Asistencia</button>
-          </div>
-        </div>
-
-        <div id="attendanceList" style="display: none;">
-          <h2>Lista de Asistencia</h2>
-          <p>Total de Aprendices Registrados: <span id="count">0</span></p>
-          <table id="attendanceTable">
-            <thead>
-              <tr>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Colegio</th>
-                <th>Tipo de Documento</th>
-                <th>Número de Documento</th>
-                <th>Asistencia</th>
-              </tr>
-            </thead>
-            <tbody id="list"></tbody>
-          </table>
-          <div class="buttons-container" id="buttonsContainer">
-            <button type="button" id="cargarAsistencia">Cargar Asistencia</button>
-          </div>
+      <div id="attendanceList" style="display: none;">
+        <h2>Lista de Asistencia</h2>
+        <p>Total de Aprendices Registrados: <span id="count">0</span></p>
+        <table id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Colegio</th>
+              <th>Tipo de Documento</th>
+              <th>Número de Documento</th>
+              <th>Asistencia</th>
+            </tr>
+          </thead>
+          <tbody id="list"></tbody>
+        </table>
+        <div class="buttons-container" id="buttonsContainer">
+          <button type="button" id="cargarAsistencia">Cargar Asistencia</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-          </div>
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
 
-    <script>
-      function mostrarBotones() {
-        const brigada = document.getElementById('brigada').value;
-        const buttonsContainer = document.getElementById('buttonsContainer');
-        const btnBrigada = document.getElementById('btnBrigada');
+  <script>
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
+    function mostrarBotones() {
+      const brigada = document.getElementById('brigada').value;
+      const buttonsContainer = document.getElementById('buttonsContainer');
+      const btnBrigada = document.getElementById('btnBrigada');
 
-        if (brigada) {
-          buttonsContainer.style.display = 'flex';
-          btnBrigada.textContent = `Generar Asistencia - Brigada ${brigada}`;
-        } else {
-          buttonsContainer.style.display = 'none';
-        }
+      if (brigada) {
+        buttonsContainer.style.display = 'flex';
+        btnBrigada.textContent = `Generar Asistencia - Brigada ${brigada}`;
+      } else {
+        buttonsContainer.style.display = 'none';
       }
+    }
 
-      document.getElementById("btnBrigada").addEventListener("click", function() {
-        document.getElementById("seleccionGrupo").style.display = "block";
-      });
+    document.getElementById("btnBrigada").addEventListener("click", function () {
+      document.getElementById("seleccionGrupo").style.display = "block";
+    });
 
-      document.getElementById("generarAsistencia").addEventListener("click", function() {
-        const grupoSeleccionado = document.getElementById("grupo").value;
-        console.log(`Generando lista para ${grupoSeleccionado}`);
-        llenarListaAsistencia();
-        document.getElementById("attendanceList").style.display = "block";
-      });
+    document.getElementById("generarAsistencia").addEventListener("click", function () {
+      const grupoSeleccionado = document.getElementById("grupo").value;
+      console.log(`Generando lista para ${grupoSeleccionado}`);
+      llenarListaAsistencia();
+      document.getElementById("attendanceList").style.display = "block";
+    });
 
-      document.getElementById("cargarAsistencia").addEventListener("click", function() {
-        const tbody = document.getElementById("list");
-        tbody.innerHTML = "";
-        document.getElementById("count").textContent = "0";
-        document.getElementById("attendanceList").style.display = "none";
-      });
+    document.getElementById("cargarAsistencia").addEventListener("click", function () {
+      const tbody = document.getElementById("list");
+      tbody.innerHTML = "";
+      document.getElementById("count").textContent = "0";
+      document.getElementById("attendanceList").style.display = "none";
+    });
 
-      const nombres = ["Juan", "Maria", "Carlos", "Ana", "Luis", "Sofia", "Jorge", "Lucia", "Pedro", "Carmen"];
-      const apellidos = ["García", "Fernández", "López", "Martínez", "Sánchez", "Pérez", "Gómez", "Ruiz", "Hernández", "Jiménez"];
-      const colegios = [
-        "Liceo Campo David",
-        "Colegio Colombo Americano CAS",
-        "Colegio Los Nogales",
-        "Colegio San Jorge de Inglaterra",
-        "Gimnasio Colombo Británico",
-        "Colegio Helvetia de Bogotá",
-        "Colegio Anglo Colombiano",
-      ];
+    const nombres = ["Juan", "Maria", "Carlos", "Ana", "Luis", "Sofia", "Jorge", "Lucia", "Pedro", "Carmen"];
+    const apellidos = ["García", "Fernández", "López", "Martínez", "Sánchez", "Pérez", "Gómez", "Ruiz", "Hernández", "Jiménez"];
+    const colegios = [
+      "Liceo Campo David",
+      "Colegio Colombo Americano CAS",
+      "Colegio Los Nogales",
+      "Colegio San Jorge de Inglaterra",
+      "Gimnasio Colombo Británico",
+      "Colegio Helvetia de Bogotá",
+      "Colegio Anglo Colombiano",
+    ];
 
-      function llenarListaAsistencia() {
-        const tiposDocumento = ["CC", "TI"];
-        const tbody = document.getElementById("list");
-        tbody.innerHTML = "";
+    function llenarListaAsistencia() {
+      const tiposDocumento = ["CC", "TI"];
+      const tbody = document.getElementById("list");
+      tbody.innerHTML = "";
 
-        for (let i = 0; i < 10; i++) {
-          const nombreAleatorio = nombres[Math.floor(Math.random() * nombres.length)];
-          const apellidoAleatorio = apellidos[Math.floor(Math.random() * apellidos.length)];
-          const colegioAleatorio = colegios[Math.floor(Math.random() * colegios.length)];
-          const tipoDocAleatorio = tiposDocumento[Math.floor(Math.random() * tiposDocumento.length)];
-          const numeroDocumentoAleatorio = Math.floor(1000000000 + Math.random() * 9000000000);
+      for (let i = 0; i < 10; i++) {
+        const nombreAleatorio = nombres[Math.floor(Math.random() * nombres.length)];
+        const apellidoAleatorio = apellidos[Math.floor(Math.random() * apellidos.length)];
+        const colegioAleatorio = colegios[Math.floor(Math.random() * colegios.length)];
+        const tipoDocAleatorio = tiposDocumento[Math.floor(Math.random() * tiposDocumento.length)];
+        const numeroDocumentoAleatorio = Math.floor(1000000000 + Math.random() * 9000000000);
 
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
             <td>${nombreAleatorio}</td>
             <td>${apellidoAleatorio}</td>
             <td>${colegioAleatorio}</td>
@@ -172,22 +180,23 @@
             <td>${numeroDocumentoAleatorio}</td>
             <td><input type="checkbox"></td>
           `;
-          tbody.appendChild(tr);
-        }
-        document.getElementById("count").textContent = 10;
+        tbody.appendChild(tr);
       }
+      document.getElementById("count").textContent = 10;
+    }
 
-      document.addEventListener("DOMContentLoaded", function() {
-        const fechaElemento = document.getElementById("fechaActual");
-        const fecha = new Date();
-        const opcionesFecha = {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        };
-        const fechaFormateada = fecha.toLocaleDateString("es", opcionesFecha);
-        fechaElemento.textContent = fechaFormateada;
-      });
-    </script>
-  </body>
+    document.addEventListener("DOMContentLoaded", function () {
+      const fechaElemento = document.getElementById("fechaActual");
+      const fecha = new Date();
+      const opcionesFecha = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      };
+      const fechaFormateada = fecha.toLocaleDateString("es", opcionesFecha);
+      fechaElemento.textContent = fechaFormateada;
+    });
+  </script>
+</body>
+
 </html>

@@ -1,0 +1,165 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="8C418991-244F-3881-4AC9-8AD3C300C796" name="colegio">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>D1101420-4E2B-FE84-0D18-A5C3D28CCB1C</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="IdColegio" id="184A60EE-1FFE-0A19-AB32-6F0CE9FE933F">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el id del colegio]]></commentInRDBMS>
+<generatorID>5959324C-80F5-A402-4E19-D90F653A1158</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NombreCol" id="B6B080B5-5BBE-898F-2809-D90DA5E420CE">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el nombre del colegio]]></commentInRDBMS>
+<generatorID>34694999-23C4-F557-6935-7BDCDE2F59D9</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="CodigoCol" id="0D8F6436-D287-613B-B8F8-229F161BECB6">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 16:09:30 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el codigo del colegio]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="CalleCol" id="3EA53A42-F017-3741-7941-0C680A4823A0">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la calle del colegio]]></commentInRDBMS>
+<generatorID>45842C78-F5FC-C8A8-7A76-6133681DF033</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ZonaDistritoCol" id="127105EF-3905-A8D0-11EC-7F819EB27412">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 16:10:28 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la zona del colegio]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="NumeroCol" id="B62077EE-4E87-4B66-6294-E8627AC4040D">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el numero del colegio]]></commentInRDBMS>
+<generatorID>074B0E26-6430-26F2-0EB9-4CE2578152CD</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>10 CHAR</dataTypeSize>
+<ownDataTypeParameters>10 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="CiudadCol" id="C6D8469E-FE28-F3F4-D586-113B826C1BC2">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene la ciudad del colegio]]></commentInRDBMS>
+<generatorID>E59E9548-0D80-5492-8B9F-0DC984A02796</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="CorreoElectronicoCol" id="F15959AA-D8E3-0A16-46FE-B379BD101232">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 16:08:39 UTC</createdTime>
+<commentInRDBMS><![CDATA[Contiene el correo del colegio]]></commentInRDBMS>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT037</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="IdFundacion" id="CF19D362-6651-AB6D-8839-8F001DBAC006">
+<createdBy>Andre</createdBy>
+<createdTime>2024-06-09 00:15:50 UTC</createdTime>
+<generatorID>AF813D65-D9F3-4203-CE79-C7891443655E</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<referedAttribute>E92795FA-08DC-E359-363E-0E3FB635FC72</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="93F5D074-6ED4-9EC0-2218-B4E790165220" name="colegio PK">
+<createdBy>sebas</createdBy>
+<createdTime>2024-05-09 15:23:46 UTC</createdTime>
+<generatorID>425DFC22-4ECE-FED2-38F5-71FC4644DA1D</generatorID>
+<ownerDesignName>RelacionalFusdec</ownerDesignName>
+<engineerTo>
+<item key="842729DF-3F2B-106C-0D08-E2BDFC07728D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>184A60EE-1FFE-0A19-AB32-6F0CE9FE933F</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

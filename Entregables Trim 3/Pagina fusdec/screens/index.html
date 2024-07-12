@@ -1,133 +1,138 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fusdec c3</title>
-    <link rel="stylesheet" href="../css/style.css" />
-  </head>
 
-  <body class="body-index">
-    <header>
-      <div class="menu container">
-        <input type="checkbox" id="menu" />
-        <nav class="navbar">
-          <a href="../screens/index.html">
-            <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
-          </a>
-          <ul>
-            <li><a href="../screens/login.html">Iniciar sesión</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-    <main>
-      <center>
-        <div class="white-box">
-          <section class="container mt-5">
-            <h2 class="h3 text-center">Certificado Digital FUSDEC</h2>
-            <br />
-            <br />
-            <p class="text-center">
-              Para descargar su certificado debe digitar el tipo y número de su
-              documento de identificación.
-            </p>
-            <br />
-            <p class="text-center">
-              Esta opción le permite obtener una lista de los certificados que
-              tiene disponibles para descarga. Utilice el botón Consultar que se
-              halla en la sección correspondiente para obtener el certificado.
-            </p>
-            <br />
-            <br />
-            <br />
-            <h2 class="h3 text-center">Generar Certificado</h2>
-            <br />
-            <br />
-            <div class="row">
-              <div class="col-md-6 offset-md-3">
-                <form id="certificate-form">
-                  <div class="form-group">
-                    <label for="documentType">Tipo de Documento:</label>
-                    <select id="documentType" class="form-control">
-                      <option value="cc">Cédula de Ciudadanía</option>
-                      <option value="ti">Tarjeta de Identidad</option>
-                      <option value="ce">Cédula de Extranjería</option>
-                    </select>
-                  </div>
-                  <br />
-                  <br />
-                  <div class="form-group">
-                    <label for="documentNumber">Número de Documento:</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="documentNumber"
-                      placeholder="Ingrese su número de documento"
-                      required
-                    />
-                  </div>
-                  <br />
-                  <br />
-                  <button type="submit" class="btn btn-primary" onclick="">
-                    Generar Certificado
-                  </button>
-                </form>
-              </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fusdec C3</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../imagenes/logo.png">
+</head>
+
+<body class="body-index">
+  <header>
+    <div class="menu container">
+      <input type="checkbox" id="menu" />
+      <nav class="navbar">
+        <a href="../screens/index.html">
+          <img src="../imagenes/logo.png" alt="Logo" class="logo-navbar" />
+        </a>
+        <span class="menu-toggle" onclick="toggleMenu()">☰</span>
+        <ul id="nav-links">
+          <li><a href="../screens/login.html">Iniciar sesión</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <center>
+      <div class="container-index">
+        <section>
+          <h2 class="h3 text-center">Certificado Digital FUSDEC</h2>
+          <br />
+          <br />
+          <p class="text-center">
+            Para descargar su certificado debe digitar el tipo y número de su
+            documento de identificación.
+          </p>
+          <br />
+          <p class="text-center">
+            Esta opción le permite obtener una lista de los certificados que
+            tiene disponibles para descarga. Utilice el botón Consultar que se
+            halla en la sección correspondiente para obtener el certificado.
+          </p>
+          <br />
+          <br />
+          <br />
+          <h2 class="h3 text-center">Generar Certificado</h2>
+          <br />
+          <br />
+          <div class="row">
+            <div class="col-md-6 offset-md-3">
+              <form id="certificate-form">
+                <div class="form-group">
+                  <label for="documentType">Tipo de Documento:</label>
+                  <select id="documentType" class="form-control">
+                    <option value="cc">Cédula de Ciudadanía</option>
+                    <option value="ti">Tarjeta de Identidad</option>
+                    <option value="ce">Cédula de Extranjería</option>
+                  </select>
+                </div>
+                <br />
+                <br />
+                <div class="form-group">
+                  <label for="documentNumber">Número de Documento:</label>
+                  <input type="number" class="form-control" id="documentNumber"
+                    placeholder="Ingrese su número de documento" required />
+                </div>
+                <br />
+                <br />
+                <button type="submit" class="btn btn-primary" onclick="">
+                  Generar Certificado
+                </button>
+              </form>
             </div>
-            <div class="certificate-results">
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID del Certificado</th>
-                    <th>Título</th>
-                    <th>Curso</th>
-                    <th>Expedido por</th>
-                  </tr>
-                </thead>
-                <tbody id="resultsTableBody">
-                  <tr>
-                    <td colspan="4">No hay resultados</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <br />
-            <br />
-          </section>
-        </div>
-      </center>
-    </main>
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-column">
-          <h3>Políticas Empresariales</h3>
-          <ul>
-            <li><a href="#">Políticas de Privacidad</a></li>
-            <li><a href="#">Políticas de Cookies</a></li>
-            <li><a href="#">Aviso Legal</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
-        </div>
-        <div class="footer-column">
-          <h3>Ponte en contacto</h3>
-          <ul>
-            <li>Correo: fusdec@correo.com</li>
-            <li>Llamadas: 311 333 8899</li>
-            <li>Fijo: 601 111 2222</li>
-          </ul>
-          <div class="social-media">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
           </div>
+          <div class="certificate-results">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID del Certificado</th>
+                  <th>Título</th>
+                  <th>Curso</th>
+                  <th>Expedido por</th>
+                </tr>
+              </thead>
+              <tbody id="resultsTableBody">
+                <tr>
+                  <td colspan="4">No hay resultados</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br />
+          <br />
+        </section>
+      </div>
+    </center>
+  </main>
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Políticas Empresariales</h3>
+        <ul>
+          <li><a href="#">Políticas de Privacidad</a></li>
+          <li><a href="#">Políticas de Cookies</a></li>
+          <li><a href="#">Aviso Legal</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <img src="../imagenes/logo.png" alt="Logo" class="footer-logo" />
+      </div>
+      <div class="footer-column">
+        <h3>Ponte en contacto</h3>
+        <ul>
+          <li>Correo: fusdec@correo.com</li>
+          <li>Llamadas: 311 333 8899</li>
+          <li>Fijo: 601 111 2222</li>
+        </ul>
+        <div class="social-media">
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+          <a href="#">YouTube</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>Copyright © 2024 Fusdec</p>
-      </div>
-    </footer>
-  </body>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright © 2024 Fusdec</p>
+    </div>
+  </footer>
+  <script>
+    function toggleMenu() {
+      var navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('show');
+    }
+  </script>
+</body>
+
 </html>
