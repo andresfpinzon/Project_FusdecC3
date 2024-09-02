@@ -6,8 +6,6 @@ using System.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FusdecMvc.Models;
-
-[Table("Attendance")]
 public partial class Attendance
 {
     /// <summary>
@@ -15,6 +13,11 @@ public partial class Attendance
     /// </summary>
     [Key]
     public Guid IdAttendance { get; set; }
+
+    public Attendance()
+    {
+        this.IdAttendance = Guid.NewGuid();
+    }
 
     /// <summary>
     /// Contiene la fecha de la toma de asistencia
@@ -27,18 +30,7 @@ public partial class Attendance
     /// </summary>
     public bool AttendanceStatus { get; set; }
 
-    /// <summary>
-    /// Fk con rol
-    /// </summary>
-    public Guid Role_IdRole { get; set; }
+    public  NonAttendance? NonAttendance { get; set; }
 
-    [InverseProperty("Attendance_IdAttendanceNavigation")]
-    public virtual NonAttendance? NonAttendance { get; set; }
-
-    [ForeignKey("Role_IdRole")]
-    [InverseProperty("Attendances")]
-    public virtual Role Role_IdRoleNavigation { get; set; } = null!;
-
-    [InverseProperty("Attendance_IdAttendanceNavigation")]
-    public virtual ICollection<Student> Students { get; set; } = new List<Student>();
+    public ICollection<Student> Students { get; set; } = new List<Student>();
 }

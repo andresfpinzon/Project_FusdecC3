@@ -6,15 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FusdecMvc.Models;
 
-[Table("Schedule")]
 public partial class Schedule
 {
     /// <summary>
     /// Contiene el id del horario
     /// </summary>
     [Key]
-    public int IdSchedule { get; set; }
+    public Guid IdSchedule { get; set; }
 
+    public Schedule()
+    {
+        this.IdSchedule = Guid.NewGuid();
+    }
     /// <summary>
     /// Contiene el titulo del horario
     /// </summary>
@@ -38,15 +41,5 @@ public partial class Schedule
     /// </summary>
     public bool? ScheduleStatus { get; set; }
 
-    /// <summary>
-    /// Fk con rol
-    /// </summary>
-    public Guid Role_IdRole { get; set; }
-
-    [ForeignKey("Role_IdRole")]
-    [InverseProperty("Schedules")]
-    public virtual Role Role_IdRoleNavigation { get; set; } = null!;
-
-    [InverseProperty("Schedule_IdScheduleNavigation")]
-    public virtual ICollection<Student_Schedule> Student_Schedules { get; set; } = new List<Student_Schedule>();
+    public ICollection<StudentSchedule> StudentSchedules { get; set; } = new List<StudentSchedule>();
 }

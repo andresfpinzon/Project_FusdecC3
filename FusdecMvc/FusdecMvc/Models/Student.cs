@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FusdecMvc.Models;
 
-[Table("Student")]
 public partial class Student
 {
     /// <summary>
@@ -29,54 +28,31 @@ public partial class Student
     /// <summary>
     /// Fk unidad
     /// </summary>
-    public Guid Unit_IdUnit { get; set; }
+    public Guid IdUnit { get; set; }
 
     /// <summary>
     /// Fk Attendance
     /// </summary>
-    public Guid? Attendance_IdAttendance { get; set; }
-
-    /// <summary>
-    /// Fk con user
-    /// </summary>
-    public Guid AppUser_IdUser { get; set; }
+    public Guid? IdAttendance { get; set; }
 
     /// <summary>
     /// Fk Colegio
     /// </summary>
-    public Guid School_IdSchool { get; set; }
+    public Guid IdSchool { get; set; }
 
-    [ForeignKey("AppUser_IdUser")]
-    [InverseProperty("Students")]
-    public virtual AppUser AppUser_IdUserNavigation { get; set; } = null!;
+    [ForeignKey("IdAttendance")]
+    public  Attendance? Attendance_IdAttendanceNavigation { get; set; }
 
-    [ForeignKey("Attendance_IdAttendance")]
-    [InverseProperty("Students")]
-    public virtual Attendance? Attendance_IdAttendanceNavigation { get; set; }
+    public  Certificate? Certificate { get; set; }
 
-    [InverseProperty("Student_IdStudentNavigation")]
-    public virtual Certificate? Certificate { get; set; }
+    [ForeignKey("IdSchool")]
+    public School School { get; set; } 
 
-    [ForeignKey("School_IdSchool")]
-    [InverseProperty("Students")]
-    public virtual School School_IdSchoolNavigation { get; set; } = null!;
+    [ForeignKey("IdUnit")]
+    public Unit Unit { get; set; } 
 
-    [InverseProperty("Student_IdStudentNavigation")]
-    public virtual ICollection<Student_Schedule> Student_Schedules { get; set; } = new List<Student_Schedule>();
-
-    [ForeignKey("Unit_IdUnit")]
-    [InverseProperty("Students")]
-    public virtual Unit Unit_IdUnitNavigation { get; set; } = null!;
-
-    [ForeignKey("Student_IdStudent")]
-    [InverseProperty("Student_IdStudents")]
-    public virtual ICollection<Edition> Edition_IdEditions { get; set; } = new List<Edition>();
-
-    [ForeignKey("Student_IdStudent")]
-    [InverseProperty("Student_IdStudents")]
-    public virtual ICollection<Grade> Grade_IdReports { get; set; } = new List<Grade>();
-
-    [ForeignKey("Student_IdStudent")]
-    [InverseProperty("Student_IdStudents")]
-    public virtual ICollection<NonAttendance> NonAttendance_IdReports { get; set; } = new List<NonAttendance>();
+    public ICollection<StudentSchedule> StudentSchedules { get; set; } = new List<StudentSchedule>();
+    public ICollection<StudentEdition> StudentEdition { get; set; } = new List<StudentEdition>();
+    public ICollection<StudentGrade> StudentGrade { get; set; } = new List<StudentGrade>();
+    public ICollection<StudentNonAttendance> StudentNonAttendance{ get; set; } = new List<StudentNonAttendance>();
 }

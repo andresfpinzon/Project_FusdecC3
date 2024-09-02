@@ -1,41 +1,58 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace FusdecMvc.Models
+namespace FusdecMvc.Models;
+public partial class Course
 {
-    public class Course
+    /// <summary>
+    /// Contiene el id del curso
+    /// </summary>
+    [Key]
+    public Guid IdCourse { get; set; }
+    public Course()
     {
-        [Key]
-        public Guid IdCourse { get; set; }
-
-        [StringLength(256)]
-        public string CourseName { get; set; } = null!;
-
-        [Column(TypeName = "ntext")]
-        public string CourseDescription { get; set; } = null!;
-
-        [StringLength(126)]
-        public string CourseHourlyIntensity { get; set; } = null!;
-
-        public bool CourseEstatus { get; set; }
-
-        public Course()
-        {
-            this.IdCourse = Guid.NewGuid();
-        }
-
-        //mrk esto lo deje porque lo traia pero creo que no va porque fundacion solo hay una y cada que un curso se cree no se va a crear una nueva si me hago entender?
-        public Guid IdFundaction { get; set; }
-        public Fundation Fundation { get; set; }
-
-
-        public ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
-
-
-        public ICollection<Edition> Editions { get; set; } = new List<Edition>();
-
-
-        public ICollection<Role> Roles { get; set; } = new List<Role>();
+        this.IdCourse = Guid.NewGuid();
     }
+
+    /// <summary>
+    /// Contiene el nombre del curso
+    /// </summary>
+    [StringLength(256)]
+    public string CourseName { get; set; } 
+
+    /// <summary>
+    /// Contiene una breve descripcion del curso
+    /// </summary>
+    [Column(TypeName = "ntext")]
+    public string CourseDescription { get; set; }
+
+    /// <summary>
+    /// Contiene la intensidad horaria del curso
+    /// </summary>
+    [StringLength(126)]
+    public string CourseHourlyIntensity { get; set; }
+
+    /// <summary>
+    /// Contiene si el curso esta activo o no
+    /// </summary>
+    public bool CourseEstatus { get; set; }
+
+    /// <summary>
+    /// Fk con Fundacion
+    /// </summary>
+    public Guid IdFundation { get; set; }
+
+    public  ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
+
+    public  ICollection<Edition> Editions { get; set; } = new List<Edition>();
+
+    [ForeignKey("IdFundaction")]
+    public  Fundation Fundation { get; set; }
+
 }
+
 

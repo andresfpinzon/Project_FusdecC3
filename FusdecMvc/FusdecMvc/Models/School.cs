@@ -14,6 +14,10 @@ public partial class School
     /// </summary>
     [Key]
     public Guid IdSchool { get; set; }
+    public School()
+    {
+        this.IdSchool = Guid.NewGuid();
+    }
 
     /// <summary>
     /// Contiene el nombre del colegio
@@ -27,6 +31,5 @@ public partial class School
     [StringLength(126)]
     public string SchoolEmail { get; set; } = null!;
 
-    [InverseProperty("School_IdSchoolNavigation")]
-    public virtual ICollection<Student> Students { get; set; } = new List<Student>();
+    public ICollection<Student> Students { get; set; } = new List<Student>();
 }

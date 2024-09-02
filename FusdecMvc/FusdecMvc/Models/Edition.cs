@@ -1,28 +1,40 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-namespace FusdecMvc.Models
+namespace FusdecMvc.Models;
+
+public partial class Edition
 {
-    public class Edition
+    /// <summary>
+    /// Contiene el id de la edicion
+    /// </summary>
+    [Key]
+    public Guid IdEdition { get; set; }
+    public Edition()
     {
-        [Key]
-        public Guid IdEdition { get; set; }
-
-        public DateOnly EditionStartDate { get; set; }
-
-        public DateOnly EditionEndDate { get; set; }
-
-        public Guid IdCourse { get; set; }
-        public Course Course { get; set; }
-
-        public Edition()
-        {
-            this.IdEdition = Guid.NewGuid();
-            this.IdCourse = Guid.NewGuid();
-        }
-
-
-        public virtual ICollection<StudentEdition> StudentEditions { get; set; } = new List<StudentEdition>();
+        this.IdEdition = Guid.NewGuid();
     }
+    /// <summary>
+    /// Contiene el inicio de la edicion
+    /// </summary>
+    public DateOnly EditionStartDate { get; set; }
+
+    /// <summary>
+    /// Contiene el final de la edicion
+    /// </summary>
+    public DateOnly EditionEndDate { get; set; }
+
+    /// <summary>
+    /// Fk Con curso
+    /// </summary>
+    public Guid IdCourse { get; set; }
+
+    public Course Course { get; set; }
+
+    public ICollection<StudentEdition> StudentEdition { get; set; } = new List<StudentEdition>();
 }
 
 

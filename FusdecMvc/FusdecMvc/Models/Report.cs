@@ -1,27 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 
-namespace FusdecMvc.Models
+namespace FusdecMvc.Models;
+
+
+public partial class Report
 {
-    public class Report
+    /// <summary>
+    /// Contiene el id del reporte
+    /// </summary>
+    [Key]
+    public Guid IdReport { get; set; }
+    public Report()
     {
-        [Key]
-        public int IdReport { get; set; }
-
-        [Column(TypeName = "ntext")]
-        public string Observation { get; set; } = null!;
-
-        public Guid IdRole { get; set; }
-
-        public Report()
-        {
-            this.IdRole = Guid.NewGuid();
-        }
-
-        public ICollection<NonAttendance> NonAtendances { get; set; } = new List<NonAttendance>();
-
-
-        public ICollection<Grade> Grades { get; set; } = new List<Grade>();
-
+        this.IdReport = Guid.NewGuid();
     }
+
+    /// <summary>
+    /// Contiene una descripcion del reporte
+    /// </summary>
+    [Column(TypeName = "ntext")]
+    public string Observation { get; set; } 
+
+    public Grade? Grade { get; set; }
+
+    public NonAttendance? NonAttendance { get; set; }
+
 }
+

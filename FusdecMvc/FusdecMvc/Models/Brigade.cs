@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FusdecMvc.Models;
 
-[Table("Brigade")]
 public partial class Brigade
 {
     /// <summary>
@@ -16,6 +14,10 @@ public partial class Brigade
     [Key]
     public Guid IdBrigade { get; set; }
 
+    public Brigade()
+    {
+        this.IdBrigade = Guid.NewGuid();
+    }
     /// <summary>
     /// Contiene el nombre de la brigada
     /// </summary>
@@ -25,7 +27,7 @@ public partial class Brigade
     /// <summary>
     /// Contiene la ubicacion de la brigada
     /// </summary>
-    [StringLength(256)]
+    [StringLength(126)]
     public string BrigadeLocation { get; set; } = null!;
 
     /// <summary>
@@ -36,12 +38,10 @@ public partial class Brigade
     /// <summary>
     /// Fk con comando
     /// </summary>
-    public Guid Command_IdCommand { get; set; }
+    public Guid IdCommand { get; set; }
 
-    [ForeignKey("Command_IdCommand")]
-    [InverseProperty("Brigades")]
-    public virtual Command Command_IdCommandNavigation { get; set; } = null!;
+    [ForeignKey("IdCommand")]
+    public  Command Command { get; set; } = null!;
 
-    [InverseProperty("Brigade_IdBrigadeNavigation")]
-    public virtual ICollection<Unit> Units { get; set; } = new List<Unit>();
+    public  ICollection<Unit> Units { get; set; } = new List<Unit>();
 }

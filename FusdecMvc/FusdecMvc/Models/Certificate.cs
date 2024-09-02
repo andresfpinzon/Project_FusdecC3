@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FusdecMvc.Models;
 
-[Table("Certificate")]
-[Index("Student_IdStudent", Name = "Certificate__IDX", IsUnique = true)]
 public partial class Certificate
 {
     /// <summary>
@@ -16,6 +14,10 @@ public partial class Certificate
     /// </summary>
     [Key]
     public Guid IdCertificate { get; set; }
+    public Certificate()
+    {
+        this.IdCertificate = Guid.NewGuid();
+    }
 
     /// <summary>
     /// Contiene los nombres del usuario que obtuvo el certificado
@@ -55,30 +57,18 @@ public partial class Certificate
     /// <summary>
     /// Fk con estudiante
     /// </summary>
-    public Guid Student_IdStudent { get; set; }
+    public Guid IdStudent { get; set; }
 
     /// <summary>
     /// FK con curso
     /// </summary>
-    public Guid Course_IdCourse { get; set; }
+    public Guid IdCourse { get; set; }
 
-    /// <summary>
-    /// Fk con rol
-    /// </summary>
-    public Guid Role_IdRole { get; set; }
+    public Audit? Audit { get; set; }
 
-    [InverseProperty("Certificate_IdCertificateNavigation")]
-    public virtual Audit? Audit { get; set; }
+    [ForeignKey("IdCourse")]
+    public Course Course_IdCourseNavigation { get; set; } 
 
-    [ForeignKey("Course_IdCourse")]
-    [InverseProperty("Certificates")]
-    public virtual Course Course_IdCourseNavigation { get; set; } = null!;
-
-    [ForeignKey("Role_IdRole")]
-    [InverseProperty("Certificates")]
-    public virtual Role Role_IdRoleNavigation { get; set; } = null!;
-
-    [ForeignKey("Student_IdStudent")]
-    [InverseProperty("Certificate")]
-    public virtual Student Student_IdStudentNavigation { get; set; } = null!;
+    [ForeignKey("IdStudent")]
+    public Student Student_IdStudentNavigation { get; set; }
 }

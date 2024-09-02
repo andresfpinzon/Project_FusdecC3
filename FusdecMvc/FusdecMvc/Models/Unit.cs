@@ -17,6 +17,10 @@ public partial class Unit
     [Key]
     public Guid IdUnit { get; set; }
 
+    public Unit()
+    {
+        this.IdUnit = Guid.NewGuid();
+    }
     /// <summary>
     /// Contiene el nombre de la unidad
     /// </summary>
@@ -40,9 +44,6 @@ public partial class Unit
     public Guid Brigade_IdBrigade { get; set; }
 
     [ForeignKey("Brigade_IdBrigade")]
-    [InverseProperty("Units")]
     public virtual Brigade Brigade_IdBrigadeNavigation { get; set; } = null!;
-
-    [InverseProperty("Unit_IdUnitNavigation")]
     public virtual ICollection<Student> Students { get; set; } = new List<Student>();
 }

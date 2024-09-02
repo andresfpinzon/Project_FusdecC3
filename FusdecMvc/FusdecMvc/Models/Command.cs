@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace FusdecMvc.Models;
 
-[Table("Command")]
 public partial class Command
 {
     /// <summary>
@@ -15,12 +14,16 @@ public partial class Command
     /// </summary>
     [Key]
     public Guid IdCommand { get; set; }
+    public Command()
+    {
+        this.IdCommand = Guid.NewGuid();
+    }
 
     /// <summary>
     /// Contiene el nombre del comando
     /// </summary>
     [StringLength(126)]
-    public string CommandName { get; set; } = null!;
+    public string CommandName { get; set; }
 
     /// <summary>
     /// Contiene el estado del comando
@@ -31,17 +34,14 @@ public partial class Command
     /// Contiene la ubicacion del comando
     /// </summary>
     [StringLength(126)]
-    public string UbicacionComando { get; set; } = null!;
-
+    public string UbicacionComando { get; set; }
     /// <summary>
     /// Fk con fundacion
     /// </summary>
-    public Guid Fundation_IdFundaction { get; set; }
+    public Guid IdFundaction { get; set; }
 
-    [InverseProperty("Command_IdCommandNavigation")]
-    public virtual ICollection<Brigade> Brigades { get; set; } = new List<Brigade>();
+    public ICollection<Brigade> Brigades { get; set; } = new List<Brigade>();
 
-    [ForeignKey("Fundation_IdFundaction")]
-    [InverseProperty("Commands")]
-    public virtual Fundation Fundation_IdFundactionNavigation { get; set; } = null!;
+    [ForeignKey("IdFundaction")]
+    public Fundation Fundation { get; set; } 
 }
