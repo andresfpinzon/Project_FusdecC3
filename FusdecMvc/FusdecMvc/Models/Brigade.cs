@@ -8,9 +8,6 @@ namespace FusdecMvc.Models;
 
 public partial class Brigade
 {
-    /// <summary>
-    /// Contiene el id de la brigada
-    /// </summary>
     [Key]
     public Guid IdBrigade { get; set; }
 
@@ -18,30 +15,13 @@ public partial class Brigade
     {
         this.IdBrigade = Guid.NewGuid();
     }
-    /// <summary>
-    /// Contiene el nombre de la brigada
-    /// </summary>
-    [StringLength(126)]
-    public string BrigadeName { get; set; } = null!;
 
-    /// <summary>
-    /// Contiene la ubicacion de la brigada
-    /// </summary>
-    [StringLength(126)]
-    public string BrigadeLocation { get; set; } = null!;
-
-    /// <summary>
-    /// Contiene el estado de la brigada
-    /// </summary>
+    public string BrigadeName { get; set; } 
+    public string BrigadeLocation { get; set; } 
     public bool BrigadeStatus { get; set; }
-
-    /// <summary>
-    /// Fk con comando
-    /// </summary>
     public Guid IdCommand { get; set; }
 
-    [ForeignKey("IdCommand")]
-    public  Command Command { get; set; } = null!;
+    public  Command Command { get; set; } 
 
     public  ICollection<Unit> Units { get; set; } = new List<Unit>();
 }

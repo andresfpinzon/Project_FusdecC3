@@ -4,20 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace FusdecMvc.Models
+namespace FusdecMvc.Models;
+
+public class StudentNonAttendance
 {
-    public class StudentNonAttendance
-    {
-        [Key]
-        public Guid IdStudent { get; set; }
-
-        [Key]
-        public Guid IdNonAttendance { get; set; }
-
-        [ForeignKey("IdGrade")]
-        public Grade Grade { get; set; }
-
-        [ForeignKey("IdStudent")]
-        public NonAttendance NonAttendance { get; set; }
-    }
+    public Guid IdStudent { get; set; }
+    public Guid IdNonAttendance { get; set; }
+    public Student Student { get; set; }
+    public NonAttendance NonAttendance { get; set; }
 }

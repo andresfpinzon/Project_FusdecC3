@@ -8,9 +8,6 @@ using Microsoft.EntityFrameworkCore;
 namespace FusdecMvc.Models;
 public partial class Attendance
 {
-    /// <summary>
-    /// Contiene el Id de la asistencia
-    /// </summary>
     [Key]
     public Guid IdAttendance { get; set; }
 
@@ -19,18 +16,10 @@ public partial class Attendance
         this.IdAttendance = Guid.NewGuid();
     }
 
-    /// <summary>
-    /// Contiene la fecha de la toma de asistencia
-    /// </summary>
-    [Column(TypeName = "datetime")]
     public DateTime AttendanceDate { get; set; }
-
-    /// <summary>
-    /// Contiene el estado de la asistencia
-    /// </summary>
     public bool AttendanceStatus { get; set; }
 
     public  NonAttendance? NonAttendance { get; set; }
 
-    public ICollection<Student> Students { get; set; } = new List<Student>();
+    public ICollection<StudentAttendance> StudentAttendances { get; set; } = new List<StudentAttendance>();
 }
