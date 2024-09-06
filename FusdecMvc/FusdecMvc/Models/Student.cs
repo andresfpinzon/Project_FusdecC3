@@ -22,8 +22,8 @@ public partial class Student
     public School School { get; set; } 
     public Unit Unit { get; set; } 
 
-    public ICollection<StudentSchedule> StudentSchedules { get; set; } = new List<StudentSchedule>();
     public ICollection<StudentEdition> StudentEditions { get; set; } = new List<StudentEdition>();
+    public ICollection<StudentSchedule> StudentSchedules { get; set; } = new List<StudentSchedule>();
     public ICollection<StudentGrade> StudentGrades { get; set; } = new List<StudentGrade>();
     public ICollection<StudentNonAttendance> StudentNonAttendances { get; set; } = new List<StudentNonAttendance>();
     public ICollection<StudentAttendance> StudentAttendances { get; set; } = new List<StudentAttendance>();
