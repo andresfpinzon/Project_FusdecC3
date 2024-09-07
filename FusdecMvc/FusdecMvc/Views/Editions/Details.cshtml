@@ -1,0 +1,40 @@
+﻿@model FusdecMvc.Models.Edition
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalles</h1>
+
+<div>
+    <h4>Edición</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Fecha de inicio
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EditionStartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            Fecha de finalización
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EditionEndDate)
+        </dd>
+        <dt class = "col-sm-2">
+            Id del Curso
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCourse)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdEdition" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+</div>
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>

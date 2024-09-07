@@ -1,0 +1,46 @@
+﻿@model FusdecMvc.Models.Edition
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Editar</h1>
+
+<h4>Edición</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdEdition" />
+            <div class="form-group">
+                <label asp-for="EditionStartDate" class="control-label">Fecha de inicio</label>
+                <input asp-for="EditionStartDate" class="form-control" />
+                <span asp-validation-for="EditionStartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EditionEndDate" class="control-label">Fecha de finalización</label>
+                <input asp-for="EditionEndDate" class="form-control" />
+                <span asp-validation-for="EditionEndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCourse" class="control-label">Id del Curso</label>
+                <input asp-for="IdCourse" class="form-control" />
+                <span asp-validation-for="IdCourse" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar Cambios" class="btn btn-warning" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
