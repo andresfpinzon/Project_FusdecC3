@@ -184,11 +184,11 @@ namespace FusdecMvc.Data
         public DbSet<School> Schools { get; set; }
         public DbSet<Student> Students { get; set; }    
         public DbSet<StudentEdition> StudentEditions { get; set; }
-        public DbSet<StudentGrade> studentGrades {  get; set; } 
-        public DbSet<StudentNonAttendance> studentNonAttendances { get;set; }
-        public DbSet<StudentSchedule> studentSchedules { get; set; } 
-        public DbSet<StudentAttendance> studentAttendances { get; set; }     
-
+        public DbSet<StudentGrade> StudentGrades {  get; set; } 
+        public DbSet<StudentNonAttendance> StudentNonAttendances { get;set; }
+        public DbSet<StudentSchedule> StudentSchedules { get; set; } 
+        public DbSet<StudentAttendance> StudentAttendances { get; set; }     
+        public DbSet<Unit> Units { get; set; }
 
     }
 }
