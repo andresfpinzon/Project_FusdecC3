@@ -1,0 +1,50 @@
+﻿@model FusdecMvc.Models.Schedule
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Crear</h1>
+
+<h4>Horario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ScheduleTitle" class="control-label">Título</label>
+                <input asp-for="ScheduleTitle" class="form-control" />
+                <span asp-validation-for="ScheduleTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScheduleStartDate" class="control-label">Hora de inicio</label>
+                <input asp-for="ScheduleStartDate" class="form-control" type="time"/>
+                <span asp-validation-for="ScheduleStartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScheduleEndDate" class="control-label">Hora de finalización</label>
+                <input asp-for="ScheduleEndDate" class="form-control" type="time"/>
+                <span asp-validation-for="ScheduleEndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScheduleStatus" class="control-label">Estado</label>
+                <input asp-for="ScheduleStatus" class="form-control" />
+                <span asp-validation-for="ScheduleStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
