@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FusdecMvc.Models;
 
-public partial class Grade : Report
+public partial class Grade
 {
     [Key]
-    public Guid IdReport { get; set; }
+    public Guid IdGrade { get; set; }
     public Grade()
     {
-        this.IdReport = Guid.NewGuid();
+        this.IdGrade = Guid.NewGuid();
     }
+    public Guid IdReport { get; set; }
     public bool Approved { get; set; }
     public string? ObservationGrade { get; set; }
     public Report Report { get; set; }
