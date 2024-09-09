@@ -1,0 +1,59 @@
+﻿@model IEnumerable<FusdecMvc.Models.Course>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseHourlyIntensity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseEstatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fundation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseHourlyIntensity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseEstatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fundation.IdFundation)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdCourse">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdCourse">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdCourse">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
