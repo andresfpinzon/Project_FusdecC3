@@ -1,0 +1,39 @@
+﻿@model FusdecMvc.Models.NonAttendance
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Eliminar</h1>
+
+<h3>¿Estas seguro de que quieres eliminar los datos?</h3>
+<div>
+    <h4>Inasistencia</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Asistencia
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Attendance.IdAttendance)
+        </dd>
+        <dt class = "col-sm-2">
+            Reporte
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Report.IdReport)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdReport" />
+        <button type="submit" class="btn btn-danger">
+            <i class="fa fa-trash"></i> Borrar
+        </button>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                &#8592; Volver atrás
+            </a>
+        </div>
+    </form>
+</div>

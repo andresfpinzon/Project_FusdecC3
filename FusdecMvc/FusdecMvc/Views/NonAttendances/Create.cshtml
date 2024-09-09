@@ -1,0 +1,38 @@
+﻿@model FusdecMvc.Models.NonAttendance
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Crear</h1>
+
+<h4>Inasistencia</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdAttendance" class="control-label">Asistencia</label>
+                <select asp-for="IdAttendance" class ="form-control" asp-items="ViewBag.IdAttendance"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdReport" class="control-label">Reporte</label>
+                <select asp-for="IdReport" class ="form-control" asp-items="ViewBag.IdReport"></select>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
