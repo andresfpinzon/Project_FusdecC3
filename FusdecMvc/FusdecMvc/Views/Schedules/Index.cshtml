@@ -1,25 +1,28 @@
-﻿@model IEnumerable<FusdecMvc.Models.Grade>
+﻿@model IEnumerable<FusdecMvc.Models.Schedule>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Calificaciones</h1>
+<h1>Horarios</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Calificación</a>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Horario</a>
 </p>
-<table id="calificacionestabla" class="table">
+<table id="horariostabla" class="table">
     <thead>
         <tr>
             <th>
-                Aprobado
+                Título
             </th>
             <th>
-                Observaciones
+                Hora de inicio 
             </th>
             <th>
-                Reporte
+                Hora de finalización
+            </th>
+            <th>
+                Estado
             </th>
             <th></th>
         </tr>
@@ -28,18 +31,21 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Approved)
+                @Html.DisplayFor(modelItem => item.ScheduleTitle)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ObservationGrade)
+                @Html.DisplayFor(modelItem => item.ScheduleStartDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Report.IdReport)
+                @Html.DisplayFor(modelItem => item.ScheduleEndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduleStatus)
             </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdGrade" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.IdGrade" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
-                    <a asp-action="Delete" asp-route-id="@item.IdGrade" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdSchedule" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.IdSchedule" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@item.IdSchedule" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
         </tr>
 }
@@ -49,7 +55,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#calificacionestabla').DataTable({
+            $('#horariostabla').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",
