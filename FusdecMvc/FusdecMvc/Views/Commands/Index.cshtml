@@ -1,0 +1,53 @@
+﻿@model IEnumerable<FusdecMvc.Models.Command>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CommandName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CommandStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UbicacionComando)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fundation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CommandName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CommandStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UbicacionComando)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fundation.IdFundation)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdCommand">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdCommand">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdCommand">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
