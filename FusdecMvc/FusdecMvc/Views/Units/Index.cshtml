@@ -1,0 +1,53 @@
+﻿@model IEnumerable<FusdecMvc.Models.Unit>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitState)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitLocation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brigade)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitState)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitLocation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Brigade.IdBrigade)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdUnit">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdUnit">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdUnit">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
