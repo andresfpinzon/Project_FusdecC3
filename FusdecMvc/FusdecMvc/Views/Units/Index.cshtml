@@ -1,15 +1,12 @@
 ﻿@model IEnumerable<FusdecMvc.Models.Unit>
-
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Index</h1>
-
+<h1>Unidades</h1>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Unidad</a>
 </p>
-<table class="table">
+<table id="unidadestabla" class="table">
     <thead>
         <tr>
             <th>
@@ -22,32 +19,55 @@
                 @Html.DisplayNameFor(model => model.UnitLocation)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brigade)
+                @Html.DisplayNameFor(model => model.Brigade.IdBrigade)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitState)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitLocation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brigade.IdBrigade)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdUnit">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdUnit">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdUnit">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitState)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brigade.IdBrigade)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdUnit" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.IdUnit" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@item.IdUnit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#unidadestabla').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ entradas por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+}

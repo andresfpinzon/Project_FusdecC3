@@ -1,12 +1,11 @@
 ﻿@model FusdecMvc.Models.Unit
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Unit";
 }
 
-<h1>Create</h1>
+<h1>Create Unit</h1>
 
-<h4>Unit</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -29,19 +28,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdBrigade" class="control-label"></label>
-                <select asp-for="IdBrigade" class ="form-control" asp-items="ViewBag.IdBrigade"></select>
+                <select asp-for="IdBrigade" class="form-control" asp-items="ViewBag.IdBrigade"></select>
+                <span asp-validation-for="IdBrigade" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group mt-3">
+                <input type="submit" value="Create Unit" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
