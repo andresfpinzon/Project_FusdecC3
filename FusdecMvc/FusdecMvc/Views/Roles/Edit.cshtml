@@ -1,0 +1,15 @@
+﻿@model FusdecMvc.Models.ViewModels.RoleViewModel
+
+<h2>Editar Rol</h2>
+
+<form asp-action="Edit" asp-controller="Roles" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Nombre del Rol</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+        <button type="submit" class="btn btn-create"><i class="fas fa-save"></i> Guardar</button>
+        <a asp-action="Index" class="btn btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+</form>
+

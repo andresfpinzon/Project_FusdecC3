@@ -20,7 +20,11 @@ public partial class Student
     public Guid IdSchool { get; set; }
     public  Certificate? Certificate { get; set; }
     public School School { get; set; } 
-    public Unit Unit { get; set; } 
+    public Unit Unit { get; set; }
+
+    // Relación con ApplicationUser
+    public string UserId { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
 
     public ICollection<StudentEdition> StudentEditions { get; set; } = new List<StudentEdition>();
     public ICollection<StudentSchedule> StudentSchedules { get; set; } = new List<StudentSchedule>();

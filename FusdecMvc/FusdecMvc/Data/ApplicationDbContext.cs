@@ -163,6 +163,12 @@ namespace FusdecMvc.Data
                 .WithMany() 
                 .HasForeignKey(na => na.IdReport)
                 .OnDelete(DeleteBehavior.Cascade);
+            // Relación uno a uno entre ApplicationUser y Estudiante
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(a => a.Student)
+                .WithOne(e => e.ApplicationUser)
+                .HasForeignKey<ApplicationUser>(a => a.IdStudent)
+                .IsRequired(false);
 
         }
 
