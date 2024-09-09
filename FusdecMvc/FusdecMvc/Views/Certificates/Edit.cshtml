@@ -1,0 +1,70 @@
+﻿@model FusdecMvc.Models.Certificate
+
+@{
+    ViewData["Title"] = "Edit Certificate";
+}
+
+<h1>Edit Certificate</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdCertificate" />
+            <div class="form-group">
+                <label asp-for="StudentName" class="control-label"></label>
+                <input asp-for="StudentName" class="form-control" />
+                <span asp-validation-for="StudentName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentLastName" class="control-label"></label>
+                <input asp-for="StudentLastName" class="form-control" />
+                <span asp-validation-for="StudentLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VerificationCode" class="control-label"></label>
+                <input asp-for="VerificationCode" class="form-control" />
+                <span asp-validation-for="VerificationCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NameOfIssuerCert" class="control-label"></label>
+                <input asp-for="NameOfIssuerCert" class="form-control" />
+                <span asp-validation-for="NameOfIssuerCert" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserDocumentNumber" class="control-label"></label>
+                <input asp-for="UserDocumentNumber" class="form-control" />
+                <span asp-validation-for="UserDocumentNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CertificateStatus" class="control-label"></label>
+                <input asp-for="CertificateStatus" class="form-control" />
+                <span asp-validation-for="CertificateStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CourseName" class="control-label"></label>
+                <input asp-for="CourseName" class="form-control" />
+                <span asp-validation-for="CourseName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdStudent" class="control-label"></label>
+                <input asp-for="IdStudent" class="form-control" />
+                <span asp-validation-for="IdStudent" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
