@@ -1,4 +1,4 @@
-﻿@model FusdecMvc.Models.Command
+﻿@model FusdecMvc.Models.Brigade
 
 @{
     ViewData["Title"] = "Eliminar";
@@ -8,37 +8,37 @@
 
 <h3>¿Estás seguro de que quieres eliminar los datos?</h3>
 <div>
-    <h4>Comando</h4>
+    <h4>Brigada</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CommandName)
+            @Html.DisplayNameFor(model => model.BrigadeName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommandName)
+            @Html.DisplayFor(model => model.BrigadeName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CommandStatus)
+            @Html.DisplayNameFor(model => model.BrigadeLocation)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommandStatus)
+            @Html.DisplayFor(model => model.BrigadeLocation)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UbicacionComando)
+            @Html.DisplayNameFor(model => model.BrigadeStatus)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UbicacionComando)
+            @Html.DisplayFor(model => model.BrigadeStatus)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Fundation)
+            @Html.DisplayNameFor(model => model.Command)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Fundation.IdFundation)
+            @Html.DisplayFor(model => model.Command.IdCommand)
         </dd>
     </dl>
 
     <form asp-action="Delete">
-        <input type="hidden" asp-for="IdCommand" />
+        <input type="hidden" asp-for="IdBrigade" />
         <input type="submit" value="Eliminar" class="btn btn-danger" /> |
         <a asp-action="Index">Volver atrás</a>
     </form>

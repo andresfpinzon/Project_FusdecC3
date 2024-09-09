@@ -1,28 +1,28 @@
-﻿@model IEnumerable<FusdecMvc.Models.Command>
+﻿@model IEnumerable<FusdecMvc.Models.Brigade>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Comandos</h1>
+<h1>Brigadas</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Comando</a>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Brigada</a>
 </p>
-<table id="comandosTabla" class="table">
+<table id="brigadasTabla" class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CommandName)
+                @Html.DisplayNameFor(model => model.BrigadeName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CommandStatus)
+                @Html.DisplayNameFor(model => model.BrigadeLocation)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UbicacionComando)
+                @Html.DisplayNameFor(model => model.BrigadeStatus)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Fundation)
+                @Html.DisplayNameFor(model => model.Command)
             </th>
             <th></th>
         </tr>
@@ -32,21 +32,21 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CommandName)
+                    @Html.DisplayFor(modelItem => item.BrigadeName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CommandStatus)
+                    @Html.DisplayFor(modelItem => item.BrigadeLocation)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UbicacionComando)
+                    @Html.DisplayFor(modelItem => item.BrigadeStatus)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Fundation.IdFundation)
+                    @Html.DisplayFor(modelItem => item.Command.IdCommand)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdCommand" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdCommand" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdCommand" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdBrigade" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdBrigade" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdBrigade" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
             </tr>
         }
@@ -56,7 +56,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#comandosTabla').DataTable({
+            $('#brigadasTabla').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",
@@ -74,4 +74,4 @@
             });
         });
     </script>
-}
+} 

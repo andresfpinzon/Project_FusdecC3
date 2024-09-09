@@ -1,0 +1,53 @@
+﻿@model FusdecMvc.Models.Brigade
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<h1>Editar</h1>
+
+<h4>Brigada</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdBrigade" />
+            <div class="form-group">
+                <label asp-for="BrigadeName" class="control-label"></label>
+                <input asp-for="BrigadeName" class="form-control" />
+                <span asp-validation-for="BrigadeName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BrigadeLocation" class="control-label"></label>
+                <input asp-for="BrigadeLocation" class="form-control" />
+                <span asp-validation-for="BrigadeLocation" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="BrigadeStatus" /> @Html.DisplayNameFor(model => model.BrigadeStatus)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCommand" class="control-label"></label>
+                <select asp-for="IdCommand" class="form-control" asp-items="ViewBag.IdCommand"></select>
+                <span asp-validation-for="IdCommand" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar Cambios" class="btn btn-warning" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
