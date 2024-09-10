@@ -1,15 +1,11 @@
 ﻿@model IEnumerable<FusdecMvc.Models.School>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Índice";  // Changed title to "Índice" (Spanish for "Index")
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<h1>Estudiantes</h1>  <p>  <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Escuela</a>  </p>
+<table id="escuelasTabla" class="table">
     <thead>
         <tr>
             <th>
@@ -22,20 +18,44 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SchoolName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SchoolEmail)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdSchool">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdSchool">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdSchool">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SchoolName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SchoolEmail)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdSchool" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.IdSchool" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@item.IdSchool" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#escuelasTabla').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ entradas por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+}
