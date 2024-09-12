@@ -20,10 +20,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
 // Add controllers and views
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
-
 // Add Razor Pages
 builder.Services.AddRazorPages();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
