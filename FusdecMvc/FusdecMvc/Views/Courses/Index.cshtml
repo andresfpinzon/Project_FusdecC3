@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<FusdecMvc.Models.Course>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cursos";
 }
 
 <h1>Cursos</h1>
@@ -13,19 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CourseName)
+                Nombre
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CourseDescription)
+                Descripcion
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CourseHourlyIntensity)
+                Intencidad horaria
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CourseEstatus)
+                estado
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Fundation.IdFundation)
+                fundacion
             </th>
             <th></th>
         </tr>
