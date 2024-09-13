@@ -1,0 +1,69 @@
+﻿@model FusdecMvc.Models.Edition
+
+@{
+    ViewData["Title"] = "Crear Edición";
+}
+
+<h1>Crear Nueva Edición</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="editionForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EditionStartDate" class="control-label">Fecha de Inicio</label>
+                <input asp-for="EditionStartDate" class="form-control" type="date" />
+                <span asp-validation-for="EditionStartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EditionEndDate" class="control-label">Fecha de Finalización</label>
+                <input asp-for="EditionEndDate" class="form-control" type="date" />
+                <span asp-validation-for="EditionEndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCourse" class="control-label">Curso</label>
+                <select asp-for="IdCourse" class="form-control" asp-items="ViewBag.IdCourse"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear Edición" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation/1.19.1/additional-methods.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#editionForm").validate({
+                rules: {
+                    EditionStartDate: {
+                        required: true,
+                        date: true
+                    },
+                    EditionEndDate: {
+                        required: true,
+                        date: true
+                    },
+                    IdCourse: {
+                        required: true
+                    }
+                },
+                messages: {
+                    EditionStartDate: "Por favor, seleccione una fecha de inicio.",
+                    EditionEndDate: "Por favor, seleccione una fecha de finalización.",
+                    IdCourse: "Por favor, seleccione un curso."
+                }
+            });
+        });
+    </script>
+}

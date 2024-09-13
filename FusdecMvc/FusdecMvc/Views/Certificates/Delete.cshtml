@@ -1,0 +1,58 @@
+﻿@model FusdecMvc.Models.Certificate
+
+@{
+    ViewData["Title"] = "Delete Certificate";
+}
+
+<h1>Delete Certificate</h1>
+
+<h3>Are you sure you want to delete this certificate?</h3>
+
+<div>
+    <h4>Certificate</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Student Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StudentName)
+        </dd>
+        <dt class="col-sm-2">
+            Student Last Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StudentLastName)
+        </dd>
+        <dt class="col-sm-2">
+            Verification Code
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VerificationCode)
+        </dd>
+        <dt class="col-sm-2">
+            Issuer
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameOfIssuerCert)
+        </dd>
+        <dt class="col-sm-2">
+            Status
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.CertificateStatus ? "Active" : "Inactive")
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="IdCertificate" />
+        <button type="submit" class="btn btn-danger">
+            <i class="fa fa-trash"></i> Delete
+        </button>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                Back to List
+            </a>
+        </div>
+    </form>
+</div>

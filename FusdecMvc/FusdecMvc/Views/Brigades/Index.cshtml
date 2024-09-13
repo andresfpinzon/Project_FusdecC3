@@ -1,0 +1,77 @@
+﻿@model IEnumerable<FusdecMvc.Models.Brigade>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Brigadas</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Brigada</a>
+</p>
+<table id="brigadasTabla" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BrigadeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BrigadeLocation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BrigadeStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Command)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BrigadeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BrigadeLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BrigadeStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Command.IdCommand)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdBrigade" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdBrigade" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdBrigade" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#brigadasTabla').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ entradas por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+} 

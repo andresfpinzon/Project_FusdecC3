@@ -1,0 +1,36 @@
+﻿@model FusdecMvc.Models.Audit
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Audit</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AuditDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AuditDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NameOfIssuerAudit)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameOfIssuerAudit)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Certificate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Certificate.IdCertificate)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdAudit" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+</div>

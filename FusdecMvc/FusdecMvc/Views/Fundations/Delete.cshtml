@@ -1,0 +1,27 @@
+﻿@model FusdecMvc.Models.Fundation
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h1>Eliminar</h1>
+
+<h3>¿Estás seguro de que quieres eliminar los datos?</h3>
+<div>
+    <h4>Fundación</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FundationName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FundationName)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdFundation" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Volver atrás</a>
+    </form>
+</div>

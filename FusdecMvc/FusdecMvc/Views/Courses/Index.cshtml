@@ -1,0 +1,83 @@
+﻿@model IEnumerable<FusdecMvc.Models.Course>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Cursos</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Curso</a>
+</p>
+<table id="cursosTabla" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseHourlyIntensity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseEstatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fundation.IdFundation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseHourlyIntensity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseEstatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fundation.IdFundation)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdCourse" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdCourse" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdCourse" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#cursosTabla').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ entradas por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+}

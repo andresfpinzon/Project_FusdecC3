@@ -1,0 +1,46 @@
+﻿@model FusdecMvc.Models.Command
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalles</h1>
+
+<div>
+    <h4>Comando</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CommandName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CommandName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CommandStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CommandStatus)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UbicacionComando)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UbicacionComando)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Fundation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Fundation.IdFundation)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdCommand" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+</div>
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>

@@ -1,0 +1,48 @@
+﻿@model FusdecMvc.Models.Certificate
+
+@{
+    ViewData["Title"] = "Certificate Details";
+}
+
+<h1>Certificate Details</h1>
+
+<div>
+    <h4>Certificate</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Student Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StudentName)
+        </dd>
+        <dt class="col-sm-2">
+            Student Last Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StudentLastName)
+        </dd>
+        <dt class="col-sm-2">
+            Verification Code
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VerificationCode)
+        </dd>
+        <dt class="col-sm-2">
+            Issuer
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameOfIssuerCert)
+        </dd>
+        <dt class="col-sm-2">
+            Status
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.CertificateStatus ? "Active" : "Inactive")
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.IdCertificate" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+</div>
