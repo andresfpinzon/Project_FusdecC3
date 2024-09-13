@@ -13,31 +13,31 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            Student Name
+           Nombre Del Estudiante
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StudentName)
         </dd>
         <dt class="col-sm-2">
-            Student Last Name
+           Apellidos Del Estudiante 
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StudentLastName)
         </dd>
         <dt class="col-sm-2">
-            Verification Code
+            Codigo De Verificacion
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.VerificationCode)
         </dd>
         <dt class="col-sm-2">
-            Issuer
+            Emisor
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NameOfIssuerCert)
         </dd>
         <dt class="col-sm-2">
-            Status
+            Estado
         </dt>
         <dd class="col-sm-10">
             @(Model.CertificateStatus ? "Active" : "Inactive")

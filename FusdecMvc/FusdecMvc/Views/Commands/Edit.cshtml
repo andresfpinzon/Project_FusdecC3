@@ -14,22 +14,22 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdCommand" />
             <div class="form-group">
-                <label asp-for="CommandName" class="control-label"></label>
+                <label asp-for="CommandName" class="control-label">Nombre</label>
                 <input asp-for="CommandName" class="form-control" />
                 <span asp-validation-for="CommandName" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check">Estado
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="CommandStatus" /> @Html.DisplayNameFor(model => model.CommandStatus)
+                    <input class="form-check-input" asp-for="CommandStatus" /> 
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="UbicacionComando" class="control-label"></label>
+                <label asp-for="UbicacionComando" class="control-label">Ubicacion</label>
                 <input asp-for="UbicacionComando" class="form-control" />
                 <span asp-validation-for="UbicacionComando" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdFundation" class="control-label"></label>
+                <label asp-for="IdFundation" class="control-label">Id de la fundacion</label>
                 <select asp-for="IdFundation" class="form-control" asp-items="ViewBag.IdFundation"></select>
                 <span asp-validation-for="IdFundation" class="text-danger"></span>
             </div>

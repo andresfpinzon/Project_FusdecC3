@@ -13,27 +13,27 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="CourseName" class="control-label"></label>
+                <label asp-for="CourseName" class="control-label">Nombre</label>
                 <input asp-for="CourseName" class="form-control" />
                 <span asp-validation-for="CourseName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CourseDescription" class="control-label"></label>
+                <label asp-for="CourseDescription" class="control-label">Descripcion</label>
                 <input asp-for="CourseDescription" class="form-control" />
                 <span asp-validation-for="CourseDescription" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CourseHourlyIntensity" class="control-label"></label>
+                <label asp-for="CourseHourlyIntensity" class="control-label">Intencidadhoraria</label>
                 <input asp-for="CourseHourlyIntensity" class="form-control" />
                 <span asp-validation-for="CourseHourlyIntensity" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check">Estado
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="CourseEstatus" /> @Html.DisplayNameFor(model => model.CourseEstatus)
+                    <input class="form-check-input" asp-for="CourseEstatus" /> 
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="IdFundation" class="control-label"></label>
+                <label asp-for="IdFundation" class="control-label">Id de la fundacion</label>
                 <select asp-for="IdFundation" class="form-control" asp-items="ViewBag.IdFundation"></select>
             </div>
             <div class="form-group">

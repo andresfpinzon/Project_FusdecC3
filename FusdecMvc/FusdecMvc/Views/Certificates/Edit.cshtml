@@ -10,45 +10,45 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger">Idcertificado</div>
             <input type="hidden" asp-for="IdCertificate" />
             <div class="form-group">
-                <label asp-for="StudentName" class="control-label"></label>
+                <label asp-for="StudentName" class="control-label">Nombres del estudiante</label>
                 <input asp-for="StudentName" class="form-control" />
                 <span asp-validation-for="StudentName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StudentLastName" class="control-label"></label>
+                <label asp-for="StudentLastName" class="control-label">Apellidos del estudiante</label>
                 <input asp-for="StudentLastName" class="form-control" />
                 <span asp-validation-for="StudentLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VerificationCode" class="control-label"></label>
+                <label asp-for="VerificationCode" class="control-label">Codigo de verificacion</label>
                 <input asp-for="VerificationCode" class="form-control" />
                 <span asp-validation-for="VerificationCode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NameOfIssuerCert" class="control-label"></label>
+                <label asp-for="NameOfIssuerCert" class="control-label">Nombre del emisor del certificado</label>
                 <input asp-for="NameOfIssuerCert" class="form-control" />
                 <span asp-validation-for="NameOfIssuerCert" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserDocumentNumber" class="control-label"></label>
+                <label asp-for="UserDocumentNumber" class="control-label">Numero de documento</label>
                 <input asp-for="UserDocumentNumber" class="form-control" />
                 <span asp-validation-for="UserDocumentNumber" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CertificateStatus" class="control-label"></label>
-                <input asp-for="CertificateStatus" class="form-control" />
-                <span asp-validation-for="CertificateStatus" class="text-danger"></span>
+            <div class="form-group form-check">
+                <label class="form-check-label">estado
+                    <input class="form-check-input" asp-for="CertificateStatus" />
+                </label>
             </div>
             <div class="form-group">
-                <label asp-for="CourseName" class="control-label"></label>
+                <label asp-for="CourseName" class="control-label">Nombre del curso</label>
                 <input asp-for="CourseName" class="form-control" />
                 <span asp-validation-for="CourseName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdStudent" class="control-label"></label>
+                <label asp-for="IdStudent" class="control-label">Id del estudiante</label>
                 <input asp-for="IdStudent" class="form-control" />
                 <span asp-validation-for="IdStudent" class="text-danger"></span>
             </div>
