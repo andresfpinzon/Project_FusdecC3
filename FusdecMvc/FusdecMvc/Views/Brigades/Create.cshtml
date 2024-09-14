@@ -6,40 +6,56 @@
 
 <h1>Crear</h1>
 
-<h4>Brigada</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Create" class="needs-validation" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="BrigadeName" class="control-label">Nombre</label>
-                <input asp-for="BrigadeName" class="form-control" />
-                <span asp-validation-for="BrigadeName" class="text-danger"></span>
+                <input asp-for="BrigadeName" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre de la brigada.
+                </div>
             </div>
+
             <div class="form-group">
-                <label asp-for="BrigadeLocation" class="control-label">Lugar</label>
-                <input asp-for="BrigadeLocation" class="form-control" />
-                <span asp-validation-for="BrigadeLocation" class="text-danger"></span>
+                <label asp-for="BrigadeLocation" class="control-label">Ubicación</label>
+                <input asp-for="BrigadeLocation" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese la ubicación de la brigada.
+                </div>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">Estado
-                    <input class="form-check-input" asp-for="BrigadeStatus" />
+                <input class="form-check-input" asp-for="BrigadeStatus" required>
+                <label class="form-check-label">
+                    Estado
                 </label>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdCommand" class="control-label">Idcomando</label>
-                <select asp-for="IdCommand" class="form-control" asp-items="ViewBag.IdCommand"></select>
+                <label asp-for="IdCommand" class="control-label">Comando</label>
+                <select asp-for="IdCommand" class="form-control" asp-items="ViewBag.IdCommand" required>
+                    <option value="">Seleccione un comando</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione un comando.
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+
+            <div class="form-group mt-3">
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Volver atrás</a>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
 </div>
 
 @section Scripts {

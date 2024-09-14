@@ -1,18 +1,18 @@
 ﻿@model IEnumerable<FusdecMvc.Models.School>
 
 @{
-    ViewData["Title"] = "Índice";  // Changed title to "Índice" (Spanish for "Index")
+    ViewData["Title"] = "Colegios";  // Changed title to "Índice" (Spanish for "Index")
 }
 
-<h1>Estudiantes</h1>  <p>  <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Escuela</a>  </p>
+<h1>Colegios</h1>  <p>  <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Colegios</a>  </p>
 <table id="escuelasTabla" class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SchoolName)
+                Nombre del colegio
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SchoolEmail)
+                Correo del colegio
             </th>
             <th></th>
         </tr>

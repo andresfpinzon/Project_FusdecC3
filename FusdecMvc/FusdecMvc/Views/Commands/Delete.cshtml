@@ -6,40 +6,50 @@
 
 <h1>Eliminar</h1>
 
-<h3>¿Estás seguro de que quieres eliminar los datos?</h3>
-<div>
-    <h4>Comando</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Nombre 
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommandName)
-        </dd>
-        <dt class="col-sm-2">
-           Estado
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CommandStatus)
-        </dd>
-        <dt class="col-sm-2">
-            Ubicacion
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UbicacionComando)
-        </dd>
-        <dt class="col-sm-2">
-            Fundacion ala que pertenece
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Fundation.IdFundation)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-header">
+        <h3>¿Estás seguro de que quieres eliminar los datos?</h3>
+    </div>
+    <div class="card-body">
+        <h4>Comando</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">
+                Nombre
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CommandName)
+            </dd>
+            <dt class="col-sm-3">
+                Estado
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CommandStatus)
+            </dd>
+            <dt class="col-sm-3">
+                Ubicación
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.UbicacionComando)
+            </dd>
+            <dt class="col-sm-3">
+                Fundación a la que pertenece
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Fundation.IdFundation)
+            </dd>
+        </dl>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdCommand" />
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver atrás</a>
-    </form>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="IdCommand" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-trash"></i> Borrar
+            </button>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
+            </div>
+        </form>
+    </div>
 </div>

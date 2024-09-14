@@ -12,12 +12,12 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="SchoolName" class="control-label"></label>
+                <label asp-for="SchoolName" class="control-label">Nombre del colegio</label>
                 <input asp-for="SchoolName" class="form-control" />
                 <span asp-validation-for="SchoolName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SchoolEmail" class="control-label"></label>
+                <label asp-for="SchoolEmail" class="control-label">Correo </label>
                 <input asp-for="SchoolEmail" class="form-control" />
                 <span asp-validation-for="SchoolEmail" class="text-danger"></span>
             </div>

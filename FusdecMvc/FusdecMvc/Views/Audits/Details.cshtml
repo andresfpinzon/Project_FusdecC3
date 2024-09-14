@@ -1,13 +1,13 @@
 ﻿@model FusdecMvc.Models.Audit
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de la Auditoría";
 }
 
-<h1>Details</h1>
+<h1 class="text-center mb-4">Detalles de la Auditoría</h1>
 
-<div>
-    <h4>Audit</h4>
+<div class="container">
+    <h4>Auditoría</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -29,8 +29,13 @@
             @Html.DisplayFor(model => model.Certificate.IdCertificate)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdAudit" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a> |
-    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.IdAudit" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-secondary mt-3">
+            &#8592; Volver atrás
+        </a>
+    </div>
 </div>

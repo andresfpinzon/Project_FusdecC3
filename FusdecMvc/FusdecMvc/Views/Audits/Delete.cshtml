@@ -1,14 +1,14 @@
 ﻿@model FusdecMvc.Models.Audit
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Auditoría";
 }
 
-<h1>Delete</h1>
+<h1 class="text-center mb-4">Eliminar Auditoría</h1>
 
-<h3>Are you sure you want to delete this audit?</h3>
-<div>
-    <h4>Audit</h4>
+<h3 class="text-center">¿Está seguro de que desea eliminar esta auditoría?</h3>
+<div class="container">
+    <h4>Detalles de la Auditoría</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -31,14 +31,14 @@
         </dd>
     </dl>
 
-    <form asp-action="Delete">
+    <form asp-action="Delete" class="mt-4">
         <input type="hidden" asp-for="IdAudit" />
         <button type="submit" class="btn btn-danger">
-            <i class="fa fa-trash"></i> Delete
+            <i class="fa fa-trash"></i> Borrar
         </button>
         <div>
             <a asp-action="Index" class="btn btn-secondary mt-3">
-                Back to List
+                &#8592; Volver atrás
             </a>
         </div>
     </form>

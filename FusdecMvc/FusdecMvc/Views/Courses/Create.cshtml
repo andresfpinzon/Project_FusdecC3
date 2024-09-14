@@ -6,45 +6,63 @@
 
 <h1>Crear</h1>
 
-<h4>Curso</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Create" class="needs-validation" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="CourseName" class="control-label">Nombre</label>
-                <input asp-for="CourseName" class="form-control" />
-                <span asp-validation-for="CourseName" class="text-danger"></span>
+                <label asp-for="CourseName" class="control-label"></label>
+                <input asp-for="CourseName" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del curso.
+                </div>
             </div>
+
             <div class="form-group">
-                <label asp-for="CourseDescription" class="control-label">Descripcion</label>
-                <input asp-for="CourseDescription" class="form-control" />
-                <span asp-validation-for="CourseDescription" class="text-danger"></span>
+                <label asp-for="CourseDescription" class="control-label"></label>
+                <textarea asp-for="CourseDescription" class="form-control" rows="3" required></textarea>
+                <div class="invalid-feedback">
+                    Por favor, ingrese la descripción del curso.
+                </div>
             </div>
+
             <div class="form-group">
-                <label asp-for="CourseHourlyIntensity" class="control-label">Intencidadhoraria</label>
-                <input asp-for="CourseHourlyIntensity" class="form-control" />
-                <span asp-validation-for="CourseHourlyIntensity" class="text-danger"></span>
+                <label asp-for="CourseHourlyIntensity" class="control-label"></label>
+                <input asp-for="CourseHourlyIntensity" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese la intensidad horaria del curso.
+                </div>
             </div>
-            <div class="form-group form-check">Estado
+
+            <div class="form-group form-check">
+                <input class="form-check-input" asp-for="CourseEstatus" required>
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="CourseEstatus" /> 
+                    Estado
                 </label>
             </div>
+
             <div class="form-group">
-                <label asp-for="IdFundation" class="control-label">Id de la fundacion</label>
-                <select asp-for="IdFundation" class="form-control" asp-items="ViewBag.IdFundation"></select>
+                <label asp-for="IdFundation" class="control-label"></label>
+                <select asp-for="IdFundation" class="form-control" asp-items="ViewBag.IdFundation" required>
+                    <option value="">Seleccione una fundación</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione una fundación.
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+            <div class="form-group mt-3">
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Volver atrás</a>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
 </div>
 
 @section Scripts {

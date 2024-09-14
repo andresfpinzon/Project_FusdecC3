@@ -7,54 +7,77 @@
 <h1>Create Certificate</h1>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Create" class="needs-validation" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="StudentName" class="control-label">Nombres</label>
-                <input asp-for="StudentName" class="form-control" />
-                <span asp-validation-for="StudentName" class="text-danger"></span>
+                <label asp-for="StudentName" class="control-label">Nombre del estudiante</label>
+                <input asp-for="StudentName" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del estudiante.
+                </div>
             </div>
+
             <div class="form-group">
-                <label asp-for="StudentLastName" class="control-label">Apellidos</label>
-                <input asp-for="StudentLastName" class="form-control" />
-                <span asp-validation-for="StudentLastName" class="text-danger"></span>
+                <label asp-for="StudentLastName" class="control-label">Apellidos del estudiante </label>
+                <input asp-for="StudentLastName" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese los apellidos del estudiante.
+                </div>
             </div>
+
             <div class="form-group">
-                <label asp-for="VerificationCode" class="control-label">Codigo De Verificacion</label>
-                <input asp-for="VerificationCode" class="form-control" />
-                <span asp-validation-for="VerificationCode" class="text-danger"></span>
+                <label asp-for="VerificationCode" class="control-label">Codigo de verificacion</label>
+                <input asp-for="VerificationCode" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el código de verificación.
+                </div>
             </div>
+
             <div class="form-group">
-                <label asp-for="NameOfIssuerCert" class="control-label">Nombre del Emisor </label>
-                <input asp-for="NameOfIssuerCert" class="form-control" />
-                <span asp-validation-for="NameOfIssuerCert" class="text-danger"></span>
+                <label asp-for="NameOfIssuerCert" class="control-label">Nombre del emisor </label>
+                <input asp-for="NameOfIssuerCert" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del emisor del certificado.
+                </div>
             </div>
+
             <div class="form-group">
-                <label asp-for="UserDocumentNumber" class="control-label">Numero De Documento</label>
-                <input asp-for="UserDocumentNumber" class="form-control" />
-                <span asp-validation-for="UserDocumentNumber" class="text-danger"></span>
+                <label asp-for="UserDocumentNumber" class="control-label">Numero de documento</label>
+                <input asp-for="UserDocumentNumber" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el número de documento del usuario.
+                </div>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">Estado
-                    <input class="form-check-input" asp-for="CertificateStatus" />
+                <input class="form-check-input" asp-for="CertificateStatus" required>
+                <label class="form-check-label">
+                    Estado
                 </label>
             </div>
+
             <div class="form-group">
                 <label asp-for="CourseName" class="control-label">Nombre del curso</label>
-                <input asp-for="CourseName" class="form-control" />
-                <span asp-validationfor="CourseName" class="text-danger"></span>
+                <input asp-for="CourseName" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del curso.
+                </div>
             </div>
+
             <div class="form-group mt-3">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
 </div>
 
 @section Scripts {

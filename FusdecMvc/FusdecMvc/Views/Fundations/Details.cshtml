@@ -1,23 +1,27 @@
 ﻿@model FusdecMvc.Models.Fundation
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles";
 }
 
 <h1>Detalles</h1>
 
-<div>
-    <h4>Fundación</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Nombre de la fundacion
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FundationName)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-header">
+        <h4>Fundación</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">
+                Nombre de la fundación
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.FundationName)
+            </dd>
+        </dl>
+    </div>
 </div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdFundation" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
 </div>

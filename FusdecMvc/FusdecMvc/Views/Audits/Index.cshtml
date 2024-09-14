@@ -1,27 +1,28 @@
 ﻿@model IEnumerable<FusdecMvc.Models.Audit>
 
 @{
-    ViewData["Title"] = "Audit Index";
+    ViewData["Title"] = "Índice de Auditorías";
 }
 
-<h1>Audit Index</h1>
+<h1 class="text-center mb-4">Índice de Auditorías</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Create New</a>
+<p class="text-right">
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Crear Nuevo</a>
 </p>
+
 <table class="table table-striped table-bordered" id="auditTable">
     <thead>
         <tr>
             <th>
-                Fecha de la auditoria
+                Fecha de la Auditoría
             </th>
             <th>
-                Nombre del emisor de la auditoria
+                Nombre del Emisor de la Auditoría
             </th>
             <th>
                 Certificado
             </th>
-            <th></th>
+            <th style="width: 200px;"></th> <!-- Columna para botones -->
         </tr>
     </thead>
     <tbody>
@@ -37,10 +38,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Certificate.IdCertificate)
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdAudit" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdAudit" class="btn btn-info"><i class="fas fa-info-circle"></i> Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdAudit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@item.IdAudit" class="btn btn-warning"><i class="fas fa-edit"></i> Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.IdAudit" class="btn btn-info"><i class="fas fa-info-circle"></i> Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@item.IdAudit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</a>
                 </td>
             </tr>
         }
@@ -49,8 +50,13 @@
 
 @section Scripts {
     <script>
+
         $(document).ready(function () {
-            $('#auditTable').DataTable();
-        });
+            $('#auditTable').DataTable({
+                "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json" // Cargar el lenguaje en español
+                        }
+                    });
+                });
     </script>
 }
