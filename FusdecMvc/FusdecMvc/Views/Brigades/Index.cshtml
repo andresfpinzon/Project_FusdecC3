@@ -25,7 +25,7 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.BrigadeName)</td>
                 <td>@Html.DisplayFor(modelItem => item.BrigadeLocation)</td>
-                <td>@Html.DisplayFor(modelItem => item.BrigadeStatus)</td>
+                <td>@(item.BrigadeStatus ? "Activo" : "Inactivo")</td>
                 <td>@Html.DisplayFor(modelItem => item.Command.IdCommand)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdBrigade" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |

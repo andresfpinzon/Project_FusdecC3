@@ -17,10 +17,12 @@
                 <input asp-for="UnitName" class="form-control" />
                 <span asp-validation-for="UnitName" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="UnitState" /> Estado
-                </label>
+            <div class="form-group">
+                <label asp-for="UnitState" class="form-label">Estado</label>
+                <select class="form-control" asp-for="UnitState" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="UnitLocation" class="control-label">Ubicación</label>

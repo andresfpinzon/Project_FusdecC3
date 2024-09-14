@@ -34,7 +34,7 @@
                 Estado
             </dt>
             <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.CourseEstatus)
+                @(Model.CourseEstatus ? "Activo" : "Inactivo")
             </dd>
             <dt class="col-sm-3">
                 Fundación a la que pertenece
@@ -45,7 +45,7 @@
         </dl>
     </div>
 </div>
-
+<br />
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdCourse" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
 </div>

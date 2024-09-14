@@ -29,11 +29,12 @@
                 </div>
             </div>
 
-            <div class="form-group form-check">
-                <input class="form-check-input" asp-for="BrigadeStatus" required>
-                <label class="form-check-label">
-                    Estado
-                </label>
+            <div class="form-group">
+                <label asp-for="BrigadeStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="BrigadeStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
             </div>
 
             <div class="form-group">

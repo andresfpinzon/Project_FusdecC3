@@ -14,22 +14,23 @@
             <input type="hidden" asp-for="IdCommand" />
 
             <div class="form-group">
-                <label asp-for="CommandName" class="control-label"></label>
+                <label asp-for="CommandName" class="control-label">Nombre</label>
                 <input asp-for="CommandName" class="form-control" required>
                 <div class="invalid-feedback">
                     Por favor, ingrese el nombre del comando.
                 </div>
             </div>
 
-            <div class="form-group form-check">
-                <input class="form-check-input" asp-for="CommandStatus" required>
-                <label class="form-check-label">
-                    Estado
-                </label>
+            <div class="form-group">
+                <label asp-for="CommandStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="CommandStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
             </div>
 
             <div class="form-group">
-                <label asp-for="UbicacionComando" class="control-label"></label>
+                <label asp-for="UbicacionComando" class="control-label">Ubicacion</label>
                 <input asp-for="UbicacionComando" class="form-control" required>
                 <div class="invalid-feedback">
                     Por favor, ingrese la ubicación del comando.
@@ -37,7 +38,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="IdFundation" class="control-label"></label>
+                <label asp-for="IdFundation" class="control-label">Fundacion</label>
                 <select asp-for="IdFundation" class="form-control" asp-items="ViewBag.IdFundation" required>
                     <option value="">Seleccione una fundación</option>
                 </select>

@@ -22,7 +22,10 @@ namespace FusdecMvc.Controllers
         // GET: Editions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Editions.ToListAsync());
+            var Editions = _context.Editions.Include(e => e.Course)
+            .Include(e => e.EditionSchedules)
+                .ThenInclude(es => es.Schedule);
+            return View(await Editions.ToListAsync());
         }
 
         // GET: Editions/Details/5
@@ -34,6 +37,9 @@ namespace FusdecMvc.Controllers
             }
 
             var edition = await _context.Editions
+                .Include(e => e.Course)
+                .Include(e => e.EditionSchedules)
+                    .ThenInclude(es => es.Schedule)
                 .FirstOrDefaultAsync(m => m.IdEdition == id);
             if (edition == null)
             {
@@ -46,6 +52,8 @@ namespace FusdecMvc.Controllers
         // GET: Editions/Create
         public IActionResult Create()
         {
+            ViewBag.Schedules = _context.Schedules.ToList();
+            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse");
             return View();
         }
 
@@ -54,15 +62,32 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse")] Edition edition)
+        public async Task<IActionResult> Create([Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse,Title,IdCourse,EditionStatus")] Edition edition, Guid[] selectedSchedules)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 edition.IdEdition = Guid.NewGuid();
                 _context.Add(edition);
                 await _context.SaveChangesAsync();
+
+                if (selectedSchedules != null && selectedSchedules.Length > 0)
+                {
+                    foreach (var scheduleId in selectedSchedules)
+                    {
+                        var editionSchedule = new EditionSchedule
+                        {
+                            IdEdition = edition.IdEdition,
+                            IdSchedule = scheduleId
+                        };
+                        _context.EditionSchedules.Add(editionSchedule);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Schedules = _context.Schedules.ToList();
+            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse", edition.IdCourse);
             return View(edition);
         }
 
@@ -74,11 +99,19 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            var edition = await _context.Editions.FindAsync(id);
+            var edition = await _context.Editions
+                .Include(e => e.EditionSchedules)
+                    .ThenInclude(es => es.Schedule)
+                .FirstOrDefaultAsync(e => e.IdEdition == id);
             if (edition == null)
             {
                 return NotFound();
             }
+
+            var schedules = await _context.Schedules.ToListAsync();
+            ViewData["Schedules"] = new MultiSelectList(schedules, "IdSchedule", "ScheduleTitle", edition.EditionSchedules.Select(es => es.IdSchedule));
+
+            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse", edition.IdCourse);
             return View(edition);
         }
 
@@ -87,18 +120,31 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse")] Edition edition)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse,Title,IdCourse,EditionStatus")] Edition edition, Guid[] selectedSchedules)
         {
             if (id != edition.IdEdition)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(edition);
+                    // Eliminar los horarios antiguos
+                    var existingSchedules = _context.EditionSchedules.Where(es => es.IdEdition == id);
+                    _context.EditionSchedules.RemoveRange(existingSchedules);
+
+                    // Agregar los nuevos horarios seleccionados
+                    if (selectedSchedules != null)
+                    {
+                        foreach (var scheduleId in selectedSchedules)
+                        {
+                            _context.EditionSchedules.Add(new EditionSchedule { IdEdition = id, IdSchedule = scheduleId });
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -114,6 +160,9 @@ namespace FusdecMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var schedules = await _context.Schedules.ToListAsync();
+            ViewData["Schedules"] = new MultiSelectList(schedules, "IdSchedule", "ScheduleTitle", selectedSchedules);
+            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse", edition.IdCourse);
             return View(edition);
         }
 
@@ -126,6 +175,8 @@ namespace FusdecMvc.Controllers
             }
 
             var edition = await _context.Editions
+                .Include(e => e.EditionSchedules)
+                    .ThenInclude(es => es.Schedule)
                 .FirstOrDefaultAsync(m => m.IdEdition == id);
             if (edition == null)
             {

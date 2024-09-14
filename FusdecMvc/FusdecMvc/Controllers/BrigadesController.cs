@@ -59,7 +59,7 @@ namespace FusdecMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdBrigade,BrigadeName,BrigadeLocation,BrigadeStatus,IdCommand")] Brigade brigade)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 brigade.IdBrigade = Guid.NewGuid();
                 _context.Add(brigade);
@@ -99,7 +99,7 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {

@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Horario</a>
 </p>
-<table id="horariostabla" class="table">
+<table id="dataTable" class="table">
     <thead>
         <tr>
             <th>
@@ -40,7 +40,7 @@
                 @Html.DisplayFor(modelItem => item.ScheduleEndDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ScheduleStatus)
+                    @(item.ScheduleStatus ? "Activo" : "Inactivo")
             </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdSchedule" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
@@ -55,7 +55,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#horariostabla').DataTable({
+            $('#dataTable').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",

@@ -22,7 +22,7 @@ public partial class Schedule
 
     public DateTime ScheduleEndDate { get; set; }
 
-    public bool? ScheduleStatus { get; set; }
+    public bool ScheduleStatus { get; set; }
 
-    public ICollection<StudentSchedule> StudentSchedules { get; set; } = new List<StudentSchedule>();
+    public ICollection<EditionSchedule> StudentSchedules { get; set; } = new List<EditionSchedule>();
 }

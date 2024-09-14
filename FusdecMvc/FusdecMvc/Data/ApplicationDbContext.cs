@@ -90,16 +90,16 @@ namespace FusdecMvc.Data
                 .HasForeignKey(sna => sna.IdNonAttendance)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuración de la tabla de rompimiento StudentSchedule
-            modelBuilder.Entity<StudentSchedule>()
-                .HasKey(ss => new { ss.IdStudent, ss.IdSchedule });
+            // Configuración de la tabla de rompimiento EditionSchedule
+            modelBuilder.Entity<EditionSchedule>()
+                .HasKey(ss => new { ss.IdEdition, ss.IdSchedule });
 
-            modelBuilder.Entity<StudentSchedule>()
-                .HasOne(ss => ss.Student)
-                .WithMany(s => s.StudentSchedules)
-                .HasForeignKey(ss => ss.IdStudent);
+            modelBuilder.Entity<EditionSchedule>()
+                .HasOne(ss => ss.Edition)
+                .WithMany(s => s.EditionSchedules)
+                .HasForeignKey(ss => ss.IdEdition);
 
-            modelBuilder.Entity<StudentSchedule>()
+            modelBuilder.Entity<EditionSchedule>()
                 .HasOne(ss => ss.Schedule)
                 .WithMany(s => s.StudentSchedules)
                 .HasForeignKey(ss => ss.IdSchedule);
@@ -163,12 +163,29 @@ namespace FusdecMvc.Data
                 .WithMany() 
                 .HasForeignKey(na => na.IdReport)
                 .OnDelete(DeleteBehavior.Cascade);
+            // Configurar la relación entre Estudiante y escuela
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.School)
+                .WithMany(s => s.Students)
+                .HasForeignKey(s => s.IdSchool);
+            // Configurar la relación entre Estudiante y unidad
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.Unit)
+                .WithMany(u => u.Students)
+                .HasForeignKey(s => s.IdUnit);
+            // Configurar la relación entre Esdicion y curso
+            modelBuilder.Entity<Edition>()
+                .HasOne(e => e.Course)
+                .WithMany(c => c.Editions)
+                .HasForeignKey(e => e.IdCourse);
+
+
             // Relación uno a uno entre ApplicationUser y Estudiante
-            modelBuilder.Entity<ApplicationUser>()
-                .HasOne(a => a.Student)
-                .WithOne(e => e.ApplicationUser)
-                .HasForeignKey<ApplicationUser>(a => a.IdStudent)
-                .IsRequired(false);
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasOne(a => a.Student)
+            //    .WithOne(e => e.ApplicationUser)
+            //    .HasForeignKey<ApplicationUser>(a => a.IdStudent)
+            //    .IsRequired(false);
 
         }
 
@@ -192,7 +209,7 @@ namespace FusdecMvc.Data
         public DbSet<StudentEdition> StudentEditions { get; set; }
         public DbSet<StudentGrade> StudentGrades {  get; set; } 
         public DbSet<StudentNonAttendance> StudentNonAttendances { get;set; }
-        public DbSet<StudentSchedule> StudentSchedules { get; set; } 
+        public DbSet<EditionSchedule> EditionSchedules { get; set; } 
         public DbSet<StudentAttendance> StudentAttendances { get; set; }     
         public DbSet<Unit> Units { get; set; }
 

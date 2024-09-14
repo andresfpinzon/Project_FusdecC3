@@ -9,20 +9,20 @@
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Estudiante</a>
 </p>
-<table id="estudiantestabla" class="table">
+<table id="dataTable" class="table">
     <thead>
         <tr>
             <th>
-                Fecha_Nacimiento
+                Fecha de Nacimiento
             </th>
             <th>
                 Género
             </th>
             <th>
-                Id_Unidad
+                Unidad
             </th>
             <th>
-                Id_Colegio
+                Colegio
             </th>
             <th></th>
         </tr>
@@ -55,7 +55,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#estudiantestabla').DataTable({
+            $('#dataTable').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",

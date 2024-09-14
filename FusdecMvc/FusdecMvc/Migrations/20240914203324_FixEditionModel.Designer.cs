@@ -4,6 +4,7 @@ using FusdecMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FusdecMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914203324_FixEditionModel")]
+    partial class FixEditionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,6 +201,9 @@ namespace FusdecMvc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CourseIdCourse")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateOnly>("EditionEndDate")
                         .HasColumnType("date");
 
@@ -216,7 +222,7 @@ namespace FusdecMvc.Migrations
 
                     b.HasKey("IdEdition");
 
-                    b.HasIndex("IdCourse");
+                    b.HasIndex("CourseIdCourse");
 
                     b.ToTable("Editions");
                 });
@@ -738,7 +744,7 @@ namespace FusdecMvc.Migrations
                 {
                     b.HasOne("FusdecMvc.Models.Course", "Course")
                         .WithMany("Editions")
-                        .HasForeignKey("IdCourse")
+                        .HasForeignKey("CourseIdCourse")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

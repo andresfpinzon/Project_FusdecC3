@@ -4,6 +4,7 @@ using FusdecMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FusdecMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914194126_StatusChanged")]
+    partial class StatusChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,25 +201,26 @@ namespace FusdecMvc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CourseIdCourse")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateOnly>("EditionEndDate")
                         .HasColumnType("date");
 
                     b.Property<DateOnly>("EditionStartDate")
                         .HasColumnType("date");
 
-                    b.Property<bool>("EditionStatus")
-                        .HasColumnType("bit");
-
                     b.Property<Guid>("IdCourse")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("SchoolIdSchool")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("IdEdition");
 
-                    b.HasIndex("IdCourse");
+                    b.HasIndex("CourseIdCourse");
+
+                    b.HasIndex("SchoolIdSchool");
 
                     b.ToTable("Editions");
                 });
@@ -360,23 +364,18 @@ namespace FusdecMvc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("DocumentNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DocumentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("IdSchool")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("IdUnit")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SchoolIdSchool")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly>("StudentDateBirth")
                         .HasColumnType("date");
@@ -388,11 +387,22 @@ namespace FusdecMvc.Migrations
                     b.Property<bool>("StudentStatus")
                         .HasColumnType("bit");
 
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UnitIdUnit")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("numeroDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("IdStudent");
 
-                    b.HasIndex("IdSchool");
+                    b.HasIndex("SchoolIdSchool");
 
-                    b.HasIndex("IdUnit");
+                    b.HasIndex("UnitIdUnit");
 
                     b.ToTable("Students");
                 });
@@ -738,11 +748,19 @@ namespace FusdecMvc.Migrations
                 {
                     b.HasOne("FusdecMvc.Models.Course", "Course")
                         .WithMany("Editions")
-                        .HasForeignKey("IdCourse")
+                        .HasForeignKey("CourseIdCourse")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FusdecMvc.Models.School", "School")
+                        .WithMany()
+                        .HasForeignKey("SchoolIdSchool")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("School");
                 });
 
             modelBuilder.Entity("FusdecMvc.Models.EditionSchedule", b =>
@@ -798,13 +816,13 @@ namespace FusdecMvc.Migrations
                 {
                     b.HasOne("FusdecMvc.Models.School", "School")
                         .WithMany("Students")
-                        .HasForeignKey("IdSchool")
+                        .HasForeignKey("SchoolIdSchool")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FusdecMvc.Models.Unit", "Unit")
                         .WithMany("Students")
-                        .HasForeignKey("IdUnit")
+                        .HasForeignKey("UnitIdUnit")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Curso</a>
 </p>
-<table id="cursosTabla" class="table table-striped table-bordered">
+<table id="dataTable" class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>
@@ -44,7 +44,7 @@
                     @Html.DisplayFor(modelItem => item.CourseHourlyIntensity)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourseEstatus)
+                    @(item.CourseEstatus ? "Activo" : "Inactivo")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Fundation.IdFundation)
@@ -62,7 +62,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#cursosTabla').DataTable({
+            $('#dataTable').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",

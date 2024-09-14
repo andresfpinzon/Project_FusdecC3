@@ -4,6 +4,7 @@ using FusdecMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FusdecMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240914200621_titleEdition")]
+    partial class titleEdition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,14 +201,14 @@ namespace FusdecMvc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CourseIdCourse")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateOnly>("EditionEndDate")
                         .HasColumnType("date");
 
                     b.Property<DateOnly>("EditionStartDate")
                         .HasColumnType("date");
-
-                    b.Property<bool>("EditionStatus")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("IdCourse")
                         .HasColumnType("uniqueidentifier");
@@ -216,7 +219,7 @@ namespace FusdecMvc.Migrations
 
                     b.HasKey("IdEdition");
 
-                    b.HasIndex("IdCourse");
+                    b.HasIndex("CourseIdCourse");
 
                     b.ToTable("Editions");
                 });
@@ -738,7 +741,7 @@ namespace FusdecMvc.Migrations
                 {
                     b.HasOne("FusdecMvc.Models.Course", "Course")
                         .WithMany("Editions")
-                        .HasForeignKey("IdCourse")
+                        .HasForeignKey("CourseIdCourse")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

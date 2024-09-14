@@ -1,25 +1,34 @@
 ﻿@model IEnumerable<FusdecMvc.Models.Edition>
 
 @{
-    ViewData["Title"] = "Ediciones";
+    ViewData["Title"] = "Index";
 }
 
 <h1>Ediciones</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Edición</a>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Edicion</a>
 </p>
-<table id="edicionestabla" class="table">
+<table id="dataTable" class="table">
     <thead>
         <tr>
             <th>
-                Fecha de inicio
+                Nombre
             </th>
             <th>
-                Fecha de finalización
+                Fecha de Inicio
             </th>
             <th>
-                Id del Curso
+                Fecha de Fin
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Curso
+            </th>
+            <th>
+                Horarios
             </th>
             <th></th>
         </tr>
@@ -28,19 +37,32 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.EditionStartDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EditionEndDate)
             </td>
             <td>
+                @(item.EditionStatus ? "Activo" : "Inactivo")
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.IdCourse)
             </td>
-                <td>
+            <td>
+                    @foreach (var editionShedule in item.EditionSchedules)
+                    {
+                        var schedule = editionShedule.Schedule;
+                        <span>@schedule.ScheduleTitle</span>
+                        <br />
+                    }
+            </td>
+            <td>
                     <a asp-action="Edit" asp-route-id="@item.IdEdition" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                     <a asp-action="Details" asp-route-id="@item.IdEdition" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
                     <a asp-action="Delete" asp-route-id="@item.IdEdition" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
-                </td>
         </tr>
 }
     </tbody>
@@ -49,7 +71,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#edicionestabla').DataTable({
+            $('#dataTable').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",

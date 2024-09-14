@@ -6,11 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FusdecMvc.Models;
 
-public class StudentSchedule
+public class EditionSchedule
 {
-    public Guid IdStudent { get; set; }
+    public Guid IdEdition { get; set; }
     public Guid IdSchedule { get; set; }
-    public DateOnly? Fecha { get; set; }
     public Schedule Schedule { get; set; } 
-    public Student Student { get; set; } 
+    public Edition Edition { get; set; } 
 }

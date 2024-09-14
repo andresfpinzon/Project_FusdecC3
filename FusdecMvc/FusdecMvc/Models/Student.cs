@@ -14,6 +14,9 @@ public partial class Student
     {
          this.IdStudent = Guid.NewGuid();
     }
+    public string Name { get; set; }
+    public string DocumentType{ get; set; }
+    public string DocumentNumber { get; set; }
     public DateOnly StudentDateBirth { get; set; }
     public string StudentGender { get; set; } 
     public Guid IdUnit { get; set; }
@@ -21,13 +24,12 @@ public partial class Student
     public  Certificate? Certificate { get; set; }
     public School School { get; set; } 
     public Unit Unit { get; set; }
+    public bool StudentStatus { get; set; }
 
     // Relación con ApplicationUser
-    public string UserId { get; set; }
-    public ApplicationUser ApplicationUser { get; set; }
-
+    //public string UserId { get; set; }
+    //public ApplicationUser ApplicationUser { get; set; }
     public ICollection<StudentEdition> StudentEditions { get; set; } = new List<StudentEdition>();
-    public ICollection<StudentSchedule> StudentSchedules { get; set; } = new List<StudentSchedule>();
     public ICollection<StudentGrade> StudentGrades { get; set; } = new List<StudentGrade>();
     public ICollection<StudentNonAttendance> StudentNonAttendances { get; set; } = new List<StudentNonAttendance>();
     public ICollection<StudentAttendance> StudentAttendances { get; set; } = new List<StudentAttendance>();

@@ -59,7 +59,7 @@ namespace FusdecMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCourse,CourseName,CourseDescription,CourseHourlyIntensity,CourseEstatus,IdFundation")] Course course)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 course.IdCourse = Guid.NewGuid();
                 _context.Add(course);
@@ -99,7 +99,7 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {

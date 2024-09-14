@@ -6,34 +6,70 @@
 
 <h1>Detalles</h1>
 
-<div>
-    <h4>Edición</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Fecha de inicio
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EditionStartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            Fecha de finalización
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EditionEndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            Id del Curso
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCourse)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-header">
+        <h4>Edicion</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-2">
+                Titulo
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class = "col-sm-2">
+                Fecha de inicio
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.EditionStartDate)
+            </dd>
+            <dt class = "col-sm-2">
+                Fecha de Fin
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.EditionEndDate)
+            </dd>
+            <dt class="col-sm-2">
+                Estado
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.EditionStatus ? "Activo" : "Inactivo")
+            </dd>
+            <dt class = "col-sm-2">
+                Curso
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.IdCourse)
+            </dd>
+        </dl>
+        <div>
+            <h4>Horario(s):</h4>
+            @if (Model.EditionSchedules.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var editionSchedule in Model.EditionSchedules)
+                    {
+                        <li class="list-group-item d-flex align-items-center">
+                            <i title="Horarios"></i>
+                            <span class="fw-semibold">
+                                @editionSchedule.Schedule.ScheduleTitle
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Esta edicion no tiene horarios asociados.</p>
+            }
+        </div>
+    </div>
 </div>
+<br />
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdEdition" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
-</div>
-<div>
+    <br />
     <a asp-action="Index" class="btn btn-secondary mt-3">
         &#8592; Volver atrás
     </a>
