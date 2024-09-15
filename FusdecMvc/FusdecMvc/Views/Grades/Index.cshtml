@@ -28,13 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Approved)
+                 @(item.Approved ? "Aprobado" : "No aprobado")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ObservationGrade)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Report.IdReport)
+                @Html.DisplayFor(modelItem => item.Report.Observation)
             </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdGrade" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>

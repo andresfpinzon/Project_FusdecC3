@@ -48,7 +48,7 @@ namespace FusdecMvc.Controllers
         // GET: Grades/Create
         public IActionResult Create()
         {
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport");
+            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation");
             return View();
         }
 
@@ -83,7 +83,7 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport", grade.IdReport);
+            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation", grade.IdReport);
             return View(grade);
         }
 
