@@ -49,7 +49,7 @@
                 @(item.EditionStatus ? "Activo" : "Inactivo")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdCourse)
+                @Html.DisplayFor(modelItem => item.Course.CourseName)
             </td>
             <td>
                     @foreach (var editionShedule in item.EditionSchedules)

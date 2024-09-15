@@ -54,7 +54,7 @@ namespace FusdecMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.Schedules = _context.Schedules.ToList();
-            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse");
+            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "CourseName");
             return View();
         }
 
@@ -112,7 +112,7 @@ namespace FusdecMvc.Controllers
             var schedules = await _context.Schedules.ToListAsync();
             ViewData["Schedules"] = new MultiSelectList(schedules, "IdSchedule", "ScheduleTitle", edition.EditionSchedules.Select(es => es.IdSchedule));
 
-            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse", edition.IdCourse);
+            ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "CourseName", edition.IdCourse);
             return View(edition);
         }
 

@@ -40,8 +40,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdCourse" class="control-label">Curso</label>
-                <input asp-for="IdCourse" class="form-control" />
-                <span asp-validation-for="IdCourse" class="text-danger"></span>
+                <select asp-for="IdCourse" class="form-control" asp-items="ViewBag.IdCourse" required>
+                    <option value="">Seleccione un Curso</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione un curso.
+                </div>
             </div>
             <div class="form-group">
                 <label for="selectedSchedules" class="control-label">Seleccionar Horarios</label>
