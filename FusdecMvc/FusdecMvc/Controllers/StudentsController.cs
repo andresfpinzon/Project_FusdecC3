@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace FusdecMvc.Controllers
 {
@@ -22,7 +23,12 @@ namespace FusdecMvc.Controllers
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Students.ToListAsync());
+            var Students = _context.Students
+                .Include(s => s.School)
+                .Include(s => s.Unit)
+                .Include(s => s.StudentEditions)
+                    .ThenInclude(se => se.Edition);
+            return View(await Students.ToListAsync());
         }
 
         // GET: Students/Details/5
@@ -34,6 +40,10 @@ namespace FusdecMvc.Controllers
             }
 
             var student = await _context.Students
+                .Include(s => s.School)
+                .Include(s => s.Unit)
+                .Include(s => s.StudentEditions)
+                    .ThenInclude(se => se.Edition)
                 .FirstOrDefaultAsync(m => m.IdStudent == id);
             if (student == null)
             {
@@ -46,6 +56,9 @@ namespace FusdecMvc.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
+            ViewBag.Editions = _context.Editions.ToList();
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
             return View();
         }
 
@@ -54,15 +67,32 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdStudent,StudentDateBirth,StudentGender,IdUnit,IdSchool")] Student student)
+        public async Task<IActionResult> Create([Bind("IdStudent,Name,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 student.IdStudent = Guid.NewGuid();
                 _context.Add(student);
                 await _context.SaveChangesAsync();
+                if (selectedEditions != null && selectedEditions.Length > 0)
+                {
+                    foreach (var editionId in selectedEditions)
+                    {
+                        var studentEdition = new StudentEdition
+                        {
+                            IdStudent = student.IdStudent,
+                            IdEdition = editionId
+                        };
+                        _context.StudentEditions.Add(studentEdition);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Editions = _context.Editions.ToList();
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
             return View(student);
         }
 
@@ -74,11 +104,20 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students
+                .Include(s => s.StudentEditions)
+                    .ThenInclude(se => se.Edition)
+                .FirstOrDefaultAsync(s => s.IdStudent == id);
             if (student == null)
             {
                 return NotFound();
             }
+
+            var editions = await _context.Editions.ToListAsync();
+            ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "Title", student.StudentEditions.Select(se => se.IdEdition));
+
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
             return View(student);
         }
 
@@ -87,18 +126,30 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdStudent,StudentDateBirth,StudentGender,IdUnit,IdSchool")] Student student)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdStudent,Name,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
         {
             if (id != student.IdStudent)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(student);
+                    // Eliminar las ediciones antiguas
+                    var existingStudentEditions = _context.StudentEditions.Where(se => se.IdStudent == id);
+                    _context.StudentEditions.RemoveRange(existingStudentEditions);
+                    // Agregar las nuevas ediciones seleccionadas
+                    if (selectedEditions != null)
+                    {
+                        foreach (var editionId in selectedEditions)
+                        {
+                            _context.StudentEditions.Add(new StudentEdition { IdStudent = id, IdEdition = editionId });
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -114,6 +165,11 @@ namespace FusdecMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var editions = await _context.Editions.ToListAsync();
+            ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "EditionTitle", selectedEditions);
+
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
             return View(student);
         }
 
@@ -126,6 +182,8 @@ namespace FusdecMvc.Controllers
             }
 
             var student = await _context.Students
+                .Include(s => s.StudentEditions)
+                    .ThenInclude(se => se.Edition)
                 .FirstOrDefaultAsync(m => m.IdStudent == id);
             if (student == null)
             {

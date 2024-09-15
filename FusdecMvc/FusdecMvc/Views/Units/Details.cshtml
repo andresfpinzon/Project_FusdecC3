@@ -6,9 +6,11 @@
 
 <h1>Detalles</h1>
 
-<div>
-    <h4>Unidad</h4>
-    <hr />
+<div class="card">
+    <div class="card-header">
+        <h4>Curso</h4>
+    </div>
+    <div class="card-body">
     <dl class="row">
         <dt class = "col-sm-2">
             Nombre
@@ -35,6 +37,7 @@
             @Html.DisplayFor(model => model.Brigade.BrigadeName)
         </dd>
     </dl>
+</div>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdUnit" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>

@@ -13,23 +13,23 @@
     <div class="card-body">
         <h4>Curso</h4>
         <hr />
-         <dl class="row">
+        <dl class="row">
             <dt class="col-sm-2">
                 Titulo
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Title)
             </dd>
-            <dt class = "col-sm-2">
+            <dt class="col-sm-2">
                 Fecha de Inicio
             </dt>
-            <dd class = "col-sm-10">
+            <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.EditionStartDate)
             </dd>
-            <dt class = "col-sm-2">
+            <dt class="col-sm-2">
                 Fecha de Fin
             </dt>
-            <dd class = "col-sm-10">
+            <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.EditionEndDate)
             </dd>
             <dt class="col-sm-2">
@@ -38,47 +38,47 @@
             <dd class="col-sm-10">
                 @(Model.EditionStatus ? "Activo" : "Inactivo")
             </dd>
-            <dt class = "col-sm-2">
+            <dt class="col-sm-2">
                 Curso
             </dt>
-            <dd class = "col-sm-10">
+            <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.IdCourse)
             </dd>
-    </dl>
-    <div>
-        <h4>Horarios(es):</h4>
-        @if (Model.EditionSchedules.Any())
-        {
-            <ul class="list-group list-group-flush">
-                @foreach (var editionSchedule in Model.EditionSchedules)
-                {
-                    <li class="list-group-item d-flex align-items-center">
-                        <i  title="Horarios"></i>
-                        <span class="fw-semibold">
-                            @editionSchedule.Schedule.ScheduleTitle
-                        </span>
-                    </li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>Esta edicion no tiene horarios asociados.</p>
-        }
-    </div>
-   
-    <br />
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdEdition" />
-        <button type="submit" class="btn btn-danger">
-            <i class="fa fa-trash"></i> Eliminar
-        </button>
-        <br />
+        </dl>
         <div>
-            <a asp-action="Index" class="btn btn-secondary mt-3">
-                &#8592; Volver atrás
-            </a>
+            <h4>Horarios(es):</h4>
+            @if (Model.EditionSchedules.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var editionSchedule in Model.EditionSchedules)
+                    {
+                        <li class="list-group-item d-flex align-items-center">
+                            <i title="Horarios"></i>
+                            <span class="fw-semibold">
+                                @editionSchedule.Schedule.ScheduleTitle
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Esta edicion no tiene horarios asociados.</p>
+            }
         </div>
-    </form>
+
+        <br />
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="IdEdition" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-trash"></i> Eliminar
+            </button>
+            <br />
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
+            </div>
+        </form>
     </div>
 </div>

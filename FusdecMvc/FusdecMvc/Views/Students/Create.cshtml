@@ -13,6 +13,26 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="Name" class="control-label">Nombre Completo</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DocumentType" class="control-label">Tipo de Documento</label>
+                <select asp-for="DocumentType" class="form-control">
+                    <option value="">Selecciona un tipo de documento </option>
+                    <option value="CC">C.C</option>
+                    <option value="TI">T.I</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <span asp-validation-for="DocumentType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DocumentNumber" class="control-label">Numero de documento</label>
+                <input asp-for="DocumentNumber" class="form-control" />
+                <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="StudentDateBirth" class="control-label">Fecha de nacimiento</label>
                 <input asp-for="StudentDateBirth" class="form-control" type="date" />
                 <span asp-validation-for="StudentDateBirth" class="text-danger"></span>
@@ -28,14 +48,38 @@
                 <span asp-validation-for="StudentGender" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdUnit" class="control-label">Id de la Unidad</label>
-                <input asp-for="IdUnit" class="form-control" />
-                <span asp-validation-for="IdUnit" class="text-danger"></span>
+                <label asp-for="IdSchool" class="control-label">Colegio</label>
+                <select asp-for="IdSchool" class="form-control" asp-items="ViewBag.IdSchool" required>
+                    <option value="">Seleccione un Colegio</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione un colegio.
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="IdSchool" class="control-label">Id del colegio</label>
-                <input asp-for="IdSchool" class="form-control" />
-                <span asp-validation-for="IdSchool" class="text-danger"></span>
+                <label asp-for="IdUnit" class="control-label">Unidad</label>
+                <select asp-for="IdUnit" class="form-control" asp-items="ViewBag.IdUnit" required>
+                    <option value="">Seleccione una unidad</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione una unidad.
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="StudentStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="selectedEditions" class="control-label">Seleccionar Ediciones</label>
+                <select multiple class="form-control" id="selectedEditions" name="selectedEditions">
+                    @foreach (var edition in ViewBag.Editions)
+                    {
+                        <option value="@edition.IdEdition">@edition.Title</option>
+                    }
+                </select>
             </div>
             <div class="form-group mt-3">
                 <input type="submit" value="&#43; Crear" class="btn btn-success" />

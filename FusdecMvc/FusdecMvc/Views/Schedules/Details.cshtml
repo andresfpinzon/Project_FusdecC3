@@ -6,9 +6,11 @@
 
 <h1>Detalles</h1>
 
-<div>
-    <h4>Horario</h4>
-    <hr />
+<div class="card">
+    <div class="card-header">
+        <h4>Horarios</h4>
+    </div>
+    <div class="card-body">
     <dl class="row">
         <dt class = "col-sm-2">
             Título
@@ -35,7 +37,9 @@
             @(Model.ScheduleStatus ? "Activo" : "Inactivo")
         </dd>
     </dl>
+    </div>
 </div>
+<br />
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdSchedule" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
 </div>

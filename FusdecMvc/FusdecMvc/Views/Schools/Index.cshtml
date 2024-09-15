@@ -5,7 +5,7 @@
 }
 
 <h1>Colegios</h1>  <p>  <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Colegios</a>  </p>
-<table id="escuelasTabla" class="table">
+<table id="dataTable" class="table">
     <thead>
         <tr>
             <th>
@@ -40,7 +40,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#escuelasTabla').DataTable({
+            $('#dataTable').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",

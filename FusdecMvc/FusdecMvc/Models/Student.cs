@@ -12,17 +12,17 @@ public partial class Student
     public Guid IdStudent { get; set; }
     public Student()
     {
-         this.IdStudent = Guid.NewGuid();
+        this.IdStudent = Guid.NewGuid();
     }
     public string Name { get; set; }
-    public string DocumentType{ get; set; }
+    public string DocumentType { get; set; }
     public string DocumentNumber { get; set; }
     public DateOnly StudentDateBirth { get; set; }
-    public string StudentGender { get; set; } 
+    public string StudentGender { get; set; }
     public Guid IdUnit { get; set; }
     public Guid IdSchool { get; set; }
-    public  Certificate? Certificate { get; set; }
-    public School School { get; set; } 
+    public Certificate? Certificate { get; set; }
+    public School School { get; set; }
     public Unit Unit { get; set; }
     public bool StudentStatus { get; set; }
 

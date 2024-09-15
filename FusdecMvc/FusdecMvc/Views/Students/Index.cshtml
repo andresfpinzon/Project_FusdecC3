@@ -13,6 +13,15 @@
     <thead>
         <tr>
             <th>
+                Nombre
+            </th>
+            <th>
+                Tipo de Documento
+            </th>
+            <th>
+                Numero de Documento
+            </th>
+            <th>
                 Fecha de Nacimiento
             </th>
             <th>
@@ -24,31 +33,58 @@
             <th>
                 Colegio
             </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Edicion
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StudentDateBirth)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StudentGender)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUnit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdSchool)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocumentType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocumentNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StudentDateBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StudentGender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdUnit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdSchool)
+                </td>
+                <td>
+                    @(item.StudentStatus ? "Activo" : "Inactivo")
+                </td>
+                <td>
+                    @foreach (var studentEdition in item.StudentEditions)
+                    {
+                        var edition = studentEdition.Edition;
+                        <span>@edition.Title</span>
+                        <br />
+                    }
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdStudent" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                     <a asp-action="Details" asp-route-id="@item.IdStudent" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
                     <a asp-action="Delete" asp-route-id="@item.IdStudent" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
 

@@ -6,8 +6,11 @@
 
 <h1>Detalles del colegio</h1>
 
-<div>
-    <h4>Escuela</h4>  <hr />
+<div class="card">
+    <div class="card-header">
+        <h4>Curso</h4>
+    </div>
+    <div class="card-body">
     <dl class="row">
         <dt class="col-sm-2">
            Nombre del colegio
@@ -22,6 +25,7 @@
             @Html.DisplayFor(model => model.SchoolEmail)
         </dd>
     </dl>
+    </div>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdSchool" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>

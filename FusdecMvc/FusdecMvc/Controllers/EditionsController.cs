@@ -22,9 +22,10 @@ namespace FusdecMvc.Controllers
         // GET: Editions
         public async Task<IActionResult> Index()
         {
-            var Editions = _context.Editions.Include(e => e.Course)
-            .Include(e => e.EditionSchedules)
-                .ThenInclude(es => es.Schedule);
+            var Editions = _context.Editions
+                .Include(e => e.Course)
+                .Include(e => e.EditionSchedules)
+                    .ThenInclude(es => es.Schedule);
             return View(await Editions.ToListAsync());
         }
 

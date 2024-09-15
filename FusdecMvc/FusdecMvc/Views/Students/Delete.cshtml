@@ -6,46 +6,96 @@
 
 <h1>Eliminar</h1>
 
-<h3>¿Estas seguro de que quieres eliminar los datos?</h3>
-<div>
-    <h4>Estudiante</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Fecha de nacimiento
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StudentDateBirth)
-        </dd>
-        <dt class = "col-sm-2">
-            Género
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StudentGender)
-        </dd>
-        <dt class = "col-sm-2">
-            Id de la Inidad
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdUnit)
-        </dd>
-        <dt class = "col-sm-2">
-            Colegio
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdSchool)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdStudent" />
-        <button type="submit" class="btn btn-danger">
-            <i class="fa fa-trash"></i> Borrar
-        </button>
+<div class="card">
+    <div class="card-header">
+        <h3>¿Estás seguro de que quieres eliminar los datos?</h3>
+    </div>
+    <div class="card-body">
+        <h4>Estudiante</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                Nombre Completo
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                Tipo de Documento
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DocumentType)
+            </dd>
+            <dt class="col-sm-2">
+                Numero de Documento
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DocumentNumber)
+            </dd>
+            <dt class="col-sm-2">
+                Fecha de nacimiento
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StudentDateBirth)
+            </dd>
+            <dt class="col-sm-2">
+                Género
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StudentGender)
+            </dd>
+            <dt class="col-sm-2">
+                Unidad
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IdUnit)
+            </dd>
+            <dt class="col-sm-2">
+                Colegio
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IdSchool)
+            </dd>
+            <dt class="col-sm-2">
+                Estado
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.StudentStatus ? "Activo" : "Inactivo")
+            </dd>
+        </dl>
         <div>
-            <a asp-action="Index" class="btn btn-secondary mt-3">
-                &#8592; Volver atrás
-            </a>
+            <h4>Edicion(es):</h4>
+            @if (Model.StudentEditions.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var studentEditions in Model.StudentEditions)
+                    {
+                        <li class="list-group-item d-flex align-items-center">
+                            <i title="Ediciones"></i>
+                            <span class="fw-semibold">
+                                @studentEditions.Edition.Title
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Esta edicion no tiene horarios asociados.</p>
+            }
         </div>
-    </form>
-</div>
+
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="IdStudent" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-trash"></i> Borrar
+            </button>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
+            </div>
+        </form>
+        <div />
+    </div>
