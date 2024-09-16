@@ -1,0 +1,45 @@
+﻿@model FusdecMvc.Models.Audit
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Crear</h1>
+
+<h4>Auditoria</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="AuditDate" class="control-label">Fecha de auditoria</label>
+                <input asp-for="AuditDate" class="form-control" type="date"/>
+                <span asp-validation-for="AuditDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NameOfIssuerAudit" class="control-label">Nombre del emisor del certificado</label>
+                <input asp-for="NameOfIssuerAudit" class="form-control" />
+                <span asp-validation-for="NameOfIssuerAudit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCertificate" class="control-label">Num_Documento del <br /> titular del certificado</label>
+                <select asp-for="IdCertificate" class ="form-control" asp-items="ViewBag.IdCertificate"></select>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
+            </div>
+
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

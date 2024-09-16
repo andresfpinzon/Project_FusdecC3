@@ -1,0 +1,40 @@
+﻿@model FusdecMvc.Models.Audit
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalles</h1>
+
+<div>
+    <h4>Auditoria</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Fecha de <br /> auditoría
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AuditDate)
+        </dd>
+        <dt class = "col-sm-2">
+            Nombre del emisor <br /> del certificado
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NameOfIssuerAudit)
+        </dd>
+        <dt class = "col-sm-2">
+            Num_Documento del <br /> titular del certificado
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Certificate.Student.DocumentNumber)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdAudit" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+</div>
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>

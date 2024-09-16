@@ -55,7 +55,7 @@ namespace FusdecMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("StudentName,StudentLastName,VerificationCode,NameOfIssuerCert,UserDocumentNumber,CertificateStatus,IdStudent,CourseName")] Certificate certificate)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 certificate.IdCertificate = Guid.NewGuid();
                 _context.Add(certificate);
@@ -91,7 +91,7 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {
