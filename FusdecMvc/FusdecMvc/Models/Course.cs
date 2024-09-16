@@ -28,6 +28,7 @@ public partial class Course
     public  ICollection<Edition> Editions { get; set; } = new List<Edition>();
 
     public  Fundation Fundation { get; set; }
+    public virtual ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
 
 }
 

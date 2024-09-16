@@ -13,22 +13,6 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="StudentName" class="control-label">Nombre del estudiante</label>
-                <input asp-for="StudentName" class="form-control" required>
-                <div class="invalid-feedback">
-                    Por favor, ingrese el nombre del estudiante.
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="StudentLastName" class="control-label">Apellidos del estudiante </label>
-                <input asp-for="StudentLastName" class="form-control" required>
-                <div class="invalid-feedback">
-                    Por favor, ingrese los apellidos del estudiante.
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label asp-for="VerificationCode" class="control-label">Codigo de verificacion</label>
                 <input asp-for="VerificationCode" class="form-control" required>
                 <div class="invalid-feedback">
@@ -43,27 +27,29 @@
                     Por favor, ingrese el nombre del emisor del certificado.
                 </div>
             </div>
-
             <div class="form-group">
-                <label asp-for="UserDocumentNumber" class="control-label">Numero de documento</label>
-                <input asp-for="UserDocumentNumber" class="form-control" required>
+                <label asp-for="CertificateStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="CertificateStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCertificate" class="control-label">Curso</label>
+                <select asp-for="IdCertificate" class="form-control" asp-items="ViewBag.IdCertificate" required>
+                    <option value="">Seleccione un Curso</option>
+                </select>
                 <div class="invalid-feedback">
-                    Por favor, ingrese el número de documento del usuario.
+                    Por favor, seleccione un curso.
                 </div>
             </div>
-
-            <div class="form-group form-check">
-                <input class="form-check-input" asp-for="CertificateStatus" required>
-                <label class="form-check-label">
-                    Estado
-                </label>
-            </div>
-
             <div class="form-group">
-                <label asp-for="CourseName" class="control-label">Nombre del curso</label>
-                <input asp-for="CourseName" class="form-control" required>
+                <label asp-for="IdStudent" class="control-label">Estudiante</label>
+                <select asp-for="IdStudent" class="form-control" asp-items="ViewBag.IdStudent" required>
+                    <option value="">Seleccione un Estudiante</option>
+                </select>
                 <div class="invalid-feedback">
-                    Por favor, ingrese el nombre del curso.
+                    Por favor, seleccione un Estudiante.
                 </div>
             </div>
 

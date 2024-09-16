@@ -23,8 +23,10 @@ public partial class Certificate
     public bool CertificateStatus { get; set; }
 
     public Guid IdStudent { get; set; }
+    public Guid IdCourse { get; set; }
 
     public Audit? Audit { get; set; }
 
     public Student Student { get; set; }
+    public Course Course { get; set; }
 }

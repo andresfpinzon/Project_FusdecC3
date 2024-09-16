@@ -13,18 +13,6 @@
     <div class="card-body">
         <dl class="row">
             <dt class="col-sm-3">
-                Nombres del estudiante
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.StudentName)
-            </dd>
-            <dt class="col-sm-3">
-                Apellidos del estudiante
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.StudentLastName)
-            </dd>
-            <dt class="col-sm-3">
                 Codigo de verificacion
             </dt>
             <dd class="col-sm-9">
@@ -41,6 +29,18 @@
             </dt>
             <dd class="col-sm-9">
                 @(Model.CertificateStatus ? "Active" : "Inactive")
+            </dd>
+            <dt class="col-sm-2">
+                Curso
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IdCourse)
+            </dd>
+            <dt class="col-sm-2">
+                Estudiante
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IdStudent)
             </dd>
         </dl>
     </div>

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FusdecMvc.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FusdecMvc.Controllers
 {
@@ -20,7 +21,10 @@ namespace FusdecMvc.Controllers
         // GET: Certificates
         public async Task<IActionResult> Index()
         {
-            var certificates = await _context.Certificate.Include(c => c.Student).ToListAsync();
+            var certificates = await _context.Certificate
+                .Include(c => c.Student)
+                .Include(c => c.Course)
+                .ToListAsync();
             return View(certificates);
         }
 
@@ -34,6 +38,7 @@ namespace FusdecMvc.Controllers
 
             var certificate = await _context.Certificate
                 .Include(c => c.Student)
+                .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.IdCertificate == id);
 
             if (certificate == null)
@@ -47,13 +52,15 @@ namespace FusdecMvc.Controllers
         // GET: Certificates/Create
         public IActionResult Create()
         {
+            ViewData["IdStudent"] = new SelectList(_context.Students, "IdStudent", "IdStudent");
+            ViewData["IdCourse"] = new SelectList(_context.Students, "IdCourse", "IdCourse");
             return View();
         }
 
         // POST: Certificates/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentName,StudentLastName,VerificationCode,NameOfIssuerCert,UserDocumentNumber,CertificateStatus,IdStudent,CourseName")] Certificate certificate)
+        public async Task<IActionResult> Create([Bind("VerificationCode,NameOfIssuerCert,CertificateStatus,IdStudent,IdCourse")] Certificate certificate)
         {
             //if (ModelState.IsValid)
             {
@@ -62,6 +69,8 @@ namespace FusdecMvc.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["IdStudent"] = new SelectList(_context.Students, "IdStudent", "IdStudent");
+            ViewData["IdCourse"] = new SelectList(_context.Students, "IdCourse", "IdCourse");
             return View(certificate);
         }
 
@@ -78,13 +87,15 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
+            ViewData["IdStudent"] = new SelectList(_context.Students, "IdStudent", "IdStudent");
+            ViewData["IdCourse"] = new SelectList(_context.Students, "IdCourse", "IdCourse");
             return View(certificate);
         }
 
         // POST: Certificates/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdCertificate,StudentName,StudentLastName,VerificationCode,NameOfIssuerCert,UserDocumentNumber,CertificateStatus,IdStudent,CourseName")] Certificate certificate)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdCertificate,VerificationCode,NameOfIssuerCert,CertificateStatus,IdStudent,IdCourse")] Certificate certificate)
         {
             if (id != certificate.IdCertificate)
             {
@@ -111,6 +122,8 @@ namespace FusdecMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["IdStudent"] = new SelectList(_context.Students, "IdStudent", "IdStudent");
+            ViewData["IdCourse"] = new SelectList(_context.Students, "IdCourse", "IdCourse");
             return View(certificate);
         }
 
@@ -124,6 +137,7 @@ namespace FusdecMvc.Controllers
 
             var certificate = await _context.Certificate
                 .Include(c => c.Student)
+                .Include(c => c.Course)
                 .FirstOrDefaultAsync(m => m.IdCertificate == id);
 
             if (certificate == null)

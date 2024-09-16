@@ -145,10 +145,9 @@ namespace FusdecMvc.Data
             // Configuracion de la relacion entre certificado y studiante
             modelBuilder.Entity<Certificate>()
                 .HasOne(c => c.Student)
-                .WithOne(s => s.Certificate)
-                .HasForeignKey<Certificate>(c => c.IdStudent)
+                .WithMany(s => s.Certificates)
+                .HasForeignKey(c => c.IdStudent)
                 .OnDelete(DeleteBehavior.Cascade);
-
 
            // Configurar la relación entre Report y Grade
             modelBuilder.Entity<Grade>()
@@ -173,12 +172,17 @@ namespace FusdecMvc.Data
                 .HasOne(s => s.Unit)
                 .WithMany(u => u.Students)
                 .HasForeignKey(s => s.IdUnit);
-            // Configurar la relación entre Esdicion y curso
+            // Configurar la relación entre Edicion y curso
             modelBuilder.Entity<Edition>()
                 .HasOne(e => e.Course)
                 .WithMany(c => c.Editions)
                 .HasForeignKey(e => e.IdCourse);
-
+            // Configurar la relación entre Certificado y curso
+            modelBuilder.Entity<Certificate>()
+                .HasOne(c => c.Course)
+                .WithMany(c => c.Certificates)
+                .HasForeignKey(c => c.IdCourse)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Relación uno a uno entre ApplicationUser y Estudiante
             //modelBuilder.Entity<ApplicationUser>()
