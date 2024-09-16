@@ -14,7 +14,8 @@ public partial class Student
     {
         this.IdStudent = Guid.NewGuid();
     }
-    public string Name { get; set; }
+    public string StudentName { get; set; }
+    public string StudentLastName { get; set; }
     public string DocumentType { get; set; }
     public string DocumentNumber { get; set; }
     public DateOnly StudentDateBirth { get; set; }

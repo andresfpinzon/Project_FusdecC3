@@ -13,7 +13,10 @@
     <thead>
         <tr>
             <th>
-                Nombre
+                Nombres
+            </th>
+            <th>
+                Apellidos
             </th>
             <th>
                 Tipo de Documento
@@ -47,7 +50,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.StudentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StudentLastName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DocumentType)

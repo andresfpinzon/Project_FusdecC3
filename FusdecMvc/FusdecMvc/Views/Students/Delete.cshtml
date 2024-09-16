@@ -15,10 +15,16 @@
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
-                Nombre Completo
+                Nombres
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Name)
+                @Html.DisplayFor(model => model.StudentName)
+            </dd>
+            <dt class="col-sm-2">
+                Apellidos
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StudentLastName)
             </dd>
             <dt class="col-sm-2">
                 Tipo de Documento

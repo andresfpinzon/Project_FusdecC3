@@ -67,7 +67,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdStudent,Name,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
+        public async Task<IActionResult> Create([Bind("IdStudent,StudentName,StudentLastName,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
         {
             //if (ModelState.IsValid)
             {
@@ -126,7 +126,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdStudent,Name,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdStudent,StudentName,StudentLastName,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
         {
             if (id != student.IdStudent)
             {
