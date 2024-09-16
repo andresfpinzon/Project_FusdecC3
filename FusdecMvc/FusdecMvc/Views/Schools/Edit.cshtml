@@ -38,4 +38,12 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script type="text/javascript">
+        // Previene la entrada de espacios en el campo de correo electrónico
+        document.querySelector('[name="SchoolEmail"]').addEventListener('input', function (e) {
+            this.value = this.value.replace(/\s/g, '');
+        });
+    </script>
+
 }

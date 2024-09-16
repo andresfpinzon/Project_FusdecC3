@@ -49,8 +49,8 @@ namespace FusdecMvc.Controllers
         // GET: NonAttendances/Create
         public IActionResult Create()
         {
-            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "IdAttendance");
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport");
+            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate");
+            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation");
             return View();
         }
 
@@ -86,8 +86,8 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "IdAttendance", nonAttendance.IdAttendance);
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport", nonAttendance.IdReport);
+            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate", nonAttendance.IdAttendance);
+            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation", nonAttendance.IdReport);
             return View(nonAttendance);
         }
 

@@ -16,7 +16,7 @@
                 Asistencia
             </th>
             <th>
-                Reporte                              @* esta parte hay que arreglarla *@
+                Reporte
             </th>
             <th></th>
         </tr>
@@ -25,10 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Attendance.IdAttendance)
+                @Html.DisplayFor(modelItem => item.Attendance.AttendanceDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Report.IdReport)
+                @Html.DisplayFor(modelItem => item.Report.Observation)
             </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdNonAttendance" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
