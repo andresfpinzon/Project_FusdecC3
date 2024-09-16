@@ -48,7 +48,7 @@ namespace FusdecMvc.Controllers
         // GET: Units/Create
         public IActionResult Create()
         {
-            ViewData["IdBrigade"] = new SelectList(_context.Brigade, "IdBrigade", "IdBrigade");
+            ViewData["IdBrigade"] = new SelectList(_context.Brigade, "IdBrigade", "BrigadeName");
             return View();
         }
 
@@ -83,7 +83,7 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdBrigade"] = new SelectList(_context.Brigade, "IdBrigade", "IdBrigade", unit.IdBrigade);
+            ViewData["IdBrigade"] = new SelectList(_context.Brigade, "IdBrigade", "BrigadeName", unit.IdBrigade);
             return View(unit);
         }
 

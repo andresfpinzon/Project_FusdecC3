@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.UnitName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UnitState)
+                @(item.UnitState? "Activo" : "Inactivo")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UnitLocation)

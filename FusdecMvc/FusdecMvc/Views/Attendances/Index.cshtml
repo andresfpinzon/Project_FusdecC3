@@ -16,7 +16,7 @@
                 Fecha
             </th>
             <th>
-                Llegada
+                Asistencia
             </th>
             <th></th>
         </tr>
@@ -28,7 +28,7 @@
                 @Html.DisplayFor(modelItem => item.AttendanceDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AttendanceStatus)
+                @(item.AttendanceStatus ? "Asistio" : "No asistio")
             </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdAttendance" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
