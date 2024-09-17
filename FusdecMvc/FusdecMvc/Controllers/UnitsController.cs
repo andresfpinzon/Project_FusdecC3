@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
@@ -161,5 +162,12 @@ namespace FusdecMvc.Controllers
         {
             return _context.Units.Any(e => e.IdUnit == id);
         }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 using FusdecMvc.Data;
+using FusdecMvc.Models.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,15 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+//Error de Permisos 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Aquí configuras la ruta de redirección cuando se niega el acceso
+    options.AccessDeniedPath = "/Attendances/AccessDenied";
+
+});
+
+
 // Add controllers and views
 builder.Services.AddControllersWithViews();
 
@@ -24,6 +34,31 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+
+// Ensure roles and user are created before running the application
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        await IdentityDataInitializer.SeedData(services);
+        var context = services.GetRequiredService<ApplicationDbContext>();
+
+        // llamar al metodo seedAsync
+        //await AutorLibroDataInitializer.SeedAsync(context);
+
+    }
+    catch (Exception ex)
+    {
+        // Log the exception or handle it as needed
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        throw new ApplicationException("An error occurred while seeding the database.", ex);
+    }
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

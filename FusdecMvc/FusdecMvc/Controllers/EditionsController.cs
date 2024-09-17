@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
@@ -205,6 +206,11 @@ namespace FusdecMvc.Controllers
         private bool EditionExists(Guid id)
         {
             return _context.Editions.Any(e => e.IdEdition == id);
+        }
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

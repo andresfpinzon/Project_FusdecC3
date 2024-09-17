@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
@@ -153,6 +154,12 @@ namespace FusdecMvc.Controllers
         private bool FundationExists(Guid id)
         {
             return _context.Fundations.Any(e => e.IdFundation == id);
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

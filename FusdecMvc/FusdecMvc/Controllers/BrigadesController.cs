@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
@@ -160,6 +161,12 @@ namespace FusdecMvc.Controllers
         private bool BrigadeExists(Guid id)
         {
             return _context.Brigade.Any(e => e.IdBrigade == id);
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

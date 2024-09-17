@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
@@ -214,5 +215,12 @@ namespace FusdecMvc.Controllers
         {
             return _context.Students.Any(e => e.IdStudent == id);
         }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
     }
 }

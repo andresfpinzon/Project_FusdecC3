@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FusdecMvc.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
@@ -162,6 +163,12 @@ namespace FusdecMvc.Controllers
         private bool CertificateExists(Guid id)
         {
             return _context.Certificate.Any(e => e.IdCertificate == id);
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
