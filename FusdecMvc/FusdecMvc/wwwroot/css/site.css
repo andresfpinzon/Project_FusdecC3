@@ -16,10 +16,10 @@ html {
   position: relative;
   min-height: 100%;
 }
-/*
+
 body {
   margin-bottom: 60px;
-}*/
+}
 
 /* Estilos para botones */
 
@@ -94,7 +94,7 @@ body {
     color: #fff; 
 }
 */
-
+/*
 body {
     margin-bottom: 60px;
     background: radial-gradient(circle, #3084de, #c498bb, #3084de);
@@ -114,6 +114,7 @@ a, td, th, tr, h1, h2, h3, h4 {
     color: black;
     font-size: 25px;
 }
+*/
 
 /* Estilos para tablas*/
 

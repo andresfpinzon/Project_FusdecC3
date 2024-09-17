@@ -15,7 +15,7 @@ public partial class Attendance
     {
         this.IdAttendance = Guid.NewGuid();
     }
-
+    public string AttendanceTitle { get; set; } 
     public DateTime AttendanceDate { get; set; }
     public bool AttendanceStatus { get; set; }
 

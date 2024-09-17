@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace FusdecMvc.Controllers
 {
@@ -23,7 +24,10 @@ namespace FusdecMvc.Controllers
         // GET: Attendances
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Attendances.ToListAsync());
+            return View(await _context.Attendances
+                .Include(e => e.StudentAttendances)
+                    .ThenInclude(es => es.Student)
+                .ToListAsync());
         }
 
         // GET: Attendances/Details/5
@@ -35,6 +39,8 @@ namespace FusdecMvc.Controllers
             }
 
             var attendance = await _context.Attendances
+                .Include(e => e.StudentAttendances)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdAttendance == id);
             if (attendance == null)
             {
@@ -55,15 +61,29 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAttendance,AttendanceDate,AttendanceStatus")] Attendance attendance)
+        public async Task<IActionResult> Create([Bind("IdAttendance,AttendanceDate,AttendanceStatus")] Attendance attendance, Guid[] selectedStudents)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 attendance.IdAttendance = Guid.NewGuid();
                 _context.Add(attendance);
                 await _context.SaveChangesAsync();
+                if (selectedStudents != null && selectedStudents.Length > 0)
+                {
+                    foreach (var studentId in selectedStudents)
+                    {
+                        var studentAttendance= new StudentAttendance
+                        {
+                            IdAttendance = attendance.IdAttendance,
+                            IdStudent = studentId
+                        };
+                        _context.StudentAttendances.Add(studentAttendance);
+                    }
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Students = _context.Students.ToList();
             return View(attendance);
         }
 
@@ -75,11 +95,16 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            var attendance = await _context.Attendances.FindAsync(id);
+            var attendance = await _context.Attendances
+                .Include(e => e.StudentAttendances)
+                    .ThenInclude(es => es.Student)
+                .FirstOrDefaultAsync(a => a.IdAttendance == id);
             if (attendance == null)
             {
                 return NotFound();
             }
+            var students = await _context.Students.ToListAsync();
+            ViewData["Students"] = new MultiSelectList(students, "IdStudent", "DocumentNumber", attendance.StudentAttendances.Select(ea => ea.IdStudent));
             return View(attendance);
         }
 
@@ -88,18 +113,30 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdAttendance,AttendanceDate,AttendanceStatus")] Attendance attendance)
+        public async Task<IActionResult> Edit(Guid id, [Bind("AttendanceTitle,IdAttendance,AttendanceDate,AttendanceStatus")] Attendance attendance, Guid[] selectedStudents)
         {
             if (id != attendance.IdAttendance)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(attendance);
+                    // Eliminar los horarios antiguos
+                    var existingStudents = _context.StudentAttendances.Where(es => es.IdAttendance == id);
+                    _context.StudentAttendances.RemoveRange(existingStudents);
+
+                    // Agregar los nuevos horarios seleccionados
+                    if (selectedStudents != null)
+                    {
+                        foreach (var studentId in selectedStudents)
+                        {
+                            _context.StudentAttendances.Add(new StudentAttendance { IdAttendance = id, IdStudent = studentId });
+                        }
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -115,6 +152,8 @@ namespace FusdecMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var students = await _context.Students.ToListAsync();
+            ViewData["Students"] = new MultiSelectList(students, "IdSchedule", "ScheduleTitle", selectedStudents);
             return View(attendance);
         }
 

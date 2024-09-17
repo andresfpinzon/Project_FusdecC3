@@ -14,6 +14,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdAttendance" />
             <div class="form-group">
+                <label asp-for="AttendanceTitle" class="control-label">Titulo</label>
+                <input asp-for="AttendanceTitle" class="form-control" />
+                <span asp-validation-for="AttendanceTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="AttendanceDate" class="control-label">Fecha</label>
                 <input asp-for="AttendanceDate" class="form-control" />
                 <span asp-validation-for="AttendanceDate" class="text-danger"></span>

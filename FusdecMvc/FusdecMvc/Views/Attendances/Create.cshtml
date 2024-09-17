@@ -13,6 +13,11 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="AttendanceTitle" class="control-label">Titulo</label>
+                <input asp-for="AttendanceTitle" class="form-control" />
+                <span asp-validation-for="AttendanceTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="AttendanceDate" class="control-label">Fecha</label>
                 <input asp-for="AttendanceDate" class="form-control" type="date"/>
                 <span asp-validation-for="AttendanceDate" class="text-danger"></span>
@@ -24,6 +29,30 @@
                     <option value="false">No asistio</option>
                 </select>
             </div>
+            <h4>Seleccionar Studiante(s)</h4>
+            <table id="dataTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Seleccionar</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Documento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in ViewBag.Students)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedAutores" value="@student.IdStudent" />
+                            </td>
+                            <td>@student.StudentName</td>
+                            <td>@student.StudentLastName</td>
+                            <td>@student.DocumentNumber</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
             <div class="form-group mt-3">
                 <input type="submit" value="&#43; Crear" class="btn btn-success" />
             </div>
@@ -38,5 +67,28 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ entradas por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
