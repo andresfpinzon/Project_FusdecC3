@@ -57,8 +57,8 @@ namespace FusdecMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.Editions = _context.Editions.ToList();
-            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
-            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "SchoolName");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "UnitName");
             return View();
         }
 
@@ -91,8 +91,8 @@ namespace FusdecMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Editions = _context.Editions.ToList();
-            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
-            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "SchoolName");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "UnitName");
             return View(student);
         }
 
@@ -116,8 +116,8 @@ namespace FusdecMvc.Controllers
             var editions = await _context.Editions.ToListAsync();
             ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "Title", student.StudentEditions.Select(se => se.IdEdition));
 
-            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
-            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "SchoolName");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "UnitName");
             return View(student);
         }
 
@@ -168,8 +168,8 @@ namespace FusdecMvc.Controllers
             var editions = await _context.Editions.ToListAsync();
             ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "EditionTitle", selectedEditions);
 
-            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "IdSchool");
-            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "IdUnit");
+            ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "SchoolName");
+            ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "UnitName");
             return View(student);
         }
 
@@ -182,6 +182,8 @@ namespace FusdecMvc.Controllers
             }
 
             var student = await _context.Students
+                .Include(s => s.School)
+                .Include(s => s.Unit)
                 .Include(s => s.StudentEditions)
                     .ThenInclude(se => se.Edition)
                 .FirstOrDefaultAsync(m => m.IdStudent == id);

@@ -59,7 +59,7 @@ namespace FusdecMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdAudit,AuditDate,NameOfIssuerAudit,IdCertificate")] Audit audit)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 audit.IdAudit = Guid.NewGuid();
                 _context.Add(audit);
@@ -99,7 +99,7 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {

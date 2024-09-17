@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Inasistencia</a>
 </p>
-<table id="inasistenciatabla" class="table">
+<table id="dataTable" class="table">
     <thead>
         <tr>
             <th>
@@ -43,7 +43,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#inasistenciatabla').DataTable({
+            $('#dataTable').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ entradas por página",
                     "zeroRecords": "No se encontraron resultados",

@@ -68,10 +68,10 @@
                     @Html.DisplayFor(modelItem => item.StudentGender)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdUnit)
+                    @Html.DisplayFor(modelItem => item.Unit.UnitName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdSchool)
+                    @Html.DisplayFor(modelItem => item.School.SchoolName)
                 </td>
                 <td>
                     @(item.StudentStatus ? "Activo" : "Inactivo")

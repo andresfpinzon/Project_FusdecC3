@@ -34,13 +34,25 @@
                 Curso
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.IdCourse)
+                @Html.DisplayFor(model => model.Course.CourseName)
             </dd>
             <dt class="col-sm-2">
                 Estudiante
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.IdStudent)
+                @Html.DisplayFor(model => model.Student.DocumentNumber)
+            </dd>
+            <dt class="col-sm-2">
+                Nombres
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Student.StudentName)
+            </dd>
+            <dt class="col-sm-2">
+                Apellidos
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Student.StudentLastName)
             </dd>
         </dl>
     </div>
