@@ -1,0 +1,75 @@
+﻿@model FusdecMvc.Models.Edition
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Editar</h1>
+
+<h4>Edicion</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdEdition" />
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">Titulo</label>
+                <input asp-for="Title" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del comando.
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="EditionStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="EditionStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="EditionStartDate" class="control-label">Fecha de Inicio</label>
+                <input asp-for="EditionStartDate" class="form-control" type="date"/>
+                <span asp-validation-for="EditionStartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EditionEndDate" class="control-label">Fecha de Fin</label>
+                <input asp-for="EditionEndDate" class="form-control" type="date"/>
+                <span asp-validation-for="EditionEndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCourse" class="control-label">Curso</label>
+                <select asp-for="IdCourse" class="form-control" asp-items="ViewBag.IdCourse" required>
+                    <option value="">Seleccione un Curso</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione un curso.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="selectedSchedules" class="control-label">Seleccionar Horarios</label>
+                <select multiple class="form-control" id="selectedSchedules" name="selectedSchedules">
+                    @foreach (var schedule in ViewBag.Schedules)
+                    {
+                        <option value="@schedule.Value">@schedule.Text</option>
+                    }
+                </select>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-warning"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

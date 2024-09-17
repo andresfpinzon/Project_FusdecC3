@@ -1,0 +1,20 @@
+﻿@model FusdecMvc.Models.ViewModels.RoleViewModel
+
+<h2>Crear Rol</h2>
+<form asp-action="Create" method="post">
+    <div class="md-3">
+        <label asp-for="Name" class="form-label">Nombre del Rol</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-create"><i class="fas fa-save"></i> Guardar</button>
+    <a asp-action="Index" class="btn btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

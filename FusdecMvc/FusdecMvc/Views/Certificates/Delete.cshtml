@@ -1,0 +1,74 @@
+﻿@model FusdecMvc.Models.Certificate
+
+@{
+    ViewData["Title"] = "Eliminar Certificado";
+}
+
+<h1>Eliminar certificado</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Esta seguro de eliminar el certificado?</h3>
+    </div>
+    <div class="card-body">
+        <h4>Certificado</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">
+                Codigo De Verificacion
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.VerificationCode)
+            </dd>
+            <dt class="col-sm-3">
+                Emisor
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.NameOfIssuerCert)
+            </dd>
+            <dt class="col-sm-3">
+                Estado
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.CertificateStatus ? "Active" : "Inactive")
+            </dd>
+            <dt class="col-sm-2">
+                Curso
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Course.CourseName)
+            </dd>
+            <dt class="col-sm-2">
+                Estudiante
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Student.DocumentNumber)
+            </dd>
+            <dt class="col-sm-2">
+                Nombres
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Student.StudentName)
+            </dd>
+            <dt class="col-sm-2">
+                Apellidos
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Student.StudentLastName)
+            </dd>
+
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="IdCertificate" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-trash"></i> Borrar
+            </button>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

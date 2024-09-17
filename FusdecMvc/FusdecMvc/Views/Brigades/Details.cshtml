@@ -1,0 +1,50 @@
+﻿@model FusdecMvc.Models.Brigade
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<h1>Detalles</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Brigada</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">
+                Nombre
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.BrigadeName)
+            </dd>
+            <dt class="col-sm-3">
+                Lugar
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.BrigadeLocation)
+            </dd>
+            <dt class="col-sm-3">
+                Estado
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.BrigadeStatus ? "Activo" : "Inactivo")
+            </dd>
+            <dt class="col-sm-3">
+                Comando
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Command.CommandName)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdBrigade" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+</div>
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>

@@ -1,0 +1,67 @@
+﻿@model FusdecMvc.Models.Command
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+<h1>Crear</h1>
+
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Create" class="needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="CommandName" class="control-label">Nombre del Comando </label>
+                <input asp-for="CommandName" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre del comando.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CommandStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="CommandStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="UbicacionComando" class="control-label"> Ubicacion</label>
+                <input asp-for="UbicacionComando" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese la ubicación del comando.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IdFundation" class="control-label">Fundacion</label>
+                <select asp-for="IdFundation" class="form-control" asp-items="ViewBag.IdFundation" required>
+                    <option value="">Seleccione una fundación</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione una fundación.
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

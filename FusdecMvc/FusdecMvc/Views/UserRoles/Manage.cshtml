@@ -1,0 +1,26 @@
+﻿@model IEnumerable<FusdecMvc.Models.ViewModels.ManageUserRolesViewModel>
+
+<h2> Asignar Roles de usuario</h2>
+
+@{
+    var listModel = Model.ToList();
+}
+
+<form asp.asp-controller="UserRoles" asp-action="Manage" method="post">
+    <input type="hidden" name="userId" value="@ViewBag.userId" />
+    @for (int i = 0; i < listModel.Count; i++)
+    {
+        var role = listModel[i];
+        <div class=" form-check">
+            <input class="form-check-input" type="checkbox" name="model[@i].IsSelected" value="true" asp-for="@role.IsSelected" />
+
+
+            <input type="hidden" name="model[@i].RoleId" value="@role.RoleId" />
+            <input type="hidden" name="model[@i].RoleName" value="@role.RoleName" />
+            <label class="form-check-label">@role.RoleName</label>
+        </div>
+    }
+    <button type="submit" class="btn btn-create"><i class="fas fa-save"></i> Actualizar Roles</button>
+    <a asp-action="Index" class="btn btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+
+</form>

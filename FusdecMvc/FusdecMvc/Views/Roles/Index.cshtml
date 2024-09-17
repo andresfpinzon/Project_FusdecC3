@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+<h2>Roles: </h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-create"><i class="fas fa-plus"></i>&nbsp;Crear Rol</a>
+</p>
+
+<table id="dataTable" class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>
+                    @role.Name
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-edit btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+
+                    <form asp-action="Delete" asp-route-id="@role.Id" method="post" class="d-inline delete-form">
+                        <button type="button" class="btn btn-delete btn-sm">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = this.closest('form');
+
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: '¡Sí, bórralo!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+        @if (Context.Request.Query.ContainsKey("deletionSuccess"))
+        {
+            <text>
+                    Swal.fire({
+                        title: "¡Eliminado!",
+                        text: "El rol ha sido eliminado correctamente.",
+                        icon: "success"
+                    });
+            </text>
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ entradas por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+}

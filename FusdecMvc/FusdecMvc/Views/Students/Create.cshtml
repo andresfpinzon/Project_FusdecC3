@@ -1,0 +1,104 @@
+﻿@model FusdecMvc.Models.Student
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Crear</h1>
+
+<h4>Estudiante</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StudentName" class="control-label">Nombre Completo</label>
+                <input asp-for="StudentName" class="form-control" />
+                <span asp-validation-for="StudentName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentLastName" class="control-label">Nombre Completo</label>
+                <input asp-for="StudentLastName" class="form-control" />
+                <span asp-validation-for="StudentLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DocumentType" class="control-label">Tipo de Documento</label>
+                <select asp-for="DocumentType" class="form-control">
+                    <option value="">Selecciona un tipo de documento </option>
+                    <option value="CC">C.C</option>
+                    <option value="TI">T.I</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <span asp-validation-for="DocumentType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DocumentNumber" class="control-label">Numero de documento</label>
+                <input asp-for="DocumentNumber" class="form-control" />
+                <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentDateBirth" class="control-label">Fecha de nacimiento</label>
+                <input asp-for="StudentDateBirth" class="form-control" type="date" />
+                <span asp-validation-for="StudentDateBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentGender" class="control-label">Género</label>
+                <select asp-for="StudentGender" class="form-control">
+                    <option value="">Selecciona un género </option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <span asp-validation-for="StudentGender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdSchool" class="control-label">Colegio</label>
+                <select asp-for="IdSchool" class="form-control" asp-items="ViewBag.IdSchool" required>
+                    <option value="">Seleccione un Colegio</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione un colegio.
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdUnit" class="control-label">Unidad</label>
+                <select asp-for="IdUnit" class="form-control" asp-items="ViewBag.IdUnit" required>
+                    <option value="">Seleccione una unidad</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione una unidad.
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="StudentStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="selectedEditions" class="control-label">Seleccionar Ediciones</label>
+                <select multiple class="form-control" id="selectedEditions" name="selectedEditions">
+                    @foreach (var edition in ViewBag.Editions)
+                    {
+                        <option value="@edition.IdEdition">@edition.Title</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="&#43; Crear" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        &#8592; Volver atrás
+    </a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,69 @@
+﻿@model FusdecMvc.Models.Brigade
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<h1>Editar</h1>
+
+<h4>Brigada</h4>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" class="needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdBrigade" />
+
+            <div class="form-group">
+                <label asp-for="BrigadeName" class="control-label">Nombre</label>
+                <input asp-for="BrigadeName" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese el nombre de la brigada.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BrigadeLocation" class="control-label">Ubicacion</label>
+                <input asp-for="BrigadeLocation" class="form-control" required>
+                <div class="invalid-feedback">
+                    Por favor, ingrese la ubicación de la brigada.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BrigadeStatus" class="form-label">Estado</label>
+                <select class="form-control" asp-for="BrigadeStatus" required>
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IdCommand" class="control-label">Comando al que pertenece</label>
+                <select asp-for="IdCommand" class="form-control" asp-items="ViewBag.IdCommand" required>
+                    <option value="">Seleccione un comando</option>
+                </select>
+                <div class="invalid-feedback">
+                    Por favor, seleccione un comando.
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar Cambios" class="btn btn-warning" />
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

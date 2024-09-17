@@ -1,0 +1,210 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+/*
+body {
+  margin-bottom: 60px;
+}*/
+
+/* Estilos para botones */
+
+.btn-create {
+    background-color: #269415;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-create:hover {
+        background-color: #167208;
+        color: white;
+    }
+
+.btn-edit {
+    background-color: #f1b810;
+    color: black;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-edit:hover {
+        background-color: #e0a800;
+        color: white;
+    }
+
+.btn-details {
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-details:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-delete:hover {
+        background-color: #c82333;
+        color: white;
+    }
+
+.btn-back {
+    background-color: #636363;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-back:hover {
+        background-color: #565656;
+        color: white;
+    }
+/*Estilos para header y footer  */
+
+footer {
+    background-color: white;
+    color: black;
+}
+
+/* body */
+/*
+body {
+    background-image: url('/images/background.jpg');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    color: #fff; 
+}
+*/
+
+body {
+    margin-bottom: 60px;
+    background: radial-gradient(circle, #3084de, #c498bb, #3084de);
+    color: #000000;
+}
+
+a, td, th, tr, h1, h2, h3, h4 {
+    color: black;
+}
+
+.form-label {
+    color: black;
+    font-size: 25px;
+}
+
+.control-label {
+    color: black;
+    font-size: 25px;
+}
+
+/* Estilos para tablas*/
+
+#dataTable {
+    background-color: #f9f9f9;
+}
+
+    #dataTable tbody td {
+        color: #333;
+    }
+
+    #dataTable thead th {
+        border-bottom: 2px solid #007bff;
+    }
+
+    #dataTable tbody tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+        #dataTable tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+
+        #dataTable tbody tr.selected {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+    #dataTable thead th {
+        background-color: #333;
+        color: #fff;
+    }
+
+
+/* Estilos para el Modal - pop up */
+
+.modal-content {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.modal-title {
+    color: #333;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+
+.modal-header .close {
+    color: #333;
+    opacity: 0.7;
+    line-height: 1;
+    padding: 1px;
+    margin: 1px;
+    background: none;
+    border: 1px;
+    outline: 1px;
+    cursor: pointer;
+}
+
+    .modal-header .close:hover {
+        color: #000;
+        opacity: 1;
+    }
+
+.modal-body {
+    padding-top: 15px;
+    color: #333;
+}
+
+    .modal-body .form-group {
+        margin-bottom: 15px;
+    }
+
+    .modal-body .form-control {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        color: #333;
+    }
+
+.modal-footer {
+    border-top: 2px solid #ddd;
+    padding-top: 10px;
+    text-align: right;
+}

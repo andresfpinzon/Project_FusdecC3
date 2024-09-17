@@ -1,0 +1,76 @@
+﻿@model IEnumerable<FusdecMvc.Models.Schedule>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Horarios</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Horario</a>
+</p>
+<table id="dataTable" class="table">
+    <thead>
+        <tr>
+            <th>
+                Título
+            </th>
+            <th>
+                Hora de inicio 
+            </th>
+            <th>
+                Hora de finalización
+            </th>
+            <th>
+                Estado
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduleTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduleStartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduleEndDate)
+            </td>
+            <td>
+                    @(item.ScheduleStatus ? "Activo" : "Inactivo")
+            </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdSchedule" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.IdSchedule" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
+                    <a asp-action="Delete" asp-route-id="@item.IdSchedule" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ entradas por página",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                    "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Último",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,55 @@
+﻿@model FusdecMvc.Models.Brigade
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h1>Eliminar</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h3>¿Estás seguro de que quieres eliminar los datos?</h3>
+    </div>
+    <div class="card-body">
+        <h4>Brigada</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">
+                Nombre
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.BrigadeName)
+            </dd>
+            <dt class="col-sm-3">
+                Lugar
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.BrigadeLocation)
+            </dd>
+            <dt class="col-sm-3">
+                Estado
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.BrigadeStatus ? "Activo" : "Inactivo")
+            </dd>
+            <dt class="col-sm-3">
+                Comando
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Command.CommandName)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="IdBrigade" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-trash"></i> Borrar
+            </button>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

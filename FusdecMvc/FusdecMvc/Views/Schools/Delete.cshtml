@@ -1,0 +1,39 @@
+﻿@model FusdecMvc.Models.School
+
+@{
+    ViewData["Title"] = "Delete School";
+}
+
+<h1>Eliminar</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h3>¿Estás seguro de que quieres eliminar los datos?</h3>
+    </div>
+    <div class="card-body">
+        <h4>Curso</h4>
+        <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nombre del colegio
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SchoolName)
+        </dd>
+        <dt class="col-sm-2">
+            Correo del colegio
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SchoolEmail)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdSchool" />
+        <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Borrar</button>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">&#8592; Volver atrás</a>
+        </div>
+    </form>
+    </div>
+</div>
