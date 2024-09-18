@@ -17,8 +17,6 @@ public partial class Attendance
     }
     public string AttendanceTitle { get; set; } 
     public DateTime AttendanceDate { get; set; }
-    public bool AttendanceStatus { get; set; }
-
     public  NonAttendance? NonAttendance { get; set; }
 
     public ICollection<StudentAttendance> StudentAttendances { get; set; } = new List<StudentAttendance>();

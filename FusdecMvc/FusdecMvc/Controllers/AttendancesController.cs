@@ -53,6 +53,7 @@ namespace FusdecMvc.Controllers
         // GET: Attendances/Create
         public IActionResult Create()
         {
+            ViewBag.Students = _context.Students.Include(s => s.Unit).ToList();
             return View();
         }
 
@@ -61,7 +62,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAttendance,AttendanceDate,AttendanceStatus")] Attendance attendance, Guid[] selectedStudents)
+        public async Task<IActionResult> Create([Bind("AttendanceTitle,IdAttendance,AttendanceDate")] Attendance attendance, Guid[] selectedStudents)
         {
             //if (ModelState.IsValid)
             {
@@ -103,17 +104,25 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
-            var students = await _context.Students.ToListAsync();
-            ViewData["Students"] = new MultiSelectList(students, "IdStudent", "DocumentNumber", attendance.StudentAttendances.Select(ea => ea.IdStudent));
+
+            // Retrieve the students, including their related Units
+            var students = await _context.Students
+                .Include(s => s.Unit)  // Include the Unit relationship
+                .ToListAsync();
+
+            ViewBag.Students = students;
+            ViewBag.SelectedStudents = attendance.StudentAttendances.Select(ea => ea.IdStudent).ToList();
+
             return View(attendance);
         }
+
 
         // POST: Attendances/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("AttendanceTitle,IdAttendance,AttendanceDate,AttendanceStatus")] Attendance attendance, Guid[] selectedStudents)
+        public async Task<IActionResult> Edit(Guid id, [Bind("AttendanceTitle,IdAttendance,AttendanceDate")] Attendance attendance, Guid[] selectedStudents)
         {
             if (id != attendance.IdAttendance)
             {
@@ -166,6 +175,8 @@ namespace FusdecMvc.Controllers
             }
 
             var attendance = await _context.Attendances
+                .Include(e => e.StudentAttendances)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdAttendance == id);
             if (attendance == null)
             {

@@ -19,9 +19,6 @@
                 Fecha
             </th>
             <th>
-                Asistencia
-            </th>
-            <th>
                 Estudiantes
             </th>
 
@@ -33,10 +30,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AttendanceDate)
+                    @Html.DisplayFor(modelItem => item.AttendanceTitle)
                 </td>
                 <td>
-                    @(item.AttendanceStatus ? "Asistio" : "No asistio")
+                    @Html.DisplayFor(modelItem => item.AttendanceDate)
                 </td>
                 <td>
                     @foreach (var studentAttendance in item.StudentAttendances)
