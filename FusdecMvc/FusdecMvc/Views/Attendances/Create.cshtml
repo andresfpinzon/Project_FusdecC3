@@ -40,11 +40,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var student in ViewBag.Students)
+                    @foreach (var student in ViewBag.Student)
                     {
                         <tr>
                             <td>
-                                <input type="checkbox" name="selectedAutores" value="@student.IdStudent" />
+                                <input type="checkbox" name="selectedStudents" value="@student.IdStudent" />
                             </td>
                             <td>@student.StudentName</td>
                             <td>@student.StudentLastName</td>
