@@ -17,16 +17,10 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Attendance.AttendanceDate)
         </dd>
-        <dt class = "col-sm-2">
-            Reporte
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Report.Observation)
-        </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="IdReport" />
+        <input type="hidden" asp-for="IdNonAttendance" />
         <button type="submit" class="btn btn-danger">
             <i class="fa fa-trash"></i> Borrar
         </button>

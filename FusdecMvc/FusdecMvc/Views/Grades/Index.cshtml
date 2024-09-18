@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
+                Titulo
+            </th>
+            <th>
                 Aprobado
             </th>
             <th>
-                Observaciones
-            </th>
-            <th>
-                Reporte
+                Estudiantes
             </th>
             <th></th>
         </tr>
@@ -27,15 +27,20 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GradeTitle)
+                </td>
             <td>
                  @(item.Approved ? "Aprobado" : "No aprobado")
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ObservationGrade)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Report.Observation)
-            </td>
+                <td>
+                    @foreach (var studentGrade in item.StudentGrade)
+                    {
+                        var student = studentGrade.Student;
+                        <span>@student.StudentName @student.StudentLastName @student.DocumentNumber</span>
+                        <br />
+                    }
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdGrade" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                     <a asp-action="Details" asp-route-id="@item.IdGrade" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>

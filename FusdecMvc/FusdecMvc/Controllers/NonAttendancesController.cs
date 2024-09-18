@@ -23,7 +23,7 @@ namespace FusdecMvc.Controllers
         // GET: NonAttendances
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.NonAttendances.Include(n => n.Attendance).Include(n => n.Report);
+            var applicationDbContext = _context.NonAttendances.Include(n => n.Attendance);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -37,7 +37,6 @@ namespace FusdecMvc.Controllers
 
             var nonAttendance = await _context.NonAttendances
                 .Include(n => n.Attendance)
-                .Include(n => n.Report)
                 .FirstOrDefaultAsync(m => m.IdNonAttendance == id);
             if (nonAttendance == null)
             {
@@ -51,7 +50,6 @@ namespace FusdecMvc.Controllers
         public IActionResult Create()
         {
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate");
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation");
             return View();
         }
 
@@ -70,7 +68,6 @@ namespace FusdecMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "IdAttendance", nonAttendance.IdAttendance);
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport", nonAttendance.IdReport);
             return View(nonAttendance);
         }
 
@@ -88,7 +85,6 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate", nonAttendance.IdAttendance);
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation", nonAttendance.IdReport);
             return View(nonAttendance);
         }
 
@@ -125,7 +121,6 @@ namespace FusdecMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "IdAttendance", nonAttendance.IdAttendance);
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport", nonAttendance.IdReport);
             return View(nonAttendance);
         }
 
@@ -139,7 +134,6 @@ namespace FusdecMvc.Controllers
 
             var nonAttendance = await _context.NonAttendances
                 .Include(n => n.Attendance)
-                .Include(n => n.Report)
                 .FirstOrDefaultAsync(m => m.IdNonAttendance == id);
             if (nonAttendance == null)
             {

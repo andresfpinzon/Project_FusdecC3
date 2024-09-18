@@ -4,6 +4,7 @@ using FusdecMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FusdecMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240918203515_EliminacionReporte")]
+    partial class EliminacionReporte
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,12 +199,12 @@ namespace FusdecMvc.Migrations
                     b.Property<bool>("EditionStatus")
                         .HasColumnType("bit");
 
-                    b.Property<string>("EditionTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("IdCourse")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdEdition");
 
@@ -249,11 +252,15 @@ namespace FusdecMvc.Migrations
                     b.Property<bool>("Approved")
                         .HasColumnType("bit");
 
-                    b.Property<string>("GradeTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("IdReport")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReportIdReport")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("IdGrade");
+
+                    b.HasIndex("ReportIdReport");
 
                     b.ToTable("Grades");
                 });
@@ -267,9 +274,8 @@ namespace FusdecMvc.Migrations
                     b.Property<Guid>("IdAttendance")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("NonAttendanceTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("IdReport")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Observacion")
                         .IsRequired()
@@ -281,6 +287,21 @@ namespace FusdecMvc.Migrations
                         .IsUnique();
 
                     b.ToTable("NonAttendances");
+                });
+
+            modelBuilder.Entity("FusdecMvc.Models.Report", b =>
+                {
+                    b.Property<Guid>("IdReport")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Observation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdReport");
+
+                    b.ToTable("Report");
                 });
 
             modelBuilder.Entity("FusdecMvc.Models.Schedule", b =>
@@ -746,6 +767,17 @@ namespace FusdecMvc.Migrations
                     b.Navigation("Edition");
 
                     b.Navigation("Schedule");
+                });
+
+            modelBuilder.Entity("FusdecMvc.Models.Grade", b =>
+                {
+                    b.HasOne("FusdecMvc.Models.Report", "Report")
+                        .WithMany()
+                        .HasForeignKey("ReportIdReport")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("FusdecMvc.Models.NonAttendance", b =>

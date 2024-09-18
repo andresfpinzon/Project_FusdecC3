@@ -23,7 +23,9 @@ namespace FusdecMvc.Controllers
         // GET: Grades
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Grades.Include(g => g.Report);
+            var applicationDbContext = _context.Grades
+                .Include(g => g.StudentGrade)
+                    .ThenInclude(es => es.Student);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,7 +38,8 @@ namespace FusdecMvc.Controllers
             }
 
             var grade = await _context.Grades
-                .Include(g => g.Report)
+                 .Include(g => g.StudentGrade)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdGrade == id);
             if (grade == null)
             {
@@ -49,7 +52,7 @@ namespace FusdecMvc.Controllers
         // GET: Grades/Create
         public IActionResult Create()
         {
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation");
+            ViewBag.Students = _context.Students.Include(s => s.Unit).ToList();
             return View();
         }
 
@@ -58,16 +61,29 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdGrade,IdReport,Approved,ObservationGrade")] Grade grade)
+        public async Task<IActionResult> Create([Bind("IdGrade,GradeTitle,Approved,ObservationGrade")] Grade grade, Guid[] selectedStudents)
         {
             //if (ModelState.IsValid)
             {
                 grade.IdGrade = Guid.NewGuid();
                 _context.Add(grade);
                 await _context.SaveChangesAsync();
+                if (selectedStudents != null && selectedStudents.Length > 0)
+                {
+                    foreach (var studentId in selectedStudents)
+                    {
+                        var studentGrade = new StudentGrade
+                        {
+                            IdGrade = grade.IdGrade,
+                            IdStudent = studentId
+                        };
+                        _context.StudentGrades.Add(studentGrade);
+                    }
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport", grade.IdReport);
+            ViewBag.Students = _context.Students.ToList();
             return View(grade);
         }
 
@@ -79,12 +95,23 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            var grade = await _context.Grades.FindAsync(id);
+            var grade = await _context.Grades
+                 .Include(g => g.StudentGrade)
+                    .ThenInclude(es => es.Student)
+                .FirstOrDefaultAsync(a => a.IdGrade == id);
             if (grade == null)
             {
                 return NotFound();
             }
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "Observation", grade.IdReport);
+
+            // Retrieve the students, including their related Units
+            var students = await _context.Students
+                .Include(s => s.Unit)  // Include the Unit relationship
+                .ToListAsync();
+
+
+            ViewBag.Students = students;
+            ViewBag.SelectedStudents = grade.StudentGrade.Select(eg => eg.IdStudent).ToList();
             return View(grade);
         }
 
@@ -93,7 +120,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdGrade,IdReport,Approved,ObservationGrade")] Grade grade)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdGrade,IdReport,GradeTitle,Approved,ObservationGrade")] Grade grade, Guid[] selectedStudents)
         {
             if (id != grade.IdGrade)
             {
@@ -105,7 +132,19 @@ namespace FusdecMvc.Controllers
                 try
                 {
                     _context.Update(grade);
+                    // Eliminar los horarios antiguos
+                    var existingStudents = _context.StudentGrades.Where(es => es.IdGrade == id);
+                    _context.StudentGrades.RemoveRange(existingStudents);
+                    // Agregar los nuevos horarios seleccionados
+                    if (selectedStudents != null)
+                    {
+                        foreach (var studentId in selectedStudents)
+                        {
+                            _context.StudentGrades.Add(new StudentGrade { IdGrade = id, IdStudent = studentId });
+                        }
+                    }
                     await _context.SaveChangesAsync();
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -120,7 +159,7 @@ namespace FusdecMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdReport"] = new SelectList(_context.Reports, "IdReport", "IdReport", grade.IdReport);
+            var students = await _context.Students.ToListAsync();
             return View(grade);
         }
 
@@ -133,7 +172,8 @@ namespace FusdecMvc.Controllers
             }
 
             var grade = await _context.Grades
-                .Include(g => g.Report)
+                 .Include(g => g.StudentGrade)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdGrade == id);
             if (grade == null)
             {

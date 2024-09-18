@@ -62,7 +62,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AttendanceTitle,IdAttendance,AttendanceDate")] Attendance attendance, Guid[] selectedStudents)
+        public async Task<IActionResult> Create([Bind("IdAttendance,AttendanceTitle,IdAttendance,AttendanceDate")] Attendance attendance, Guid[] selectedStudents)
         {
             //if (ModelState.IsValid)
             {

@@ -83,7 +83,7 @@
                 <select multiple class="form-control" id="selectedEditions" name="selectedEditions">
                     @foreach (var edition in ViewBag.Editions)
                     {
-                        <option value="@edition.Value">@edition.Text</option>
+                        <option value="@edition.Value">@edition.EditionTitle</option>
                     }
                 </select>
             </div>

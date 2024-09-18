@@ -10,6 +10,12 @@
 <div>
     <h4>Califiicación</h4>
     <hr />
+    <dt class="col-sm-3">
+        Nombre
+    </dt>
+    <dd class="col-sm-9">
+        @Html.DisplayFor(model => model.GradeTitle)
+    </dd>
     <dl class="row">
         <dt class = "col-sm-2">
             Aprobado
@@ -17,19 +23,30 @@
         <dd class = "col-sm-10">
             @(Model.Approved ? "Aprobado" : "No aprobado")
         </dd>
-        <dt class = "col-sm-2">
-            Observaciones
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ObservationGrade)
-        </dd>
-        <dt class = "col-sm-2">
-            Reporte
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Report.Observation)
-        </dd>
     </dl>
+    <dt class="col-sm-2">
+        Estudiantes
+    </dt>
+    <div>
+        <h4>Estudiante(s):</h4>
+        @if (Model.StudentGrade.Any())
+        {
+            <ul class="list-group list-group-flush">
+                @foreach (var studentAGrade in Model.StudentGrade)
+                {
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-user fa-2x text-primary me-2" title="Student"></i>
+                        <span class="fw-semibold">
+                            @studentAGrade.Student.StudentName @studentAGrade.Student.StudentLastName @studentAGrade.Student.DocumentNumber
+                        </span>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Este libro no tiene estudiantes asociados.</p>
+        }
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="IdGrade" />
