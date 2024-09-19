@@ -16,17 +16,24 @@
                 Asistencia
             </th>
             <th>
-                Reporte
+                Titutlo
+            </th>
+            <th>
+                Estudiantes
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Attendance.AttendanceTitle)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Attendance.AttendanceTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NonAttendanceTitle)
+                </td>
                 <td>
                     @foreach (var studentAttendance in item.StudentNonAttendance)
                     {
@@ -40,8 +47,8 @@
                     <a asp-action="Details" asp-route-id="@item.IdNonAttendance" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
                     <a asp-action="Delete" asp-route-id="@item.IdNonAttendance" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
 

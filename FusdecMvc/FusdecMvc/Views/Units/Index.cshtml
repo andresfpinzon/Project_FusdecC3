@@ -19,9 +19,6 @@
                 Estado
             </th>
             <th>
-                Ubicacion
-            </th>
-            <th>
                 Brigada
             </th>
             <th></th>
@@ -35,9 +32,6 @@
             </td>
             <td>
                 @(item.UnitState? "Activo" : "Inactivo")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitLocation)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Brigade.BrigadeName)

@@ -18,7 +18,6 @@ public partial class Unit
     }
     public string UnitName { get; set; }
     public bool UnitState { get; set; }
-    public string UnitLocation { get; set; } 
     public Guid IdBrigade { get; set; }
     public virtual Brigade Brigade { get; set; } 
     public virtual ICollection<Student> Students { get; set; } = new List<Student>();

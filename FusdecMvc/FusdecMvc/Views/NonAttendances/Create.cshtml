@@ -20,7 +20,11 @@
                 <label asp-for="IdAttendance" class="control-label">Asistencia</label>
                 <select asp-for="IdAttendance" class ="form-control" asp-items="ViewBag.IdAttendance"></select>
             </div>
-
+            <div class="form-group">
+                <label asp-for="NonAttendanceTitle" class="control-label">Titulo</label>
+                <input asp-for="NonAttendanceTitle" class="form-control" />
+                <span asp-validation-for="NonAttendanceTitle" class="text-danger"></span>
+            </div>
             <!-- Aquí agregamos el filtro por unidades antes de la tabla -->
             <h4>Filtrar por Unidad</h4>
             <div class="form-group">

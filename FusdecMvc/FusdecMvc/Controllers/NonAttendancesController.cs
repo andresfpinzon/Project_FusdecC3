@@ -66,7 +66,7 @@ namespace FusdecMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdNonAttendance,IdAttendance,IdReport")] NonAttendance nonAttendance, Guid[] selectedStudents)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 nonAttendance.IdNonAttendance = Guid.NewGuid();
                 _context.Add(nonAttendance);
@@ -129,7 +129,7 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 try
                 {
