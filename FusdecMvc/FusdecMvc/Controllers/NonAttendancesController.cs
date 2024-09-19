@@ -24,7 +24,10 @@ namespace FusdecMvc.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.NonAttendances.Include(n => n.Attendance);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.NonAttendances
+                .Include(e => e.StudentNonAttendance)
+                    .ThenInclude(es => es.Student)
+                .ToListAsync());
         }
 
         // GET: NonAttendances/Details/5
@@ -37,6 +40,8 @@ namespace FusdecMvc.Controllers
 
             var nonAttendance = await _context.NonAttendances
                 .Include(n => n.Attendance)
+                .Include(e => e.StudentNonAttendance)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdNonAttendance == id);
             if (nonAttendance == null)
             {
@@ -50,6 +55,7 @@ namespace FusdecMvc.Controllers
         public IActionResult Create()
         {
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate");
+            ViewBag.Students = _context.Students.Include(s => s.Unit).ToList();
             return View();
         }
 
@@ -58,16 +64,30 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdNonAttendance,IdAttendance,IdReport")] NonAttendance nonAttendance)
+        public async Task<IActionResult> Create([Bind("IdNonAttendance,IdAttendance,IdReport")] NonAttendance nonAttendance, Guid[] selectedStudents)
         {
             if (ModelState.IsValid)
             {
                 nonAttendance.IdNonAttendance = Guid.NewGuid();
                 _context.Add(nonAttendance);
                 await _context.SaveChangesAsync();
+                if (selectedStudents != null && selectedStudents.Length > 0)
+                {
+                    foreach (var studentId in selectedStudents)
+                    {
+                        var studentNonAttendance = new StudentNonAttendance
+                        {
+                            IdNonAttendance = nonAttendance.IdNonAttendance,
+                            IdStudent = studentId
+                        };
+                        _context.StudentNonAttendances.Add(studentNonAttendance);
+                    }
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "IdAttendance", nonAttendance.IdAttendance);
+            ViewBag.Students = _context.Students.ToList();
             return View(nonAttendance);
         }
 
@@ -79,12 +99,21 @@ namespace FusdecMvc.Controllers
                 return NotFound();
             }
 
-            var nonAttendance = await _context.NonAttendances.FindAsync(id);
+            var nonAttendance = await _context.NonAttendances
+                .Include(e => e.StudentNonAttendance)
+                    .ThenInclude(es => es.Student)
+                .FirstOrDefaultAsync(a => a.IdAttendance == id);
             if (nonAttendance == null)
             {
                 return NotFound();
             }
+            var students = await _context.Students
+                .Include(s => s.Unit)
+                .ToListAsync();
+
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate", nonAttendance.IdAttendance);
+            ViewBag.Students = students;
+            ViewBag.SelectedStudents = nonAttendance.StudentNonAttendance.Select(ea => ea.IdStudent).ToList();
             return View(nonAttendance);
         }
 
@@ -93,7 +122,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdNonAttendance,IdAttendance,IdReport")] NonAttendance nonAttendance)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdNonAttendance,IdAttendance,IdReport")] NonAttendance nonAttendance, Guid[] selectedStudents)
         {
             if (id != nonAttendance.IdNonAttendance)
             {
@@ -105,6 +134,18 @@ namespace FusdecMvc.Controllers
                 try
                 {
                     _context.Update(nonAttendance);
+
+                    var existingStudents = _context.StudentNonAttendances.Where(es => es.IdNonAttendance == id);
+                    _context.StudentNonAttendances.RemoveRange(existingStudents);
+
+                    if (selectedStudents != null)
+                    {
+                        foreach (var studentId in selectedStudents)
+                        {
+                            _context.StudentNonAttendances.Add(new StudentNonAttendance { IdNonAttendance = id, IdStudent = studentId });
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -120,6 +161,7 @@ namespace FusdecMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var students = await _context.Students.ToListAsync();
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "IdAttendance", nonAttendance.IdAttendance);
             return View(nonAttendance);
         }
@@ -134,6 +176,8 @@ namespace FusdecMvc.Controllers
 
             var nonAttendance = await _context.NonAttendances
                 .Include(n => n.Attendance)
+                .Include(e => e.StudentNonAttendance)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdNonAttendance == id);
             if (nonAttendance == null)
             {
@@ -168,6 +212,5 @@ namespace FusdecMvc.Controllers
         {
             return View();
         }
-
     }
 }
