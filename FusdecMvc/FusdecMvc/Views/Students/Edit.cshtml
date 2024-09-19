@@ -13,6 +13,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdStudent" />
+
             <div class="form-group">
                 <label asp-for="StudentName" class="control-label">Nombres</label>
                 <input asp-for="StudentName" class="form-control" />
@@ -83,7 +84,7 @@
                 <select multiple class="form-control" id="selectedEditions" name="selectedEditions">
                     @foreach (var edition in ViewBag.Editions)
                     {
-                        <option value="@edition.Value">@edition.EditionTitle</option>
+                        <option value="@edition.Value">@edition.Text</option>
                     }
                 </select>
             </div>

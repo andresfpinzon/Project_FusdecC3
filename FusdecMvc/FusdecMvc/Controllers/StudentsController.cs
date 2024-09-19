@@ -115,7 +115,7 @@ namespace FusdecMvc.Controllers
             }
 
             var editions = await _context.Editions.ToListAsync();
-            ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "Title", student.StudentEditions.Select(se => se.IdEdition));
+            ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "EditionTitle", student.StudentEditions.Select(se => se.IdEdition));
 
             ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "SchoolName");
             ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "UnitName");
