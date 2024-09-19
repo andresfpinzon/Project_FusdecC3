@@ -4,7 +4,7 @@
     ViewData["Title"] = "Detalles del certificado";
 }
 
-<h1>Detalles del certificado</h1>
+<h1>Detalles</h1>
 
 <div class="card">
     <div class="card-header">
@@ -55,14 +55,13 @@
                 @Html.DisplayFor(model => model.Student.StudentLastName)
             </dd>
         </dl>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.IdCertificate" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                &#8592; Volver atrás
+            </a>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdCertificate" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">
-        &#8592; Volver atrás
-    </a>
 </div>

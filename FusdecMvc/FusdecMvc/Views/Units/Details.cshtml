@@ -8,42 +8,43 @@
 
 <div class="card">
     <div class="card-header">
-        <h4>Curso</h4>
+        <h4>Unidad</h4>
     </div>
     <div class="card-body">
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Nombre
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnitName)
-        </dd>
-        <dt class = "col-sm-2">
-            Estado
-        </dt>
-        <dd class = "col-sm-10">
-            @(Model.UnitState ? "Activo" : "Inactivo")
-        </dd>
-        <dt class = "col-sm-2">
-            Ubicación
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnitLocation)
-        </dd>
-        <dt class = "col-sm-2">
-            Brigada
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Brigade.BrigadeName)
-        </dd>
-    </dl>
+        <dl class="row">
+            <dt class = "col-sm-2">
+                Nombre
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.UnitName)
+            </dd>
+            <dt class = "col-sm-2">
+                Estado
+            </dt>
+            <dd class = "col-sm-10">
+                @(Model.UnitState ? "Activo" : "Inactivo")
+            </dd>
+            <dt class = "col-sm-2">
+                Ubicación
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.UnitLocation)
+            </dd>
+            <dt class = "col-sm-2">
+                Brigada
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Brigade.BrigadeName)
+            </dd>
+        </dl>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.IdUnit" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                &#8592; Volver atrás
+            </a>
+        </div>
+    </div>
 </div>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdUnit" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">
-        &#8592; Volver atrás
-    </a>
-</div>
+

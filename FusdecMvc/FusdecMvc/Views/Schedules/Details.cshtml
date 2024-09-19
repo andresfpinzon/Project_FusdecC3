@@ -8,43 +8,42 @@
 
 <div class="card">
     <div class="card-header">
-        <h4>Horarios</h4>
+        <h4>Horario</h4>
     </div>
     <div class="card-body">
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Título
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ScheduleTitle)
-        </dd>
-        <dt class = "col-sm-2">
-            Hora de inicio
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ScheduleStartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            Hora de finalización
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ScheduleEndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            Estado
-        </dt>
-        <dd class = "col-sm-10">
-            @(Model.ScheduleStatus ? "Activo" : "Inactivo")
-        </dd>
-    </dl>
+        <dl class="row">
+            <dt class = "col-sm-2">
+                Título
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.ScheduleTitle)
+            </dd>
+            <dt class = "col-sm-2">
+                Hora de inicio
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.ScheduleStartDate)
+            </dd>
+            <dt class = "col-sm-2">
+                Hora de finalización
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.ScheduleEndDate)
+            </dd>
+            <dt class = "col-sm-2">
+                Estado
+            </dt>
+            <dd class = "col-sm-10">
+                @(Model.ScheduleStatus ? "Activo" : "Inactivo")
+            </dd>
+        </dl>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.IdSchedule" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                &#8592; Volver atrás
+            </a>
+        </div>
     </div>
-</div>
-<br />
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdSchedule" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">
-        &#8592; Volver atrás
-    </a>
 </div>

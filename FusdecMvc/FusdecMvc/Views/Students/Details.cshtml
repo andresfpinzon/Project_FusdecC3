@@ -88,13 +88,13 @@
                 <p>Esta edicion no tiene horarios asociados.</p>
             }
         </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.IdStudent" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                &#8592; Volver atrás
+            </a>
+        </div>
     </div>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdStudent" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">
-        &#8592; Volver atrás
-    </a>
 </div>

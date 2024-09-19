@@ -6,57 +6,61 @@
 
 <h1>Eliminar</h1>
 
-<h3>¿Estas seguro de que quieres eliminar los datos?</h3>
-<div>
-    <h4>Califiicación</h4>
-    <hr />
-    <dt class="col-sm-3">
-        Nombre
-    </dt>
-    <dd class="col-sm-9">
-        @Html.DisplayFor(model => model.GradeTitle)
-    </dd>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Aprobado
+<div class="card">
+    <div class="card-header">
+        <h3>¿Estás seguro de que quieres eliminar los datos?</h3>
+    </div>
+    <div class="card-body">
+        <h4>Califiicación</h4>
+        <hr />
+        <dt class="col-sm-3">
+            Nombre
         </dt>
-        <dd class = "col-sm-10">
-            @(Model.Approved ? "Aprobado" : "No aprobado")
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.GradeTitle)
         </dd>
-    </dl>
-    <dt class="col-sm-2">
-        Estudiantes
-    </dt>
-    <div>
-        <h4>Estudiante(s):</h4>
-        @if (Model.StudentGrade.Any())
-        {
-            <ul class="list-group list-group-flush">
-                @foreach (var studentAGrade in Model.StudentGrade)
-                {
-                    <li class="list-group-item d-flex align-items-center">
-                        <i class="fas fa-user fa-2x text-primary me-2" title="Student"></i>
-                        <span class="fw-semibold">
-                            @studentAGrade.Student.StudentName @studentAGrade.Student.StudentLastName @studentAGrade.Student.DocumentNumber
-                        </span>
-                    </li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>Este libro no tiene estudiantes asociados.</p>
-        }
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="IdGrade" />
-        <button type="submit" class="btn btn-danger">
-            <i class="fa fa-trash"></i> Borrar
-        </button>
+        <dl class="row">
+            <dt class="col-sm-2">
+                Aprobado
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.Approved ? "Aprobado" : "No aprobado")
+            </dd>
+        </dl>
+        <dt class="col-sm-2">
+            Estudiantes
+        </dt>
         <div>
-            <a asp-action="Index" class="btn btn-secondary mt-3">
-                &#8592; Volver atrás
-            </a>
-        </div>
-    </form>
+            <h4>Estudiante(s):</h4>
+            @if (Model.StudentGrade.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var studentAGrade in Model.StudentGrade)
+                    {
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-user fa-2x text-primary me-2" title="Student"></i>
+                            <span class="fw-semibold">
+                                @studentAGrade.Student.StudentName @studentAGrade.Student.StudentLastName @studentAGrade.Student.DocumentNumber
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Este libro no tiene estudiantes asociados.</p>
+            }
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="IdGrade" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa fa-trash"></i> Borrar
+                </button>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary mt-3">
+                        &#8592; Volver atrás
+                    </a>
+                </div>
+            </form>
+    </div>
 </div>
