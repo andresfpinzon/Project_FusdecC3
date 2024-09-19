@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Edit";
+    // Convertimos ViewBag.Students a una lista y extraemos las unidades únicas
+    var studentsList = ((IEnumerable<FusdecMvc.Models.Student>)ViewBag.Students).ToList();
+    var distinctUnits = studentsList.Select(s => s.Unit.UnitName).Distinct().ToList();
 }
 
 <h1>Editar</h1>
@@ -17,6 +20,47 @@
                 <label asp-for="IdAttendance" class="control-label">Asistencia</label>
                 <select asp-for="IdAttendance" class="form-control" asp-items="ViewBag.IdAttendance"></select>
             </div>
+
+            <!-- Aquí agregamos el filtro por unidades antes de la tabla -->
+            <h4>Filtrar por Unidad</h4>
+            <div class="form-group">
+                <label for="filterUnit" class="control-label">Unidad</label>
+                <select id="filterUnit" class="form-control">
+                    <option value="">-- Seleccione Unidad --</option>
+                    @foreach (var unit in distinctUnits)
+                    {
+                        <option value="@unit">@unit</option>
+                    }
+                </select>
+            </div>
+
+            <h4>Seleccionar Studiante(s)</h4>
+            <table id="dataTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Seleccionar</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Documento</th>
+                        <th>Unidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in ViewBag.Students)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedStudents" value="@student.IdStudent" />
+                            </td>
+                            <td>@student.StudentName</td>
+                            <td>@student.StudentLastName</td>
+                            <td>@student.DocumentNumber</td>
+                            <td>@student.Unit.UnitName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
             <div class="form-group mt-3">
                 <input type="submit" value="Guardar Cambios" class="btn btn-warning" />
             </div>
@@ -31,5 +75,32 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#dataTable').DataTable({
+                "language": {
+                    "lengthMenu": "Show _MENU_ entries per page",
+                    "zeroRecords": "No results found",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "infoEmpty": "Showing 0 to 0 of 0 entries",
+                    "infoFiltered": "(filtered from _MAX_ total entries)",
+                    "search": "Search:",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                }
+            });
+
+            // Filter by Unit
+            $('#filterUnit').on('change', function () {
+                var unit = $(this).val();
+                table.column(4).search(unit).draw();
+            });
+        });
+    </script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

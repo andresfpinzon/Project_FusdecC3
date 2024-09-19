@@ -54,7 +54,7 @@ namespace FusdecMvc.Controllers
         // GET: NonAttendances/Create
         public IActionResult Create()
         {
-            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate");
+            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceTitle");
             ViewBag.Students = _context.Students.Include(s => s.Unit).ToList();
             return View();
         }
@@ -111,7 +111,7 @@ namespace FusdecMvc.Controllers
                 .Include(s => s.Unit)
                 .ToListAsync();
 
-            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceDate", nonAttendance.IdAttendance);
+            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceTitle", nonAttendance.IdAttendance);
             ViewBag.Students = students;
             ViewBag.SelectedStudents = nonAttendance.StudentNonAttendance.Select(ea => ea.IdStudent).ToList();
             return View(nonAttendance);
