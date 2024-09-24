@@ -1,7 +1,10 @@
 using FusdecMvc.Data;
 using FusdecMvc.Models.Seeds;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using FusdecMvc.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 });
 
+//Email Sender
+builder.Services.AddTransient<IEmailSender, FakeEmailSender>();
 
 // Add controllers and views
 builder.Services.AddControllersWithViews();
