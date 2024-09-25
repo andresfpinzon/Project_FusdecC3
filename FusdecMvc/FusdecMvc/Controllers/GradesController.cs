@@ -21,6 +21,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Grades
+        [Authorize(Roles = "Instructor, Administrador")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Grades
@@ -30,6 +31,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Grades/Details/5
+        [Authorize(Roles = "Instructor, Administrador")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -50,6 +52,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Grades/Create
+        [Authorize(Roles = "Instructor")]
         public IActionResult Create()
         {
             ViewBag.Students = _context.Students.Include(s => s.Unit).ToList();
@@ -61,6 +64,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Create([Bind("IdGrade,GradeTitle,Approved,ObservationGrade")] Grade grade, Guid[] selectedStudents)
         {
             //if (ModelState.IsValid)
@@ -88,6 +92,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Grades/Edit/5
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -120,6 +125,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(Guid id, [Bind("IdGrade,IdReport,GradeTitle,Approved,ObservationGrade")] Grade grade, Guid[] selectedStudents)
         {
             if (id != grade.IdGrade)
@@ -164,6 +170,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Grades/Delete/5
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -186,6 +193,7 @@ namespace FusdecMvc.Controllers
         // POST: Grades/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var grade = await _context.Grades.FindAsync(id);

@@ -25,6 +25,12 @@
                 <input asp-for="NonAttendanceTitle" class="form-control" />
                 <span asp-validation-for="NonAttendanceTitle" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Observacion" class="control-label">Titulo</label>
+                <input asp-for="Observacion" class="form-control" />
+                <span asp-validation-for="Observacion" class="text-danger"></span>
+            </div>
+
             <!-- Aquí agregamos el filtro por unidades antes de la tabla -->
             <h4>Filtrar por Unidad</h4>
             <div class="form-group">
@@ -50,11 +56,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var student in ViewBag.Students)
+                    @foreach (var student in studentsList)
                     {
+                        bool isSelected = ViewBag.SelectedStudents.Contains(student.IdStudent);
                         <tr>
                             <td>
-                                <input type="checkbox" name="selectedStudents" value="@student.IdStudent" />
+                                <input type="checkbox" name="selectedStudents" value="@student.IdStudent" @(isSelected ? "checked" : "") />
                             </td>
                             <td>@student.StudentName</td>
                             <td>@student.StudentLastName</td>

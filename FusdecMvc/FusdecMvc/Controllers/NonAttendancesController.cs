@@ -21,16 +21,18 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: NonAttendances
+        [Authorize(Roles = "Instructor, Administrador")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.NonAttendances.Include(n => n.Attendance);
             return View(await _context.NonAttendances
+                .Include(n => n.Attendance)
                 .Include(e => e.StudentNonAttendance)
                     .ThenInclude(es => es.Student)
                 .ToListAsync());
         }
 
         // GET: NonAttendances/Details/5
+        [Authorize(Roles = "Instructor, Administrador")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -52,6 +54,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: NonAttendances/Create
+        [Authorize(Roles = "Instructor")]
         public IActionResult Create()
         {
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceTitle");
@@ -64,7 +67,8 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdNonAttendance,IdAttendance,IdReport")] NonAttendance nonAttendance, Guid[] selectedStudents)
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> Create([Bind("IdNonAttendance,IdAttendance,NonAttendanceTitle,Observacion")] NonAttendance nonAttendance, Guid[] selectedStudents)
         {
             //if (ModelState.IsValid)
             {
@@ -92,6 +96,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: NonAttendances/Edit/5
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -102,7 +107,7 @@ namespace FusdecMvc.Controllers
             var nonAttendance = await _context.NonAttendances
                 .Include(e => e.StudentNonAttendance)
                     .ThenInclude(es => es.Student)
-                .FirstOrDefaultAsync(a => a.IdAttendance == id);
+                .FirstOrDefaultAsync(a => a.IdNonAttendance == id);
             if (nonAttendance == null)
             {
                 return NotFound();
@@ -122,7 +127,8 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdNonAttendance,IdAttendance,IdReport")] NonAttendance nonAttendance, Guid[] selectedStudents)
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdNonAttendance,IdAttendance,NonAttendanceTitle,Observacion")] NonAttendance nonAttendance, Guid[] selectedStudents)
         {
             if (id != nonAttendance.IdNonAttendance)
             {
@@ -167,6 +173,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: NonAttendances/Delete/5
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -190,6 +197,7 @@ namespace FusdecMvc.Controllers
         // POST: NonAttendances/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var nonAttendance = await _context.NonAttendances.FindAsync(id);
