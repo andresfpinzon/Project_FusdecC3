@@ -31,8 +31,9 @@ namespace FusdecMvc.Migrations
                     b.Property<DateTime>("AttendanceDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("AttendanceStatus")
-                        .HasColumnType("bit");
+                    b.Property<string>("AttendanceTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdAttendance");
 
@@ -195,12 +196,12 @@ namespace FusdecMvc.Migrations
                     b.Property<bool>("EditionStatus")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("IdCourse")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Title")
+                    b.Property<string>("EditionTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("IdCourse")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("IdEdition");
 
@@ -248,16 +249,11 @@ namespace FusdecMvc.Migrations
                     b.Property<bool>("Approved")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("IdReport")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ObservationGrade")
+                    b.Property<string>("GradeTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdGrade");
-
-                    b.HasIndex("IdReport")
-                        .IsUnique();
 
                     b.ToTable("Grades");
                 });
@@ -271,32 +267,20 @@ namespace FusdecMvc.Migrations
                     b.Property<Guid>("IdAttendance")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IdReport")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("NonAttendanceTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observacion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdNonAttendance");
 
                     b.HasIndex("IdAttendance")
                         .IsUnique();
 
-                    b.HasIndex("IdReport");
-
                     b.ToTable("NonAttendances");
-                });
-
-            modelBuilder.Entity("FusdecMvc.Models.Report", b =>
-                {
-                    b.Property<Guid>("IdReport")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Observation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdReport");
-
-                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("FusdecMvc.Models.Schedule", b =>
@@ -305,11 +289,11 @@ namespace FusdecMvc.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ScheduleEndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("ScheduleEndDate")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("ScheduleStartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("ScheduleStartDate")
+                        .HasColumnType("time");
 
                     b.Property<bool>("ScheduleStatus")
                         .HasColumnType("bit");
@@ -457,10 +441,6 @@ namespace FusdecMvc.Migrations
 
                     b.Property<Guid>("IdBrigade")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UnitLocation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UnitName")
                         .IsRequired()
@@ -764,17 +744,6 @@ namespace FusdecMvc.Migrations
                     b.Navigation("Schedule");
                 });
 
-            modelBuilder.Entity("FusdecMvc.Models.Grade", b =>
-                {
-                    b.HasOne("FusdecMvc.Models.Report", "Report")
-                        .WithOne()
-                        .HasForeignKey("FusdecMvc.Models.Grade", "IdReport")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Report");
-                });
-
             modelBuilder.Entity("FusdecMvc.Models.NonAttendance", b =>
                 {
                     b.HasOne("FusdecMvc.Models.Attendance", "Attendance")
@@ -783,15 +752,7 @@ namespace FusdecMvc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FusdecMvc.Models.Report", "Report")
-                        .WithMany()
-                        .HasForeignKey("IdReport")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Attendance");
-
-                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("FusdecMvc.Models.Student", b =>

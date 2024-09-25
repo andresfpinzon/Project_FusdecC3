@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Asistencia</h1>
+<h1>Listas de asistencia</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Asistencia</a>
@@ -13,30 +13,43 @@
     <thead>
         <tr>
             <th>
+                Titulo
+            </th>
+            <th>
                 Fecha
             </th>
             <th>
-                Asistencia
+                Estudiantes
             </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AttendanceDate)
-            </td>
-            <td>
-                @(item.AttendanceStatus ? "Asistio" : "No asistio")
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AttendanceTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AttendanceDate)
+                </td>
+                <td>
+                    @foreach (var studentAttendance in item.StudentAttendances)
+                    {
+                        var student = studentAttendance.Student;
+                        <span>@student.StudentName @student.StudentLastName @student.DocumentNumber</span>
+                        <br />
+                    }
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdAttendance" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                     <a asp-action="Details" asp-route-id="@item.IdAttendance" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
                     <a asp-action="Delete" asp-route-id="@item.IdAttendance" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
 

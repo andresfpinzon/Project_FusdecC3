@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Inasistencia</h1>
+<h1>Inasistencias</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Inasistencia</a>
@@ -16,27 +16,39 @@
                 Asistencia
             </th>
             <th>
-                Reporte
+                Inasistencia
+            </th>
+            <th>
+                Estudiantes
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Attendance.AttendanceDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Report.Observation)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Attendance.AttendanceTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NonAttendanceTitle)
+                </td>
+                <td>
+                    @foreach (var studentAttendance in item.StudentNonAttendance)
+                    {
+                        var student = studentAttendance.Student;
+                        <span>@student.StudentName @student.StudentLastName @student.DocumentNumber</span>
+                        <br />
+                    }
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdNonAttendance" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                     <a asp-action="Details" asp-route-id="@item.IdNonAttendance" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
                     <a asp-action="Delete" asp-route-id="@item.IdNonAttendance" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
 

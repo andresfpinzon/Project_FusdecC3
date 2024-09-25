@@ -149,19 +149,19 @@ namespace FusdecMvc.Data
                 .HasForeignKey(c => c.IdStudent)
                 .OnDelete(DeleteBehavior.Cascade);
 
-           // Configurar la relación entre Report y Grade
-            modelBuilder.Entity<Grade>()
-                .HasOne(g => g.Report)
-                .WithOne() 
-                .HasForeignKey<Grade>(g => g.IdReport)
-                .OnDelete(DeleteBehavior.Cascade);
+           //// Configurar la relación entre Report y Grade
+           // modelBuilder.Entity<Grade>()
+           //     .HasOne(g => g.Report)
+           //     .WithOne() 
+           //     .HasForeignKey<Grade>(g => g.IdReport)
+           //     .OnDelete(DeleteBehavior.Cascade);
 
-            // Configurar la relación entre Report y NonAttendance
-            modelBuilder.Entity<NonAttendance>()
-                .HasOne(na => na.Report)
-                .WithMany() 
-                .HasForeignKey(na => na.IdReport)
-                .OnDelete(DeleteBehavior.Cascade);
+            //// Configurar la relación entre Report y NonAttendance
+            //modelBuilder.Entity<NonAttendance>()
+            //    .HasOne(na => na.Report)
+            //    .WithMany() 
+            //    .HasForeignKey(na => na.IdReport)
+            //    .OnDelete(DeleteBehavior.Cascade);
             // Configurar la relación entre Estudiante y escuela
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.School)
@@ -206,7 +206,7 @@ namespace FusdecMvc.Data
         public DbSet<Fundation> Fundations { get; set; }
         public DbSet<Grade> Grades { get; set; }
         public DbSet<NonAttendance> NonAttendances { get; set; }
-        public DbSet<Report> Reports { get; set; }
+        //public DbSet<Report> Reports { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<School> Schools { get; set; }
         public DbSet<Student> Students { get; set; }    

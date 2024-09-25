@@ -8,7 +8,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h4>Edicion</h4>
+        <h4>Edición</h4>
     </div>
     <div class="card-body">
         <dl class="row">
@@ -16,7 +16,7 @@
                 Titulo
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Title)
+                @Html.DisplayFor(model => model.EditionTitle)
             </dd>
             <dt class = "col-sm-2">
                 Fecha de inicio
@@ -64,13 +64,13 @@
                 <p>Esta edicion no tiene horarios asociados.</p>
             }
         </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.IdEdition" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+            <br />
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                &#8592; Volver atrás
+            </a>
+        </div>
     </div>
 </div>
-<br />
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdEdition" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
-    <br />
-    <a asp-action="Index" class="btn btn-secondary mt-3">
-        &#8592; Volver atrás
-    </a>
-</div>
+

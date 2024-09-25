@@ -13,10 +13,9 @@ public partial class NonAttendance
     {
         this.IdNonAttendance = Guid.NewGuid();
     }
-    public Guid IdReport { get; set; }
-
     public Attendance Attendance { get; set; }
-    public Report Report { get; set; }
+    public string NonAttendanceTitle { get; set; }
+    public string Observacion { get; set; }
 
     public ICollection<StudentNonAttendance> StudentNonAttendance { get; set; } = new List<StudentNonAttendance>();
 }

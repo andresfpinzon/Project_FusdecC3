@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
+    [Authorize(Roles = "Secretario")]
     public class EditionsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -64,7 +65,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse,Title,IdCourse,EditionStatus")] Edition edition, Guid[] selectedSchedules)
+        public async Task<IActionResult> Create([Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse,EditionTitle,IdCourse,EditionStatus")] Edition edition, Guid[] selectedSchedules)
         {
             //if (ModelState.IsValid)
             {
@@ -122,7 +123,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse,Title,IdCourse,EditionStatus")] Edition edition, Guid[] selectedSchedules)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdEdition,EditionStartDate,EditionEndDate,IdCourse,EditionTitle,IdCourse,EditionStatus")] Edition edition, Guid[] selectedSchedules)
         {
             if (id != edition.IdEdition)
             {

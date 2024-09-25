@@ -15,7 +15,7 @@ public partial class Edition
     {
         this.IdEdition = Guid.NewGuid();
     }
-    public string Title { get; set; }
+    public string EditionTitle { get; set; }
     public DateOnly EditionStartDate { get; set; }
     public DateOnly EditionEndDate { get; set; }
     public bool EditionStatus { get; set; }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class UnitsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -58,7 +59,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdUnit,UnitName,UnitState,UnitLocation,IdBrigade")] Unit unit)
+        public async Task<IActionResult> Create([Bind("IdUnit,UnitName,UnitState,IdBrigade")] Unit unit)
         {
             //if (ModelState.IsValid)
             {
@@ -93,7 +94,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdUnit,UnitName,UnitState,UnitLocation,IdBrigade")] Unit unit)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdUnit,UnitName,UnitState,IdBrigade")] Unit unit)
         {
             if (id != unit.IdUnit)
             {

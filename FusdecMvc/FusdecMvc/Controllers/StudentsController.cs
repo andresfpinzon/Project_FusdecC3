@@ -22,6 +22,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Students
+        [Authorize(Roles = "Instructor, Secretario")]
         public async Task<IActionResult> Index()
         {
             var Students = _context.Students
@@ -33,6 +34,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Students/Details/5
+        [Authorize(Roles = "Instructor, Secretario")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -55,6 +57,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Students/Create
+        [Authorize(Roles = "Secretario")]
         public IActionResult Create()
         {
             ViewBag.Editions = _context.Editions.ToList();
@@ -68,6 +71,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Secretario")]
         public async Task<IActionResult> Create([Bind("IdStudent,StudentName,StudentLastName,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
         {
             //if (ModelState.IsValid)
@@ -98,6 +102,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Students/Edit/5
+        [Authorize(Roles = "Secretario")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -115,7 +120,7 @@ namespace FusdecMvc.Controllers
             }
 
             var editions = await _context.Editions.ToListAsync();
-            ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "Title", student.StudentEditions.Select(se => se.IdEdition));
+            ViewData["Editions"] = new MultiSelectList(editions, "IdEdition", "EditionTitle", student.StudentEditions.Select(se => se.IdEdition));
 
             ViewData["IdSchool"] = new SelectList(_context.Schools, "IdSchool", "SchoolName");
             ViewData["IdUnit"] = new SelectList(_context.Units, "IdUnit", "UnitName");
@@ -127,6 +132,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Secretario")]
         public async Task<IActionResult> Edit(Guid id, [Bind("IdStudent,StudentName,StudentLastName,DocumentType,DocumentNumber,StudentDateBirth,StudentGender,IdUnit,IdSchool,StudentStatus")] Student student, Guid[] selectedEditions)
         {
             if (id != student.IdStudent)
@@ -175,6 +181,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Students/Delete/5
+        [Authorize(Roles = "Secretario")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -199,6 +206,7 @@ namespace FusdecMvc.Controllers
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Secretario")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var student = await _context.Students.FindAsync(id);

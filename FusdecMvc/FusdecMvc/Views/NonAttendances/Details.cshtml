@@ -6,29 +6,57 @@
 
 <h1>Detalles</h1>
 
-<div>
-    <h4>Inasistencia</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Asistencia
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Attendance.AttendanceDate)
-        </dd>
-        <dt class = "col-sm-2">
-            Reporte
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Report.Observation)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-header">
+        <h4>Inasistencia</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-2">
+                Asistencia
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Attendance.AttendanceTitle)
+            </dd>
+            <dt class="col-sm-2">
+                Titulo
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NonAttendanceTitle)
+            </dd>
+            <dt class="col-sm-2">
+                Estudiantes
+            </dt>
+            <div>
+                <h4>Estudiante(s):</h4>
+                @if (Model.StudentNonAttendance.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var studentAttendance in Model.StudentNonAttendance)
+                        {
+                            <li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-user fa-2x text-primary me-2" title="Student"></i>
+                                <span class="fw-semibold">
+                                    @studentAttendance.Student.StudentName @studentAttendance.Student.StudentLastName @studentAttendance.Student.DocumentNumber
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>Este libro no tiene autores asociados.</p>
+                }
+            </div>
+        </dl>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.IdAttendance" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                &#8592; Volver atrás
+            </a>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdAttendance" class="btn btn-warning"><i class="bi bi-info-circle"></i> Editar</a>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">
-        &#8592; Volver atrás
-    </a>
-</div>
+

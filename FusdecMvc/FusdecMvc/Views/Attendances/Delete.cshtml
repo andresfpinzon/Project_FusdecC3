@@ -11,18 +11,42 @@
     <h4>Asistencia</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            Titulo
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AttendanceTitle)
+        </dd>
         <dt class = "col-sm-2">
             Fecha
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.AttendanceDate)
         </dd>
-        <dt class = "col-sm-2">
-            Asitencia
+        <dt class="col-sm-2">
+            Estudiantes
         </dt>
-        <dd class = "col-sm-10">
-            @(Model.AttendanceStatus ? "Asistio" : "No asistio")
-        </dd>
+        <div>
+            <h4>Estudiante(s):</h4>
+            @if (Model.StudentAttendances.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var studentAttendance in Model.StudentAttendances)
+                    {
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-user fa-2x text-primary me-2" title="Student"></i>
+                            <span class="fw-semibold">
+                                @studentAttendance.Student.StudentName @studentAttendance.Student.StudentLastName @studentAttendance.Student.DocumentNumber
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Este libro no tiene estudiantes asociados.</p>
+            }
+        </div>
     </dl>
     
     <form asp-action="Delete">

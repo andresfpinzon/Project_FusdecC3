@@ -14,11 +14,8 @@ public partial class Grade
     {
         this.IdGrade = Guid.NewGuid();
     }
-    public Guid IdReport { get; set; }
+    public string GradeTitle { get; set; }
     public bool Approved { get; set; }
-    public string? ObservationGrade { get; set; }
-    public Report Report { get; set; }
-
     public ICollection<StudentGrade> StudentGrade { get; set; } = new List<StudentGrade>();
 }
 

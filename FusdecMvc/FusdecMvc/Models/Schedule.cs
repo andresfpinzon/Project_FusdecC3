@@ -18,9 +18,9 @@ public partial class Schedule
 
     public string ScheduleTitle { get; set; } 
 
-    public DateTime ScheduleStartDate { get; set; }
+    public TimeSpan ScheduleStartDate { get; set; }
 
-    public DateTime ScheduleEndDate { get; set; }
+    public TimeSpan ScheduleEndDate { get; set; }
 
     public bool ScheduleStatus { get; set; }
 

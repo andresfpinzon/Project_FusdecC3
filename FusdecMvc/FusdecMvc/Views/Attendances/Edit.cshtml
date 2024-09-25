@@ -1,7 +1,11 @@
 ﻿@model FusdecMvc.Models.Attendance
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar";
+
+    // Get the students from the ViewBag and work with them
+    var studentsList = ((IEnumerable<FusdecMvc.Models.Student>)ViewBag.Students).ToList();
+    var distinctUnits = studentsList.Select(s => s.Unit.UnitName).Distinct().ToList();
 }
 
 <h1>Editar</h1>
@@ -9,35 +13,101 @@
 <h4>Asistencia</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-8">
+        <form asp-action="Edit" class="needs-validation" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdAttendance" />
             <div class="form-group">
-                <label asp-for="AttendanceDate" class="control-label">Fecha</label>
-                <input asp-for="AttendanceDate" class="form-control" />
-                <span asp-validation-for="AttendanceDate" class="text-danger"></span>
+                <label asp-for="AttendanceTitle" class="control-label">Titulo</label>
+                <input asp-for="AttendanceTitle" class="form-control" />
+                <span asp-validation-for="AttendanceTitle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AttendanceStatus" class="form-label">Asistencia</label>
-                <select class="form-control" asp-for="AttendanceStatus" required>
-                    <option value="true">Asistio</option>
-                    <option value="false">No asistio</option>
+                <label asp-for="AttendanceDate" class="control-label">Fecha</label>
+                <input asp-for="AttendanceDate" class="form-control" type="date" />
+                <span asp-validation-for="AttendanceDate" class="text-danger"></span>
+            </div>
+
+            <!-- Aquí agregamos el filtro por unidades antes de la tabla -->
+            <h4>Filtrar por Unidad</h4>
+            <div class="form-group">
+                <label for="filterUnit" class="control-label">Unidad</label>
+                <select id="filterUnit" class="form-control">
+                    <option value="">-- Select Unit --</option>
+                    @foreach (var unit in distinctUnits)
+                    {
+                        <option value="@unit">@unit</option>
+                    }
                 </select>
             </div>
+
+            <h4>Seleccionar Studiante(s)</h4>
+            <table id="dataTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Seleccionar</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Document</th>
+                        <th>Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in studentsList)
+                    {
+                        bool isSelected = ViewBag.SelectedStudents.Contains(student.IdStudent);
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedStudents" value="@student.IdStudent" @(isSelected ? "checked" : "") />
+                            </td>
+                            <td>@student.StudentName</td>
+                            <td>@student.StudentLastName</td>
+                            <td>@student.DocumentNumber</td>
+                            <td>@student.Unit.UnitName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
             <div class="form-group mt-3">
                 <input type="submit" value="Guardar Cambios" class="btn btn-warning" />
+            </div>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary mt-3">
+                    &#8592; Volver atrás
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">
-        &#8592; Volver atrás
-    </a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#dataTable').DataTable({
+                "language": {
+                    "lengthMenu": "Show _MENU_ entries per page",
+                    "zeroRecords": "No results found",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "infoEmpty": "Showing 0 to 0 of 0 entries",
+                    "infoFiltered": "(filtered from _MAX_ total entries)",
+                    "search": "Search:",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                }
+            });
+
+            // Filter by Unit
+            $('#filterUnit').on('change', function () {
+                var unit = $(this).val();
+                table.column(4).search(unit).draw();
+            });
+        });
+    </script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
+

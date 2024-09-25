@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class CertificatesController : Controller
     {
         private readonly ApplicationDbContext _context;

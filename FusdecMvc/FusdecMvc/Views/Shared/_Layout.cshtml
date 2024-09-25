@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,12 +33,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
                         </li>
-                        @*Refactorizar cuando se tengan los roles definidos*@
-                        @*if (User.Identity.IsAuthenticated)*@
-                       @*{*@ 
-                            @*var user = await UserManager.GetUserAsync(User);
-                            if (user != null && (await UserManager.IsInRoleAsync(user, "Bibliotecario") || await UserManager.IsInRoleAsync(user, "Administrador")))@**@
-                            @*{*@ 
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            if (user != null && await UserManager.IsInRoleAsync(user, "Administrador"))
+                            {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Gestionar Fundacion
@@ -48,15 +50,15 @@
                                         <li><a class="dropdown-item" asp-area="" asp-controller="Schools" asp-action="Index"> Colegios</a></li>
                                     </ul>
                                 </li>
-                            @*}*@ 
-                        @*}*@ 
+                            }
+                        }
 
-                        @*Refactorizar cuando se tengan los roles definidos*@
-                        @*if (User.Identity.IsAuthenticated)*@
-                       @*{*@ 
-                            @*var user = await UserManager.GetUserAsync(User);
-                            if (user != null && (await UserManager.IsInRoleAsync(user, "Bibliotecario") || await UserManager.IsInRoleAsync(user, "Administrador")))@**@
-                            @*{*@ 
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            if (user != null && (await UserManager.IsInRoleAsync(user, "Secretario")))
+                            {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Gestionar Cursos
@@ -67,67 +69,73 @@
                                         <li><a class="dropdown-item" asp-area="" asp-controller="Editions" asp-action="Index"> Ediciones</a></li>
                                     </ul>
                                 </li>
-                            @*}*@ 
-                        @*}*@ 
+                            }
+                        }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Estudiantes</a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            if (user != null && (await UserManager.IsInRoleAsync(user, "Secretario") || await UserManager.IsInRoleAsync(user, "Instructor")))
+                                    {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Estudiantes</a>
+                                </li>
+                            }
+                        }
+
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                        var user = await UserManager.GetUserAsync(User);
+                        if (user != null && (await UserManager.IsInRoleAsync(user, "Instructor") || await UserManager.IsInRoleAsync(user, "Administrador")))
+                        {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Gestionar Reportes
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Attendances" asp-action="Index"> Asistencia</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="NonAttendances" asp-action="Index"> Inasistencia</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Grades" asp-action="Index"> Calificaciones</a></li>
+                            </ul>
                         </li>
+                        }
+                        }
 
-                        @*Refactorizar cuando se tengan los roles definidos*@
-                        @*if (User.Identity.IsAuthenticated)*@
-                       @*{*@ 
-                            @*var user = await UserManager.GetUserAsync(User);
-                            if (user != null && (await UserManager.IsInRoleAsync(user, "Bibliotecario") || await UserManager.IsInRoleAsync(user, "Administrador")))@**@
-                            @*{*@ 
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Gestionar Reportes
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="Attendances" asp-action="Index"> Asistencia</a></li>
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="Reports" asp-action="Index"> Reportes</a></li>
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="NonAttendances" asp-action="Index"> Inasistencia</a></li>
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="Grades" asp-action="Index"> Calificaciones</a></li>
-                                    </ul>
-                                </li>
-                            @*}*@ 
-                        @*}*@
 
-                        @*Refactorizar cuando se tengan los roles definidos*@
-                        @*if (User.Identity.IsAuthenticated)*@
-                       @*{*@ 
-                            @*var user = await UserManager.GetUserAsync(User);
-                            if (user != null && (await UserManager.IsInRoleAsync(user, "Bibliotecario") || await UserManager.IsInRoleAsync(user, "Administrador")))@**@
-                            @*{*@ 
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Gestionar Certificados
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="Certificates" asp-action="Index"> Certificados</a></li>
-                                        <li><a class="dropdown-item" asp-area="" asp-controller="Audits" asp-action="Index"> Auditorias</a></li>
-                                    </ul>
-                                </li>
-                            @*}*@ 
-                        @*}*@
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                        var user = await UserManager.GetUserAsync(User);
+                        if (user != null && (await UserManager.IsInRoleAsync(user, "Administrador")))
+                        {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Gestionar Certificados
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Certificates" asp-action="Index"> Certificados</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Audits" asp-action="Index"> Auditorias</a></li>
+                            </ul>
+                        </li>
+                        }
+                        }
 
-                        @*Refactorizar cuando se tengan los roles definidos*@
-                        @*if (User.Identity.IsAuthenticated)*@
-                       @*{*@ 
-                            @*var user = await UserManager.GetUserAsync(User);
-                            if (user != null && (await UserManager.IsInRoleAsync(user, "Bibliotecario") || await UserManager.IsInRoleAsync(user, "Administrador")))@**@
-                            @*{*@ 
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            if (user != null && (await UserManager.IsInRoleAsync(user, "Root") || await UserManager.IsInRoleAsync(user, "Administrador")))
+                            {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Gestionar Roles
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index"> Roles</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="UserRoles" asp-action="Index"> Usuarios Roles</a></li>
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index"> Roles</a></li>
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="UserRoles" asp-action="Index"> Usuarios Roles</a></li>
                                     </ul>
                                 </li>
-                            @*}*@ 
+                            }
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -143,8 +151,8 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - FUSDEC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> |
-                <i class="fas fa-phone"></i> Telefono: 312 5921742 |
-                <i class="fas fa-envelope"></i> Correo: <a href="mailto:fusdec.org@gmail.com">fusdec.org@gmail.com</a>
+            <i class="fas fa-phone"></i> Telefono: 312 5921742 |
+            <i class="fas fa-envelope"></i> Correo: <a href="mailto:fusdec.org@gmail.com">fusdec.org@gmail.com</a>
         </div>
     </footer>
 

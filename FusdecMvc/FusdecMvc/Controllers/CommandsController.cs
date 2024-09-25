@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FusdecMvc.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class CommandsController : Controller
     {
         private readonly ApplicationDbContext _context;
