@@ -22,6 +22,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Attendances
+        [Authorize(Roles = "Instructor, Administrador")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Attendances
@@ -31,6 +32,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Attendances/Details/5
+        [Authorize(Roles = "Instructor, Administrador")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -51,6 +53,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Attendances/Create
+        [Authorize(Roles = "Instructor")]
         public IActionResult Create()
         {
             ViewBag.Students = _context.Students.Include(s => s.Unit).ToList();
@@ -62,6 +65,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Create([Bind("IdAttendance,AttendanceTitle,IdAttendance,AttendanceDate")] Attendance attendance, Guid[] selectedStudents)
         {
             //if (ModelState.IsValid)
@@ -89,6 +93,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Attendances/Edit/5
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -122,6 +127,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(Guid id, [Bind("AttendanceTitle,IdAttendance,AttendanceDate")] Attendance attendance, Guid[] selectedStudents)
         {
             if (id != attendance.IdAttendance)
@@ -167,6 +173,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Attendances/Delete/5
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -189,6 +196,7 @@ namespace FusdecMvc.Controllers
         // POST: Attendances/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var attendance = await _context.Attendances.FindAsync(id);

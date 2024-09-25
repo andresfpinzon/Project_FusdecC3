@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FusdecMvc.Controllers
 {
-    //[Authorize(Roles = "Root, Administrador")]
+    [Authorize(Roles = "Root, Administrador")]
     public class UserRolesController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;

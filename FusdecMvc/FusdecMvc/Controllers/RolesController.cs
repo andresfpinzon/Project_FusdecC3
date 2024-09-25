@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FusdecMvc.Controllers
 {
-    //[Authorize(Roles = "Root, Administrador")]
+    [Authorize(Roles = "Root, Administrador")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
