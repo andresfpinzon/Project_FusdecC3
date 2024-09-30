@@ -17,17 +17,15 @@ SELECT
 FROM Audits
 GROUP BY AuditDate;
 
+SELECT 
+    COUNT(*) AS TotalAudits
+FROM Audits;
 
 SELECT 
     NameOfIssuerAudit, 
     COUNT(*) AS TotalAudits
 FROM Audits
 GROUP BY NameOfIssuerAudit;
-
-SELECT 
-    (COUNT(CASE WHEN CertificateStatus = 'Audited' THEN 1 END) * 100.0 / COUNT(*)) AS AuditCompliancePercentage
-FROM Certificates;
-
 
 Certificados
 
@@ -39,7 +37,7 @@ Brigadas
 
 SELECT 
     COUNT(*) AS ActiveBrigades
-FROM Brigades
+FROM Brigade
 WHERE BrigadeStatus = 1;
 
 SELECT 
@@ -48,8 +46,6 @@ SELECT
 FROM Units u
 JOIN Brigade b ON u.IdBrigade= b.IdBrigade
 GROUP BY b.BrigadeName;
-
-
 
 comandos
 
@@ -126,7 +122,9 @@ GROUP BY IdCourse;
 cursos
 
 SELECT 
-    COUNT(*) AS ActiveCourses
-FROM Courses
-WHERE CourseStatus = 1;
+    c.CourseName, 
+    COUNT(*) AS TotalCertificatesIssued
+FROM Certificate cert
+JOIN Courses c ON cert.IdCourse = c.IdCourse
+GROUP BY c.CourseName;
 
