@@ -16,9 +16,9 @@
             <th>Emisor</th>
             <th>Estado</th>
             <th>Curso</th>
-            <th>Estudiante</th>
             <th>Nombres</th>
             <th>Apellidos</th>
+            <th>Documento del Estudiante</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -30,9 +30,9 @@
                 <td>@Html.DisplayFor(modelItem => item.NameOfIssuerCert)</td>
                 <td>@(item.CertificateStatus ? "Activo" : "Inactivo")</td>
                 <td>@Html.DisplayFor(modelItem => item.Course.CourseName)</td>
-                <td>@Html.DisplayFor(modelItem => item.Student.DocumentNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.Student.StudentName)</td>
                 <td>@Html.DisplayFor(modelItem => item.Student.StudentLastName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Student.DocumentNumber)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdCertificate" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
                     <a asp-action="Details" asp-route-id="@item.IdCertificate" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |

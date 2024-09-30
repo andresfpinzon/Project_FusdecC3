@@ -1,0 +1,132 @@
+DESKTOP-2VRUI4Q
+FusdecDB
+
+Asistencia
+
+SELECT 
+    AttendanceDate, 
+    COUNT(*) AS TotalAttendances
+FROM Attendances
+GROUP BY AttendanceDate;
+
+Auditorias
+
+SELECT 
+    AuditDate, 
+    COUNT(*) AS TotalAudits
+FROM Audits
+GROUP BY AuditDate;
+
+
+SELECT 
+    NameOfIssuerAudit, 
+    COUNT(*) AS TotalAudits
+FROM Audits
+GROUP BY NameOfIssuerAudit;
+
+SELECT 
+    (COUNT(CASE WHEN CertificateStatus = 'Audited' THEN 1 END) * 100.0 / COUNT(*)) AS AuditCompliancePercentage
+FROM Certificates;
+
+
+Certificados
+
+SELECT 
+    COUNT(CASE WHEN CertificateStatus = 'true' THEN 1 END) AS TotalCompliantCertificates
+FROM Certificate;
+
+Brigadas
+
+SELECT 
+    COUNT(*) AS ActiveBrigades
+FROM Brigades
+WHERE BrigadeStatus = 1;
+
+SELECT 
+    b.BrigadeName, 
+    COUNT(u.IdUnit) AS TotalUnits
+FROM Units u
+JOIN Brigade b ON u.IdBrigade= b.IdBrigade
+GROUP BY b.BrigadeName;
+
+
+
+comandos
+
+SELECT 
+    COUNT(*) AS ActiveCommands
+FROM Commands
+WHERE CommandStatus = 1;
+
+SELECT 
+    c.CommandName, 
+    COUNT(b.IdBrigade) AS TotalBrigades
+FROM Brigade b
+JOIN Commands c ON b.IdCommand = c.IdCommand
+GROUP BY c.CommandName;
+
+unidades
+
+SELECT 
+    COUNT(*) AS ActiveUnits
+FROM Units
+WHERE UnitState = 1;
+
+estudiantes 
+
+SELECT 
+    StudentGender, 
+    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM Students) AS GenderDistribution
+FROM Students
+GROUP BY StudentGender;
+
+
+SELECT 
+    IdUnit, 
+    COUNT(*) AS TotalStudents
+FROM Students
+GROUP BY IdUnit;
+
+SELECT 
+    COUNT(CASE WHEN StudentStatus = 1 THEN 1 END) AS TotalActiveStudents
+FROM Students;
+
+Ediciones
+
+SELECT 
+    COUNT(*) AS ActiveEditions
+FROM Editions
+WHERE EditionStatus = 1;
+
+
+SELECT 
+    IdCourse, 
+    COUNT(*) AS TotalEditions
+FROM Editions
+GROUP BY IdCourse;
+
+SELECT 
+    c.CourseName, 
+    e.EditionTitle, 
+    COUNT(s.IdStudent) AS TotalStudents
+FROM Students s
+JOIN StudentEditions se ON s.IdStudent = se.IdStudent
+JOIN Editions e ON se.IdEdition = e.IdEdition
+JOIN Courses c ON e.IdCourse = c.IdCourse
+GROUP BY c.CourseName, e.EditionTitle;
+
+certificados
+
+SELECT 
+    IdCourse, 
+    COUNT(*) AS TotalCertificatesIssued
+FROM Certificate
+GROUP BY IdCourse;
+
+cursos
+
+SELECT 
+    COUNT(*) AS ActiveCourses
+FROM Courses
+WHERE CourseStatus = 1;
+
