@@ -54,7 +54,7 @@ namespace FusdecMvc.Controllers
         // GET: Certificates/Create
         public IActionResult Create()
         {
-            ViewData["IdStudent"] = new SelectList(_context.Students, "IdStudent", "DocumentNumber");
+            ViewBag.Students = _context.Students.ToList();
             ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "CourseName");
             return View();
         }
@@ -89,7 +89,8 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdStudent"] = new SelectList(_context.Students, "IdStudent", "DocumentNumber");
+            ViewBag.Students = _context.Students.ToList();
+            ViewBag.SelectedStudentId = certificate.IdStudent;
             ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "CourseName");
             return View(certificate);
         }

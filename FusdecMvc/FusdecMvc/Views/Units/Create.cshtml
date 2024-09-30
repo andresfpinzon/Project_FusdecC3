@@ -26,8 +26,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdBrigade" class="control-label">Brigada</label>
-                <select asp-for="IdBrigade" class="form-control" asp-items="ViewBag.IdBrigade"></select>
+                <select asp-for="IdBrigade" class="form-control" asp-items="ViewBag.IdBrigade">
+                    <option value="">Seleccione una Brigada</option>
+                </select>
                 <span asp-validation-for="IdBrigade" class="text-danger"></span>
+                
             </div>
             <div class="form-group mt-3">
                 <input type="submit" value="&#43; Crear" class="btn btn-success" />

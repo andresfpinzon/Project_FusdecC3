@@ -19,30 +19,43 @@
                 Nombre del emisor <br /> del certificado
             </th>
             <th>
-                Num_Documento del <br /> titular del certificado
+                Nombres
+            </th>
+            <th>
+                Apellidos
+            </th>
+            <th>
+                Documento del <br /> titular del certificado
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuditDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NameOfIssuerAudit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCertificate)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AuditDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NameOfIssuerAudit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Certificate.Student.StudentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Certificate.Student.StudentLastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Certificate.Student.DocumentNumber)
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdAudit" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
                     <a asp-action="Details" asp-route-id="@item.IdAudit" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |
                     <a asp-action="Delete" asp-route-id="@item.IdAudit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
 
