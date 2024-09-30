@@ -24,7 +24,9 @@ namespace FusdecMvc.Controllers
         // GET: Audits
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Audits.Include(a => a.Certificate);
+            var applicationDbContext = _context.Audits
+                .Include(a => a.Certificate)
+                    .ThenInclude(es => es.Student);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -38,6 +40,7 @@ namespace FusdecMvc.Controllers
 
             var audit = await _context.Audits
                 .Include(a => a.Certificate)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdAudit == id);
             if (audit == null)
             {
@@ -50,7 +53,19 @@ namespace FusdecMvc.Controllers
         // GET: Audits/Create
         public IActionResult Create()
         {
-            ViewData["IdCertificate"] = new SelectList(_context.Certificate, "IdCertificate", "IdCertificate");
+            // Traemos los certificados incluyendo la relación con los estudiantes
+            var certificates = _context.Certificate.Include(s => s.Student)
+                .Select(c => new
+                {
+                    c.IdCertificate,
+                    DocumentNumber = c.Student.DocumentNumber,
+                    StudentName = c.Student.StudentName,
+                    StudentLastName = c.Student.StudentLastName
+                })
+                .ToList();
+            // Pasamos los datos al ViewBag
+            ViewBag.Certificates = certificates;
+
             return View();
         }
 
@@ -79,13 +94,26 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
+            var certificates = _context.Certificate.Include(s => s.Student)
+                .Select(c => new
+                {
+                    c.IdCertificate,
+                    DocumentNumber = c.Student.DocumentNumber,
+                    StudentName = c.Student.StudentName,
+                    StudentLastName = c.Student.StudentLastName
+                })
+                .ToList();
+            ViewBag.Certificates = certificates;
 
-            var audit = await _context.Audits.FindAsync(id);
+            var audit = await _context.Audits
+                .Include(a => a.Certificate)
+                    .ThenInclude(es => es.Student)
+                .FirstOrDefaultAsync(a => a.IdAudit == id);
             if (audit == null)
             {
                 return NotFound();
             }
-            ViewData["IdCertificate"] = new SelectList(_context.Certificate, "IdCertificate", "IdCertificate", audit.IdCertificate);
+            ViewBag.SelectedCertificateId = audit.IdCertificate;
             return View(audit);
         }
 
@@ -135,6 +163,7 @@ namespace FusdecMvc.Controllers
 
             var audit = await _context.Audits
                 .Include(a => a.Certificate)
+                    .ThenInclude(es => es.Student)
                 .FirstOrDefaultAsync(m => m.IdAudit == id);
             if (audit == null)
             {

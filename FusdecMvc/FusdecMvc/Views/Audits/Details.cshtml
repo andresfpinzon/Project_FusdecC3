@@ -27,7 +27,19 @@
                 @Html.DisplayFor(model => model.NameOfIssuerAudit)
             </dd>
             <dt class="col-sm-2">
-                Num_Documento del <br /> titular del certificado
+                Nombres
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Certificate.Student.StudentName)
+            </dd>
+            <dt class="col-sm-2">
+                Apellidos
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Certificate.Student.StudentLastName)
+            </dd>
+            <dt class="col-sm-2">
+                Documento del <br /> titular del certificado
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Certificate.Student.DocumentNumber)
