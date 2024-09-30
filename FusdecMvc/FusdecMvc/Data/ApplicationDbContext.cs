@@ -135,7 +135,7 @@ namespace FusdecMvc.Data
                 .HasForeignKey<NonAttendance>(n => n.IdAttendance)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuracion de la relacion entre attendance y nonAtendance
+            // Configuracion de la relacion entre Auditoria y certificado
             modelBuilder.Entity<Audit>()
                 .HasOne(a => a.Certificate)
                 .WithOne(c => c.Audit)
@@ -163,6 +163,7 @@ namespace FusdecMvc.Data
             //    .HasForeignKey(na => na.IdReport)
             //    .OnDelete(DeleteBehavior.Cascade);
             // Configurar la relación entre Estudiante y escuela
+
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.School)
                 .WithMany(s => s.Students)

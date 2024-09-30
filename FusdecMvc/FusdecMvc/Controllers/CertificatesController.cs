@@ -67,13 +67,38 @@ namespace FusdecMvc.Controllers
             //if (ModelState.IsValid)
             {
                 certificate.IdCertificate = Guid.NewGuid();
+                certificate.VerificationCode = GenerateVerificationCode();
+
                 _context.Add(certificate);
                 await _context.SaveChangesAsync();
+
+                var audit = new Audit
+                {
+                    IdAudit = Guid.NewGuid(),
+                    AuditDate = DateOnly.FromDateTime(DateTime.Now), 
+                    NameOfIssuerAudit = certificate.NameOfIssuerCert, 
+                    IdCertificate = certificate.IdCertificate 
+                };
+
+                _context.Add(audit);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdStudent"] = new SelectList(_context.Students, "IdStudent", "DocumentNumber");
+            ViewBag.Students = _context.Students.ToList();
             ViewData["IdCourse"] = new SelectList(_context.Courses, "IdCourse", "CourseName");
             return View(certificate);
+        }
+
+        private string GenerateVerificationCode()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var result = new string(
+                Enumerable.Repeat(chars, 20) 
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray());
+            return result;
         }
 
         // GET: Certificates/Edit/5
@@ -98,7 +123,7 @@ namespace FusdecMvc.Controllers
         // POST: Certificates/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdCertificate,VerificationCode,NameOfIssuerCert,CertificateStatus,IdStudent,IdCourse")] Certificate certificate)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdCertificate,NameOfIssuerCert,CertificateStatus,IdStudent,IdCourse")] Certificate certificate)
         {
             if (id != certificate.IdCertificate)
             {
@@ -109,6 +134,16 @@ namespace FusdecMvc.Controllers
             {
                 try
                 {
+                    // Recuperar el certificado original de la base de datos
+                    var originalCertificate = await _context.Certificate.AsNoTracking().FirstOrDefaultAsync(c => c.IdCertificate == id);
+
+                    if (originalCertificate == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Preservar el código de verificación original
+                    certificate.VerificationCode = originalCertificate.VerificationCode;
                     _context.Update(certificate);
                     await _context.SaveChangesAsync();
                 }
