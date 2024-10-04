@@ -30,7 +30,10 @@
                     <option value="">Seleccione una Brigada</option>
                 </select>
                 <span asp-validation-for="IdBrigade" class="text-danger"></span>
-                
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label">Instructor</label>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
             </div>
             <div class="form-group mt-3">
                 <input type="submit" value="&#43; Crear" class="btn btn-success" />

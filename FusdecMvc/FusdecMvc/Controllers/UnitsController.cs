@@ -8,23 +8,28 @@ using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace FusdecMvc.Controllers
 {
     [Authorize(Roles = "Administrador")]
     public class UnitsController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public UnitsController(ApplicationDbContext context)
+        public UnitsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Units
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Units.Include(u => u.Brigade);
+            var applicationDbContext = _context.Units
+                .Include(u => u.Brigade)
+                .Include(u => u.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -50,6 +55,11 @@ namespace FusdecMvc.Controllers
         // GET: Units/Create
         public IActionResult Create()
         {
+            // Obtener los usuarios que tienen el rol "Instructor"
+            var instructors = await _userManager.GetUsersInRoleAsync("Instructor");
+
+            // Pasar la lista de usuarios a la vista
+            ViewData["UserId"] = new SelectList(instructors, "Id", "Email");
             ViewData["IdBrigade"] = new SelectList(_context.Brigade, "IdBrigade", "BrigadeName");
             return View();
         }
@@ -59,7 +69,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdUnit,UnitName,UnitState,IdBrigade")] Unit unit)
+        public async Task<IActionResult> Create([Bind("IdUnit,UnitName,UnitState,IdBrigade,UserId")] Unit unit)
         {
             //if (ModelState.IsValid)
             {
@@ -68,6 +78,7 @@ namespace FusdecMvc.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             ViewData["IdBrigade"] = new SelectList(_context.Brigade, "IdBrigade", "IdBrigade", unit.IdBrigade);
             return View(unit);
         }

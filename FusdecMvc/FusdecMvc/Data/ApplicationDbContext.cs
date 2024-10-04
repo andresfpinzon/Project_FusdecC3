@@ -186,12 +186,11 @@ namespace FusdecMvc.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Relación uno a uno entre ApplicationUser y Estudiante
-            //modelBuilder.Entity<ApplicationUser>()
-            //    .HasOne(a => a.Student)
-            //    .WithOne(e => e.ApplicationUser)
+            //modelBuilder.Entity<Unit>()
+            //    .HasOne(a => a.User)
+            //    .WithOne(u => u.Unit)
             //    .HasForeignKey<ApplicationUser>(a => a.IdStudent)
             //    .IsRequired(false);
-
         }
 
 
