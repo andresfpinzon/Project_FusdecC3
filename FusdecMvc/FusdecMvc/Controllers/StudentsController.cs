@@ -9,22 +9,48 @@ using FusdecMvc.Data;
 using FusdecMvc.Models;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace FusdecMvc.Controllers
 {
     public class StudentsController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public StudentsController(ApplicationDbContext context)
+        public StudentsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Students
         [Authorize(Roles = "Instructor, Secretario")]
         public async Task<IActionResult> Index()
         {
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            
+            if (User.IsInRole("Instructor"))
+            {
+                // Obtener la unidad asociada al instructor actual
+                var instructorUnit = await _context.Units
+                    .Where(u => u.UserId == currentUser.Id)
+                    .FirstOrDefaultAsync();
+
+                if (instructorUnit != null)
+                {
+                    // Mostrar solo los estudiantes que pertenecen a la unidad del instructor
+                    var students = _context.Students
+                        .Include(s => s.School)
+                        .Include(s => s.Unit)
+                        .Include(s => s.StudentEditions)
+                            .ThenInclude(se => se.Edition)
+                        .Where(s => s.IdUnit == instructorUnit.IdUnit);
+
+                    return View(await students.ToListAsync());
+                }
+            }
             var Students = _context.Students
                 .Include(s => s.School)
                 .Include(s => s.Unit)
