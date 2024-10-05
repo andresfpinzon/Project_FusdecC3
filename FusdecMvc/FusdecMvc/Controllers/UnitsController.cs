@@ -53,7 +53,7 @@ namespace FusdecMvc.Controllers
         }
 
         // GET: Units/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             // Obtener los usuarios que tienen el rol "Instructor"
             var instructors = await _userManager.GetUsersInRoleAsync("Instructor");
@@ -96,6 +96,11 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
+            // Obtener los usuarios que tienen el rol "Instructor"
+            var instructors = await _userManager.GetUsersInRoleAsync("Instructor");
+
+            // Pasar la lista de usuarios a la vista
+            ViewData["UserId"] = new SelectList(instructors, "Id", "Email");
             ViewData["IdBrigade"] = new SelectList(_context.Brigade, "IdBrigade", "BrigadeName", unit.IdBrigade);
             return View(unit);
         }
@@ -105,7 +110,7 @@ namespace FusdecMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdUnit,UnitName,UnitState,IdBrigade")] Unit unit)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdUnit,UnitName,UnitState,IdBrigade,UserId")] Unit unit)
         {
             if (id != unit.IdUnit)
             {

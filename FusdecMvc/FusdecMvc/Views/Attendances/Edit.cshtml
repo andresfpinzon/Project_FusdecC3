@@ -28,15 +28,27 @@
                 <span asp-validation-for="AttendanceDate" class="text-danger"></span>
             </div>
 
-            <!-- Aquí agregamos el filtro por unidades antes de la tabla -->
             <h4>Filtrar por Unidad</h4>
             <div class="form-group">
                 <label for="filterUnit" class="control-label">Unidad</label>
                 <select id="filterUnit" class="form-control">
-                    <option value="">-- Select Unit --</option>
-                    @foreach (var unit in distinctUnits)
+                    @if (ViewBag.Units != null && ViewBag.Units.Count > 0)
                     {
-                        <option value="@unit">@unit</option>
+                        foreach (var unit in (List<FusdecMvc.Models.Unit>)ViewBag.Units)
+                        {
+                            if (unit.UnitName == ViewBag.SelectedUnit)
+                            {
+                                <option value="@unit.UnitName" selected>@unit.UnitName</option>
+                            }
+                            else
+                            {
+                                <option value="@unit.UnitName">@unit.UnitName</option>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <option value="">No hay unidades disponibles</option>
                     }
                 </select>
             </div>
@@ -106,6 +118,12 @@
                 var unit = $(this).val();
                 table.column(4).search(unit).draw();
             });
+
+            // Preseleccionar la unidad filtrada automáticamente al cargar
+            var selectedUnit = $('#filterUnit').val();
+            if (selectedUnit) {
+                table.column(4).search(selectedUnit).draw();
+            }
         });
     </script>
     @await Html.PartialAsync("_ValidationScriptsPartial")

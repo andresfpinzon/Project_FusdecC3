@@ -33,7 +33,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserId" class="control-label">Instructor</label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId">
+                    <option value="">Selecciona un instructor (opcional)</option> 
+                </select>
             </div>
             <div class="form-group mt-3">
                 <input type="submit" value="&#43; Crear" class="btn btn-success" />
