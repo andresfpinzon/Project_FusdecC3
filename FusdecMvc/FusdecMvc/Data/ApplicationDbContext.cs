@@ -185,7 +185,7 @@ namespace FusdecMvc.Data
                 .HasForeignKey(c => c.IdCourse)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Relación uno a uno entre ApplicationUser y Estudiante
+            // Relación uno a uno entre ApplicationUser y Unidad
             //modelBuilder.Entity<Unit>()
             //    .HasOne(a => a.User)
             //    .WithOne(u => u.Unit)
