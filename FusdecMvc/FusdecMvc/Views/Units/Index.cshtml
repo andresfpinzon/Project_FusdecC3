@@ -21,28 +21,37 @@
             <th>
                 Brigada
             </th>
-            <th></th>
+            <th>
+                Instructor
+            </th>
+            <th>
+                Acciones
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitName)
-            </td>
-            <td>
-                @(item.UnitState? "Activo" : "Inactivo")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brigade.BrigadeName)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitName)
+                </td>
+                <td>
+                    @(item.UnitState ? "Activo" : "Inactivo")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brigade.BrigadeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.IdUnit" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                     <a asp-action="Details" asp-route-id="@item.IdUnit" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a>
                     <a asp-action="Delete" asp-route-id="@item.IdUnit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>
 

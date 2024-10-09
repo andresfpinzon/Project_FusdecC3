@@ -30,12 +30,12 @@
                     <option value="false">No aprobado</option>
                 </select>
             </div>
+
             <!-- Aquí agregamos el filtro por unidades antes de la tabla -->
             <h4>Filtrar por Unidad</h4>
             <div class="form-group">
                 <label for="filterUnit" class="control-label">Unidad</label>
                 <select id="filterUnit" class="form-control">
-                    <option value="">-- Seleccione Unidad --</option>
                     @foreach (var unit in distinctUnits)
                     {
                         <option value="@unit">@unit</option>
@@ -109,6 +109,11 @@
                 var unit = $(this).val();
                 table.column(4).search(unit).draw();  // Filtra por la columna de Unidad
             });
+            // Preseleccionar la unidad filtrada automáticamente al cargar
+            var selectedUnit = $('#filterUnit').val();
+            if (selectedUnit) {
+                table.column(4).search(selectedUnit).draw();
+            }
         });
     </script>
     @{

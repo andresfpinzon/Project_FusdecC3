@@ -35,7 +35,13 @@ namespace FusdecMvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("IdAttendance");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Attendances");
                 });
@@ -253,7 +259,13 @@ namespace FusdecMvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("IdGrade");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Grades");
                 });
@@ -275,10 +287,16 @@ namespace FusdecMvc.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("IdNonAttendance");
 
                     b.HasIndex("IdAttendance")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("NonAttendances");
                 });
@@ -449,9 +467,15 @@ namespace FusdecMvc.Migrations
                     b.Property<bool>("UnitState")
                         .HasColumnType("bit");
 
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("IdUnit");
 
                     b.HasIndex("IdBrigade");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Units");
                 });
@@ -651,6 +675,15 @@ namespace FusdecMvc.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FusdecMvc.Models.Attendance", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FusdecMvc.Models.Audit", b =>
                 {
                     b.HasOne("FusdecMvc.Models.Certificate", "Certificate")
@@ -744,6 +777,15 @@ namespace FusdecMvc.Migrations
                     b.Navigation("Schedule");
                 });
 
+            modelBuilder.Entity("FusdecMvc.Models.Grade", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FusdecMvc.Models.NonAttendance", b =>
                 {
                     b.HasOne("FusdecMvc.Models.Attendance", "Attendance")
@@ -752,7 +794,13 @@ namespace FusdecMvc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Attendance");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FusdecMvc.Models.Student", b =>
@@ -858,7 +906,13 @@ namespace FusdecMvc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Brigade");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

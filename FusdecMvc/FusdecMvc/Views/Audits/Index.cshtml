@@ -5,10 +5,6 @@
 }
 
 <h1>Auditorias</h1>
-@*
-<p>
-    <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i>&nbsp;Agregar Auditoria</a>
-</p>*@
 <table id="dataTable" class="table">
     <thead>
         <tr>
@@ -48,12 +44,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Certificate.Student.DocumentNumber)
                 </td>
-                @* <td>
-                   
-                    <a asp-action="Edit" asp-route-id="@item.IdAudit" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdAudit" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdAudit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
-            </td>*@
             </tr>
         }
     </tbody>

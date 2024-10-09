@@ -1,0 +1,33 @@
+{
+  "name": "fusdecc3-backend-node",
+  "version": "1.0.0",
+  "description": "BackEnd para proyecto Gestion de asistencia y certificados en NodeJs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andresfpinzon/Project_FusdecC3.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Js",
+    "BackEnd",
+    "MondoDB"
+  ],
+  "author": "Andres Pinzon, Santigo Gonzalez, Sebastian Pinzon , Adriana Cardenas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andresfpinzon/Project_FusdecC3/issues"
+  },
+  "homepage": "https://github.com/andresfpinzon/Project_FusdecC3#readme",
+  "dependencies": {
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

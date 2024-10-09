@@ -8,22 +8,42 @@ using Microsoft.EntityFrameworkCore;
 using FusdecMvc.Data;
 using FusdecMvc.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace FusdecMvc.Controllers
 {
     public class NonAttendancesController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public NonAttendancesController(ApplicationDbContext context)
+        public NonAttendancesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: NonAttendances
         [Authorize(Roles = "Instructor, Administrador")]
         public async Task<IActionResult> Index()
         {
+            // Obtener el usuario actual
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            // Verificar si el usuario es un Instructor
+            if (User.IsInRole("Instructor"))
+            {
+                // Filtrar las asistencias por las realizadas por el instructor actual
+                var NonAttendances = _context.NonAttendances
+                    .Include(n => n.Attendance)
+                    .Include(e => e.StudentNonAttendance)
+                        .ThenInclude(es => es.Student)
+                    .Where(a => a.UserId == currentUser.Id);
+
+                return View(await NonAttendances.ToListAsync());
+            }
+
             return View(await _context.NonAttendances
                 .Include(n => n.Attendance)
                 .Include(e => e.StudentNonAttendance)
@@ -55,10 +75,38 @@ namespace FusdecMvc.Controllers
 
         // GET: NonAttendances/Create
         [Authorize(Roles = "Instructor")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceTitle");
-            ViewBag.Students = _context.Students.Include(s => s.Unit).ToList();
+            // Obtener el usuario actual
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            // Filtrar las unidades asociadas al instructor (usuario logeado)
+            var units = await _context.Units
+                .Where(u => u.UserId == currentUser.Id)
+                .ToListAsync();
+
+            // Obtener los estudiantes que pertenecen a esas unidades
+            var students = await _context.Students
+                .Include(s => s.Unit)
+                .Where(s => units.Select(u => u.IdUnit).Contains(s.IdUnit))
+                .ToListAsync();
+
+            // Obtener las asistencias solo del instructor logeado
+            var attendances = await _context.Attendances
+                .Where(a => a.UserId == currentUser.Id)
+                .ToListAsync();
+
+            // Configurar los datos para la vista
+            ViewData["IdAttendance"] = new SelectList(attendances, "IdAttendance", "AttendanceTitle");
+            ViewBag.Students = students;
+
+            // Extraer las unidades distintas del instructor
+            var distinctUnits = students.Select(s => s.Unit).Distinct().ToList();
+            ViewBag.Units = distinctUnits;
+
+            // Si tiene múltiples unidades, seleccionar la primera por defecto
+            ViewBag.SelectedUnit = distinctUnits.FirstOrDefault()?.UnitName;
+
             return View();
         }
 
@@ -68,8 +116,13 @@ namespace FusdecMvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> Create([Bind("IdNonAttendance,IdAttendance,NonAttendanceTitle,Observacion")] NonAttendance nonAttendance, Guid[] selectedStudents)
+        public async Task<IActionResult> Create([Bind("IdNonAttendance,IdAttendance,NonAttendanceTitle,Observacion,UserId")] NonAttendance nonAttendance, Guid[] selectedStudents)
         {
+            // Obtener el usuario actual
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            // Asignar el Id del usuario actual como el UserId del instructor
+            nonAttendance.UserId = currentUser.Id;
             //if (ModelState.IsValid)
             {
                 nonAttendance.IdNonAttendance = Guid.NewGuid();
@@ -112,13 +165,34 @@ namespace FusdecMvc.Controllers
             {
                 return NotFound();
             }
-            var students = await _context.Students
-                .Include(s => s.Unit)
+            // Obtener el usuario actual
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            // Filtrar las unidades asociadas al instructor (usuario logeado)
+            var units = await _context.Units
+                .Where(u => u.UserId == currentUser.Id)
                 .ToListAsync();
 
+            // Obtener los estudiantes que pertenecen a esas unidades
+            var students = await _context.Students
+                .Include(s => s.Unit)
+                .Where(s => units.Select(u => u.IdUnit).Contains(s.IdUnit))
+                .ToListAsync();
+
+            // Configurar los datos para la vista
             ViewData["IdAttendance"] = new SelectList(_context.Attendances, "IdAttendance", "AttendanceTitle", nonAttendance.IdAttendance);
             ViewBag.Students = students;
+            
+            // Extraer las unidades distintas del instructor
+            var distinctUnits = students.Select(s => s.Unit).Distinct().ToList();
+            ViewBag.Units = distinctUnits;
+
+            // Si hay varias unidades, seleccionar la primera por defecto
+            ViewBag.SelectedUnit = distinctUnits.FirstOrDefault()?.UnitName;
+           
+            // Obtener los IDs de los estudiantes seleccionados en la no asistencia
             ViewBag.SelectedStudents = nonAttendance.StudentNonAttendance.Select(ea => ea.IdStudent).ToList();
+
             return View(nonAttendance);
         }
 
@@ -128,12 +202,22 @@ namespace FusdecMvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdNonAttendance,IdAttendance,NonAttendanceTitle,Observacion")] NonAttendance nonAttendance, Guid[] selectedStudents)
+        public async Task<IActionResult> Edit(Guid id, [Bind("IdNonAttendance,IdAttendance,NonAttendanceTitle,Observacion,UserId")] NonAttendance nonAttendance, Guid[] selectedStudents)
         {
             if (id != nonAttendance.IdNonAttendance)
             {
                 return NotFound();
             }
+            // Obtener la inasistencia actual de la base de datos para mantener el UserId original
+            var existingNonAttendance = await _context.NonAttendances.AsNoTracking().FirstOrDefaultAsync(a => a.IdNonAttendance == id);
+
+            if (existingNonAttendance == null)
+            {
+                return NotFound();
+            }
+
+            // Mantener el UserId original
+            nonAttendance.UserId = existingNonAttendance.UserId;
 
             //if (ModelState.IsValid)
             {
