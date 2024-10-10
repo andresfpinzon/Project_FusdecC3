@@ -27,10 +27,10 @@ const InasistenciaSchema = new Schema({
     ref: "Asistencia",
     required: true,
   },
-  estudiantesInasistencia: [
+  estudiantes: [
     {
       type: Schema.Types.ObjectId,
-      ref: "InasistenciaEstudiante",
+      ref: "Estudiante",
     },
   ],
 });

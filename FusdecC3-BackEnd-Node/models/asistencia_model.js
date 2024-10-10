@@ -14,10 +14,6 @@ const AsistenciaSchema = new Schema({
     type: Date,
     required: true,
   },
-  inasistencia: {
-    type: Schema.Types.ObjectId,
-    ref: "Inasistencia",
-  },
   usuarioId: {
     type: String,
     maxlength: 450,
@@ -26,10 +22,10 @@ const AsistenciaSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Usuario",
   },
-  asistenciasEstudiante: [
+  estudiantes: [
     {
-      type: Schema.Types.ObjectId, // Referencia a AsistenciaEstudiante
-      ref: "AsistenciaEstudiante",
+      type: Schema.Types.ObjectId,
+      ref: "Estudiante",
     },
   ],
 });

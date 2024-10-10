@@ -71,7 +71,7 @@ const EstudianteSchema = new Schema({
       type: Schema.Types.ObjectId, // Referencia a AsistenciaEstudiante
       ref: "AsistenciaEstudiante",
     },
-  ],
+  ], 
   certificados: [
     {
       type: Schema.Types.ObjectId, // Referencia a múltiples Certificados
