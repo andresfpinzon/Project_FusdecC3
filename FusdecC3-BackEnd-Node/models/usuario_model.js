@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const UsuarioSchema = new Schema({
-    usuarioId: {
+  usuarioId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
   },
@@ -20,10 +20,12 @@ const UsuarioSchema = new Schema({
     type: String,
     required: true,
   },
-  roles: [{
+  roles: [
+    {
       type: Schema.Types.ObjectId,
       ref: "rol",
-    }],
+    },
+  ],
   creadoEn: {
     type: Date,
     default: Date.now,
