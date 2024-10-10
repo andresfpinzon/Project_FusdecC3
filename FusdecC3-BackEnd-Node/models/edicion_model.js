@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const edicionSchema = new Schema(
+const EdicionSchema = new Schema(
   {
-    idEdicion: {
+    edicionId: {
       type: Schema.Types.ObjectId,
       default: () => new mongoose.Types.ObjectId(),
     },
@@ -23,9 +23,9 @@ const edicionSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    CursoId: {
+    cursoId: {
       type: Schema.Types.ObjectId,
-      ref: "Curso", // Referencia a la colección de Curso
+      ref: "Curso",
     },
     horariosEdicion: [
       {
@@ -42,6 +42,6 @@ const edicionSchema = new Schema(
   },
 );
 
-const Edicion = mongoose.model("Edicion", edicionSchema);
+const Edicion = mongoose.model("Edicion", EdicionSchema);
 
 module.exports = Edicion;

@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const horarioSchema = new Schema({
-  HorarioId: {
+const HorarioSchema = new Schema({
+  horarioId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
   },
@@ -30,6 +30,6 @@ const horarioSchema = new Schema({
   ],
 });
 
-const Horario = mongoose.model("Horario", horarioSchema);
+const Horario = mongoose.model("Horario", HorarioSchema);
 
 module.exports = Horario;
