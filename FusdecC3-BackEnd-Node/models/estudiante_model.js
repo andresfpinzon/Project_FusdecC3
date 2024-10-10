@@ -37,7 +37,7 @@ const EstudianteSchema = new Schema({
   },
   colegioId: {
     type: Schema.Types.ObjectId,
-    ref: "Escuela",
+    ref: "Colegio",
     required: true,
   },
   estadoEstudiante: {
