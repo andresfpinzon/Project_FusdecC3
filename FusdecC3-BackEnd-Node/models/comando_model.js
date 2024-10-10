@@ -1,33 +1,36 @@
-// models/Command.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const commandSchema = new mongoose.Schema({
-    idCommand: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(), // Genera un nuevo ObjectId por defecto
+const ComandoSchema = new Schema({
+    comandoId: {
+        type: Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId(),
     },
-    commandName: {
+    nombreComando: {
         type: String,
-        required: true, // Puedes agregar validaciones como 'required'
+        required: true,
     },
-    commandStatus: {
+    estadoComando: {
         type: Boolean,
+        default: true,
         required: true,
     },
     ubicacionComando: {
         type: String,
         required: true,
     },
-    idFundation: {
-        type: mongoose.Schema.Types.ObjectId,
+    fundacionId: {
+        type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Fundation', // Referencia al modelo Fundation
+        ref: "Fundacion", // Referencia al modelo Fundación
     },
-    brigades: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Brigade', // Referencia al modelo Brigade
-    }],
+    brigadas: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Brigada", // Referencia al modelo Brigada
+        },
+    ],
 });
 
-// Exportar el modelo
-module.exports = mongoose.model('Command', commandSchema);
+const Comando = mongoose.model("Comando", ComandoSchema);
+module.exports = Comando;

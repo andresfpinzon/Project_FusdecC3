@@ -1,38 +1,31 @@
-// models/Unit.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const unitSchema = new mongoose.Schema({
-    idUnit: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(), // Genera un nuevo ObjectId por defecto
+const UnidadSchema = new Schema({
+    unidadId: {
+        type: Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId(),
     },
-    unitName: {
+    nombreUnidad: {
         type: String,
-        required: true, // Puedes agregar validaciones como 'required'
+        required: true,
     },
-    unitState: {
+    estadoUnidad: {
         type: Boolean,
         required: true,
     },
-    idBrigade: {
-        type: mongoose.Schema.Types.ObjectId,
+    brigadaId: {
+        type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Brigade', // Referencia al modelo Brigade
+        ref: "Brigada", // Referencia al modelo Brigada
     },
-    userId: {
-        type: String,
-        maxlength: 450, // Limitar la longitud del string
-        default: null, // Puede ser nulo
-    },
-    brigade: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Brigade', // Referencia al modelo Brigade
-    },
-    students: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student', // Referencia al modelo Student
-    }],
+    estudiantes: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Estudiante", // Referencia al modelo Estudiante
+        },
+    ],
 });
 
-// Exportar el modelo
-module.exports = mongoose.model('Unit', unitSchema);
+const Unidad = mongoose.model("Unidad", UnidadSchema);
+module.exports = Unidad;
