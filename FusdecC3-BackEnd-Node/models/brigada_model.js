@@ -1,33 +1,36 @@
-// models/Brigade.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const brigadeSchema = new mongoose.Schema({
-    idBrigade: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(), // Genera un nuevo ObjectId por defecto
+const BrigadaSchema = new Schema({
+    brigadaId: {
+        type: Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId(),
     },
-    brigadeName: {
-        type: String,
-        required: true, // Puedes agregar validaciones como 'required'
-    },
-    brigadeLocation: {
+    nombreBrigada: {
         type: String,
         required: true,
     },
-    brigadeStatus: {
+    ubicacionBrigada: {
+        type: String,
+        required: true,
+    },
+    estadoBrigada: {
         type: Boolean,
+        default: true,
         required: true,
     },
-    idCommand: {
-        type: mongoose.Schema.Types.ObjectId,
+    comandoId: {
+        type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Command', // Referencia al modelo Command
+        ref: "Comando", // Referencia al modelo Comando
     },
-    units: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Unit', // Referencia al modelo Unit
-    }],
+    unidades: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Unidad", // Referencia al modelo Unidad
+        },
+    ],
 });
 
-// Exportar el modelo
-module.exports = mongoose.model('Brigade', brigadeSchema);
+const Brigada = mongoose.model("Brigada", BrigadaSchema);
+module.exports = Brigada;

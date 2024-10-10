@@ -1,29 +1,25 @@
-// models/Audit.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const auditSchema = new mongoose.Schema({
-    idAudit: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(), // Genera un nuevo ObjectId por defecto
+const AuditoriaSchema = new Schema({
+    auditoriaId: {
+        type: Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId(),
     },
-    auditDate: {
-        type: Date, // Mongoose maneja las fechas como tipo Date
+    fechaAuditoria: {
+        type: Date,
         required: true,
     },
-    nameOfIssuerAudit: {
+    nombreEmisor: {
         type: String,
         required: true,
     },
-    idCertificate: {
-        type: mongoose.Schema.Types.ObjectId,
+    certificadoId: {
+        type: Schema.Types.ObjectId,
         required: true,
-        ref: 'Certificate', // Referencia al modelo Certificate
-    },
-    certificate: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Certificate', // Referencia al modelo Certificate
+        ref: "Certificado", // Referencia al modelo Certificado
     },
 });
 
-// Exportar el modelo
-module.exports = mongoose.model('Audit', auditSchema);
+const Auditoria = mongoose.model("Auditoria", AuditoriaSchema);
+module.exports = Auditoria;
