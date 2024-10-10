@@ -26,6 +26,11 @@ const UsuarioSchema = new Schema({
       ref: "rol",
     },
   ],
+  estadoUsuario: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
   creadoEn: {
     type: Date,
     default: Date.now,

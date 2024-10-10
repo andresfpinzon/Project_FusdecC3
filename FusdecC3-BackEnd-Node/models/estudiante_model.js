@@ -30,52 +30,50 @@ const EstudianteSchema = new Schema({
     type: String,
     required: true,
   },
-  idUnidad: {
+  unidadId: {
     type: Schema.Types.ObjectId,
     ref: "Unidad",
     required: true,
   },
-  idEscuela: {
+  colegioId: {
     type: Schema.Types.ObjectId,
     ref: "Escuela",
     required: true,
   },
-  certificado: {
-    type: Schema.Types.ObjectId,
-    ref: "Certificado",
-  },
   estadoEstudiante: {
     type: Boolean,
+    default: true,
     required: true,
   },
-  edicionesEstudiante: [
+  ediciones: [
     {
-      type: Schema.Types.ObjectId, // Referencia a EstudianteEdicion
-      ref: "EdicionEstudiante",
+      type: Schema.Types.ObjectId, // Referencia a múltiples Ediciones
+      ref: "Edicion",
     },
   ],
-  calificacionesEstudiante: [
+  calificaciones: [
     {
-      type: Schema.Types.ObjectId, // Referencia a EstudianteCalificacion
-      ref: "CalificacionEstudiante",
+      type: Schema.Types.ObjectId, // Referencia a múltiples Calificaciones
+      ref: "Calificacion",
     },
   ],
-  inasistenciasEstudiante: [
+  inasistencias: [
     {
-      type: Schema.Types.ObjectId, //Referencia a InasistenciaEstudiante
-      ref: "InasistenciaEstudiante",
+      type: Schema.Types.ObjectId, //Referencia a múltiples Inasistencias
+      ref: "Inasistencia",
     },
   ],
-  asistenciasEstudiante: [
+  asistencias: [
     {
-      type: Schema.Types.ObjectId, // Referencia a AsistenciaEstudiante
-      ref: "AsistenciaEstudiante",
+      type: Schema.Types.ObjectId, // Referencia a múltiples Asistencias
+      ref: "Asistencia",
     },
   ], 
   certificados: [
     {
       type: Schema.Types.ObjectId, // Referencia a múltiples Certificados
       ref: "Certificado",
+      required: false,
     },
   ],
 });

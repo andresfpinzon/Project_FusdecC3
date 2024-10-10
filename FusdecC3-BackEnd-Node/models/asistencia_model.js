@@ -18,10 +18,6 @@ const AsistenciaSchema = new Schema({
     type: String,
     maxlength: 450,
   },
-  usuario: {
-    type: Schema.Types.ObjectId,
-    ref: "Usuario",
-  },
   estudiantes: [
     {
       type: Schema.Types.ObjectId,

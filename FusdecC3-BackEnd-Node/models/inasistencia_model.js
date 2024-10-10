@@ -18,11 +18,7 @@ const InasistenciaSchema = new Schema({
     type: String,
     maxlength: 450,
   },
-  usuario: {
-    type: Schema.Types.ObjectId,
-    ref: "Usuario",
-  },
-  idAsistencia: {
+  AsistenciaId: {
     type: Schema.Types.ObjectId,
     ref: "Asistencia",
     required: true,
