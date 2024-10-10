@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const RolSchema = new Schema({
-  _id: { 
+  rolId: { 
     type: Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() 
 }, 
   rolName: { 
@@ -11,5 +11,5 @@ const RolSchema = new Schema({
     unique: true }
 });
 
-const Role = mongoose.model('rol', RolSchema);
+const Role = mongoose.model('Rol', RolSchema);
 module.exports = Role;
