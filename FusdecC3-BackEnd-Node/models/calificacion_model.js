@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const NotaSchema = new Schema({
-  notaId: {
+  calificacionId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
   },
@@ -22,10 +22,10 @@ const NotaSchema = new Schema({
     maxlength: 450,
   },
 
-  notasEstudiantes: [
+  estudiantes: [
     {
       type: Schema.Types.ObjectId,
-      ref: "NotaEstudiante", // Referencia a la colección de NotaEstudiante
+      ref: "Estudiante", // Referencia a la colección de NotaEstudiante
     },
   ],
 });

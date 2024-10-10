@@ -18,14 +18,14 @@ const HorarioSchema = new Schema({
     type: String,
     required: true,
   },
-  estatusHorario: {
+  estadoHorario: {
     type: Boolean,
     default: true,
   },
-  horariosEstudiantes: [
+  estudiantes: [
     {
       type: Schema.Types.ObjectId,
-      ref: "HorarioEdicion", // Referencia a la colección de HorarioEdicion
+      ref: "Estudiante", // Referencia a la colección de HorarioEdicion
     },
   ],
 });
