@@ -11,6 +11,16 @@ const UsuarioSchema = new Schema({
     required: true,
     unique: true,
   },
+  apellidoUsuario: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  numeroDocumento: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   correo: {
     type: String,
     required: true,

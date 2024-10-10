@@ -12,6 +12,7 @@ const UnidadSchema = new Schema({
     },
     estadoUnidad: {
         type: Boolean,
+        default: true,
         required: true,
     },
     brigadaId: {

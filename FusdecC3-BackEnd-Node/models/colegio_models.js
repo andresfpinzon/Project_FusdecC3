@@ -26,5 +26,4 @@ const ColegioSchema = new Schema({
 });
 
 const Colegio = mongoose.model("Colegio", ColegioSchema);
-
 module.exports = Colegio;

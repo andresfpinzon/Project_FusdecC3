@@ -22,12 +22,6 @@ const HorarioSchema = new Schema({
     type: Boolean,
     default: true,
   },
-  estudiantes: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Estudiante", // Referencia a la colección de HorarioEdicion
-    },
-  ],
 });
 
 const Horario = mongoose.model("Horario", HorarioSchema);

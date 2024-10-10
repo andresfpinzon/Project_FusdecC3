@@ -31,12 +31,6 @@ const CursoSchema = new Schema({
       ref: "Edicion", // Referencia a la colección de Edicion
     },
   ],
-  certificados: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Certificado", // Referencia a la colección de Certificado
-    },
-  ],
 });
 
 const Curso = mongoose.model("Curso", cursoSchema);
