@@ -1,6 +1,5 @@
 const Joi = require('@hapi/joi');
 
-
 const usuarioSchemaValidation = Joi.object({
   nombreUsuario: Joi.string()
     .min(3)
