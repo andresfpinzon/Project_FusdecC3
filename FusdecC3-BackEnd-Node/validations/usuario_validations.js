@@ -3,55 +3,76 @@ const Joi = require('@hapi/joi');
 const usuarioSchemaValidation = Joi.object({
   nombreUsuario: Joi.string()
     .min(3)
-    .max(30)
+    .max(100)
     .required()
-    .pattern(/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/)
     .messages({
-      'string.base': 'El nombre de usuario debe ser un texto',
-      'string.empty': 'El nombre de usuario no puede estar vacío',
-      'string.min': 'El nombre de usuario debe tener al menos 3 caracteres',
-      'string.max': 'El nombre de usuario no puede exceder los 30 caracteres',
-      'string.pattern.base': 'El nombre de usuario solo puede contener letras y espacios',
-      'any.required': 'El nombre de usuario es un campo requerido',
+      'string.base': 'El nombre del usuario debe ser un texto',
+      'string.empty': 'El nombre del usuario no puede estar vacío',
+      'string.min': 'El nombre del usuario debe tener al menos 3 caracteres',
+      'string.max': 'El nombre del usuario no puede exceder los 100 caracteres',
+      'any.required': 'El nombre del usuario es un campo requerido',
+    }),
+
+  apellidoUsuario: Joi.string()
+    .min(3)
+    .max(100)
+    .required()
+    .messages({
+      'string.base': 'El apellido del usuario debe ser un texto',
+      'string.empty': 'El apellido del usuario no puede estar vacío',
+      'string.min': 'El apellido del usuario debe tener al menos 3 caracteres',
+      'string.max': 'El apellido del usuario no puede exceder los 100 caracteres',
+      'any.required': 'El apellido del usuario es un campo requerido',
+    }),
+
+  numeroDocumento: Joi.string()
+    .min(7)
+    .max(15)
+    .required()
+    .messages({
+      'string.base': 'El número de documento debe ser un texto',
+      'string.empty': 'El número de documento no puede estar vacío',
+      'string.min': 'El número de documento debe tener al menos 7 caracteres',
+      'string.max': 'El número de documento no puede exceder los 15 caracteres',
+      'any.required': 'El número de documento es un campo requerido',
     }),
 
   correo: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: { allow: ['com', 'net', 'edu', 'co'] }
-    })
+    .email()
     .required()
     .messages({
-      'string.base': 'El correo debe ser un texto',
-      'string.email': 'El correo debe ser una dirección de correo válida',
+      'string.email': 'El correo debe ser un correo electrónico válido',
       'string.empty': 'El correo no puede estar vacío',
       'any.required': 'El correo es un campo requerido',
     }),
 
-  contraseña: Joi.string()
-    .min(6)
-    .max(30)
+  contraseñaHash: Joi.string()
+    .min(8)
     .required()
-    .pattern(/^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?ñÑ]{6,30}$/)
     .messages({
       'string.base': 'La contraseña debe ser un texto',
       'string.empty': 'La contraseña no puede estar vacía',
-      'string.min': 'La contraseña debe tener al menos 6 caracteres',
-      'string.max': 'La contraseña no puede exceder los 30 caracteres',
-      'string.pattern.base': 'La contraseña solo puede contener letras, números y ciertos caracteres especiales',
+      'string.min': 'La contraseña debe tener al menos 8 caracteres',
       'any.required': 'La contraseña es un campo requerido',
     }),
 
   roles: Joi.array()
-    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) 
+    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
     .optional()
     .messages({
-      'array.base': 'Los roles deben ser un array',
-      'string.pattern.base': 'Cada rol debe ser un ID de MongoDB válido (24 caracteres hexadecimales)',
+      'array.base': 'Roles debe ser un array',
+      'string.pattern.base': 'Cada rol debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
+    }),
+
+  estadoUsuario: Joi.boolean()
+    .required()
+    .messages({
+      'boolean.base': 'El estado del usuario debe ser verdadero o falso',
+      'any.required': 'El estado del usuario es un campo requerido',
     }),
 
   creadoEn: Joi.date()
-    .default(() => new Date())
+    .default(() => new Date(), 'Fecha de creación por defecto')
     .optional()
     .messages({
       'date.base': 'La fecha de creación debe ser una fecha válida',
@@ -59,3 +80,4 @@ const usuarioSchemaValidation = Joi.object({
 });
 
 module.exports = usuarioSchemaValidation;
+

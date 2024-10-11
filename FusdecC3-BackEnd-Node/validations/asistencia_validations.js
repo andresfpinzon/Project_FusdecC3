@@ -23,7 +23,7 @@ const asistenciaSchemaValidation = Joi.object({
 
   usuarioId: Joi.string()
     .max(450)
-    .optional()
+    .required()
     .messages({
       'string.base': 'El ID del usuario debe ser un texto',
       'string.max': 'El ID del usuario no puede exceder los 450 caracteres',

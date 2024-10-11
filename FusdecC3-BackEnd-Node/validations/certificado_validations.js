@@ -58,6 +58,14 @@ const certificadoSchemaValidation = Joi.object({
       'string.pattern.base': 'El cursoId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
       'any.required': 'El cursoId es un campo requerido',
     }),
+    
+    usuarioId: Joi.string()
+    .max(450)
+    .required()
+    .messages({
+      'string.base': 'El ID del usuario debe ser un texto',
+      'string.max': 'El ID del usuario no puede exceder los 450 caracteres',
+    }),
 });
 
 module.exports = certificadoSchemaValidation;

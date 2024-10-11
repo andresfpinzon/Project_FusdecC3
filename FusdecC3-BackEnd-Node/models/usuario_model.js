@@ -9,12 +9,10 @@ const UsuarioSchema = new Schema({
   nombreUsuario: {
     type: String,
     required: true,
-    unique: true,
   },
   apellidoUsuario: {
     type: String,
     required: true,
-    unique: true,
   },
   numeroDocumento: {
     type: String,
