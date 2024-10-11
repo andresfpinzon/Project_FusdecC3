@@ -10,7 +10,7 @@ const edicionSchemaValidation = Joi.object({
       'string.base': 'El título de la edición debe ser un texto',
       'string.empty': 'El título de la edición no puede estar vacío',
       'string.min': 'El título de la edición debe tener al menos 3 caracteres',
-      'string.max': 'El título de la edición no puede exceder los 100 caracteres',
+      'string.max': 'El título de la edición no puede exceder los 10 caracteres',
       'any.required': 'El título de la edición es un campo requerido',
     }),
 

@@ -18,15 +18,15 @@ const NotaSchema = new Schema({
   },
 
   usuarioId: {
-    type: String,
-    maxlength: 450,
+    type: this.schema.type.ObjectId,
     required: true,
+    Ref: "Usuario",
   },
 
   estudiantes: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Estudiante", // Referencia a la colección de NotaEstudiante
+      ref: "Estudiante", // Referencia a la colección de Nota_Estudiante
     },
   ],
 });
