@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const AsistenciaSchema = new Schema({
-  asistenciaId: {
+  /*asistenciaId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
-  },
+  },*/
   tituloAsistencia: {
     type: String,
     required: true,

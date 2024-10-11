@@ -3,10 +3,10 @@ const { Schema } = mongoose;
 
 const EdicionSchema = new Schema(
   {
-    edicionId: {
+    /*edicionId: {
       type: Schema.Types.ObjectId,
       default: () => new mongoose.Types.ObjectId(),
-    },
+    },*/
     tituloEdicion: {
       type: String,
       required: true,

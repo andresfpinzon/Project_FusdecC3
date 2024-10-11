@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const CertificadoSchema = new Schema({
-  certificadoId: {
+  /*certificadoId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
-  },
+  },*/
   codigoVerificacion: {
     type: String,
     required: true,

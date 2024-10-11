@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const HorarioSchema = new Schema({
-  horarioId: {
+  /*horarioId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
-  },
+  },*/
   tituloHorario: {
     type: String,
     required: true,

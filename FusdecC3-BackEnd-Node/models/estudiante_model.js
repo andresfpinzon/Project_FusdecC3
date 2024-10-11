@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const EstudianteSchema = new Schema({
-  estudianteId: {
+  /*estudianteId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
-  },
+  },*/
   nombreEstudiante: {
     type: String,
     required: true,

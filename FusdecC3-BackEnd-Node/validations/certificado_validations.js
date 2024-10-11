@@ -1,13 +1,7 @@
 const Joi = require('@hapi/joi');
 
 const certificadoSchemaValidation = Joi.object({
-  certificadoId: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
-    .optional()
-    .messages({
-      'string.pattern.base': 'El certificadoId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
-    }),
-
+  
   codigoVerificacion: Joi.string()
     .min(5)
     .max(20)

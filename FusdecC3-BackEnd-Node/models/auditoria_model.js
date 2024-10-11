@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const AuditoriaSchema = new Schema({
-    auditoriaId: {
+   /*auditoriaId: {
         type: Schema.Types.ObjectId,
         default: () => new mongoose.Types.ObjectId(),
-    },
+    },*/
     fechaAuditoria: {
         type: Date,
         required: true,

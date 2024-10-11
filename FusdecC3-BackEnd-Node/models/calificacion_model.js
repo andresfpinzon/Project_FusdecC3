@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const NotaSchema = new Schema({
-  calificacionId: {
+  /*calificacionId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
-  },
+  },*/
 
   tituloNota: {
     type: String,
