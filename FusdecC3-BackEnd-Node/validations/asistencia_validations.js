@@ -29,13 +29,6 @@ const asistenciaSchemaValidation = Joi.object({
       'string.max': 'El ID del usuario no puede exceder los 450 caracteres',
     }),
 
-  usuario: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/) 
-    .optional()
-    .messages({
-      'string.pattern.base': 'El ID del usuario debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
-    }),
-
   estudiantes: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) 
     .optional()

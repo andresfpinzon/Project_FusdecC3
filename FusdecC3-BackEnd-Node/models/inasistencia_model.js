@@ -17,6 +17,7 @@ const InasistenciaSchema = new Schema({
   usuarioId: {
     type: String,
     maxlength: 450,
+    required: true,
   },
   AsistenciaId: {
     type: Schema.Types.ObjectId,

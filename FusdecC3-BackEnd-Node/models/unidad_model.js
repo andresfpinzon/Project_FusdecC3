@@ -20,6 +20,11 @@ const UnidadSchema = new Schema({
         required: true,
         ref: "Brigada", // Referencia al modelo Brigada
     },
+    usuarioId:{
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "Usuario", // Referencia al modelo Usuario
+    },
     estudiantes: [
         {
             type: Schema.Types.ObjectId,

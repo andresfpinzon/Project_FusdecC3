@@ -17,6 +17,7 @@ const AsistenciaSchema = new Schema({
   usuarioId: {
     type: String,
     maxlength: 450,
+    required: true,
   },
   estudiantes: [
     {

@@ -14,12 +14,13 @@ const NotaSchema = new Schema({
 
   aprobado: {
     type: Boolean,
-    default: false, // Suponiendo que por defecto no está aprobado
+    required: true,
   },
 
   usuarioId: {
     type: String,
     maxlength: 450,
+    required: true,
   },
 
   estudiantes: [

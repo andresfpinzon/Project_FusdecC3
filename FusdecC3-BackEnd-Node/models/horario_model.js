@@ -25,5 +25,4 @@ const HorarioSchema = new Schema({
 });
 
 const Horario = mongoose.model("Horario", HorarioSchema);
-
 module.exports = Horario;
