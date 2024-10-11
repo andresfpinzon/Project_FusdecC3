@@ -1,6 +1,5 @@
 const Auditoria = require('../models/auditoria_model');
 const Usuario = require('../models/usuario_model');
-const auditoriaSchemaValidation = require('../validations/auditoria_validations');
 
 // Función asíncrona para crear auditorías
 async function crearAuditoria(body) {
