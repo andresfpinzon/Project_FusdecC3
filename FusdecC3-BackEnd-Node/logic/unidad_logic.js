@@ -1,7 +1,7 @@
 const Unidad = require('../models/unidad_model');
-//const Brigada = require('../models/brigada_model');
-//const Usuario = require('../models/usuario_model');
-const unidadSchemaValidation = require('../validations/unidad_validations');
+const Brigada = require('../models/brigada_model');
+const Usuario = require('../models/usuario_model');
+//const unidadSchemaValidation = require('../validations/unidad_validations');
 
 // Función asíncrona para crear unidades
 async function crearUnidad(body) {

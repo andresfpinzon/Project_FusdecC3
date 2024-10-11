@@ -1,7 +1,7 @@
 const Certificado = require('../models/certificado_model');
 const Estudiante = require('../models/estudiante_model');
 const Curso = require('../models/curso_model');
-const certificadoSchemaValidation = require('../validations/certificado_validations');
+//const certificadoSchemaValidation = require('../validations/certificado_validations');
 
 // Función asíncrona para crear certificados
 async function crearCertificado(body) {
