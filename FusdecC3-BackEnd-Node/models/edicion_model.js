@@ -19,7 +19,7 @@ const EdicionSchema = new Schema(
       type: Date, 
       required: true,
     },
-    estatusEdicion: {
+    estadoEdicion: {
       type: Boolean,
       default: true,
     },

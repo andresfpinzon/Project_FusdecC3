@@ -17,7 +17,7 @@ const CursoSchema = new Schema({
     type: String,
     required: true,
   },
-  estatusCurso: {
+  estadoCurso: {
     type: Boolean,
     default: true,
   },
