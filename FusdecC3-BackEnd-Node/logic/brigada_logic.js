@@ -68,9 +68,9 @@ async function buscarBrigadasPorUnidadId(unidadId) {
 module.exports = {
     crearBrigada,
     listarBrigadas,
+    editarBrigada,
+    eliminarBrigada,
     buscarBrigadaPorId,
     buscarBrigadasPorComandoId,
-    buscarBrigadasPorUnidadId,
-    editarBrigada,
-    eliminarBrigada
+    buscarBrigadasPorUnidadId
 };
