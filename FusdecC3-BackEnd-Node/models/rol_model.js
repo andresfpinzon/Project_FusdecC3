@@ -11,6 +11,11 @@ const RolSchema = new Schema({
     required: true,
     unique: true,
   },
+  estadoRol: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
 });
 
 const Rol = mongoose.model("Rol", RolSchema);
