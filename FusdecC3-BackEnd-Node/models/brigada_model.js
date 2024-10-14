@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const BrigadaSchema = new Schema({
-    brigadaId: {
+    /*brigadaId: {
         type: Schema.Types.ObjectId,
         default: () => new mongoose.Types.ObjectId(),
-    },
+    },*/
     nombreBrigada: {
         type: String,
         required: true,

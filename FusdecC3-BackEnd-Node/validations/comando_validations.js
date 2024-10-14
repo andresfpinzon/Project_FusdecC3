@@ -1,12 +1,6 @@
 const Joi = require('@hapi/joi');
 
 const comandoSchemaValidation = Joi.object({
-  comandoId: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
-    .optional()
-    .messages({
-      'string.pattern.base': 'El comandoId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
-    }),
 
   nombreComando: Joi.string()
     .min(3)

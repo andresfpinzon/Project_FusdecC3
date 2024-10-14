@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const CursoSchema = new Schema({
-  CursoId: {
+  /*CursoId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
-  },
+  },*/
   nombreCurso: {
     type: String,
     required: true,
@@ -17,7 +17,7 @@ const CursoSchema = new Schema({
     type: String,
     required: true,
   },
-  estatusCurso: {
+  estadoCurso: {
     type: Boolean,
     default: true,
   },

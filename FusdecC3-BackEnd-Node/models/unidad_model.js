@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const UnidadSchema = new Schema({
-    unidadId: {
+    /*unidadId: {
         type: Schema.Types.ObjectId,
         default: () => new mongoose.Types.ObjectId(),
-    },
+    },*/
     nombreUnidad: {
         type: String,
         required: true,
