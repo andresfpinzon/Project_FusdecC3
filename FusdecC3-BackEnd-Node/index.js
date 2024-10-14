@@ -19,7 +19,7 @@
 // Importaciones básicas de Express y otras dependencias
 const express = require('express');
 const mongoose = require('./config/db_config');
-const corsMiddleware = require('./config/corsConfig'); 
+const corsMiddleware = require('./config/cors_config'); 
 //const loadRoutes = require('./routesLoader');
 
 // Importar la configuración de Swagger
