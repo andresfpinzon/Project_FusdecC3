@@ -1,12 +1,13 @@
 const Usuario = require('../models/usuario_model');
 
-// Función asíncrona para crear un usuario 
+// Función asíncrona para crear un usuario
 async function crearUsuario(body) {
     // Verificar si el correo ya está registrado
     const usuarioExistente = await Usuario.findOne({ correo: body.correo });
     if (usuarioExistente) {
         throw new Error('El correo electrónico ya está registrado');
     }
+
     let usuario = new Usuario({
         nombreUsuario: body.nombreUsuario,
         apellidoUsuario: body.apellidoUsuario,
@@ -14,7 +15,6 @@ async function crearUsuario(body) {
         correo: body.correo,
         contraseñaHash: body.contraseñaHash,
         roles: body.roles || [], // Si hay roles en el cuerpo de la solicitud, se agregan
-        estadoUsuario: body.estadoUsuario !== undefined ? body.estadoUsuario : true, // Estado por defecto es true
     });
 
     return await usuario.save();
@@ -34,14 +34,10 @@ async function actualizarUsuario(id, body) {
 
     // Si se están pasando roles, evitamos duplicados
     if (body.roles && body.roles.length > 0) {
-        // Filtrar los roles que no estén ya en el array de roles
         const nuevosRoles = body.roles.filter(rolId => !usuario.roles.includes(rolId));
         usuario.roles.push(...nuevosRoles); 
     }
 
-    usuario.estadoUsuario = body.estadoUsuario !== undefined ? body.estadoUsuario : usuario.estadoUsuario;
-
-    // Guardar los cambios
     await usuario.save();
     return usuario;
 }
