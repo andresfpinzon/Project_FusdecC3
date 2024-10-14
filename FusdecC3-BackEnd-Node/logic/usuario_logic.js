@@ -56,7 +56,7 @@ async function obtenerUsuarioPorId(id) {
     return usuario;
 }
 
-// Función para eliminar (desactivar) un usuario cambiando su estado a false
+// Función para desactivar un usuario 
 async function desactivarUsuario(id) {
     let usuario = await Usuario.findByIdAndUpdate(id, { estadoUsuario: false }, { new: true });
     if (!usuario) {
