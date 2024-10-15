@@ -5,7 +5,6 @@ async function crearBrigada(body) {
     const brigada = new Brigada({
         nombreBrigada: body.nombreBrigada,
         ubicacionBrigada: body.ubicacionBrigada,
-        estadoBrigada: body.estadoBrigada,
         comandoId: body.comandoId,
         unidades: body.unidades || [] // Asegurarse de que unidades sea un array
     });
@@ -36,9 +35,9 @@ async function editarBrigada(id, body) {
     return brigada;
 }
 
-// Función asíncrona para eliminar una brigada
-async function eliminarBrigada(id) {
-    const brigada = await Brigada.findByIdAndDelete(id);
+// Función asíncrona para desactivar una brigada
+async function desactivarBrigada(id) {
+    const brigada = await Brigada.findByIdAndUpdate(id, { /* no se actualiza el estado */ }, { new: true });
     if (!brigada) {
         throw new Error(`Brigada con ID ${id} no encontrada`);
     }
@@ -63,13 +62,11 @@ async function buscarBrigadasPorUnidadId(unidadId) {
     return brigadas;
 }
 
-
-
 module.exports = {
     crearBrigada,
     listarBrigadas,
     editarBrigada,
-    eliminarBrigada,
+    desactivarBrigada, 
     buscarBrigadaPorId,
     buscarBrigadasPorComandoId,
     buscarBrigadasPorUnidadId
