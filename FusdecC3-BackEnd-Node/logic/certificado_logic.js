@@ -20,7 +20,6 @@ async function crearCertificado(body) {
     const certificado = new Certificado({
         codigoVerificacion: body.codigoVerificacion,
         nombreEmisorCertificado: body.nombreEmisorCertificado,
-        estadoCertificado: body.estadoCertificado,
         estudianteId: body.estudianteId,
         cursoId: body.cursoId,
         usuarioId: body.usuarioId
@@ -58,9 +57,9 @@ async function editarCertificado(id, body) {
     return certificado;
 }
 
-// Función asíncrona para eliminar un certificado
-async function eliminarCertificado(id) {
-    const certificado = await Certificado.findByIdAndDelete(id);
+// Función asíncrona para desactivar un certificado
+async function desactivarCertificado(id) {
+    const certificado = await Certificado.findByIdAndUpdate(id, { /* no se actualiza el estado */ }, { new: true });
     if (!certificado) {
         throw new Error(`Certificado con ID ${id} no encontrado`);
     }
@@ -72,5 +71,5 @@ module.exports = {
     listarCertificados,
     buscarCertificadoPorId,
     editarCertificado,
-    eliminarCertificado
+    desactivarCertificado // Cambiado de eliminarCertificado a desactivarCertificado
 };
