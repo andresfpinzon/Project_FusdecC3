@@ -12,7 +12,6 @@ async function crearComando(body) {
 
     const comando = new Comando({
         nombreComando: body.nombreComando,
-        estadoComando: body.estadoComando,
         ubicacionComando: body.ubicacionComando,
         fundacionId: body.fundacionId,
         brigadas: body.brigadas || [] // Asegurarse de que brigadas sea un array
@@ -50,9 +49,9 @@ async function editarComando(id, body) {
     return comando;
 }
 
-// Función asíncrona para eliminar un comando
-async function eliminarComando(id) {
-    const comando = await Comando.findByIdAndDelete(id);
+// Función asíncrona para desactivar un comando
+async function desactivarComando(id) {
+    const comando = await Comando.findByIdAndUpdate(id, { /* no se actualiza el estado */ }, { new: true });
     if (!comando) {
         throw new Error(`Comando con ID ${id} no encontrado`);
     }
@@ -64,5 +63,5 @@ module.exports = {
     listarComandos,
     buscarComandoPorId,
     editarComando,
-    eliminarComando
+    desactivarComando 
 };
