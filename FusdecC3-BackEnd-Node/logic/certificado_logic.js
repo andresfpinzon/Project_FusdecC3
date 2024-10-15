@@ -71,5 +71,5 @@ module.exports = {
     listarCertificados,
     buscarCertificadoPorId,
     editarCertificado,
-    desactivarCertificado // Cambiado de eliminarCertificado a desactivarCertificado
+    desactivarCertificado 
 };
