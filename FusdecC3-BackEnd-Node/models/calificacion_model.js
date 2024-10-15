@@ -7,7 +7,7 @@ const NotaSchema = new Schema({
     default: () => new mongoose.Types.ObjectId(),
   },*/
 
-  tituloNota: {
+  tituloCalificacion: {
     type: String,
     required: true,
   },
