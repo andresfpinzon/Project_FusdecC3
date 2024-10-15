@@ -1,5 +1,6 @@
 const Auditoria = require('../models/auditoria_model');
 const Usuario = require('../models/usuario_model');
+//const auditoriaSchemaValidation = require('../validations/auditoria_validations'); // Asegúrate de descomentar y usar la validación adecuada
 
 // Función asíncrona para crear auditorías
 async function crearAuditoria(body) {
@@ -23,13 +24,11 @@ async function crearAuditoria(body) {
     return await auditoria.save();
 }
 
-
 // Función asíncrona para listar auditorías
 async function listarAuditorias() {
     let auditorias = await Auditoria.find().populate("certificadoId");
     return auditorias;
 }
-
 
 // Función asíncrona para buscar una auditoría por su ID
 async function buscarAuditoriaPorId(id) {
@@ -60,11 +59,19 @@ async function buscarUsuariosPorAuditoria(id) {
     }
 }
 
-
+// Función asíncrona para desactivar una auditoría (si se requiere)
+async function desactivarAuditoria(id) {
+    const auditoria = await Auditoria.findByIdAndUpdate(id, { /* no se actualiza el estado */ }, { new: true });
+    if (!auditoria) {
+        throw new Error(`Auditoría con ID ${id} no encontrada`);
+    }
+    return auditoria;
+}
 
 module.exports = {
     crearAuditoria,
     listarAuditorias,
     buscarAuditoriaPorId,
     buscarUsuariosPorAuditoria,
+    desactivarAuditoria // Añadido para desactivar auditorías
 };
