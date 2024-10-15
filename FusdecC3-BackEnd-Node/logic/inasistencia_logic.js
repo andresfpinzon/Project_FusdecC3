@@ -64,5 +64,5 @@ module.exports = {
     actualizarInasistencia,
     listarInasistencias,
     obtenerInasistenciaPorId,
-    eliminarInasistencia, // O eliminarInasistencia según tu preferencia
+    eliminarInasistencia,
 };
