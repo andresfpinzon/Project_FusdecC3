@@ -74,16 +74,16 @@ async function guardarCursos(cursos) {
 
 // Función asíncrona para buscar un curso por su ID
 async function buscarCursoPorId(id) {
-    try {
-      const curso = await Curso.findById(id);
-      if (!curso) {
-        throw new Error(`Curso con ID ${id} no encontrado`);
-      }
-      return curso;
-    } catch (err) {
-      console.error(`Error al buscar el curso por ID: ${err.message}`);
-      throw err;
+  try {
+    const curso = await Curso.findById(id);
+    if (!curso) {
+      throw new Error(`Curso con ID ${id} no encontrado`);
     }
+    return curso;
+  } catch (err) {
+    console.error(`Error al buscar el curso por ID: ${err.message}`);
+    throw err;
+  }
 }
 
 module.exports = {
