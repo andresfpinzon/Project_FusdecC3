@@ -1,7 +1,7 @@
 const Unidad = require('../models/unidad_model');
 const Brigada = require('../models/brigada_model');
 const Usuario = require('../models/usuario_model');
-//const unidadSchemaValidation = require('../validations/unidad_validations');
+const unidadSchemaValidation = require('../validations/unidad_validations'); // Descomentado para validar
 
 // Función asíncrona para crear unidades
 async function crearUnidad(body) {
@@ -13,7 +13,6 @@ async function crearUnidad(body) {
 
     const unidad = new Unidad({
         nombreUnidad: body.nombreUnidad,
-        estadoUnidad: body.estadoUnidad,
         brigadaId: body.brigadaId,
         usuarioId: body.usuarioId,
         estudiantes: body.estudiantes || [] // Asegurarse de que estudiantes sea un array
@@ -29,6 +28,7 @@ async function listarUnidades() {
         .populate('usuarioId')
         .populate('estudiantes');
 }
+
 // Función asíncrona para editar una unidad
 async function editarUnidad(id, body) {
     const unidad = await Unidad.findByIdAndUpdate(id, body, { new: true })
@@ -41,9 +41,9 @@ async function editarUnidad(id, body) {
     return unidad;
 }
 
-// Función asíncrona para eliminar una unidad
-async function eliminarUnidad(id) {
-    const unidad = await Unidad.findByIdAndDelete(id);
+// Función asíncrona para desactivar una unidad
+async function desactivarUnidad(id) {
+    const unidad = await Unidad.findByIdAndUpdate(id, { estadoUnidad: false }, { new: true });
     if (!unidad) {
         throw new Error(`Unidad con ID ${id} no encontrada`);
     }
@@ -93,5 +93,5 @@ module.exports = {
     buscarUnidadesPorBrigadaId,
     buscarUnidadesPorUsuarioId,
     editarUnidad,
-    eliminarUnidad
+    desactivarUnidad 
 };

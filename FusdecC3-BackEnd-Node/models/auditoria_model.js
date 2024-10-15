@@ -6,7 +6,7 @@ const AuditoriaSchema = new Schema({
         type: Schema.Types.ObjectId,
         default: () => new mongoose.Types.ObjectId(),
     },*/
-    fechaAuditoria: {
+     fechaAuditoria: {
         type: Date,
         required: true,
     },
