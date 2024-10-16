@@ -14,22 +14,6 @@ const listarAuditorias = async (_req, res) => {
     }
 };
 
-// Controlador para crear una auditoría
-const crearAuditoria = async (req, res) => {
-    const { error, value } = auditoriaSchemaValidation.validate(req.body);
-    if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-    }
-    try {
-        const nuevaAuditoria = await logic.crearAuditoria(value);
-        res.status(201).json(nuevaAuditoria);
-    } catch (err) {
-        if (err.message === 'La auditoría con este emisor ya existe') {
-            return res.status(409).json({ error: err.message });
-        }
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
-    }
-};
 
 // Controlador para actualizar una auditoría
 const actualizarAuditoria = async (req, res) => {
@@ -49,19 +33,7 @@ const actualizarAuditoria = async (req, res) => {
     }
 };
 
-// Controlador para desactivar una auditoría
-const desactivarAuditoria = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const auditoriaDesactivada = await logic.desactivarAuditoria(id);
-        if (!auditoriaDesactivada) {
-            return res.status(404).json({ error: 'Auditoría no encontrada' });
-        }
-        res.json(auditoriaDesactivada);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
-    }
-};
+
 
 // Controlador para obtener una auditoría por su ID
 const obtenerAuditoriaPorId = async (req, res) => {
@@ -94,9 +66,7 @@ const obtenerUsuariosPorAuditoria = async (req, res) => {
 // Exportar los controladores
 module.exports = {
     listarAuditorias,
-    crearAuditoria,
     actualizarAuditoria,
-    desactivarAuditoria,
     obtenerAuditoriaPorId,
     obtenerUsuariosPorAuditoria
 };

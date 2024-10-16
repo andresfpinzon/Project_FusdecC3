@@ -1,6 +1,6 @@
 // Importar rutas para cada modelo
 //const asistenciaRoutes = require('./routes/asistencia_routes');
-//const auditoriaRoutes = require('./routes/auditoria_routes');
+const auditoriaRoutes = require('./routes/auditoria_routes');
 const brigadaRoutes = require('./routes/brigada_routes');
 //const calificacionRoutes = require('./routes/calificacion_routes');
 //const certificadoRoutes = require('./routes/certificado_routes');
@@ -28,6 +28,9 @@ const { swaggerUi, swaggerDocs } = require('./config/swagger_config');
 // Middleware
 const app = express();
 
+// Middleware para analizar el cuerpo de las solicitudes JSON
+app.use(express.json());
+
 // Aplicar middleware de CORS
 app.use(corsMiddleware); 
 
@@ -36,7 +39,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Endpoints (rutas para los modelos)
 //app.use('/api/asistencias', asistenciaRoutes);
-//app.use('/api/auditorias', auditoriaRoutes);
+app.use('/api/auditorias', auditoriaRoutes);
 app.use('/api/brigadas', brigadaRoutes);
 //app.use('/api/calificaciones', calificacionRoutes);
 //app.use('/api/certificados', certificadoRoutes);

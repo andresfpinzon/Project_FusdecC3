@@ -4,10 +4,45 @@ const router = express.Router();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Auditoria:
+ *       type: object
+ *       required:
+ *         - fechaAuditoria
+ *         - nombreEmisor
+ *         - certificadoId
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID autogenerado de la auditoría.
+ *         fechaAuditoria:
+ *           type: string
+ *           format: date-time
+ *           description: Fecha de la auditoría.
+ *         nombreEmisor:
+ *           type: string
+ *           description: Nombre del emisor de la auditoría.
+ *         certificadoId:
+ *           type: string
+ *           description: ID del certificado asociado (ObjectId).
+ *           pattern: '^[0-9a-fA-F]{24}$'
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Auditoría
+ *     description: API para gestionar auditorías
+ */
+
+/**
+ * @swagger
  * /api/auditorias:
  *   get:
+ *     tags: 
+ *       - Auditoría
  *     summary: Listar todas las auditorías
- *     tags: [Auditoría]
  *     responses:
  *       200:
  *         description: Lista de auditorías
@@ -16,54 +51,28 @@ const router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   _id:
- *                     type: string
- *                   fechaAuditoria:
- *                     type: string
- *                     format: date-time
- *                   nombreEmisor:
- *                     type: string
- *                   certificadoId:
- *                     type: string
+ *                 $ref: '#/components/schemas/Auditoria'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   - _id: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                     fechaAuditoria: "2023-10-01T12:00:00Z"
+ *                     nombreEmisor: "Carlos Martínez"
+ *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                   - _id: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                     fechaAuditoria: "2023-10-02T12:00:00Z"
+ *                     nombreEmisor: "Ana Gómez"
+ *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a2"
  */
 router.get('/', auditoriaController.listarAuditorias);
 
 /**
  * @swagger
- * /api/auditorias:
- *   post:
- *     summary: Crear una nueva auditoría
- *     tags: [Auditoría]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               fechaAuditoria:
- *                 type: string
- *                 format: date-time
- *               nombreEmisor:
- *                 type: string
- *               certificadoId:
- *                 type: string
- *     responses:
- *       201:
- *         description: Auditoría creada exitosamente
- *       400:
- *         description: Datos inválidos
- */
-router.post('/', auditoriaController.crearAuditoria);
-
-/**
- * @swagger
  * /api/auditorias/{id}:
  *   get:
+ *     tags: 
+ *       - Auditoría
  *     summary: Obtener auditoría por ID
- *     tags: [Auditoría]
  *     parameters:
  *       - in: path
  *         name: id
@@ -77,103 +86,17 @@ router.post('/', auditoriaController.crearAuditoria);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                 fechaAuditoria:
- *                   type: string
- *                   format: date-time
- *                 nombreEmisor:
- *                   type: string
- *                 certificadoId:
- *                   type: string
+ *               $ref: '#/components/schemas/Auditoria'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                   fechaAuditoria: "2023-10-01T12:00:00Z"
+ *                   nombreEmisor: "Carlos Martínez"
+ *                   certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
  *       404:
  *         description: Auditoría no encontrada
  */
 router.get('/:id', auditoriaController.obtenerAuditoriaPorId);
-
-/**
- * @swagger
- * /api/auditorias/{id}:
- *   put:
- *     summary: Actualizar auditoría por ID
- *     tags: [Auditoría]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la auditoría
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               fechaAuditoria:
- *                 type: string
- *                 format: date-time
- *               nombreEmisor:
- *                 type: string
- *               certificadoId:
- *                 type: string
- *     responses:
- *       200:
- *         description: Auditoría actualizada exitosamente
- *       404:
- *         description: Auditoría no encontrada
- */
-router.put('/:id', auditoriaController.actualizarAuditoria);
-
-/**
- * @swagger
- * /api/auditorias/{id}:
- *   delete:
- *     summary: Desactivar auditoría por ID
- *     tags: [Auditoría]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la auditoría
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Auditoría desactivada correctamente
- *       404:
- *         description: Auditoría no encontrada
- */
-router.delete('/:id', auditoriaController.desactivarAuditoria);
-
-/**
- * @swagger
- * /api/auditorias/{id}/usuarios:
- *   get:
- *     summary: Obtener usuarios asociados a una auditoría
- *     tags: [Auditoría]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la auditoría
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de usuarios asociados a la auditoría
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: string
- *       404:
- *         description: No se encontraron usuarios para la auditoría
- */
-router.get('/:id/usuarios', auditoriaController.obtenerUsuariosPorAuditoria);
 
 module.exports = router;
