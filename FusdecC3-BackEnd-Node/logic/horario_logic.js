@@ -14,6 +14,7 @@ async function crearHorario(body) {
     tituloHorario: body.tituloHorario,
     horaInicio: body.horaInicio,
     horaFin: body.horaFin,
+    estadoHorario: body.estadoHorario,
   });
 
   return await horario.save();

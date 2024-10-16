@@ -12,6 +12,7 @@ async function crearCurso(body) {
     nombreCurso: body.nombreCurso,
     descripcionCurso: body.descripcionCurso,
     intensidadHorariaCurso: body.intensidadHorariaCurso,
+    estadoCurso: body.estadoCurso,
     fundacionId: body.fundacionId,
     ediciones: body.ediciones,
   });

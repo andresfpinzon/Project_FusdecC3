@@ -95,7 +95,7 @@ for (let curso of cursos) {
     return res
       .status(400)
       .json({
-        error: `Error en curso "${curso.titulo}": ${error.details[0].message}`,
+        error: `Error en curso "${curso.nombreCurso}": ${error.details[0].message}`,
       });
     }
   }
