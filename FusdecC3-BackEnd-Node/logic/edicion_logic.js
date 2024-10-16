@@ -56,8 +56,8 @@ async function desactivarEdicion(id) {
   return edicion;
 }
 
-// Función asíncrona para listar las ediciones activos
-async function listarEdicionesActivos() {
+// Función asíncrona para listar las ediciones activas
+async function listarEdicionesActivas() {
   let ediciones = await Edicion.find({ estadoEdicion: true });
   return ediciones;
 }
@@ -80,6 +80,6 @@ module.exports = {
   crearEdicion,
   actualizarEdicion,
   desactivarEdicion,
-  listarEdicionesActivos,
+  listarEdicionesActivas,
   buscarEdicionPorId,
 };

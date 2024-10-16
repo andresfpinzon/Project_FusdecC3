@@ -81,22 +81,22 @@ const listarCursosActivos = async (req, res) => {
 const guardarColeccionCursos = async (req, res) => {
   const cursos = req.body;
 
-  // Validación de cada curso en la colección
-  for (let curso of cursos) {
-    const { error } = cursoSchemaValidation.validate({
-      nombreCurso: body.nombreCurso,
-      descripcionCurso: body.descripcionCurso,
-      intensidadHorariaCurso: body.intensidadHorariaCurso,
-      estadoCurso: body.estadoCurso,
-      fundacionId: body.fundacionId,
-      ediciones: body.ediciones,
-    });
-    if (error) {
-      return res
-        .status(400)
-        .json({
-          error: `Error en curso "${curso.titulo}": ${error.details[0].message}`,
-        });
+// Validación de cada curso en la colección
+for (let curso of cursos) {
+  const { error } = cursoSchemaValidation.validate({
+    nombreCurso: body.nombreCurso,
+    descripcionCurso: body.descripcionCurso,
+    intensidadHorariaCurso: body.intensidadHorariaCurso,
+    estadoCurso: body.estadoCurso,
+    fundacionId: body.fundacionId,
+    ediciones: body.ediciones,
+  });
+  if (error) {
+    return res
+      .status(400)
+      .json({
+        error: `Error en curso "${curso.titulo}": ${error.details[0].message}`,
+      });
     }
   }
   try {
