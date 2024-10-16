@@ -1,5 +1,5 @@
 const express = require('express');
-const auditoriaController = require('../controllers/auditoria_controller');
+const auditoriaController = require('../controllers/auditoria_controllers');
 const router = express.Router();
 
 /**
