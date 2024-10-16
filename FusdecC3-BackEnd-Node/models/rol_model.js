@@ -6,7 +6,7 @@ const RolSchema = new Schema({
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
   },*/
-  rolName: {
+  nombreRol: {
     type: String,
     required: true,
     unique: true,

@@ -7,6 +7,7 @@ async function crearAsistencia(body) {
         tituloAsistencia: body.tituloAsistencia,
         fechaAsistencia: body.fechaAsistencia,
         usuarioId: body.usuarioId,
+        estadoAsistencia: body.estadoAsistencia,
         estudiantes: body.estudiantes || [], // Se puede pasar un array de estudiantes
     });
 
@@ -23,6 +24,7 @@ async function actualizarAsistencia(id, body) {
     asistencia.tituloAsistencia = body.tituloAsistencia || asistencia.tituloAsistencia;
     asistencia.fechaAsistencia = body.fechaAsistencia || asistencia.fechaAsistencia;
     asistencia.usuarioId = body.usuarioId || asistencia.usuarioId;
+    asistencia.estadoAsistencia = body.estadoAsistencia || asistencia.estadoAsistencia;
 
     // Si se pasan estudiantes, evitamos duplicados
     if (body.estudiantes && body.estudiantes.length > 0) {
@@ -34,9 +36,10 @@ async function actualizarAsistencia(id, body) {
     return asistencia;
 }
 
-// Función asíncrona para listar todas las asistencias
-async function listarAsistencias() {
-    return await Asistencia.find({});
+// Función asíncrona para listar las asistencias activas
+async function listarAsistenciasActivas() {
+    let asistencias = await Asistencia.find({ estadoAsistencia: true });
+    return asistencias;
 }
 
 // Función asíncrona para obtener una asistencia por su ID
@@ -60,7 +63,7 @@ async function eliminarAsistencia(id) {
 module.exports = {
     crearAsistencia,
     actualizarAsistencia,
-    listarAsistencias,
+    listarAsistenciasActivas,
     obtenerAsistenciaPorId,
     eliminarAsistencia, 
 };

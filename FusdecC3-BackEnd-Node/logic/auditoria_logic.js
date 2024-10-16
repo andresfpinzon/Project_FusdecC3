@@ -19,7 +19,8 @@ async function crearAuditoria(body) {
     let auditoria = new Auditoria({
         fechaAuditoria: body.fechaAuditoria,
         nombreEmisor: body.nombreEmisor,
-        certificadoId: body.certificadoId
+        certificadoId: body.certificadoId,
+        estadoAuditoria: body.estadoAuditoria
     });
     return await auditoria.save();
 }

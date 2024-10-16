@@ -50,8 +50,9 @@ async function obtenerInasistenciaPorId(id) {
     return inasistencia;
 }
 
+
 // Función asíncrona para eliminar una inasistencia
-async function eliminarInasistencia(id) {
+async function desactivarInasistencia(id) {
     const inasistencia = await Inasistencia.findByIdAndDelete(id);
     if (!inasistencia) {
         throw new Error('Inasistencia no encontrada');
@@ -59,10 +60,11 @@ async function eliminarInasistencia(id) {
     return inasistencia;
 }
 
+
 module.exports = {
     crearInasistencia,
     actualizarInasistencia,
     listarInasistencias,
     obtenerInasistenciaPorId,
-    eliminarInasistencia,
+    desactivarInasistencia,
 };

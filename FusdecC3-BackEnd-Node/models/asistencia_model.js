@@ -19,6 +19,11 @@ const AsistenciaSchema = new Schema({
     maxlength: 450,
     required: true,
   },
+  estadoAsistencia: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
   estudiantes: [
     {
       type: Schema.Types.ObjectId,

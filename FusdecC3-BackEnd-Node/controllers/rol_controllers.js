@@ -18,7 +18,7 @@ const listarRoles = async (req, res) => {
 const crearRol = async (req, res) => {
   const body = req.body;
   const { error, value } = rolSchemaValidation.validate({
-    rolName: body.rolName,
+    nombreRol: body.nombreRol,
     estadoRol: body.estadoRol
   });
   if (error) {
@@ -40,7 +40,7 @@ const actualizarRol = async (req, res) => {
   const { id } = req.params;
   const body = req.body;
   const { error, value } = rolSchemaValidation.validate({
-    rolName: body.rolName,
+    nombreRol: body.nombreRol,
     estadoRol: body.estadoRol
   });
   if (error) {

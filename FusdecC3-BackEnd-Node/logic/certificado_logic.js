@@ -20,6 +20,7 @@ async function crearCertificado(body) {
     const certificado = new Certificado({
         codigoVerificacion: body.codigoVerificacion,
         nombreEmisorCertificado: body.nombreEmisorCertificado,
+        estadoCertificado: body.estadoCertificado,
         estudianteId: body.estudianteId,
         cursoId: body.cursoId,
         usuarioId: body.usuarioId

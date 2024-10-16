@@ -24,6 +24,11 @@ const InasistenciaSchema = new Schema({
     ref: "Asistencia",
     required: true,
   },
+  estadoInasistencia: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
   estudiantes: [
     {
       type: Schema.Types.ObjectId,

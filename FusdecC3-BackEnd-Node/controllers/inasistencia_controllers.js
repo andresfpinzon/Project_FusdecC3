@@ -22,6 +22,7 @@ const crearInasistencia = async (req, res) => {
     observacion: body.observacion,
     usuarioId: body.usuarioId,
     AsistenciaId: body.AsistenciaId,
+    estadoInasistencia: body.estadoInasistencia,
     estudiantes: body.estudiantes
   });
   if (error) {
@@ -44,6 +45,7 @@ const actualizarInasistencia = async (req, res) => {
     observacion: body.observacion,
     usuarioId: body.usuarioId,
     AsistenciaId: body.AsistenciaId,
+    estadoInasistencia: body.estadoInasistencia,
     estudiantes: body.estudiantes
   });
   if (error) {
@@ -61,14 +63,14 @@ const actualizarInasistencia = async (req, res) => {
 };
 
 // Controlador para eliminar una inasistencia
-const eliminarInasistencia = async (req, res) => {
+const desactivarInasistencia = async (req, res) => {
   const { id } = req.params;
   try {
-    const inasistenciaEliminada = await logic.eliminarInasistencia(id);
-    if (!inasistenciaEliminada) {
+    const inasistenciaDesactivada = await logic.desactivarInasistencia(id);
+    if (!inasistenciaDesactivada) {
       return res.status(404).json({ error: 'Inasistencia no encontrada' });
     }
-    res.json(inasistenciaEliminada);
+    res.json(inasistenciaDesactivada);
   } catch (err) {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
@@ -92,6 +94,6 @@ module.exports = {
   listarInasistencias,
   crearInasistencia,
   actualizarInasistencia,
-  eliminarInasistencia,
+  desactivarInasistencia,
   obtenerInasistenciaPorId,
 };

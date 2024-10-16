@@ -23,6 +23,12 @@ const NotaSchema = new Schema({
     Ref: "Usuario",
   },
 
+  estadoCalificacion: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
+
   estudiantes: [
     {
       type: Schema.Types.ObjectId,

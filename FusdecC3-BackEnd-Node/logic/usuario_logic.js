@@ -14,7 +14,10 @@ async function crearUsuario(body) {
         numeroDocumento: body.numeroDocumento,
         correo: body.correo,
         contraseñaHash: body.contraseñaHash,
-        roles: body.roles || [], // Si hay roles en el cuerpo de la solicitud, se agregan
+        roles: body.roles || [],// Si hay roles en el cuerpo de la solicitud, se agregan
+        estadoUsuario: body.estadoUsuario,
+        creadoEn: body.creadoEn,
+         
     });
 
     return await usuario.save();
@@ -31,6 +34,8 @@ async function actualizarUsuario(id, body) {
     usuario.apellidoUsuario = body.apellidoUsuario || usuario.apellidoUsuario;
     usuario.numeroDocumento = body.numeroDocumento || usuario.numeroDocumento;
     usuario.contraseñaHash = body.contraseñaHash || usuario.contraseñaHash;
+    usuario.estadoUsuario = body.estadoUsuario || usuario.estadoUsuario;
+    usuario.creadoEn = body.creadoEn || usuario.estadoUsuario;
 
     // Si se están pasando roles, evitamos duplicados
     if (body.roles && body.roles.length > 0) {

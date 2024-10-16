@@ -15,6 +15,7 @@ async function crearUnidad(body) {
         nombreUnidad: body.nombreUnidad,
         brigadaId: body.brigadaId,
         usuarioId: body.usuarioId,
+        estadoUnidad: body.estadoUnidad,
         estudiantes: body.estudiantes || [] // Asegurarse de que estudiantes sea un array
     });
 

@@ -10,7 +10,11 @@ const fundacionschema =new Schema ({
     type: String, 
     required: true,
    }, 
-
+   estadoFundacion: {
+      type: Boolean,
+      default: true,
+      required: true,
+    },
 comandos:[
     {
          type: Types.schema.objectId,

@@ -12,6 +12,7 @@ async function crearComando(body) {
 
     const comando = new Comando({
         nombreComando: body.nombreComando,
+        estadoComando: body.estadoComando,
         ubicacionComando: body.ubicacionComando,
         fundacionId: body.fundacionId,
         brigadas: body.brigadas || [] // Asegurarse de que brigadas sea un array

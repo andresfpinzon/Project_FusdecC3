@@ -4,7 +4,7 @@ const asistenciaSchemaValidation = require('../validations/asistencia_validation
 // Controlador para listar todas las asistencias
 const listarAsistencias = async (req, res) => {
   try {
-    const asistencias = await logic.listarAsistencias();
+    const asistencias = await logic.listarAsistenciasActivas();
     if (asistencias.length === 0) {
       return res.status(204).send(); // 204 No Content
     }
@@ -21,6 +21,7 @@ const crearAsistencia = async (req, res) => {
     tituloAsistencia: body.tituloAsistencia,
     fechaAsistencia: body.fechaAsistencia,
     usuarioId: body.usuarioId,
+    estadoAsistencia: body.estadoAsistencia,
     estudiantes: body.estudiantes
   });
   if (error) {
@@ -42,6 +43,7 @@ const actualizarAsistencia = async (req, res) => {
     tituloAsistencia: body.tituloAsistencia,
     fechaAsistencia: body.fechaAsistencia,
     usuarioId: body.usuarioId,
+    estadoAsistencia: body.estadoAsistencia,
     estudiantes: body.estudiantes
   });
   if (error) {

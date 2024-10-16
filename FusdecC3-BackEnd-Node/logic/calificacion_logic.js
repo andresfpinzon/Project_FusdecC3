@@ -14,6 +14,7 @@ async function crearCalificacion(body) {
     tituloCalificacion: body.tituloCalificacion,
     aprobado: body.aprobado,
     usuarioId: body.usuarioId,
+    estadoCalificacion: body.estadoCalificacion,
     estudiantes: body.estudiantes,
   });
 

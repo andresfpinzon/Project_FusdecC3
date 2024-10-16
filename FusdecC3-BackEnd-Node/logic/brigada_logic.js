@@ -5,6 +5,7 @@ async function crearBrigada(body) {
     const brigada = new Brigada({
         nombreBrigada: body.nombreBrigada,
         ubicacionBrigada: body.ubicacionBrigada,
+        estadoBrigada: body.estadoBrigada,
         comandoId: body.comandoId,
         unidades: body.unidades || [] // Asegurarse de que unidades sea un array
     });
