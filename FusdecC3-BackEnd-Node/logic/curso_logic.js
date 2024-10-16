@@ -12,12 +12,13 @@ async function crearCurso(body) {
     nombreCurso: body.nombreCurso,
     descripcionCurso: body.descripcionCurso,
     intensidadHorariaCurso: body.intensidadHorariaCurso,
+    estadoCurso: body.estadoCurso,
     fundacionId: body.fundacionId,
     ediciones: body.ediciones,
   });
 
   return await curso.save();
-}
+};
 
 // Función asíncrona para actualizar cursos
 async function actualizarCurso(id, body) {
@@ -35,7 +36,7 @@ async function actualizarCurso(id, body) {
   );
 
   return curso;
-}
+};
 
 // Función asíncrona para inactivar cursos
 async function desactivarCurso(id) {
@@ -50,13 +51,13 @@ async function desactivarCurso(id) {
   );
 
   return curso;
-}
+};
 
 // Función asíncrona para listar los cursos activos
 async function listarCursosActivos() {
   let cursos = await Curso.find({ estadoCurso: true });
   return cursos;
-}
+};
 
 // Función asíncrona para guardar una colección de cursos
 async function guardarCursos(cursos) {
@@ -82,7 +83,7 @@ async function guardarCursos(cursos) {
     console.error("Error al guardar la colección de cursos:", err);
     throw err; // Re-lanza el error para manejarlo en la capa superior si es necesario
   }
-}
+};
 
 // Función asíncrona para buscar un curso por su ID
 async function buscarCursoPorId(id) {
@@ -96,7 +97,7 @@ async function buscarCursoPorId(id) {
     console.error(`Error al buscar el curso por ID: ${err.message}`);
     throw err;
   }
-}
+};
 
 module.exports = {
   crearCurso,
