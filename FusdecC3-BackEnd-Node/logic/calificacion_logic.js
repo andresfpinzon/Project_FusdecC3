@@ -38,6 +38,27 @@ async function actualizarCalificacion(id, body) {
   return calificacion;
 }
 
+// Función asíncrona para inactivar calificaciones
+async function desactivarCalificacion(id) {
+  let calificacion = await Calificacion.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        estadoCalificacion: false,
+      },
+    },
+    { new: true }
+  );
+
+  return calificacion;
+}
+
+// Función asíncrona para listar las calificaciones activas
+async function listarCalificacionesActivas() {
+  let calificacion = await Calificacion.find({ estadoCalificacion: true });
+  return calificacion;
+}
+
 // Función asíncrona para buscar una calificacion por su ID
 async function buscarCalificacionPorId(id) {
   try {
@@ -55,5 +76,7 @@ async function buscarCalificacionPorId(id) {
 module.exports = {
   crearCalificacion,
   actualizarCalificacion,
-  buscarCalificacionPorId,
+  desactivarCalificacion,
+  listarCalificacionesActivas,
+  buscarCalificacionPorId
 };
