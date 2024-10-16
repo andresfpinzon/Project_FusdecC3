@@ -1,5 +1,37 @@
 const Estudiante = require('../models/estudiante_model');
 
+// Función para crear un nuevo estudiante
+async function crearEstudiante(body) {
+    // Verificar si ya existe un estudiante con el mismo correo o número de documento
+    const estudianteExistente = await Estudiante.findOne({
+        $or: [
+            { correoEstudiante: body.correoEstudiante },
+            { numeroDocumento: body.numeroDocumento }
+        ]
+    });
+
+    if (estudianteExistente) {
+        throw new Error("El correo o número de documento ya están registrados");
+    }
+
+    // Crear un nuevo estudiante
+    const nuevoEstudiante = new Estudiante({
+        nombreEstudiante: body.nombreEstudiante,
+        apellidoEstudiante: body.apellidoEstudiante,
+        correoEstudiante: body.correoEstudiante,
+        tipoDocumento: body.tipoDocumento,
+        numeroDocumento: body.numeroDocumento,
+        fechaNacimiento: body.fechaNacimiento,
+        generoEstudiante: body.generoEstudiante,
+        unidadId: body.unidadId,
+        colegioId: body.colegioId
+    });
+
+    // Guardar el estudiante en la base de datos
+    await nuevoEstudiante.save();
+    return nuevoEstudiante;
+}
+
 // Función para actualizar un estudiante
 async function actualizarEstudiante(id, body) {
     // Buscar el estudiante por ID
@@ -131,6 +163,7 @@ async function desactivarEstudiante(id) {
 }
 
 module.exports = {
+    crearEstudiante,
     actualizarEstudiante,
     listarEstudiantes,
     obtenerEstudiantePorId,
