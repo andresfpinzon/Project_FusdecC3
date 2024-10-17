@@ -1,5 +1,5 @@
 // Importar rutas para cada modelo
-//const asistenciaRoutes = require('./routes/asistencia_routes');
+const asistenciaRoutes = require('./routes/asistencia_routes');
 const auditoriaRoutes = require('./routes/auditoria_routes');
 const brigadaRoutes = require('./routes/brigada_routes');
 //const calificacionRoutes = require('./routes/calificacion_routes');
@@ -38,7 +38,7 @@ app.use(corsMiddleware);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Endpoints (rutas para los modelos)
-//app.use('/api/asistencias', asistenciaRoutes);
+app.use('/api/asistencias', asistenciaRoutes);
 app.use('/api/auditorias', auditoriaRoutes);
 app.use('/api/brigadas', brigadaRoutes);
 //app.use('/api/calificaciones', calificacionRoutes);
