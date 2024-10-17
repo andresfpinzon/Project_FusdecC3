@@ -19,17 +19,6 @@ const fundacionSchemaValidation =Joi.object({
         'boolean.base': 'El estado de la fundacion debe ser un booleano',
         'any.required': 'El estado de la fundacion debe ser un campo requerido', 
     }),
-    ubicacionFundacion:Joi.string()
-    .min(3)
-    .max(300)
-    .required()
-    .messages({
-        'string.base': 'La ubicacion de la fundacion debe ser un texto',
-        'string.empty': 'La ubicacion de la fundacion no puede estar vacia',
-        'string.min': 'La ubicacacion debe de tener al menos 3 caracteres',
-        'string.max': 'La ubicacion no puede exceder los 288 carateres',
-        'any.required':'La ubicacion es un campo requerido',
-    }),
 
     comando:Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) // Validación para ObjectId
@@ -37,14 +26,6 @@ const fundacionSchemaValidation =Joi.object({
     .messages({
         'array.base': 'Comandos debe ser un array',
         'string.pattern.base':'Cada comando debe tener un objectId valido de MongoDB(24 caracteres hexadecimales)',
-    }),
-
-      brigadas:Joi.array()
-      .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) // Validación para ObjectId
-    .optional()
-    .messages({
-      'array.base': 'Brigadas debe ser un array',
-      'string.pattern.base': 'Cada brigada debe tener un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
     }),
 
 });
