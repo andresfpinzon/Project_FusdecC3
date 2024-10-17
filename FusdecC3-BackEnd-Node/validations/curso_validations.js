@@ -45,4 +45,4 @@ const cursoSchemaValidation = Joi.object({
     }),
 });
 
-module.exports = cursoSchemaValidation;
+module.exports = { cursoSchemaValidation };

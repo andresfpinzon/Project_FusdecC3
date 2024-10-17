@@ -81,39 +81,23 @@ const listarCursosActivos = async (req, res) => {
 const guardarColeccionCursos = async (req, res) => {
   const cursos = req.body;
 
-// Validación de cada curso en la colección
-for (let curso of cursos) {
-  const { error } = cursoSchemaValidation.validate({
-    nombreCurso: body.nombreCurso,
-    descripcionCurso: body.descripcionCurso,
-    intensidadHorariaCurso: body.intensidadHorariaCurso,
-    estadoCurso: body.estadoCurso,
-    fundacionId: body.fundacionId,
-    ediciones: body.ediciones,
-  });
-  if (error) {
-    return res
-      .status(400)
-      .json({
+  for (let curso of cursos) {
+    const { error } = cursoSchemaValidation.validate(curso); // Corregido
+    if (error) {
+      return res.status(400).json({
         error: `Error en curso "${curso.nombreCurso}": ${error.details[0].message}`,
       });
     }
   }
+
   try {
-    // Guardar la colección de cursos
     const resultados = await logic.guardarCursos(cursos);
-    res
-      .status(201)
-      .json({ message: "Cursos guardados exitosamente", cursos: resultados });
+    res.status(201).json({ message: "Cursos guardados exitosamente", cursos: resultados });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: "Error interno del servidor al guardar cursos",
-        details: err.message,
-      });
+    res.status(500).json({ error: "Error interno del servidor", details: err.message });
   }
 };
+
 
 // Controlador para buscar un curso por su ID
 const obtenerCursoPorId = async (req, res) => {
