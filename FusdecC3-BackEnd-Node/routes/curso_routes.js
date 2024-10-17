@@ -8,41 +8,19 @@ const router = express.Router(); // Define el enrutador
  * /api/cursos:
  *   get:
  *     summary: Lista todos los cursos activos
- *     tags:
- *       - Cursos
+ *     tags: [Cursos]
  *     responses:
  *       200:
- *         description: Lista de cursos
+ *         description: Lista de cursos activos
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                     example: "66d05dddb025aa6e32e1654b"
- *                   titulo:
- *                     type: string
- *                     example: "Introducción a React.JS"
- *                   descripcion:
- *                     type: string
- *                     example: "Curso básico sobre React.JS"
- *                   estado:
- *                     type: boolean
- *                     example: true
- *                   imagen:
- *                     type: string
- *                     example: "https://example.com/react.png"
- *                   alumnos:
- *                     type: number
- *                     example: 20
- *                   calificacion:
- *                     type: number
- *                     example: 4.7
+ *                 $ref: '#/components/schemas/Curso'
  */
 router.get('/', cursoControllers.listarCursosActivos);
+
 
 
 // Obtener curso por Id
@@ -50,49 +28,27 @@ router.get('/', cursoControllers.listarCursosActivos);
  * @swagger
  * /api/cursos/{id}:
  *   get:
- *     summary: Obtiene un curso por su ID
- *     tags:
- *       - Cursos
+ *     summary: Obtener un curso por ID
+ *     tags: [Cursos]
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
  *         description: ID del curso
  *     responses:
  *       200:
- *         description: Detalles del curso
+ *         description: Curso encontrado
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   example: "66d05dddb025aa6e32e1654b"
- *                 titulo:
- *                   type: string
- *                   example: "Introducción a React.JS"
- *                 descripcion:
- *                   type: string
- *                   example: "Curso básico sobre React.JS"
- *                 estado:
- *                   type: boolean
- *                   example: true
- *                 imagen:
- *                   type: string
- *                   example: "https://example.com/react.png"
- *                 alumnos:
- *                   type: number
- *                   example: 20
- *                 calificacion:
- *                   type: number
- *                   example: 4.7
+ *               $ref: '#/components/schemas/Curso'
  *       404:
  *         description: Curso no encontrado
  */
 router.get('/:id', cursoControllers.obtenerCursoPorId);
+
 
 
 // Crear un curso
@@ -100,64 +56,30 @@ router.get('/:id', cursoControllers.obtenerCursoPorId);
  * @swagger
  * /api/cursos:
  *   post:
- *     summary: Crea un nuevo curso
- *     tags:
- *       - Cursos
+ *     summary: Crear un nuevo curso
+ *     tags: [Cursos]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *                 example: "Curso de Node.js"
- *               descripcion:
- *                 type: string
- *                 example: "Aprende Node.js desde cero"
- *               estado:
- *                 type: boolean
- *                 example: true
- *               imagen:
- *                 type: string
- *                 example: "https://example.com/nodejs.png"
+ *             $ref: '#/components/schemas/Curso'
  *     responses:
  *       201:
- *         description: Curso creado con éxito
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   example: "66d05dddb025aa6e32e1654d"
- *                 titulo:
- *                   type: string
- *                   example: "Curso de Node.js"
- *                 descripcion:
- *                   type: string
- *                   example: "Aprende Node.js desde cero"
- *                 estado:
- *                   type: boolean
- *                   example: true
- *                 imagen:
- *                   type: string
- *                   example: "https://example.com/nodejs.png"
+ *         description: Curso creado exitosamente
  *       400:
- *         description: Error en la solicitud
+ *         description: Datos inválidos en la solicitud
  */
 router.post('/', cursoControllers.crearCurso);
+
 
 // Crear Colección de Cursos
 /**
  * @swagger
  * /api/cursos/coleccion:
  *   post:
- *     summary: Crea una colección de nuevos cursos
- *     tags:
- *       - Cursos
+ *     summary: Crear una colección de cursos
+ *     tags: [Cursos]
  *     requestBody:
  *       required: true
  *       content:
@@ -165,131 +87,66 @@ router.post('/', cursoControllers.crearCurso);
  *           schema:
  *             type: array
  *             items:
- *               type: object
- *               properties:
- *                 titulo:
- *                   type: string
- *                   example: "Curso de JavaScript"
- *                 descripcion:
- *                   type: string
- *                   example: "Aprende JavaScript desde cero"
- *                 estado:
- *                   type: boolean
- *                   example: true
- *                 imagen:
- *                   type: string
- *                   example: "https://example.com/js.png"
+ *               $ref: '#/components/schemas/Curso'
  *     responses:
  *       201:
- *         description: Colección de cursos creada con éxito
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                     example: "66d05dddb025aa6e32e1654e"
- *                   titulo:
- *                     type: string
- *                     example: "Curso de JavaScript"
- *                   descripcion:
- *                     type: string
- *                     example: "Aprende JavaScript desde cero"
- *                   estado:
- *                     type: boolean
- *                     example: true
- *                   imagen:
- *                     type: string
- *                     example: "https://example.com/js.png"
+ *         description: Colección creada exitosamente
  *       400:
- *         description: Error en la solicitud
+ *         description: Error en los datos proporcionados
  */
 router.post('/coleccion', cursoControllers.guardarColeccionCursos);
+
 
 // Actualizar curso
 /**
  * @swagger
  * /api/cursos/{id}:
  *   put:
- *     summary: Actualiza un curso existente
- *     tags:
- *       - Cursos
+ *     summary: Actualizar un curso
+ *     tags: [Cursos]
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
  *         description: ID del curso
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *                 example: "Curso de Node.js avanzado"
- *               descripcion:
- *                 type: string
- *                 example: "Aprende Node.js a un nivel avanzado"
- *               estado:
- *                 type: boolean
- *                 example: true
- *               imagen:
- *                 type: string
- *                 example: "https://example.com/nodejs_avanzado.png"
+ *             $ref: '#/components/schemas/Curso'
  *     responses:
  *       200:
  *         description: Curso actualizado con éxito
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   example: "66d05dddb025aa6e32e1654f"
- *                 titulo:
- *                   type: string
- *                   example: "Curso de Node.js avanzado"
- *                 descripcion:
- *                   type: string
- *                   example: "Aprende Node.js a un nivel avanzado"
- *                 estado:
- *                   type: boolean
- *                   example: true
- *                 imagen:
- *                   type: string
- *                   example: "https://example.com/nodejs_avanzado.png"
+ *       404:
+ *         description: Curso no encontrado
  */
 router.put('/:id', cursoControllers.actualizarCurso);
 
-// Eliminar Curso
+
+// Eliminar-Dasactivar curso Curso
 /**
  * @swagger
  * /api/cursos/{id}:
  *   delete:
- *     summary: Desactiva un curso existente
- *     tags:
- *       - Cursos
+ *     summary: Desactivar un curso existente
+ *     tags: [Cursos]
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: ID del curso
+ *         description: ID del curso a desactivar
  *     responses:
  *       200:
- *         description: Curso desactivado con éxito
+ *         description: Curso desactivado exitosamente
  *       404:
  *         description: Curso no encontrado
  */
 router.delete('/:id', cursoControllers.desactivarCurso);
+
 
 module.exports = router;
