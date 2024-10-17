@@ -64,8 +64,8 @@ const asistenciaController = require('../controllers/asistencia_controllers');
  *               ejemplo1:
  *                 value:
  *                   - id: "61f7d2bbf1a2b4b5c3cdb71d"
- *                     tituloAsistencia: "Asistencia a Clase de Matemáticas"
- *                     fechaAsistencia: "2023-10-10"
+ *                     tituloAsistencia: "Asistencia 17/10/2024 SS 2024-1"
+ *                     fechaAsistencia: "17-10-2024"
  *                     usuarioId: "usuario123"
  *                     estadoAsistencia: true
  *                     estudiantes: ["estudiante1", "estudiante2"]
@@ -88,8 +88,8 @@ router.get('/', asistenciaController.listarAsistencias);
  *           examples:
  *             ejemplo1:
  *               value:
- *                 tituloAsistencia: "Asistencia a Clase de Física"
- *                 fechaAsistencia: "2023-10-12"
+ *                 tituloAsistencia: "Asistencia 18/10/2024 SS 2024-1"
+ *                 fechaAsistencia: "18-10-2024"
  *                 usuarioId: "usuario456"
  *                 estadoAsistencia: true
  *                 estudiantes: ["estudiante3", "estudiante4"]
@@ -104,8 +104,8 @@ router.get('/', asistenciaController.listarAsistencias);
  *               ejemplo1:
  *                 value:
  *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
- *                   tituloAsistencia: "Asistencia a Clase de Física"
- *                   fechaAsistencia: "2023-10-12"
+ *                   tituloAsistencia: "Asistencia 18/10/2024 SS 2024-1"
+ *                   fechaAsistencia: "18-10-2024"
  *                   usuarioId: "usuario456"
  *                   estadoAsistencia: true
  *                   estudiantes: ["estudiante3", "estudiante4"]
@@ -135,9 +135,9 @@ router.post('/', asistenciaController.crearAsistencia);
  *           examples:
  *             ejemplo1:
  *               value:
- *                 tituloAsistencia: "Asistencia a Clase de Química"
- *                 fechaAsistencia: "2023-10-13"
- *                 usuarioId: "usuario789"
+ *                 tituloAsistencia: "Asistencia 18/10/2024 SS 2024-1"
+ *                 fechaAsistencia: "18-10-2024"
+ *                 usuarioId: "usuario456"
  *                 estadoAsistencia: true
  *                 estudiantes: ["estudiante5", "estudiante6"]
  *     responses:
@@ -151,9 +151,9 @@ router.post('/', asistenciaController.crearAsistencia);
  *               ejemplo1:
  *                 value:
  *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
- *                   tituloAsistencia: "Asistencia a Clase de Química"
- *                   fechaAsistencia: "2023-10-13"
- *                   usuarioId: "usuario789"
+ *                   tituloAsistencia: "Asistencia 18/10/2024 SS 2024-1"
+ *                   fechaAsistencia: "18-10-2024"
+ *                   usuarioId: "usuario456"
  *                   estadoAsistencia: true
  *                   estudiantes: ["estudiante5", "estudiante6"]
  *       404:
@@ -186,8 +186,8 @@ router.put('/:id', asistenciaController.actualizarAsistencia);
  *               ejemplo1:
  *                 value:
  *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
- *                   tituloAsistencia: "Asistencia a Clase de Física"
- *                   fechaAsistencia: "2023-10-12"
+ *                   tituloAsistencia: "Asistencia 18/10/2024 SS 2024-1"
+ *                   fechaAsistencia: "18-10-2024"
  *                   usuarioId: "usuario456"
  *                   estadoAsistencia: false
  *                   estudiantes: []
@@ -221,8 +221,8 @@ router.delete('/:id', asistenciaController.desactivarAsistencia);
  *               ejemplo1:
  *                 value:
  *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
- *                   tituloAsistencia: "Asistencia a Clase de Física"
- *                   fechaAsistencia: "2023-10-12"
+ *                   tituloAsistencia: "Asistencia 18/10/2024 SS 2024-1"
+ *                   fechaAsistencia: "18-10-2024"
  *                   usuarioId: "usuario456"
  *                   estadoAsistencia: true
  *                   estudiantes: ["estudiante3", "estudiante4"]

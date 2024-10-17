@@ -146,7 +146,63 @@ const asignarEdicionesAEstudiante = async (req, res) => {
   }
 };
 
-// Exportar los controladores
+// Controlador para agregar asistencia a un estudiante
+const agregarAsistenciaAEstudiante = async (req, res) => {
+  const { estudianteId, asistenciaId } = req.body;
+  try {
+    await logic.agregarAsistenciaAEstudiante(estudianteId, asistenciaId);
+    res.status(200).json({ message: 'Asistencia agregada correctamente' });
+  } catch (err) {
+    if (err.message === 'Estudiante no encontrado') {
+      return res.status(404).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+// Controlador para agregar inasistencia a un estudiante
+const agregarInasistenciaAEstudiante = async (req, res) => {
+  const { estudianteId, inasistenciaId } = req.body;
+  try {
+    await logic.agregarInasistenciaAEstudiante(estudianteId, inasistenciaId);
+    res.status(200).json({ message: 'Inasistencia agregada correctamente' });
+  } catch (err) {
+    if (err.message === 'Estudiante no encontrado') {
+      return res.status(404).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+// Controlador para agregar calificación a un estudiante
+const agregarCalificacionAEstudiante = async (req, res) => {
+  const { estudianteId, calificacionId } = req.body;
+  try {
+    await logic.agregarCalificacionAEstudiante(estudianteId, calificacionId);
+    res.status(200).json({ message: 'Calificación agregada correctamente' });
+  } catch (err) {
+    if (err.message === 'Estudiante no encontrado') {
+      return res.status(404).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+// Controlador para agregar un certificado a un estudiante
+const agregarCertificadoAEstudiante = async (req, res) => {
+  const { estudianteId, certificadoId } = req.body;
+  try {
+    await logic.agregarCertificadoAEstudiante(estudianteId, certificadoId);
+    res.status(200).json({ message: 'Certificado agregado correctamente' });
+  } catch (err) {
+    if (err.message === 'Estudiante no encontrado') {
+      return res.status(404).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+// Exportar los controladores adicionales
 module.exports = {
   listarEstudiantes,
   crearEstudiante,
@@ -156,4 +212,8 @@ module.exports = {
   asignarColegioAEstudiante,
   asignarUnidadAEstudiante,
   asignarEdicionesAEstudiante,
+  agregarAsistenciaAEstudiante,
+  agregarInasistenciaAEstudiante,
+  agregarCalificacionAEstudiante,
+  agregarCertificadoAEstudiante,
 };
