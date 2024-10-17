@@ -66,7 +66,7 @@ async function guardarCursos(cursos) {
     for (let cursoData of cursos) {
       // Verificar si ya existe un curso con el mismo título
       const cursoExistente = await Curso.findOne({
-        nombreCurso: body.nombreCurso,
+        nombreCurso: cursoData.nombreCurso 
       });
       if (!cursoExistente) {
         let nuevoCurso = new Curso(cursoData);

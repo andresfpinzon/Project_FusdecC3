@@ -33,5 +33,10 @@ const CursoSchema = new Schema({
   ],
 });
 
+<<<<<<< HEAD
 const Curso = mongoose.model("Curso", CursoSchema);
 module.exports = Curso;
+=======
+const Curso = mongoose.model("Curso", cursoSchema);
+module.exports = CursoSchema;
+Curso>>>>>>> feature/edicionRoutes

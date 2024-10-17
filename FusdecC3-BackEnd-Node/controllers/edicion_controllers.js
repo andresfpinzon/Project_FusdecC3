@@ -67,7 +67,7 @@ const desactivarEdicion = async (req, res) => {
 };
 
 // Controlador para listar las ediciones activas
-const listarEdicionesActivos = async (req, res) => {
+const listarEdicionesActivas = async (req, res) => {
     try {
       const edicionesActivas = await logic.listarEdicionesActivas();
       if (edicionesActivas.length === 0) {
@@ -103,6 +103,6 @@ module.exports = {
     crearEdicion,
     actualizarEdicion,
     desactivarEdicion,
-    listarEdicionesActivos,
+    listarEdicionesActivas,
     obtenerEdicionPorId
 };
