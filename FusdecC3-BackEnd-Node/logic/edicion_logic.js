@@ -3,7 +3,7 @@ const Edicion = require("../models/edicion_model");
 // Función asíncrona para crear ediciones
 async function crearEdicion(body) {
   // Verificar si ya existe una edicion con el mismo título
-  const edicionExistente = await Curso.findOne({
+  const edicionExistente = await Edicion.findOne({
     tituloEdicion: body.tituloEdicion,
   });
   if (edicionExistente) {
@@ -44,7 +44,7 @@ async function actualizarEdicion(id, body) {
 
 // Función asíncrona para inactivar ediciones
 async function desactivarEdicion(id) {
-  let edicion = await Curso.findByIdAndUpdate(
+  let edicion = await Edicion.findByIdAndUpdate(
     id,
     {
       $set: {
@@ -63,7 +63,7 @@ async function listarEdicionesActivas() {
   return ediciones;
 }
 
-// Función asíncrona para buscar un curso por su ID
+// Función asíncrona para buscar una edicion por su ID
 async function buscarEdicionPorId(id) {
   try {
     const edicion = await Edicion.findById(id);

@@ -30,9 +30,9 @@ const EdicionSchema = new Schema(
     horarios: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Horario", // Referencia a la colección de HorarioEdicion
+        ref: "Horario",
       },
-    ],
+    ],    
     estudiantes: [
       {
         type: Schema.Types.ObjectId,
