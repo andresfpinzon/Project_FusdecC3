@@ -51,4 +51,4 @@ const brigadaSchemaValidation = Joi.object({
     }),
 });
 
-module.exports = brigadaSchema
+module.exports = brigadaSchemaValidation; // Asegúrate de que se esté exportando

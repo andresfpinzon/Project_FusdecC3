@@ -1,5 +1,5 @@
 const logic = require('../logic/brigada_logic');
-const brigadaSchemaValidation = require('../validations/brigada_validation');
+const brigadaSchemaValidation = require('../validations/brigada_validations');
 
 // Controlador para listar brigadas
 const listarBrigadas = async (_req, res) => {
