@@ -24,7 +24,8 @@ async function crearEstudiante(body) {
         fechaNacimiento: body.fechaNacimiento,
         generoEstudiante: body.generoEstudiante,
         unidadId: body.unidadId,
-        colegioId: body.colegioId
+        colegioId: body.colegioId,
+        estadoEstudiante: body.estadoEstudiante
     });
 
     // Guardar el estudiante en la base de datos
@@ -60,6 +61,7 @@ async function actualizarEstudiante(id, body) {
     estudiante.generoEstudiante = body.generoEstudiante || estudiante.generoEstudiante;
     estudiante.unidadId = body.unidadId || estudiante.unidadId;
     estudiante.colegioId = body.colegioId || estudiante.colegioId;
+    estudiante.estadoEstudiante = body.estadoEstudiante || estudiante.estadoEstudiante;
 
     await estudiante.save();
     return estudiante; 

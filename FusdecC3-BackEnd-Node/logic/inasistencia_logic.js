@@ -7,7 +7,8 @@ async function crearInasistencia(body) {
         tituloInasistencia: body.tituloInasistencia,
         observacion: body.observacion,
         usuarioId: body.usuarioId,
-        AsistenciaId: body.AsistenciaId,
+        asistenciaId: body.asistenciaId,
+        estadoAsistencia: body.estadoAsistencia,
         estudiantes: body.estudiantes || [], // Se puede pasar un array de estudiantes
     });
 
@@ -24,7 +25,8 @@ async function actualizarInasistencia(id, body) {
     inasistencia.tituloInasistencia = body.tituloInasistencia || inasistencia.tituloInasistencia;
     inasistencia.observacion = body.observacion || inasistencia.observacion;
     inasistencia.usuarioId = body.usuarioId || inasistencia.usuarioId;
-    inasistencia.AsistenciaId = body.AsistenciaId || inasistencia.AsistenciaId;
+    inasistencia.asistenciaId = body.asistenciaId || inasistencia.asistenciaId;
+    inasistencia.estadoAsistencia = body.estadoAsistencia || inasistencia.estadoAsistencia;
 
     // Si se pasan estudiantes, evitamos duplicados
     if (body.estudiantes && body.estudiantes.length > 0) {
@@ -53,9 +55,9 @@ async function obtenerInasistenciaPorId(id) {
 
 // Función asíncrona para eliminar una inasistencia
 async function desactivarInasistencia(id) {
-    const inasistencia = await Inasistencia.findByIdAndDelete(id);
+    let inasistencia = await Inasistencia.findByIdAndUpdate(id, { estadoInasistencia: false }, { new: true });
     if (!inasistencia) {
-        throw new Error('Inasistencia no encontrada');
+        throw new Error('Asistencia no encontrada');
     }
     return inasistencia;
 }

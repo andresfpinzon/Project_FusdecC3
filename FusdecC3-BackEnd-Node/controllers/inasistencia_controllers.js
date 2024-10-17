@@ -21,7 +21,7 @@ const crearInasistencia = async (req, res) => {
     tituloInasistencia: body.tituloInasistencia,
     observacion: body.observacion,
     usuarioId: body.usuarioId,
-    AsistenciaId: body.AsistenciaId,
+    asistenciaId: body.asistenciaId,
     estadoInasistencia: body.estadoInasistencia,
     estudiantes: body.estudiantes
   });
@@ -44,7 +44,7 @@ const actualizarInasistencia = async (req, res) => {
     tituloInasistencia: body.tituloInasistencia,
     observacion: body.observacion,
     usuarioId: body.usuarioId,
-    AsistenciaId: body.AsistenciaId,
+    asistenciaId: body.asistenciaId,
     estadoInasistencia: body.estadoInasistencia,
     estudiantes: body.estudiantes
   });

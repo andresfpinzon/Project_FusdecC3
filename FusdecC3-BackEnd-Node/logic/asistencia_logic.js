@@ -52,8 +52,8 @@ async function obtenerAsistenciaPorId(id) {
 }
 
 // Función asíncrona para eliminar una asistencia
-async function eliminarAsistencia(id) {
-    const asistencia = await Asistencia.findByIdAndDelete(id);
+async function desactivarAsistencia(id) {
+    let asistencia = await Asistencia.findByIdAndUpdate(id, { estadoAsistencia: false }, { new: true });
     if (!asistencia) {
         throw new Error('Asistencia no encontrada');
     }
@@ -65,5 +65,5 @@ module.exports = {
     actualizarAsistencia,
     listarAsistenciasActivas,
     obtenerAsistenciaPorId,
-    eliminarAsistencia, 
+    desactivarAsistencia, 
 };

@@ -19,7 +19,7 @@ const InasistenciaSchema = new Schema({
     maxlength: 450,
     required: true,
   },
-  AsistenciaId: {
+  asistenciaId: {
     type: Schema.Types.ObjectId,
     ref: "Asistencia",
     required: true,

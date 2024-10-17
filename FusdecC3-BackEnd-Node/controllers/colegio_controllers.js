@@ -9,6 +9,7 @@ const crearColegio = async (req, res) => {
   const { error, value } = colegioSchemaValidation.validate({
     nombreColegio: body.nombreColegio,
     emailColegio: body.emailColegio,
+    estadoColegio: body.estadoColegio,
     estudiantes: body.estudiantes,
   });
   if (error) {
@@ -32,6 +33,7 @@ const actualizarColegio = async (req, res) => {
   const { error, value } = colegioSchemaValidation.validate({
     nombreColegio: body.nombreColegio,
     emailColegio: body.emailColegio,
+    estadoColegio: body.estadoColegio,
     estudiantes: body.estudiantes,
   });
   if (error) {

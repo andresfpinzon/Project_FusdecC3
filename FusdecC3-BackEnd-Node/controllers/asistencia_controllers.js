@@ -61,14 +61,14 @@ const actualizarAsistencia = async (req, res) => {
 };
 
 // Controlador para eliminar una asistencia
-const eliminarAsistencia = async (req, res) => {
+const desactivarAsistencia = async (req, res) => {
   const { id } = req.params;
   try {
-    const asistenciaEliminada = await logic.eliminarAsistencia(id);
-    if (!asistenciaEliminada) {
+    const asistenciaDesactivada = await logic.desactivarAsistencia(id);
+    if (!asistenciaDesactivada) {
       return res.status(404).json({ error: 'Asistencia no encontrada' });
     }
-    res.json(asistenciaEliminada);
+    res.json(asistenciaDesactivada);
   } catch (err) {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
@@ -92,6 +92,6 @@ module.exports = {
   listarAsistencias,
   crearAsistencia,
   actualizarAsistencia,
-  eliminarAsistencia,
+  desactivarAsistencia,
   obtenerAsistenciaPorId,
 };

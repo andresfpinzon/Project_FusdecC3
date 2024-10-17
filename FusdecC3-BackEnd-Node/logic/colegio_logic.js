@@ -13,6 +13,7 @@ async function crearColegio(body) {
   let colegio = new Colegio({
     nombreColegio: body.nombreColegio,
     emailColegio: body.emailColegio,
+    estadoColegio: body.estadoColegio,
     estudiantes: body.estudiantes,
   });
 
@@ -27,6 +28,7 @@ async function actualizarColegios(id, body) {
       $set: {
         nombreColegio: body.nombreColegio,
         emailColegio: body.emailColegio,
+        estadoColegio: body.estadoColegio,
         estudiantes: body.estudiantes,
       },
     },

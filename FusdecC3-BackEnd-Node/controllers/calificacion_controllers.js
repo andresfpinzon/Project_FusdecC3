@@ -10,6 +10,7 @@ const crearCalificacion = async (req, res) => {
     tituloCalificacion: body.tituloCalificacion,
     aprobado: body.aprobado,
     usuarioId: body.usuarioId,
+    estadoCalificacion: body.estadoCalificacion,
     estudiantes: body.estudiantes,
   });
   if (error) {
@@ -34,6 +35,7 @@ const actualizarCalificacion = async (req, res) => {
     tituloCalificacion: body.tituloCalificacion,
     aprobado: body.aprobado,
     usuarioId: body.usuarioId,
+    estadoCalificacion: body.estadoCalificacion,
     estudiantes: body.estudiantes,
   });
   if (error) {

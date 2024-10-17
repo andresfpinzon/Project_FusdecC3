@@ -8,6 +8,7 @@ const crearEdicion = async (req, res) => {
         tituloEdicion: body.tituloEdicion,
         fechaInicioEdicion: body.fechaInicioEdicion,
         fechaFinEdicion: body.fechaFinEdicion,
+        estadoEdicion: body.estadoEdicion,
         cursoId: body.cursoId,
         horarios: body.horarios,
         estudiantes: body.estudiantes,

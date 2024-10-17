@@ -34,6 +34,7 @@ const actualizarHorario = async (req, res) => {
     tituloHorario: body.tituloHorario,
     horaInicio: body.horaInicio,
     horaFin: body.horaFin,
+    estadoHorario: body.estadoHorario
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });

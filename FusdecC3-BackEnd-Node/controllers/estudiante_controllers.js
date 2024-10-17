@@ -26,7 +26,8 @@ const crearEstudiante = async (req, res) => {
     fechaNacimiento: body.fechaNacimiento,
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
-    colegioId: body.colegioId
+    colegioId: body.colegioId,
+    estadoEstudiante: body.estadoEstudiante
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -55,7 +56,8 @@ const actualizarEstudiante = async (req, res) => {
     fechaNacimiento: body.fechaNacimiento,
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
-    colegioId: body.colegioId
+    colegioId: body.colegioId,
+    estadoEstudiante: body.estadoEstudiante
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
