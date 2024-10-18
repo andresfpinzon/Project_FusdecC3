@@ -83,18 +83,22 @@ const listarCalificacionesActivas = async (req, res) => {
 };
 
 // Función asíncrona para buscar un calificacion por su ID
-async function buscarCalificacionPorId(id) {
+const obtenerCalificacionPorId = async (req, res) => {
+  const { id } = req.params;
   try {
-    const calificacion = await Calificacion.findById(id);
+    const calificacion = await logic.buscarCalificacionPorId(id);
     if (!calificacion) {
-      throw new Error(`Calificación con ID ${id} no encontrado`);
+      return res
+        .status(404)
+        .json({ error: `Calificación con ID ${id} no encontrado` });
     }
-    return calificacion;
+    res.json(calificacion);
   } catch (err) {
-    console.error(`Error al buscar la calificación por ID: ${err.message}`);
-    throw err;
+    res.status(500).json({
+      error: `Error interno del servidor al buscar la calificación: ${err.message}`,
+    });
   }
-}
+};
 
 // Exportar los controladores
 module.exports = {
@@ -102,5 +106,5 @@ module.exports = {
   actualizarCalificacion,
   desactivarCalificacion,
   listarCalificacionesActivas,
-  buscarCalificacionPorId,
+  obtenerCalificacionPorId
 };
