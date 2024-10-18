@@ -29,7 +29,7 @@ async function actualizarRol(id, body) {
         throw new Error('El nombre del rol ya existe');
     }
     rol.nombreRol = body.nombreRol || rol.nombreRol;
-    rol.estadoRol = baody.estadoRol || rol.estadoRol;
+    rol.estadoRol = body.estadoRol || rol.estadoRol;
 
     await rol.save();
     return rol;
@@ -37,7 +37,7 @@ async function actualizarRol(id, body) {
 
 // Función para obtener todos los roles
 async function listarRoles() {
-    return await Rol.find({});
+    return await Rol.find({ estadoRol: true });
 }
 
 // Función para obtener un rol específico por su ID
