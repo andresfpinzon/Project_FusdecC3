@@ -25,4 +25,4 @@ const colegioSchemaValidation = Joi.object({
     }),
 });
 
-module.exports = colegioSchemaValidation;
+module.exports = { colegioSchemaValidation };

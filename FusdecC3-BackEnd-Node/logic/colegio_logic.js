@@ -3,7 +3,7 @@ const Colegio = require("../models/colegio_model");
 // Función asíncrona para crear colegios
 async function crearColegio(body) {
   // Verificar si ya existe un colegio con el mismo nombre
-  const colegioExistente = await Curso.findOne({
+  const colegioExistente = await Colegio.findOne({
     nombreColegio: body.nombreColegio,
   });
   if (colegioExistente) {
@@ -22,7 +22,7 @@ async function crearColegio(body) {
 
 // Función asíncrona para actualizar colegios
 async function actualizarColegios(id, body) {
-  let colegios = await Colegios.findByIdAndUpdate(
+  let colegios = await Colegio.findByIdAndUpdate(
     id,
     {
       $set: {
@@ -38,9 +38,9 @@ async function actualizarColegios(id, body) {
   return colegios;
 }
 
-// Función asíncrona para listar los cursos activos
+// Función asíncrona para listar los colegio activos
 async function listarColegios() {
-  let colegios = await Colegios.find({});
+  let colegios = await Colegio.find({});
   return colegios;
 }
 
