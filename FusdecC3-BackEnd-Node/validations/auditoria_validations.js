@@ -33,6 +33,12 @@ const auditoriaSchemaValidation = Joi.object({
       'string.hex': 'El certificadoId debe contener solo caracteres hexadecimales',
       'any.required': 'El certificadoId es un campo requerido',
     }),
+  
+  estadoAuditoria: Joi.boolean()
+    .default(true)
+    .messages({
+      'boolean.base': 'El estado de la auditoria debe ser verdadero o falso',
+    }),
 });
 
 module.exports = auditoriaSchemaValidation;

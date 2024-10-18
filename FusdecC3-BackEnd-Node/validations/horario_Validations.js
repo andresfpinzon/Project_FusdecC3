@@ -31,8 +31,8 @@ const horarioSchemaValidation = Joi.object({
       "any.required": "La hora de fin es un campo requerido",
     }),
 
-  estadoHorario: Joi.boolean().optional().messages({
-    "boolean.base": "El estado del horario debe estar activo o inactivo",
+  estadoHorario: Joi.boolean().default(true).messages({
+    "boolean.base": "El estado del horario debe ser un booleano",
   }),
 });
 

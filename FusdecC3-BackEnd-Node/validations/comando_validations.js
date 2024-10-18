@@ -15,10 +15,9 @@ const comandoSchemaValidation = Joi.object({
     }),
 
   estadoComando: Joi.boolean()
-    .required()
+    .default(true)
     .messages({
       'boolean.base': 'El estado del comando debe ser un booleano',
-      'any.required': 'El estado del comando es un campo requerido',
     }),
 
   ubicacionComando: Joi.string()

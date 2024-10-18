@@ -26,10 +26,9 @@ const brigadaSchemaValidation = Joi.object({
     }),
 
   estadoBrigada: Joi.boolean()
-    .required()
+    .default(true)
     .messages({
       'boolean.base': 'El estado de la brigada debe ser un booleano',
-      'any.required': 'El estado de la brigada es un campo requerido',
     }),
 
   comandoId: Joi.string()

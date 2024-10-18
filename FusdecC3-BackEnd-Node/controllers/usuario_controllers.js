@@ -48,6 +48,7 @@ const actualizarUsuario = async (req, res) => {
     nombreUsuario: body.nombreUsuario,
     apellidoUsuario: body.apellidoUsuario,
     numeroDocumento: body.numeroDocumento,
+    correo: body.correo,
     contraseñaHash: body.contraseñaHash,
     roles: body.roles,
     estadoUsuario: body.estadoUsuario

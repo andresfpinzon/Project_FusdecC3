@@ -65,14 +65,13 @@ const usuarioSchemaValidation = Joi.object({
     }),
 
   estadoUsuario: Joi.boolean()
-    .required()
+    .default(true)
     .messages({
-      'boolean.base': 'El estado del usuario debe ser verdadero o falso',
-      'any.required': 'El estado del usuario es un campo requerido',
+      'boolean.base': 'El estado del usuario debe ser un booleano',
     }),
 
   creadoEn: Joi.date()
-    .default(() => new Date(), 'Fecha de creación por defecto')
+    .default(() => new Date())
     .optional()
     .messages({
       'date.base': 'La fecha de creación debe ser una fecha válida',

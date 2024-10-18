@@ -78,10 +78,9 @@ const estudianteSchemaValidation = Joi.object({
     }),
 
   estadoEstudiante: Joi.boolean()
-    .required()
+    .default(true)
     .messages({
-      'boolean.base': 'El estado del estudiante debe ser verdadero o falso',
-      'any.required': 'El estado del estudiante es un campo requerido',
+      'boolean.base': 'El estado del estudiante debe ser un booleano',
     }),
 
   ediciones: Joi.array()

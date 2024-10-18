@@ -23,8 +23,8 @@ const cursoSchemaValidation = Joi.object({
     "any.required": "La intensidad horaria del curso es un campo requerido",
   }),
 
-  estadoCurso: Joi.boolean().optional().messages({
-    "boolean.base": "El estado del curso debe estar activo o inactivo",
+  estadoCurso: Joi.boolean().default(true).messages({
+    "boolean.base": "El estado del curso debe ser un booleano",
   }),
 
   fundacionId: Joi.string()

@@ -15,10 +15,9 @@ const unidadSchemaValidation = Joi.object({
     }),
 
   estadoUnidad: Joi.boolean()
-    .required()
+    .default(true)
     .messages({
       'boolean.base': 'El estado de la unidad debe ser un booleano',
-      'any.required': 'El estado de la unidad es un campo requerido',
     }),
 
   brigadaId: Joi.string()

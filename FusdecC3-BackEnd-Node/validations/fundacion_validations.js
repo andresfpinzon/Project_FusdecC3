@@ -14,10 +14,9 @@ const fundacionSchemaValidation =Joi.object({
     }),
 
     estadoFundacion:Joi.boolean()
-    .required()
+    .default(true)
     .messages({
         'boolean.base': 'El estado de la fundacion debe ser un booleano',
-        'any.required': 'El estado de la fundacion debe ser un campo requerido', 
     }),
 
     comando:Joi.array()

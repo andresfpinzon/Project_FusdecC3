@@ -26,6 +26,11 @@ const notaSchemaValidation = Joi.object({
       'any.required': 'El id del usuario es un campo requerido',
   }),
 
+estadoCalificacion: Joi.boolean()
+  .default(true)
+  .messages({
+    'boolean.base': 'El estado de la calificacion debe ser un booleano',
+  }),
   estudiantes: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
     .optional()

@@ -1,7 +1,7 @@
 const Joi = require('@hapi/joi');
 
 const rolSchemaValidation = Joi.object({
-  rolName: Joi.string()
+  nombreRol: Joi.string()
     .min(3)
     .max(30)
     .required()
@@ -14,6 +14,13 @@ const rolSchemaValidation = Joi.object({
       'string.pattern.base': 'El nombre del rol solo puede contener letras y espacios',
       'any.required': 'El nombre del rol es un campo requerido',
     }),
+
+    estadoRol: Joi.boolean()
+    .default(true)
+    .messages({
+      'boolean.base': 'El estado del usuario debe ser un booleano',
+    }),
+
 });
 
 module.exports = rolSchemaValidation;

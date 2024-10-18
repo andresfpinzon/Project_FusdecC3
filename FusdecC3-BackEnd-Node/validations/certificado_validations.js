@@ -27,10 +27,9 @@ const certificadoSchemaValidation = Joi.object({
     }),
 
   estadoCertificado: Joi.boolean()
-    .required()
+    .default(true)
     .messages({
       'boolean.base': 'El estado del certificado debe ser un booleano',
-      'any.required': 'El estado del certificado es un campo requerido',
     }),
 
   estudianteId: Joi.string()

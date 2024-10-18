@@ -8,12 +8,12 @@ const certificadoRoutes = require('./routes/certificado_routes');
 //const comandoRoutes = require('./routes/comando_routes');
 //const cursoRoutes = require('./routes/curso_routes');
 //const edicionRoutes = require('./routes/edicion_routes');
-//const estudianteRoutes = require('./routes/estudiante_routes');
+const estudianteRoutes = require('./routes/estudiante_routes');
 //const horarioRoutes = require('./routes/horario_routes');
-//const inasistenciaRoutes = require('./routes/inasistencia_routes');
-//const rolRoutes = require('./routes/rol_routes');
+const inasistenciaRoutes = require('./routes/inasistencia_routes');
+const rolRoutes = require('./routes/rol_routes');
 //const unidadRoutes = require('./routes/unidad_routes');
-//const usuarioRoutes = require('./routes/usuario_routes');
+const usuarioRoutes = require('./routes/usuario_routes');
 //const fundacionRoutes = require('./routes/fundacion_routes'); 
 
 // Importaciones básicas de Express y otras dependencias
@@ -47,12 +47,12 @@ app.use('/api/certificados', certificadoRoutes);
 //app.use('/api/comandos', comandoRoutes);
 //app.use('/api/cursos', cursoRoutes);
 //app.use('/api/ediciones', edicionRoutes);
-//app.use('/api/estudiantes', estudianteRoutes);
+app.use('/api/estudiantes', estudianteRoutes);
 //app.use('/api/horarios', horarioRoutes);
-//app.use('/api/inasistencias', inasistenciaRoutes);
-//app.use('/api/roles', rolRoutes);
+app.use('/api/inasistencias', inasistenciaRoutes);
+app.use('/api/roles', rolRoutes);
 //app.use('/api/unidades', unidadRoutes);
-//app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 //app.use('/api/fundaciones', fundacionRoutes); 
 
 // Puerto del servidor

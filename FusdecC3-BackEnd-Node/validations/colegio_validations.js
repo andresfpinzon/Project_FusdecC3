@@ -14,6 +14,11 @@ const colegioSchemaValidation = Joi.object({
     "string.empty": "El correo no puede estar vacío",
     "any.required": "El correo es un campo requerido",
   }),
+  estadoColegio: Joi.boolean()
+  .default(true)
+  .messages({
+    'boolean.base': 'El estado del colegio debe ser un booleano',
+  }),
 
   estudiantes: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))

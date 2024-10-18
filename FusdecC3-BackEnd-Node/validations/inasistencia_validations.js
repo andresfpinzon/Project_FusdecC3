@@ -42,6 +42,11 @@ const inasistenciaSchemaValidation = Joi.object({
       'string.pattern.base': 'El ID de la asistencia debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
       'any.required': 'El ID de la asistencia es un campo requerido',
     }),
+  estadoInasistencia: Joi.boolean()
+    .default(true)
+    .messages({
+      'boolean.base': 'El estado de la inasistencia debe ser un booleano',
+    }),
 
   estudiantes: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) 

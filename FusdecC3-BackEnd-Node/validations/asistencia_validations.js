@@ -29,6 +29,12 @@ const asistenciaSchemaValidation = Joi.object({
       'string.max': 'El ID del usuario no puede exceder los 450 caracteres',
     }),
 
+  estadoAsistencia: Joi.boolean()
+    .default(true)
+    .messages({
+      'boolean.base': 'El estado de la asistencia debe ser verdadero o falso',
+    }),
+
   estudiantes: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) 
     .optional()

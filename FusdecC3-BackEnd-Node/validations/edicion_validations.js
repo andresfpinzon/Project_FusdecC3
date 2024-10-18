@@ -31,9 +31,9 @@ const edicionSchemaValidation = Joi.object({
     }),
 
   estadoEdicion: Joi.boolean()
-    .required()
+    .default(true)
     .messages({
-      'boolean.base': 'El estado de la edición debe estar activo o inactivo',
+      'boolean.base': 'El estado de la edición debe ser un booleano',
     }),
 
   cursoId: Joi.string()
