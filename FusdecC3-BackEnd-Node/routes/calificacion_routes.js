@@ -1,5 +1,5 @@
-const express = require('express');
-const calificacionController = require('../controllers/calificacion_controllers');
+const express = require("express");
+const calificacionController = require("../controllers/calificacion_controllers");
 const router = express.Router(); // Define el enrutador
 
 /**
@@ -48,7 +48,7 @@ const router = express.Router(); // Define el enrutador
  * @swagger
  * /api/calificaciones:
  *   get:
- *     tags: 
+ *     tags:
  *       - Calificaciones
  *     summary: Obtener una lista de calificaciones activas
  *     responses:
@@ -69,13 +69,13 @@ const router = express.Router(); // Define el enrutador
  *                     usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
  *                     estadoCalificacion: true
  */
-router.get('/', calificacionController.listarCalificacionesActivas);
+router.get("/", calificacionController.listarCalificacionesActivas);
 
 /**
  * @swagger
  * /api/calificaciones:
  *   post:
- *     tags: 
+ *     tags:
  *       - Calificaciones
  *     summary: Crear una calificación
  *     requestBody:
@@ -109,13 +109,13 @@ router.get('/', calificacionController.listarCalificacionesActivas);
  *                   estadoCalificacion: true
  *                   estudiantes: ["61f7d2bbf1a2b4b5c3cdb71e"]
  */
-router.post('/', calificacionController.crearCalificacion);
+router.post("/", calificacionController.crearCalificacion);
 
 /**
  * @swagger
  * /api/calificaciones/{id}:
  *   put:
- *     tags: 
+ *     tags:
  *       - Calificaciones
  *     summary: Actualizar una calificación mediante su ID
  *     parameters:
@@ -158,13 +158,13 @@ router.post('/', calificacionController.crearCalificacion);
  *       404:
  *         description: Calificación no encontrada.
  */
-router.put('/:id', calificacionController.actualizarCalificacion);
+router.put("/:id", calificacionController.actualizarCalificacion);
 
 /**
  * @swagger
  * /api/calificaciones/{id}:
  *   delete:
- *     tags: 
+ *     tags:
  *       - Calificaciones
  *     summary: Desactivar una calificación mediante su ID
  *     parameters:
@@ -192,13 +192,13 @@ router.put('/:id', calificacionController.actualizarCalificacion);
  *       404:
  *         description: Calificación no encontrada.
  */
-router.delete('/:id', calificacionController.desactivarCalificacion);
+router.delete("/:id", calificacionController.desactivarCalificacion);
 
 /**
  * @swagger
  * /api/calificaciones/{id}:
  *   get:
- *     tags: 
+ *     tags:
  *       - Calificaciones
  *     summary: Obtener una calificación mediante su ID
  *     parameters:
@@ -226,7 +226,6 @@ router.delete('/:id', calificacionController.desactivarCalificacion);
  *       404:
  *         description: Calificación no encontrada.
  */
-router.get('/:id', calificacionController.obtenerCalificacionPorId);
+router.get("/:id", calificacionController.obtenerCalificacionPorId);
 
 module.exports = router;
-
