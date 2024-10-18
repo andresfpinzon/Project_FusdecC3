@@ -1,25 +1,25 @@
 const Calificacion = require("../models/calificacion_model");
 
 // Función asíncrona para crear calificaciones
-async function crearCalificacion(body) {
-  // Verificar si ya existe una calificacion con el mismo título
-  const cursoExistente = await Curso.findOne({
-    tituloCalificacion: body.tituloCalificacion,
-  });
-  if (calificacionExistente) {
-    throw new Error("La calificacion con este título ya existe");
+const crearCalificacion = async (req, res) => {
+  const body = req.body;
+  const { error, value } = CalificacionSchemaValidation.validate(body);
+  
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
 
-  let calificacion = new Calificacion({
-    tituloCalificacion: body.tituloCalificacion,
-    aprobado: body.aprobado,
-    usuarioId: body.usuarioId,
-    estadoCalificacion: body.estadoCalificacion,
-    estudiantes: body.estudiantes,
-  });
+  try {
+    const nuevaCalificacion = await logic.crearCalificacion(value);
+    res.status(201).json(nuevaCalificacion);
+  } catch (err) {
+    if (err.message.includes("ya existe")) {
+      return res.status(409).json({ error: err.message });
+    }
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
 
-  return await calificacion.save();
-}
 
 // Función asíncrona para actualizar calificación
 async function actualizarCalificacion(id, body) {

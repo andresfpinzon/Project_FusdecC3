@@ -1,7 +1,7 @@
 const Joi = require("@hapi/joi");
 
-const notaSchemaValidation = Joi.object({
-  tituloNota: Joi.string().min(3).max(30).required().messages({
+const CalificacionSchemaValidation = Joi.object({
+  tituloCalificacion: Joi.string().min(3).max(30).required().messages({
     "string.base": "El título de la nota debe ser un texto",
     "string.empty": "El título de la nota no puede estar vacío",
     "string.min": "El título de la nota debe tener al menos 3 caracteres",
@@ -35,4 +35,4 @@ const notaSchemaValidation = Joi.object({
     }),
 });
 
-module.exports = notaSchemaValidation;
+module.exports = CalificacionSchemaValidation;

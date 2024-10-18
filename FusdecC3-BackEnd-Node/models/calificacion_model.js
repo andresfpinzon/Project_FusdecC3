@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const NotaSchema = new Schema({
+const CalificacionSchema = new Schema({
   /*calificacionId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
@@ -37,6 +37,6 @@ const NotaSchema = new Schema({
   ],
 });
 
-const Nota = mongoose.model("Nota", NotaSchema);
+const Nota = mongoose.model("Nota", CalificacionSchema);
 
 module.exports = Nota;
