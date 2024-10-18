@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/edicion_controllers');
+const edicionController = require('../controllers/edicion_controllers');
 
 /**
  * @swagger
@@ -22,7 +22,7 @@ const controller = require('../controllers/edicion_controllers');
  *       500:
  *         description: Error interno del servidor.
  */
-router.post('/', controller.crearEdicion);
+router.post('/', edicionController.crearEdicion);
 
 /**
  * @swagger
@@ -51,7 +51,7 @@ router.post('/', controller.crearEdicion);
  *       500:
  *         description: Error interno del servidor.
  */
-router.put('/:id', controller.actualizarEdicion);
+router.put('/:id', edicionController.actualizarEdicion);
 
 /**
  * @swagger
@@ -74,7 +74,7 @@ router.put('/:id', controller.actualizarEdicion);
  *       500:
  *         description: Error interno del servidor.
  */
-router.delete('/:id', controller.desactivarEdicion);
+router.delete('/:id', edicionController.desactivarEdicion);
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.delete('/:id', controller.desactivarEdicion);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get('/', controller.listarEdicionesActivas);
+router.get('/', edicionController.listarEdicionesActivas);
 
 /**
  * @swagger
@@ -113,6 +113,6 @@ router.get('/', controller.listarEdicionesActivas);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get('/:id', controller.obtenerEdicionPorId);
+router.get('/:id', edicionController.obtenerEdicionPorId);
 
 module.exports = router;

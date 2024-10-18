@@ -64,7 +64,7 @@ const desactivarHorario = async (req, res) => {
   }
 };
 
-// Controlador para listar los cursos activos
+// Controlador para listar los horarios activos
 const listarHorariosActivos = async (req, res) => {
   try {
     const horariosActivos = await logic.listarHorariosActivos();
@@ -82,7 +82,7 @@ const guardarColeccionHorarios = async (req, res) => {
   const horarios = req.body;
 
   // Validación de cada horario en la colección
-  for (let horario of horario) {
+  for (let horario of horarios) {
     const { error } = horarioSchemaValidation.validate({
       tituloHorario: body.tituloHorario,
       horaInicio: body.horaInicio,
