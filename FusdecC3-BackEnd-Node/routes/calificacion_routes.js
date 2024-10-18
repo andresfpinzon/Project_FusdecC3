@@ -1,125 +1,231 @@
-const express = require('express');
-const calificacionesController = require('../controllers/calificacion_controllers');
+const express = require("express");
+const calificacionController = require("../controllers/calificacion_controllers");
 const router = express.Router(); // Define el enrutador
 
-// Listar todas las calificaciones activas
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Calificacion:
+ *       type: object
+ *       required:
+ *         - tituloCalificacion
+ *         - aprobado
+ *         - usuarioId
+ *         - estadoCalificacion
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: ID autogenerado de la calificación.
+ *         tituloCalificacion:
+ *           type: string
+ *           description: Título de la calificación.
+ *         aprobado:
+ *           type: boolean
+ *           description: Estado de aprobación de la calificación.
+ *         usuarioId:
+ *           type: string
+ *           description: ID del usuario asociado a la calificación.
+ *         estadoCalificacion:
+ *           type: boolean
+ *           description: Estado de la calificación (activo/inactivo).
+ *           default: true
+ *         estudiantes:
+ *           type: array
+ *           items:
+ *             type: string
+ *             description: ID de los estudiantes asociados a la calificación.
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Calificaciones
+ *     description: API para gestionar calificaciones
+ */
+
 /**
  * @swagger
  * /api/calificaciones:
  *   get:
- *     summary: Listar todas las calificaciones activas
- *     tags: [Calificaciones]
+ *     tags:
+ *       - Calificaciones
+ *     summary: Obtener una lista de calificaciones activas
  *     responses:
  *       200:
- *         description: Lista de calificaciones activas
+ *         description: Una colección de calificaciones activas.
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Calificacion'
- *       204:
- *         description: No hay calificaciones activas
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   - id: "61f7d2bbf1a2b4b5c3cdb71d"
+ *                     tituloCalificacion: "Calificación Matemáticas"
+ *                     aprobado: true
+ *                     usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
+ *                     estadoCalificacion: true
  */
-router.get('/', calificacionesController.listarCalificacionesActivas);
+router.get("/", calificacionController.listarCalificacionesActivas);
 
-// Obtener calificación por ID
-/**
- * @swagger
- * /api/calificaciones/{id}:
- *   get:
- *     summary: Obtener una calificación por ID
- *     tags: [Calificaciones]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID de la calificación
- *     responses:
- *       200:
- *         description: Calificación encontrada
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Calificacion'
- *       404:
- *         description: Calificación no encontrada
- */
-router.get('/:id', calificacionesController.obtenerCalificacionPorId);
-
-// Crear una nueva calificación
 /**
  * @swagger
  * /api/calificaciones:
  *   post:
- *     summary: Crear una nueva calificación
- *     tags: [Calificaciones]
+ *     tags:
+ *       - Calificaciones
+ *     summary: Crear una calificación
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Calificacion'
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 tituloCalificacion: "Calificación Historia"
+ *                 aprobado: true
+ *                 usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
+ *                 estadoCalificacion: true
+ *                 estudiantes: ["61f7d2bbf1a2b4b5c3cdb71e"]
  *     responses:
  *       201:
- *         description: Calificación creada exitosamente
- *       400:
- *         description: Datos inválidos en la solicitud
- *       409:
- *         description: Calificación con el mismo título ya existe
+ *         description: Calificación creada correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Calificacion'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
+ *                   tituloCalificacion: "Calificación Historia"
+ *                   aprobado: true
+ *                   usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
+ *                   estadoCalificacion: true
+ *                   estudiantes: ["61f7d2bbf1a2b4b5c3cdb71e"]
  */
-router.post('/', calificacionesController.crearCalificacion);
+router.post("/", calificacionController.crearCalificacion);
 
-// Actualizar calificación por ID
 /**
  * @swagger
  * /api/calificaciones/{id}:
  *   put:
- *     summary: Actualizar una calificación
- *     tags: [Calificaciones]
+ *     tags:
+ *       - Calificaciones
+ *     summary: Actualizar una calificación mediante su ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID de la calificación a actualizar.
  *         schema:
  *           type: string
- *         description: ID de la calificación
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Calificacion'
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 tituloCalificacion: "Calificación Historia Actualizada"
+ *                 aprobado: false
+ *                 usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
+ *                 estadoCalificacion: true
+ *                 estudiantes: ["61f7d2bbf1a2b4b5c3cdb71e"]
  *     responses:
  *       200:
- *         description: Calificación actualizada con éxito
+ *         description: Calificación actualizada correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Calificacion'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
+ *                   tituloCalificacion: "Calificación Historia Actualizada"
+ *                   aprobado: false
+ *                   usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
+ *                   estadoCalificacion: true
+ *                   estudiantes: ["61f7d2bbf1a2b4b5c3cdb71e"]
  *       404:
- *         description: Calificación no encontrada
+ *         description: Calificación no encontrada.
  */
-router.put('/:id', calificacionesController.actualizarCalificacion);
+router.put("/:id", calificacionController.actualizarCalificacion);
 
-// Desactivar calificación por ID
 /**
  * @swagger
  * /api/calificaciones/{id}:
- *   patch:
- *     summary: Desactivar una calificación existente
- *     tags: [Calificaciones]
+ *   delete:
+ *     tags:
+ *       - Calificaciones
+ *     summary: Desactivar una calificación mediante su ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID de la calificación a desactivar.
  *         schema:
  *           type: string
- *         description: ID de la calificación a desactivar
  *     responses:
  *       200:
- *         description: Calificación desactivada exitosamente
+ *         description: Calificación desactivada correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Calificacion'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
+ *                   tituloCalificacion: "Calificación Historia"
+ *                   aprobado: true
+ *                   usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
+ *                   estadoCalificacion: false
  *       404:
- *         description: Calificación no encontrada
+ *         description: Calificación no encontrada.
  */
-router.patch('/:id', calificacionesController.desactivarCalificacion);
+router.delete("/:id", calificacionController.desactivarCalificacion);
+
+/**
+ * @swagger
+ * /api/calificaciones/{id}:
+ *   get:
+ *     tags:
+ *       - Calificaciones
+ *     summary: Obtener una calificación mediante su ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la calificación
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Calificación obtenida correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Calificacion'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
+ *                   tituloCalificacion: "Calificación Matemáticas"
+ *                   aprobado: true
+ *                   usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
+ *                   estadoCalificacion: true
+ *       404:
+ *         description: Calificación no encontrada.
+ */
+router.get("/:id", calificacionController.obtenerCalificacionPorId);
 
 module.exports = router;
