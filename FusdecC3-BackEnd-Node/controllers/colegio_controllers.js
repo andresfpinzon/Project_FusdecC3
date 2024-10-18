@@ -82,7 +82,7 @@ const obtenerColegiosPorId = async (req, res) => {
   const { id } = req.params;
   try {
     const colegio = await logic.buscarColegiosPorId(id);
-    if (!colegios) {
+    if (!colegio) {
       return res
         .status(404)
         .json({ error: `Colegio con ID ${id} no encontrado` });
