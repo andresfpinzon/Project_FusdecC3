@@ -1,3 +1,7 @@
+const express = require('express');
+const comandoControllers = require('../controllers/comando_controllers'); // Importa el controlador
+const router = express.Router(); // Define el enrutador
+
 /**
  * @swagger
  * components:
@@ -33,23 +37,16 @@
  *           description: IDs de las brigadas asociadas al comando.
  */
 
-/**
- * @swagger
- * tags:
- *   - name: Comando
- *     description: API para gestionar comandos
- */
-
+// Listar todos los comandos
 /**
  * @swagger
  * /api/comandos:
  *   get:
- *     tags:
- *       - Comando
- *     summary: Obtener una lista de comandos
+ *     summary: Lista todos los comandos
+ *     tags: [Comandos]
  *     responses:
  *       200:
- *         description: Una colección de comandos.
+ *         description: Lista de comandos
  *         content:
  *           application/json:
  *             schema:
@@ -59,21 +56,63 @@
  *             examples:
  *               ejemplo1:
  *                 value:
- *                   - id: "63f7d2bbf1a2b4b5c3cdb700"
+ *                   - id: "63f7d2bbf1a2b4b5c3cdb900"
  *                     nombreComando: "Comando de Rescate"
  *                     estadoComando: true
  *                     ubicacionComando: "Sector 5, Zona Norte"
- *                     fundacionId: "63f7d2bbf1a2b4b5c3cdb701"
- *                     brigadas: ["63f7d2bbf1a2b4b5c3cdb702", "63f7d2bbf1a2b4b5c3cdb703"]
+ *                     fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
+ *                     brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
+ *                   - id: "63f7d2bbf1a2b4b5c3cdb901"
+ *                     nombreComando: "Comando de Emergencia"
+ *                     estadoComando: false
+ *                     ubicacionComando: "Sector 3, Zona Sur"
+ *                     fundacionId: "63f7d2bbf1a2b4b5c3cdb903"
+ *                     brigadas: ["63f7d2bbf1a2b4b5c3cdb904"]
  */
+router.get('/', comandoControllers.listarComandos);
 
+// Obtener comando por Id
+/**
+ * @swagger
+ * /api/comandos/{id}:
+ *   get:
+ *     summary: Obtener un comando por ID
+ *     tags: [Comandos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del comando
+ *     responses:
+ *       200:
+ *         description: Comando encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comando'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "63f7d2bbf1a2b4b5c3cdb900"
+ *                   nombreComando: "Comando de Rescate"
+ *                   estadoComando: true
+ *                   ubicacionComando: "Sector 5, Zona Norte"
+ *                   fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
+ *                   brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
+ *       404:
+ *         description: Comando no encontrado
+ */
+router.get('/:id', comandoControllers.obtenerComandoPorId);
+
+// Crear un comando
 /**
  * @swagger
  * /api/comandos:
  *   post:
- *     tags:
- *       - Comando
- *     summary: Crear un comando
+ *     summary: Crear un nuevo comando
+ *     tags: [Comandos]
  *     requestBody:
  *       required: true
  *       content:
@@ -85,75 +124,31 @@
  *               value:
  *                 nombreComando: "Comando de Emergencia"
  *                 estadoComando: true
- *                 ubicacionComando: "Centro de la Ciudad"
- *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb701"
- *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb702"]
+ *                 ubicacionComando: "Sector 5, Zona Norte"
+ *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
+ *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
  *     responses:
  *       201:
- *         description: Comando creado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comando'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "63f7d2bbf1a2b4b5c3cdb704"
- *                   nombreComando: "Comando de Emergencia"
- *                   estadoComando: true
- *                   ubicacionComando: "Centro de la Ciudad"
- *                   fundacionId: "63f7d2bbf1a2b4b5c3cdb701"
- *                   brigadas: ["63f7d2bbf1a2b4b5c3cdb702"]
+ *         description: Comando creado exitosamente
+ *       400:
+ *         description: Datos inválidos en la solicitud
  */
+router.post('/', comandoControllers.crearComando);
 
-/**
- * @swagger
- * /api/comandos/{id}:
- *   get:
- *     tags:
- *       - Comando
- *     summary: Obtener un comando mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del comando.
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Comando obtenido correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comando'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "63f7d2bbf1a2b4b5c3cdb700"
- *                   nombreComando: "Comando de Rescate"
- *                   estadoComando: true
- *                   ubicacionComando: "Sector 5, Zona Norte"
- *                   fundacionId: "63f7d2bbf1a2b4b5c3cdb701"
- *                   brigadas: ["63f7d2bbf1a2b4b5c3cdb702", "63f7d2bbf1a2b4b5c3cdb703"]
- *       404:
- *         description: Comando no encontrado.
- */
-
+// Actualizar comando
 /**
  * @swagger
  * /api/comandos/{id}:
  *   put:
- *     tags:
- *       - Comando
- *     summary: Actualizar un comando mediante su ID
+ *     summary: Actualizar un comando
+ *     tags: [Comandos]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del comando a actualizar.
  *         schema:
  *           type: string
+ *         description: ID del comando
  *     requestBody:
  *       required: true
  *       content:
@@ -166,58 +161,36 @@
  *                 nombreComando: "Comando de Rescate Actualizado"
  *                 estadoComando: false
  *                 ubicacionComando: "Sector 5, Zona Norte"
- *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb701"
- *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb702"]
+ *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
+ *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
  *     responses:
  *       200:
- *         description: Comando actualizado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comando'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "63f7d2bbf1a2b4b5c3cdb700"
- *                   nombreComando: "Comando de Rescate Actualizado"
- *                   estadoComando: false
- *                   ubicacionComando: "Sector 5, Zona Norte"
- *                   fundacionId: "63f7d2bbf1a2b4b5c3cdb701"
- *                   brigadas: ["63f7d2bbf1a2b4b5c3cdb702"]
+ *         description: Comando actualizado con éxito
  *       404:
- *         description: Comando no encontrado.
+ *         description: Comando no encontrado
  */
+router.put('/:id', comandoControllers.editarComando);
 
+// Desactivar comando
 /**
  * @swagger
  * /api/comandos/{id}:
  *   delete:
- *     tags:
- *       - Comando
- *     summary: Desactivar un comando mediante su ID
+ *     summary: Desactivar un comando existente
+ *     tags: [Comandos]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del comando a desactivar.
  *         schema:
  *           type: string
+ *         description: ID del comando a desactivar
  *     responses:
  *       200:
- *         description: Comando desactivado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comando'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "63f7d2bbf1a2b4b5c3cdb700"
- *                   nombreComando: "Comando de Rescate"
- *                   estadoComando: false
- *                   ubicacionComando: "Sector 5, Zona Norte"
- *                   fundacionId: "63f7d2bbf1a2b4b5c3cdb701"
- *                   brigadas: ["63f7d2bbf1a2b4b5c3cdb702", "63f7d2bbf1a2b4b5c3cdb703"]
+ *         description: Comando desactivado exitosamente
  *       404:
- *         description: Comando no encontrado.
+ *         description: Comando no encontrado
  */
+router.delete('/:id', comandoControllers.desactivarComando);
+
+module.exports = router;
