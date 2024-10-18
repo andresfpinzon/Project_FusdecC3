@@ -161,7 +161,7 @@ router.post('/', unidadControllers.crearUnidad);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la unidad
+ *         description: ID de la unidad a actualizar
  *     requestBody:
  *       required: true
  *       content:
@@ -179,8 +179,16 @@ router.post('/', unidadControllers.crearUnidad);
  *     responses:
  *       200:
  *         description: Unidad actualizada con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Unidad'
+ *       400:
+ *         description: Error de validación
  *       404:
  *         description: Unidad no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
 router.put('/:id', unidadControllers.editarUnidad);
 
