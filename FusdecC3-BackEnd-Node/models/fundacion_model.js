@@ -24,5 +24,5 @@ comandos:[
 
 }); 
  
-   const Fundacion= mongoose.model("Fundacion",ComandosSchema);
+   const Fundacion= mongoose.model("Fundacion",FundacionSchema);
    module.exports= Fundacion; 
