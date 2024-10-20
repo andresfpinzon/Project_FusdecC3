@@ -18,9 +18,9 @@ const CalificacionSchema = new Schema({
   },
 
   usuarioId: {
-    type: this.schema.type.ObjectId,
+    type: String,
+    maxlength: 450,
     required: true,
-    Ref: "Usuario",
   },
 
   estadoCalificacion: {
@@ -37,6 +37,6 @@ const CalificacionSchema = new Schema({
   ],
 });
 
-const Nota = mongoose.model("Nota", CalificacionSchema);
+const Calificacion = mongoose.model("Calificacion", CalificacionSchema);
 
-module.exports = Nota;
+module.exports = Calificacion;

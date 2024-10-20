@@ -190,7 +190,7 @@ router.post('/', unidadControllers.crearUnidad);
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', unidadControllers.editarUnidad);
+router.put('/:id', unidadControllers.actualizarUnidad);
 
 // Desactivar unidad
 /**

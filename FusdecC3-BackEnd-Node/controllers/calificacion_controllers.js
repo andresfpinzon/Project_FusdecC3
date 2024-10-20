@@ -1,7 +1,7 @@
 const logic = require("../logic/calificacion_logic");
 const {
   calificacionSchemaValidation,
-} = require("../validations/calificacion_validation");
+} = require("../validations/calificacion_validations");
 
 // Controlador para crear una calificacion
 const crearCalificacion = async (req, res) => {

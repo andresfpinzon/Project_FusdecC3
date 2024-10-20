@@ -1,7 +1,7 @@
 const logic = require("../logic/colegio_logic");
 const {
   colegioSchemaValidation,
-} = require("../validations/colegio_validation");
+} = require("../validations/colegio_validations");
 
 // Controlador para crear un colegio
 const crearColegio = async (req, res) => {

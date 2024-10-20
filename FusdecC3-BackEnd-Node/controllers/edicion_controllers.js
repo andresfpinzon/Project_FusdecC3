@@ -1,5 +1,5 @@
 const logic = require("../logic/edicion_logic");
-const { edicionSchemaValidation } = require("../validations/edicion_validation");
+const { edicionSchemaValidation } = require("../validations/edicion_validations");
 
 // Controlador para crear una edicion
 const crearEdicion = async (req, res) => {

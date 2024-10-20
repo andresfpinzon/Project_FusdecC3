@@ -1,5 +1,5 @@
 const logic = require("../logic/curso_logic");
-const { cursoSchemaValidation } = require("../validations/curso_validation");
+const { cursoSchemaValidation } = require("../validations/curso_validations");
 
 // Controlador para crear un curso
 const crearCurso = async (req, res) => {

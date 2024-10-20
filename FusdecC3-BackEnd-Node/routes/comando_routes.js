@@ -169,7 +169,7 @@ router.post('/', comandoControllers.crearComando);
  *       404:
  *         description: Comando no encontrado
  */
-router.put('/:id', comandoControllers.editarComando);
+router.put('/:id', comandoControllers.actualizarComando);
 
 // Desactivar comando
 /**

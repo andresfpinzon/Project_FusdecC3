@@ -1,6 +1,7 @@
 const express = require("express");
-const colegioController = require("../controllers/colegio_controllers"); // Importar controladores
 const router = express.Router(); // Crear router
+const colegioController = require("../controllers/colegio_controllers"); // Importar controladores
+
 
 /**
  * @swagger
@@ -64,7 +65,7 @@ const router = express.Router(); // Crear router
  *                     emailColegio: "contacto@colegionacional.edu"
  *                     estadoColegio: true
  */
-router.get("/", colegioController.listarColegios);
+router.get("/", colegioController.listarColegiosActivos);
 
 /**
  * @swagger

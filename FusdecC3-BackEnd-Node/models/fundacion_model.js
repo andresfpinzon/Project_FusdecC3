@@ -17,8 +17,8 @@ const Fundacionschema =new Schema ({
     },
 comandos:[
     {
-         type: Types.schema.objectId,
-         ref: "Comandos",
+         type: Schema.Types.ObjectId,
+         ref: "Comando",
     },
 ], 
 
