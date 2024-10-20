@@ -4,124 +4,220 @@ const horarioController = require("../controllers/horario_controllers");
 
 /**
  * @swagger
- * /horarios:
+ * components:
+ *   schemas:
+ *     Horario:
+ *       type: object
+ *       required:
+ *         - tituloHorario
+ *         - horaInicio
+ *         - horaFin
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: ID autogenerado del horario.
+ *         tituloHorario:
+ *           type: string
+ *           description: Título del horario.
+ *         horaInicio:
+ *           type: string
+ *           format: time
+ *           description: Hora de inicio del horario en formato HH:mm.
+ *         horaFin:
+ *           type: string
+ *           format: time
+ *           description: Hora de fin del horario en formato HH:mm.
+ *         estadoHorario:
+ *           type: boolean
+ *           description: Estado del horario (activo/inactivo).
+ *           default: true
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Horarios
+ *     description: API para gestionar horarios
+ */
+
+/**
+ * @swagger
+ * /api/horarios:
  *   get:
- *     summary: Listar horarios activos
+ *     tags:
+ *       - Horarios
+ *     summary: Obtener una lista de horarios activos
  *     responses:
  *       200:
- *         description: Lista de horarios activos.
- *       204:
- *         description: No hay horarios activos.
+ *         description: Una colección de horarios activos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Horario'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   - id: "61f7d2bbf1a2b4b5c3cdb71d"
+ *                     tituloHorario: "Horario Matutino"
+ *                     horaInicio: "08:00"
+ *                     horaFin: "12:00"
+ *                     estadoHorario: true
  */
 router.get("/", horarioController.listarHorariosActivos);
 
 /**
  * @swagger
- * /horarios/{id}:
- *   get:
- *     summary: Obtener un horario por su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID del horario
- *     responses:
- *       200:
- *         description: Horario encontrado.
- *       404:
- *         description: Horario no encontrado.
- */
-router.get("/:id", horarioController.obtenerHorarioPorId);
-
-/**
- * @swagger
- * /horarios:
+ * /api/horarios:
  *   post:
- *     summary: Crear un nuevo horario
+ *     tags:
+ *       - Horarios
+ *     summary: Crear un horario
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               tituloHorario:
- *                 type: string
- *               horaInicio:
- *                 type: string
- *                 example: "08:00"
- *               horaFin:
- *                 type: string
- *                 example: "12:00"
- *               estadoHorario:
- *                 type: boolean
+ *             $ref: '#/components/schemas/Horario'
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 tituloHorario: "Horario Vespertino"
+ *                 horaInicio: "13:00"
+ *                 horaFin: "17:00"
+ *                 estadoHorario: true
  *     responses:
  *       201:
- *         description: Horario creado exitosamente.
- *       400:
- *         description: Datos inválidos.
- *       409:
- *         description: El horario ya existe.
+ *         description: Horario creado correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Horario'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
+ *                   tituloHorario: "Horario Vespertino"
+ *                   horaInicio: "13:00"
+ *                   horaFin: "17:00"
+ *                   estadoHorario: true
  */
 router.post("/", horarioController.crearHorario);
 
 /**
  * @swagger
- * /horarios/{id}:
+ * /api/horarios/{id}:
  *   put:
- *     summary: Actualizar un horario existente
+ *     tags:
+ *       - Horarios
+ *     summary: Actualizar un horario mediante su ID
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
+ *         description: ID del horario a actualizar.
  *         schema:
  *           type: string
- *         required: true
- *         description: ID del horario
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               tituloHorario:
- *                 type: string
- *               horaInicio:
- *                 type: string
- *               horaFin:
- *                 type: string
- *               estadoHorario:
- *                 type: boolean
+ *             $ref: '#/components/schemas/Horario'
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 tituloHorario: "Horario Vespertino Actualizado"
+ *                 horaInicio: "14:00"
+ *                 horaFin: "18:00"
+ *                 estadoHorario: true
  *     responses:
  *       200:
- *         description: Horario actualizado.
+ *         description: Horario actualizado correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Horario'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
+ *                   tituloHorario: "Horario Vespertino Actualizado"
+ *                   horaInicio: "14:00"
+ *                   horaFin: "18:00"
+ *                   estadoHorario: true
  *       404:
  *         description: Horario no encontrado.
- *       400:
- *         description: Datos inválidos.
  */
 router.put("/:id", horarioController.actualizarHorario);
 
 /**
  * @swagger
- * /horarios/{id}:
+ * /api/horarios/{id}:
  *   delete:
- *     summary: Desactivar un horario
+ *     tags:
+ *       - Horarios
+ *     summary: Desactivar un horario mediante su ID
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
+ *         description: ID del horario a desactivar.
  *         schema:
  *           type: string
- *         required: true
- *         description: ID del horario
  *     responses:
  *       200:
- *         description: Horario desactivado.
+ *         description: Horario desactivado correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Horario'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
+ *                   tituloHorario: "Horario Vespertino"
+ *                   horaInicio: "13:00"
+ *                   horaFin: "17:00"
+ *                   estadoHorario: false
  *       404:
  *         description: Horario no encontrado.
  */
 router.delete("/:id", horarioController.desactivarHorario);
+
+/**
+ * @swagger
+ * /api/horarios/{id}:
+ *   get:
+ *     tags:
+ *       - Horarios
+ *     summary: Obtener un horario mediante su ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del horario
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Horario obtenido correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Horario'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
+ *                   tituloHorario: "Horario Matutino"
+ *                   horaInicio: "08:00"
+ *                   horaFin: "12:00"
+ *                   estadoHorario: true
+ *       404:
+ *         description: Horario no encontrado.
+ */
+router.get("/:id", horarioController.obtenerHorarioPorId);
 
 module.exports = router;
