@@ -1,11 +1,11 @@
 const mongoose = require ("mongoose"); 
 const { Schema } = mongoose; 
 
-const fundacionschema =new Schema ({ 
-   fundacionId: { 
+const Fundacionschema =new Schema ({ 
+   /*fundacionId: { 
     Type: Schema.Types.objectId,
     default: () => new mongoose.Types.objectId (),  
-   }, 
+   },*/ 
    nombreFundacion: { 
     type: String, 
     required: true,
@@ -24,5 +24,5 @@ comandos:[
 
 }); 
  
-   const Fundacion= mongoose.model("Fundacion",FundacionSchema);
-   module.exports= Fundacion; 
+const Fundacion= mongoose.model("Fundacion",Fundacionschema);
+module.exports= Fundacion; 

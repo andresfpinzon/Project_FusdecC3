@@ -31,12 +31,14 @@ const unidadSchemaValidation = Joi.object({
     }),
   
   usuarioId: Joi.string()
-    .max(450)
+    .pattern(/^[0-9a-fA-F]{24}$/) // Corregido a 24 caracteres para ObjectId
     .required()
     .messages({
-      'string.base': 'El ID del usuario debe ser un texto',
-      'string.max': 'El ID del usuario no puede exceder los 450 caracteres',
-    }),  
+      'string.base': 'El usuarioId debe ser un texto',
+      'string.empty': 'El usuarioId no puede estar vacío',
+      'string.pattern.base': 'El usuarioId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
+      'any.required': 'El usuarioId es un campo requerido',
+    }),
 
   estudiantes: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) // Validación para ObjectId

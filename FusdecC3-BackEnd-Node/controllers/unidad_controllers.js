@@ -5,26 +5,24 @@ const unidadSchemaValidation = require('../validations/unidad_validations');
 const listarUnidades = async (_req, res) => {
     try {
         const unidades = await logic.listarUnidades();
-        if (unidades.length === 0) {
-            return res.status(204).send(); // 204 No Content
-        }
-        res.json(unidades);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+        res.json(unidades); // No es necesario verificar si está vacío, ya que se puede enviar un array vacío
+    } catch (error) {
+        console.error(error); // Registrar el error en el log
+        res.status(500).json({ error: 'Error al obtener las unidades' });
     }
 };
 
 // Controlador para crear una unidad
 const crearUnidad = async (req, res) => {
-    const { error, value } = unidadSchemaValidation.validate(req.body);
-    if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-    }
     try {
-        const nuevaUnidad = await logic.crearUnidad(value);
+        const { error } = unidadSchemaValidation.validate(req.body);
+        if (error) return res.status(400).json({ error: error.details[0].message });
+
+        const nuevaUnidad = await logic.crearUnidad(req.body);
         res.status(201).json(nuevaUnidad);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al crear la unidad' });
     }
 };
 

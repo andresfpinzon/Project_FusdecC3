@@ -61,5 +61,5 @@ const port = process.env.PORT || 3000;
 // Iniciar servidor
 app.listen(port, () => {
     console.log('Api REST Ok, y ejecutándose...');
-    console.log(`Servidor HTTP corriendo en http://localhost:${port}`);
+    console.log(`Servidor HTTP corriendo en http://localhost:${port}/api-docs`);
 });

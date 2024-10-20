@@ -1,6 +1,6 @@
 const Comando = require('../models/comando_model');
 const Fundacion = require('../models/fundacion_model');
-//const comandoSchemaValidation = require('../validations/comando_validations');
+const comandoSchemaValidation = require('../validations/comando_validations');
 
 // Función asíncrona para crear comandos
 async function crearComando(body) {
