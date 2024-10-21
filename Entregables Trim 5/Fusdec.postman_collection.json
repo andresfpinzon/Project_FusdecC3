@@ -1,0 +1,1027 @@
+{
+	"info": {
+		"_postman_id": "1569b5bc-b7d5-4f57-b38d-928067183ec9",
+		"name": "Fusdec",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "37308431"
+	},
+	"item": [
+		{
+			"name": "Get data roles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/roles"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data usuarios",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/usuarios"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data comandos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/comandos"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data brigadas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/brigadas"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data unidades",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/unidades"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data horarios",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/horarios"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data colegios",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/colegios"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data cursos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/cursos"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data ediciones",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/ediciones"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data estudiantes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/estudiantes"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data asistencias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/asistencias"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data inasistencias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/inasistencias"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data calificaciones",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/calificaciones"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data certificados",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/certificados"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data auditorias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/auditorias"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data rol by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/roles/67128b72fb7c26d057130c78"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data usuario by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/usuarios/6715528778b4db4b313f955b"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data comando by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/comandos/67155f2778b4db4b313f9565"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data brigada by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/brigadas/6715674fb7847f32ade89e72"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data unidad by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/unidades/67156e6b09f93b90f055f5e1"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data horario by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/horarios/671581b2a6ece7853ac28717"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data colegio by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/colegios/671588b33ccff77cc5117a4f"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data curso by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/cursos/671590f609c865018f273d70"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data edicion by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/ediciones/67159868564ae6f3015c4ce8"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data estudiante by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/estudiantes/67159fe3bafd80d3a9e76ecb"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data asistencia by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/asistencias/6715ac368ff4bd2cb5b8fc48"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data inasistencia by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/inasistencias/6715c19475f4b7bec2e558c2"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data calificacion by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/calificaciones/6715ce9241dc7b52b272a163"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data certificado by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/certificados/6715d4cd72047f20dc152621"
+			},
+			"response": []
+		},
+		{
+			"name": "Get data auditoria by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/auditorias/6715d6fcb1b75aa6cbd86bde"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data rol",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreRol\": \"Instrcutor\",\r\n  \"estadoRol\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/roles"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreUsuario\": \"Juan\",\r\n  \"apellidoUsuario\": \"Pérez\",\r\n  \"numeroDocumento\": \"12345678\",\r\n  \"correo\": \"juan.perez@gmail.com\",\r\n  \"contraseñaHash\": \"12345678\", \r\n  \"roles\": [\"6715516678b4db4b313f9557\"],\r\n  \"estadoUsuario\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/usuarios"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data comando",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreComando\": \"Comando 3\",\r\n  \"estadoComando\": true,\r\n  \"ubicacionComando\": \"Calle 123, Bogota\",\r\n  \"fundacionId\": \"671540bc34b24a229e371595\",\r\n  \"brigadas\": []\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/comandos"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data brigada",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreBrigada\": \"Perdomo\",\r\n  \"ubicacionBrigada\": \"Calle 13\",\r\n  \"estadoBrigada\": true,\r\n  \"comandoId\": \"671560fa78b4db4b313f956b\",  // ID de un comando existente\r\n  \"unidades\": []\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/brigadas"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data unidad",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreUnidad\": \"Unidad 3 Perdomo\",\r\n  \"estadoUnidad\": true,\r\n  \"brigadaId\": \"6715674fb7847f32ade89e72\",  // ID de una brigada existente\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",  // ID de un usuario existente\r\n  \"estudiantes\": []\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/unidades"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data horario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloHorario\": \"Horario de Tarde\",\r\n  \"horaInicio\": \"14:00\",\r\n  \"horaFin\": \"18:00\",\r\n  \"estadoHorario\": true\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/horarios"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data colegio",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreColegio\": \"Colegio paraido\",\r\n  \"emailColegio\": \"contacto@colegioparaiso.com\",\r\n  \"estadoColegio\": true,\r\n  \"estudiantes\": []\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/colegios"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data curso",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreCurso\": \"Servicio Social prueba\",\r\n  \"descripcionCurso\": \"Curso orientado a la realizacion del servicio social para estudiantes de colegios\",\r\n  \"intensidadHorariaCurso\": \"120 horas\",\r\n  \"estadoCurso\": true,\r\n  \"fundacionId\": \"671540bc34b24a229e371595\",  \r\n  \"ediciones\": []\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/cursos"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data edicion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloEdicion\": \"edicionp\",\r\n  \"fechaInicioEdicion\": \"2025-01-15T00:00:00.000Z\",\r\n  \"fechaFinEdicion\": \"2025-06-15T00:00:00.000Z\",\r\n  \"estadoEdicion\": true,\r\n  \"cursoId\": \"67158f3809c865018f273d6b\",  \r\n  \"horarios\": [],\r\n  \"estudiantes\": []\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/ediciones"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data estudiante",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreEstudiante\": \"pepe\",\r\n  \"apellidoEstudiante\": \"Paez\",\r\n  \"correoEstudiante\": \"pepe.paez@gmail.com\",\r\n  \"tipoDocumento\": \"T.I\",\r\n  \"numeroDocumento\": \"123456789\",\r\n  \"fechaNacimiento\": \"2008-01-01\",\r\n  \"generoEstudiante\": \"Masculino\",\r\n  \"unidadId\": \"67156e6b09f93b90f055f5e1\",  \r\n  \"colegioId\": \"67158aaaa320cc032a34d0a4\",  \r\n  \"estadoEstudiante\": true,\r\n  \"ediciones\": [\"671593bdfa6efaa5f659d5ad\"],\r\n  \"calificaciones\": [],\r\n  \"inasistencias\": [],\r\n  \"asistencias\": [],\r\n  \"certificados\": []\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/estudiantes"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data estudiante by id asistencias",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"asistencias\": [\r\n        \"6715abd18ff4bd2cb5b8fc43\"\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/estudiantes/67159fe3bafd80d3a9e76ecb/asistencias"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data estudiante by Id inasistencias",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"inasistencias\": [\r\n        \"6715b57d75f4b7bec2e558bd\"\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/estudiantes/67159fe3bafd80d3a9e76ecb/inasistencias"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data estudiante by id certificados",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"certificados\": [\r\n        \"6715d4cd72047f20dc152621\"\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/estudiantes/67159fe3bafd80d3a9e76ecb/certificados"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data estudiante by id calificaciones",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"calificaciones\": [\r\n        \"6715cec241dc7b52b272a165\"\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/estudiantes/67159fe3bafd80d3a9e76ecb/calificaciones"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data estudiante by id ediciones",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ediciones\": [\r\n        \"6715970c0bd253eda996b824\"\r\n    ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/estudiantes/67159fe3bafd80d3a9e76ecb/ediciones"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data asistencia",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloAsistencia\": \"servicio social unidad 1PE \",\r\n  \"fechaAsistencia\": \"2024-10-22T09:00:00Z\",\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",  \r\n  \"estadoAsistencia\": true,\r\n  \"estudiantes\": [\"67159fe3bafd80d3a9e76ecb\"]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/asistencias"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data inasistencia",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloInasistencia\": \"Faltas servicio social 2024/10/22 unidad 1PE\",\r\n  \"observacion\": \"Estudiantes no asistieron.\",\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",  \r\n  \"asistenciaId\": \"6715ac368ff4bd2cb5b8fc48\",  \r\n  \"estadoInasistencia\": true,\r\n  \"estudiantes\": [\"67159fe3bafd80d3a9e76ecb\"]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/inasistencias"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data calificacion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloCalificacion\": \"NoaprobadosSS2024-2unidad1PE\",\r\n  \"aprobado\": false,\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",\r\n  \"estadoCalificacion\": true,\r\n  \"estudiantes\": [\"67159fe3bafd80d3a9e76ecb\"]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/calificaciones"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data certificado",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"codigoVerificacion\": \"23XYZ1A471WE7FFG84A8\",\r\n  \"nombreEmisorCertificado\": \"Juan Pérez prueba\",\r\n  \"estadoCertificado\": true,\r\n  \"estudianteId\": \"67159fe3bafd80d3a9e76ecb\",\r\n  \"cursoId\": \"67158f3809c865018f273d6b\",\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/certificados"
+			},
+			"response": []
+		},
+		{
+			"name": "Post data auditoria ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"fechaAuditoria\": \"2024-10-20T10:00:00Z\",\r\n  \"nombreEmisor\": \"Juan Perez prueba\",\r\n  \"certificadoId\": \"6715d5c0b1b75aa6cbd86bd6\",\r\n  \"estadoAuditoria\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/auditorias"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data rol by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreRol\": \"Instructor\",\r\n  \"estadoRol\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/roles/67128b72fb7c26d057130c78"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data usuario by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreUsuario\": \"Juan andres\",\r\n  \"apellidoUsuario\": \"Pérez\",\r\n  \"numeroDocumento\": \"12345678\",\r\n  \"correo\": \"juan.perez@gmail.com\",\r\n  \"contraseñaHash\": \"12345678\", \r\n  \"roles\": [\"6715516678b4db4b313f9557\"],\r\n  \"estadoUsuario\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/usuarios/6715528778b4db4b313f955b"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data comando by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreComando\": \"Comando 2\",\r\n  \"estadoComando\": true,\r\n  \"ubicacionComando\": \"Calle 123, Bogota\",\r\n  \"fundacionId\": \"671540bc34b24a229e371595\",\r\n  \"brigadas\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/comandos/67155f2778b4db4b313f9565"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data brigada by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreBrigada\": \"Perdomo\",\r\n  \"ubicacionBrigada\": \"Calle 13 1 - b\",\r\n  \"estadoBrigada\": true,\r\n  \"comandoId\": \"671560fa78b4db4b313f956b\",  // ID de un comando existente\r\n  \"unidades\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/brigadas/6715674fb7847f32ade89e72"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data unidad by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreUnidad\": \"Unidad 2 Perdomo act\",\r\n  \"estadoUnidad\": true,\r\n  \"brigadaId\": \"6715674fb7847f32ade89e72\", \r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",  \r\n  \"estudiantes\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/unidades/67157fae09f93b90f055f5e9"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data horario by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloHorario\": \"Horario de la mañana\",\r\n  \"horaInicio\": \"14:00\",\r\n  \"horaFin\": \"18:00\",\r\n  \"estadoHorario\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/horarios/671581b2a6ece7853ac28717"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data colegio by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreColegio\": \"Colegio Paraiso\",\r\n  \"emailColegio\": \"contacto@colegioparaiso.com\",\r\n  \"estadoColegio\": true,\r\n  \"estudiantes\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/colegios/67158aaaa320cc032a34d0a4"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data curso by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreCurso\": \"Servicio Social prueba actualizar\",\r\n  \"descripcionCurso\": \"Curso orientado a la realizacion del servicio social para estudiantes de colegios\",\r\n  \"intensidadHorariaCurso\": \"120 horas\",\r\n  \"estadoCurso\": true,\r\n  \"fundacionId\": \"671540bc34b24a229e371595\",  \r\n  \"ediciones\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/cursos/671590f609c865018f273d70"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data edicion by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloEdicion\": \"edicionp2\",\r\n  \"fechaInicioEdicion\": \"2025-01-15T00:00:00.000Z\",\r\n  \"fechaFinEdicion\": \"2025-06-15T00:00:00.000Z\",\r\n  \"estadoEdicion\": true,\r\n  \"cursoId\": \"67158f3809c865018f273d6b\",  \r\n  \"horarios\": [],\r\n  \"estudiantes\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/ediciones/67159868564ae6f3015c4ce8"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data estudiante by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombreEstudiante\": \"angela maria\",\r\n  \"apellidoEstudiante\": \"Paez\",\r\n  \"correoEstudiante\": \"angela.paez@gmail.com\",\r\n  \"tipoDocumento\": \"T.I\",\r\n  \"numeroDocumento\": \"12345678\",\r\n  \"fechaNacimiento\": \"2008-01-01\",\r\n  \"generoEstudiante\": \"Femenino\",\r\n  \"unidadId\": \"67156e6b09f93b90f055f5e1\",  \r\n  \"colegioId\": \"67158aaaa320cc032a34d0a4\",  \r\n  \"estadoEstudiante\": true,\r\n  \"ediciones\": [\"671593bdfa6efaa5f659d5ad\"],\r\n  \"calificaciones\": [],\r\n  \"inasistencias\": [],\r\n  \"asistencias\": [],\r\n  \"certificados\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/estudiantes/67159fe3bafd80d3a9e76ecb"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data usuario by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloAsistencia\": \"servicio social unidad 1PE actu \",\r\n  \"fechaAsistencia\": \"2024-10-22T09:00:00Z\",\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",  \r\n  \"estadoAsistencia\": true,\r\n  \"estudiantes\": [\"67159fe3bafd80d3a9e76ecb\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/asistencias/6715ac368ff4bd2cb5b8fc48"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data inasistencia by id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloInasistencia\": \"Faltas servicio social 2024/10/22 unidad 1PE actualizado\",\r\n  \"observacion\": \"Estudiantes no asistieron.\",\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",  \r\n  \"asistenciaId\": \"6715ac368ff4bd2cb5b8fc48\",  \r\n  \"estadoInasistencia\": true,\r\n  \"estudiantes\": [\"67159fe3bafd80d3a9e76ecb\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/inasistencias/6715c19475f4b7bec2e558c2"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data calificacion by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tituloCalificacion\": \"No aprobados SS 2024-2 unidad 1PE\",\r\n  \"aprobado\": false,\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\",\r\n  \"estadoCalificacion\": true,\r\n  \"estudiantes\": [\"67159fe3bafd80d3a9e76ecb\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/calificaciones/6715cec241dc7b52b272a165"
+			},
+			"response": []
+		},
+		{
+			"name": "Put data Certificado by Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"codigoVerificacion\": \"23XYZ1A471WE7FFG84A9\",\r\n  \"nombreEmisorCertificado\": \"Juan Pérez\",\r\n  \"estadoCertificado\": true,\r\n  \"estudianteId\": \"67159fe3bafd80d3a9e76ecb\",\r\n  \"cursoId\": \"67158f3809c865018f273d6b\",\r\n  \"usuarioId\": \"6715528778b4db4b313f955b\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/certificados/6715d4cd72047f20dc152621"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data rol by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/roles/67128b72fb7c26d057130c78"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data usuario by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/usuarios/6715528778b4db4b313f955b"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data comando by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/comandos/67155f2778b4db4b313f9565"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data brigada by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/brigadas/671568ec09f93b90f055f5cc"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete unidad by id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/unidades/67157fae09f93b90f055f5e9"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data horario by id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/horarios/671581c7a6ece7853ac2871a"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data colegio by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/colegios/671588b33ccff77cc5117a4f"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data curso by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/cursos/671590f609c865018f273d70"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data edicion by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/ediciones/67159868564ae6f3015c4ce8"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data estudiante by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/estudiantes/6715a5f68ff4bd2cb5b8fc36"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data asistencia by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/asistencias/6715ac368ff4bd2cb5b8fc48"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data inasistencia by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/inasistencias/6715c19475f4b7bec2e558c2"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data calificacion by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/calificaciones/6715ce9241dc7b52b272a163"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data certificado by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/certificados/6715d5c0b1b75aa6cbd86bd6"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data auditoria by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/auditorias/6715d6fcb1b75aa6cbd86bde"
+			},
+			"response": []
+		}
+	]
+}
