@@ -201,4 +201,39 @@ router.put('/:id', comandoControllers.actualizarComando);
  */
 router.delete('/:id', comandoControllers.desactivarComando);
 
+// Ruta para agregar brigadas a un comando
+/**
+ * @swagger
+ * /api/comandos/agregar-brigadas:
+ *   post:
+ *     summary: Agregar brigadas a un comando
+ *     tags: [Comandos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               comandoId:
+ *                 type: string
+ *                 description: ID del comando al que se agregarán las brigadas.
+ *               brigadasIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: IDs de las brigadas a agregar.
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 comandoId: "6716b5b6329a75cb8c51ec93"
+ *                 brigadasIds: ["67102a9b00c1dbc1ac85ab1f", "67102afc00c1dbc1ac85ab21"]
+ *     responses:
+ *       200:
+ *         description: Brigadas agregadas con éxito
+ *       400:
+ *         description: Datos inválidos en la solicitud
+ */
+router.post('/agregar-brigadas', comandoControllers.agregarBrigadas);
+
 module.exports = router;

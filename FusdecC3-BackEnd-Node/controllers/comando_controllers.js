@@ -74,11 +74,29 @@ const obtenerComandoPorId = async (req, res) => {
     }
 };
 
+// Controlador para agregar brigadas a un comando
+const agregarBrigadas = async (req, res) => {
+    const { comandoId, brigadasIds } = req.body; // Extraer comandoId y brigadasIds del cuerpo de la solicitud
+
+    try {
+        const comandoActualizado = await logic.agregarBrigadasAComando(comandoId, brigadasIds); // Llamar a la lógica para agregar brigadas
+        return res.status(200).json({
+            message: 'Brigadas agregadas con éxito',
+            comando: comandoActualizado // Devolver el comando actualizado
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message // Devolver el mensaje de error
+        });
+    }
+};
+
 // Exportar los controladores
 module.exports = {
     listarComandos,
     crearComando,
     actualizarComando,
     desactivarComando,
-    obtenerComandoPorId
+    obtenerComandoPorId,
+    agregarBrigadas // Exportar la nueva función
 };

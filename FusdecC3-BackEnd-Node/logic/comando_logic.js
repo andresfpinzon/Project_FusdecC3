@@ -59,10 +59,28 @@ async function desactivarComando(id) {
     return comando;
 }
 
+// Función asíncrona para agregar brigadas a un comando
+async function agregarBrigadasAComando(comandoId, brigadasIds) {
+    try {
+        const comando = await Comando.findById(comandoId);
+        if (!comando) {
+            throw new Error('Comando no encontrado');
+        }
+        // Filtrar brigadas ya existentes
+        const nuevasBrigadas = brigadasIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
+        comando.brigadas.push(...nuevasBrigadas);
+        await comando.save();
+        return comando;
+    } catch (error) {
+        throw new Error(`Error al agregar brigadas: ${error.message}`);
+    }
+}
+
 module.exports = {
     crearComando,
     listarComandos,
     buscarComandoPorId,
     editarComando,
-    desactivarComando 
+    desactivarComando,
+    agregarBrigadasAComando // Exportar la nueva función
 };
