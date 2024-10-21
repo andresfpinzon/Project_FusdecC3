@@ -1,6 +1,7 @@
 const Comando = require('../models/comando_model');
 const Fundacion = require('../models/fundacion_model');
 const comandoSchemaValidation = require('../validations/comando_validations');
+const mongoose = require('mongoose');
 
 // Función asíncrona para crear comandos
 async function crearComando(body) {
@@ -59,20 +60,21 @@ async function desactivarComando(id) {
     return comando;
 }
 
-// Función asíncrona para agregar brigadas a un comando
-async function agregarBrigadasAComando(comandoId, brigadasIds) {
+// Lógica para agregar asistencias a un estudiante
+async function agregarBrigadaAComando(comandoId, brigadasIds) {
     try {
-        const comando = await Comando.findById(comandoId);
+        const comando = await Comando.findOne({ comandoId });
         if (!comando) {
-            throw new Error('Comando no encontrado');
+            throw new Error('Estudiante no encontrado');
         }
-        // Filtrar brigadas ya existentes
+        // Filtrar las asistencias ya existentes para no duplicarlas
         const nuevasBrigadas = brigadasIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
-        comando.brigadas.push(...nuevasBrigadas);
+        // Agregar las nuevas asistencias al array de asistencias del estudiante
+        comando.brigadas = [...comando.brigadas, ...nuevasBrigadas];
         await comando.save();
         return comando;
     } catch (error) {
-        throw new Error(`Error al agregar brigadas: ${error.message}`);
+        throw new Error(`Error al agregar asistencias: ${error.message}`);
     }
 }
 
@@ -82,5 +84,5 @@ module.exports = {
     buscarComandoPorId,
     editarComando,
     desactivarComando,
-    agregarBrigadasAComando // Exportar la nueva función
+    agregarBrigadaAComando // Exportar la nueva función
 };
