@@ -33,7 +33,7 @@ const crearUsuario = async (req, res) => {
     const nuevoUsuario = await logic.crearUsuario(value);
     res.status(201).json(nuevoUsuario);
   } catch (err) {
-    if (err.message === 'El correo electrónico ya está registrado') {
+    if (err.message) {
       return res.status(409).json({ error: err.message });
     }
     res.status(500).json({ error: 'Error interno del servidor' });

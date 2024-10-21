@@ -4,14 +4,28 @@ const SALT_ROUNDS = 10; // Número de rondas de sal para el hash
 
 // Función asíncrona para crear un usuario
 async function crearUsuario(body) {
-    // Verificar si el correo ya está registrado
-    const usuarioExistente = await Usuario.findOne({ correo: body.correo });
+    const usuarioExistente = await Usuario.findOne({
+        $or: [
+            { correo: body.correo },
+            { numeroDocumento: body.numeroDocumento }
+        ]
+    });
+    
     if (usuarioExistente) {
-        throw new Error('El correo electrónico ya está registrado');
+        if (usuarioExistente.correo === body.correo) {
+            throw new Error('El correo electrónico ya está registrado');
+        }
+        if (usuarioExistente.numeroDocumento === body.numeroDocumento) {
+            throw new Error('El número de documento ya está registrado');
+        }
     }
+    
 
     // Hashear la contraseña antes de guardarla
-    const contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS);
+    const contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS).catch(err => {
+    throw new Error('Error al hashear la contraseña');
+    });
+
 
     let usuario = new Usuario({
         nombreUsuario: body.nombreUsuario,

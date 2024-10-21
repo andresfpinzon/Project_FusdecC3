@@ -15,7 +15,12 @@ async function crearEstudiante(body) {
     });
 
     if (estudianteExistente) {
-        throw new Error("El correo o número de documento ya están registrados");
+        if (estudianteExistente.correo === body.correo) {
+            throw new Error('El correo electrónico ya está registrado');
+        }
+        if (estudianteExistente.numeroDocumento === body.numeroDocumento) {
+            throw new Error('El número de documento ya está registrado');
+        }
     }
 
     // Crear un nuevo estudiante
