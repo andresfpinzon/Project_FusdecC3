@@ -1,5 +1,8 @@
 const Estudiante = require('../models/estudiante_model');
-
+const Inasistencia = require("../models/inasistencia_model");
+const Asistencia = require("../models/asistencia_model");
+const Certificado = require("../models/certificado_model");
+const Calificacion = require("../models/calificacion_model");
 // Función para crear un nuevo estudiante
 async function crearEstudiante(body) {
     // Verificar si ya existe un estudiante con el mismo correo o número de documento
@@ -25,7 +28,12 @@ async function crearEstudiante(body) {
         generoEstudiante: body.generoEstudiante,
         unidadId: body.unidadId,
         colegioId: body.colegioId,
-        estadoEstudiante: body.estadoEstudiante
+        estadoEstudiante: body.estadoEstudiante,
+        ediciones: body.ediciones || [],
+        calificaciones: body.calificaciones || [],
+        inasistencias: body.inasistencias || [],
+        asistencias: body.asistencias || [],
+        certificados: body.certificados || []
     });
 
     // Guardar el estudiante en la base de datos
@@ -36,7 +44,13 @@ async function crearEstudiante(body) {
 // Función para actualizar un estudiante
 async function actualizarEstudiante(id, body) {
     // Buscar el estudiante por ID
-    let estudiante = await Estudiante.findById(id);
+    let estudiante = await Estudiante.findById(id).populate('unidadId')
+    .populate('colegioId')
+    .populate('ediciones')
+    .populate('calificaciones')
+    .populate('inasistencias') 
+    .populate('asistencias')
+    .populate('certificados');
     if (!estudiante) {
         throw new Error("Estudiante no encontrado");
     }
@@ -62,6 +76,11 @@ async function actualizarEstudiante(id, body) {
     estudiante.unidadId = body.unidadId || estudiante.unidadId;
     estudiante.colegioId = body.colegioId || estudiante.colegioId;
     estudiante.estadoEstudiante = body.estadoEstudiante || estudiante.estadoEstudiante;
+    estudiante.ediciones = body.ediciones || estudiante.ediciones;
+    estudiante.calificaciones = body.calificaciones || estudiante.calificaciones;
+    estudiante.inasistencias = body.inasistencias || estudiante.inasistencias;
+    estudiante.asistencias = body.asistencias || estudiante.asistencias;
+    estudiante.certificados = body.certificados || estudiante.certificados;
 
     await estudiante.save();
     return estudiante; 
@@ -69,13 +88,25 @@ async function actualizarEstudiante(id, body) {
 
 // Función para listar todos los estudiantes
 async function listarEstudiantes() {
-    return await Estudiante.find({});
+    return await Estudiante.find({}).populate('unidadId')
+    .populate('colegioId')
+    .populate('ediciones')
+    .populate('calificaciones')
+    .populate('inasistencias') 
+    .populate('asistencias')
+    .populate('certificados');
 }
 
 // Función para obtener un estudiante por ID
 async function obtenerEstudiantePorId(id) {
     const estudiante = await Estudiante.findById(id)
-        .populate('ediciones calificaciones inasistencias asistencias certificados');
+    .populate('unidadId')
+    .populate('colegioId')
+    .populate('ediciones')
+    .populate('calificaciones')
+    .populate('inasistencias') 
+    .populate('asistencias')
+    .populate('certificados');
     if (!estudiante) {
         throw new Error("Estudiante no encontrado");
     }

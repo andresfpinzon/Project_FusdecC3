@@ -44,17 +44,18 @@ async function actualizarUsuario(id, body) {
     }
 
     await usuario.save();
-    return usuario;
+    return Usuario.findById(id).populate('roles');
 }
 
 // Función para obtener todos los usuarios
 async function listarUsuarios() {
-    return await Usuario.find({});
+    return await Usuario.find({}).populate('roles');
 }
 
 // Función para obtener un usuario específico por su ID
 async function obtenerUsuarioPorId(id) {
-    const usuario = await Usuario.findById(id);
+    const usuario = await Usuario.findById(id)
+    .populate('roles');
     if (!usuario) {
         throw new Error('Usuario no encontrado');
     }

@@ -2,27 +2,23 @@ const Auditoria = require('../models/auditoria_model');
 const Usuario = require('../models/usuario_model');
 const auditoriaSchemaValidation = require('../validations/auditoria_validations'); // Asegúrate de descomentar y usar la validación adecuada
 
-// Función asíncrona para crear auditorías
 async function crearAuditoria(body) {
-    // Validar los datos de entrada
-    const { error } = auditoriaSchemaValidation.validate(body);
-    if (error) {
-        throw new Error(error.details[0].message);
-    }
-
-    // Verificar si ya existe una auditoría con el mismo emisor
-    const auditoriaExistente = await Auditoria.findOne({ nombreEmisor: body.nombreEmisor });
+    // Validar si ya existe una auditoría con el mismo certificadoId
+    const auditoriaExistente = await Auditoria.findOne({ certificadoId: body.certificadoId });
+    
     if (auditoriaExistente) {
-        throw new Error('La auditoría con este emisor ya existe');
+        throw new Error('Ya existe una auditoría con este certificado');
     }
 
-    let auditoria = new Auditoria({
+    // Crear la nueva auditoría
+    let nuevaAuditoria = new Auditoria({
         fechaAuditoria: body.fechaAuditoria,
         nombreEmisor: body.nombreEmisor,
         certificadoId: body.certificadoId,
         estadoAuditoria: body.estadoAuditoria
     });
-    return await auditoria.save();
+
+    return await nuevaAuditoria.save();
 }
 
 // Función asíncrona para listar auditorías

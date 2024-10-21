@@ -27,11 +27,18 @@ const crearEstudiante = async (req, res) => {
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
     colegioId: body.colegioId,
-    estadoEstudiante: body.estadoEstudiante
+    estadoEstudiante: body.estadoEstudiante,
+    ediciones: body.ediciones || [],
+    calificaciones: body.calificaciones || [],
+    inasistencias: body.inasistencias || [],
+    asistencias: body.asistencias || [],
+    certificados: body.certificados || []
   });
+
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
+
   try {
     const nuevoEstudiante = await logic.crearEstudiante(value);
     res.status(201).json(nuevoEstudiante);
@@ -42,6 +49,7 @@ const crearEstudiante = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 
 // Controlador para actualizar un estudiante
 const actualizarEstudiante = async (req, res) => {
@@ -57,11 +65,18 @@ const actualizarEstudiante = async (req, res) => {
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
     colegioId: body.colegioId,
-    estadoEstudiante: body.estadoEstudiante
+    estadoEstudiante: body.estadoEstudiante,
+    ediciones: body.ediciones || [],
+    calificaciones: body.calificaciones || [],
+    inasistencias: body.inasistencias || [],
+    asistencias: body.asistencias || [],
+    certificados: body.certificados || []
   });
+
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
+
   try {
     const estudianteActualizado = await logic.actualizarEstudiante(id, value);
     if (!estudianteActualizado) {
@@ -72,6 +87,7 @@ const actualizarEstudiante = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 
 // Controlador para desactivar un estudiante
 const desactivarEstudiante = async (req, res) => {

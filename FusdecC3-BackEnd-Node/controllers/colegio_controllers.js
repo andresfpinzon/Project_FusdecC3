@@ -67,7 +67,7 @@ const desactivarColegio = async (req, res) => {
 // Controlador para listar los cursos activos
 const listarColegiosActivos = async (req, res) => {
   try {
-    const colegiosActivos = await logic.listarColegiosActivos();
+    const colegiosActivos = await logic.listarColegios();
     if (colegiosActivos.length === 0) {
       return res.status(204).send(); // 204 No Content
     }

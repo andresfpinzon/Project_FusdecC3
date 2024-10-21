@@ -29,15 +29,17 @@ async function actualizarEdicion(id, body) {
     id,
     {
       $set: {
+        tituloEdicion: body.tituloEdicion,
         fechaInicioEdicion: body.fechaInicioEdicion,
         fechaFinEdicion: body.fechaFinEdicion,
         horarios: body.horarios,
-        ediciones: body.ediciones,
         estudiantes: body.estudiantes,
       },
     },
     { new: true }
-  );
+  )
+  .populate('cursoId')
+  .populate('horarios');
 
   return edicion;
 }
@@ -59,14 +61,17 @@ async function desactivarEdicion(id) {
 
 // Función asíncrona para listar las ediciones activas
 async function listarEdicionesActivas() {
-  let ediciones = await Edicion.find({ estadoEdicion: true });
+  let ediciones = await Edicion.find({ estadoEdicion: true })
+  .populate('cursoId')
+  .populate('horarios');
   return ediciones;
 }
 
 // Función asíncrona para buscar una edicion por su ID
 async function buscarEdicionPorId(id) {
   try {
-    const edicion = await Edicion.findById(id);
+    const edicion = await Edicion.findById(id).populate('cursoId')
+    .populate('horarios');
     if (!edicion) {
       throw new Error(`Edición con ID ${id} no encontrado`);
     }

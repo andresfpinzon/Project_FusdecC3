@@ -21,7 +21,7 @@ async function crearColegio(body) {
 }
 
 // Función asíncrona para actualizar colegios
-async function actualizarColegios(id, body) {
+async function actualizarColegio(id, body) {
   let colegios = await Colegio.findByIdAndUpdate(
     id,
     {
@@ -40,7 +40,7 @@ async function actualizarColegios(id, body) {
 
 // Función asíncrona para listar los colegio activos
 async function listarColegios() {
-  let colegios = await Colegio.find({});
+  let colegios = await Colegio.find({ estadoColegio: true });
   return colegios;
 }
 
@@ -58,9 +58,19 @@ async function buscarColegiosPorId(id) {
   }
 }
 
+// Función asíncrona para desactivar una brigada
+async function desactivarColegio(id) {
+  const colegio = await Colegio.findByIdAndUpdate(id, { estadoColegio: false }, { new: true });
+  if (!colegio) {
+      throw new Error(`Colegio con ID ${id} no encontrada`);
+  }
+  return colegio;
+}
+
 module.exports = {
   crearColegio,
-  actualizarColegios,
+  desactivarColegio,
+  actualizarColegio,
   listarColegios,
   buscarColegiosPorId,
 };

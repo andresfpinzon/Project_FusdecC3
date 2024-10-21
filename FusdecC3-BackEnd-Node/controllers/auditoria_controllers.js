@@ -14,6 +14,22 @@ const listarAuditorias = async (_req, res) => {
     }
 };
 
+// Controlador para crear una nueva auditoría
+const crearAuditoria = async (req, res) => {
+    const { error, value } = auditoriaSchemaValidation.validate(req.body);
+    
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+    }
+
+    try {
+        // Llamar a la lógica para crear la auditoría
+        const nuevaAuditoria = await logic.crearAuditoria(value);
+        res.status(201).json(nuevaAuditoria);  // 201 Created
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};
 
 // Controlador para actualizar una auditoría
 const actualizarAuditoria = async (req, res) => {
@@ -66,6 +82,7 @@ const obtenerUsuariosPorAuditoria = async (req, res) => {
 // Exportar los controladores
 module.exports = {
     listarAuditorias,
+    crearAuditoria,
     actualizarAuditoria,
     obtenerAuditoriaPorId,
     obtenerUsuariosPorAuditoria

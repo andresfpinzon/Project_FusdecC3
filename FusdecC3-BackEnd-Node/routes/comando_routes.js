@@ -37,6 +37,13 @@ const router = express.Router(); // Define el enrutador
  *           description: IDs de las brigadas asociadas al comando.
  */
 
+/**
+ * @swagger
+ * tags:
+ *   - name: Comandos
+ *     description: API para gestionar Comandos
+ */
+
 // Listar todos los comandos
 /**
  * @swagger

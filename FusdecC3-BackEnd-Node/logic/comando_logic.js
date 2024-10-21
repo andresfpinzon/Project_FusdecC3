@@ -52,7 +52,7 @@ async function editarComando(id, body) {
 
 // Función asíncrona para desactivar un comando
 async function desactivarComando(id) {
-    const comando = await Comando.findByIdAndUpdate(id, { /* no se actualiza el estado */ }, { new: true });
+    const comando = await Comando.findByIdAndUpdate(id, { estadoComando: false }, { new: true });
     if (!comando) {
         throw new Error(`Comando con ID ${id} no encontrado`);
     }
