@@ -1,5 +1,7 @@
 const Edicion = require("../models/edicion_model");
 
+const Estudiante = require('../models/estudiante_model');
+
 // Función asíncrona para crear ediciones
 async function crearEdicion(body) {
   // Verificar si ya existe una edicion con el mismo título
@@ -82,10 +84,29 @@ async function buscarEdicionPorId(id) {
   }
 }
 
+// Lógica para agregar estudiantes a un colegio
+async function agregarEstudianteAEdicion(edicionId, estudianteIds) {
+  try {
+      const edicion = await Edicion.findOne({ edicionId });
+      if (!edicion) {
+          throw new Error('Edicion no encontrado');
+      }
+      // Filtrar los estudiantes ya existentes para no duplicarlos
+      const nuevosEstudiantes = estudianteIds.filter(estudianteId => !edicion.estudiantes.includes(estudianteId));
+      // Agregar los nuevos estudiantes al array de estudiantes del colegio
+      edicion.estudiantes = [...edicion.estudiantes, ...nuevosEstudiantes];
+      await edicion.save();
+      return edicion;
+  } catch (error) {
+      throw new Error(`Error al agregar estudiantes: ${error.message}`);
+  }
+}
+
 module.exports = {
   crearEdicion,
   actualizarEdicion,
   desactivarEdicion,
   listarEdicionesActivas,
   buscarEdicionPorId,
+  agregarEstudianteAEdicion
 };
