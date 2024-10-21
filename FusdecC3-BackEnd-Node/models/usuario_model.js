@@ -31,7 +31,7 @@ const UsuarioSchema = new Schema({
   roles: [
     {
       type: Schema.Types.ObjectId,
-      ref: "rol",
+      ref: "Rol",
     },
   ],
   estadoUsuario: {

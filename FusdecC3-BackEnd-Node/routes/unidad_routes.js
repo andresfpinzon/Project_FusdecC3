@@ -37,6 +37,13 @@ const router = express.Router(); // Define el enrutador
  *           description: IDs de los estudiantes asociados a la unidad.
  */
 
+/**
+ * @swagger
+ * tags:
+ *   - name: Unidades
+ *     description: API para gestionar Unidades
+ */
+
 // Listar todas las unidades
 /**
  * @swagger

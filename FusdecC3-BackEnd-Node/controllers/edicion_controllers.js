@@ -1,5 +1,5 @@
 const logic = require("../logic/edicion_logic");
-const { edicionSchemaValidation } = require("../validations/edicion_validations");
+const edicionSchemaValidation = require("../validations/edicion_validations");
 
 // Controlador para crear una edicion
 const crearEdicion = async (req, res) => {
@@ -32,10 +32,10 @@ const actualizarEdicion = async (req, res) => {
     const { id } = req.params;
     const body = req.body;
     const { error, value } = edicionSchemaValidation.validate({
+        tituloEdicion: body.tituloEdicion,
         fechaInicioEdicion: body.fechaInicioEdicion,
         fechaFinEdicion: body.fechaFinEdicion,
         horarios: body.horarios,
-        ediciones: body.ediciones,
         estudiantes: body.estudiantes,
     });
     if (error) {
@@ -73,7 +73,7 @@ const listarEdicionesActivas = async (req, res) => {
       if (edicionesActivas.length === 0) {
         return res.status(204).send(); // 204 No Content
       }
-      res.json(cursosActivos);
+      res.json(edicionesActivas);
     } catch (err) {
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -89,7 +89,7 @@ const obtenerEdicionPorId = async (req, res) => {
           .status(404)
           .json({ error: `Edicion con ID ${id} no encontrado` });
       }
-      res.json(curso);
+      res.json(edicion);
     } catch (err) {
       res
         .status(500)

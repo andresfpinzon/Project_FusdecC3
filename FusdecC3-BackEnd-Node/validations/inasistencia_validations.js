@@ -33,7 +33,7 @@ const inasistenciaSchemaValidation = Joi.object({
       'string.max': 'El ID del usuario no puede exceder los 450 caracteres',
     }),
     
-  idAsistencia: Joi.string()
+  asistenciaId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/) 
     .required()
     .messages({

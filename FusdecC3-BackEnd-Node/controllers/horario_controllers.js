@@ -1,7 +1,5 @@
 const logic = require("../logic/horario_logic");
-const {
-  horarioSchemaValidation,
-} = require("../validations/horario_validations");
+const horarioSchemaValidation = require("../validations/horario_Validations");
 
 // Controlador para crear un horario
 const crearHorario = async (req, res) => {

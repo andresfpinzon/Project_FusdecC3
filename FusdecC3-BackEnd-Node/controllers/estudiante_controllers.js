@@ -27,11 +27,18 @@ const crearEstudiante = async (req, res) => {
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
     colegioId: body.colegioId,
-    estadoEstudiante: body.estadoEstudiante
+    estadoEstudiante: body.estadoEstudiante,
+    ediciones: body.ediciones || [],
+    calificaciones: body.calificaciones || [],
+    inasistencias: body.inasistencias || [],
+    asistencias: body.asistencias || [],
+    certificados: body.certificados || []
   });
+
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
+
   try {
     const nuevoEstudiante = await logic.crearEstudiante(value);
     res.status(201).json(nuevoEstudiante);
@@ -42,6 +49,7 @@ const crearEstudiante = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 
 // Controlador para actualizar un estudiante
 const actualizarEstudiante = async (req, res) => {
@@ -57,11 +65,18 @@ const actualizarEstudiante = async (req, res) => {
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
     colegioId: body.colegioId,
-    estadoEstudiante: body.estadoEstudiante
+    estadoEstudiante: body.estadoEstudiante,
+    ediciones: body.ediciones || [],
+    calificaciones: body.calificaciones || [],
+    inasistencias: body.inasistencias || [],
+    asistencias: body.asistencias || [],
+    certificados: body.certificados || []
   });
+
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
+
   try {
     const estudianteActualizado = await logic.actualizarEstudiante(id, value);
     if (!estudianteActualizado) {
@@ -72,6 +87,7 @@ const actualizarEstudiante = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 
 // Controlador para desactivar un estudiante
 const desactivarEstudiante = async (req, res) => {
@@ -101,106 +117,92 @@ const obtenerEstudiantePorId = async (req, res) => {
   }
 };
 
-// Controlador para asignar un colegio a un estudiante
-const asignarColegioAEstudiante = async (req, res) => {
-  const { id } = req.params;
-  const { colegioId } = req.body;
-  try {
-    const estudiante = await logic.asignarColegioAEstudiante(id, colegioId);
-    if (!estudiante) {
-      return res.status(404).json({ error: 'Estudiante no encontrado' });
-    }
-    res.json(estudiante);
-  } catch (err) {
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-};
 
-// Controlador para asignar una unidad a un estudiante
-const asignarUnidadAEstudiante = async (req, res) => {
-  const { id } = req.params;
-  const { unidadId } = req.body;
-  try {
-    const estudiante = await logic.asignarUnidadAEstudiante(id, unidadId);
-    if (!estudiante) {
-      return res.status(404).json({ error: 'Estudiante no encontrado' });
-    }
-    res.json(estudiante);
-  } catch (err) {
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-};
-
-// Controlador para asignar ediciones a un estudiante
-const asignarEdicionesAEstudiante = async (req, res) => {
-  const { id } = req.params;
-  const { edicionesIds } = req.body;
-  try {
-    const estudiante = await logic.asignarEdicionesAEstudiante(id, edicionesIds);
-    if (!estudiante) {
-      return res.status(404).json({ error: 'Estudiante no encontrado' });
-    }
-    res.json(estudiante);
-  } catch (err) {
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-};
-
-// Controlador para agregar asistencia a un estudiante
+// Controlador para agregar asistencias a un estudiante
 const agregarAsistenciaAEstudiante = async (req, res) => {
-  const { estudianteId, asistenciaId } = req.body;
+  const { estudianteId } = req.params;
+  const { asistencias } = req.body;
+
+  if (!Array.isArray(asistencias) || asistencias.length === 0) {
+      return res.status(400).json({ error: 'Se requiere un array de IDs de asistencias' });
+  }
+
   try {
-    await logic.agregarAsistenciaAEstudiante(estudianteId, asistenciaId);
-    res.status(200).json({ message: 'Asistencia agregada correctamente' });
-  } catch (err) {
-    if (err.message === 'Estudiante no encontrado') {
-      return res.status(404).json({ error: err.message });
-    }
-    res.status(500).json({ error: 'Error interno del servidor' });
+      const estudianteActualizado = await logic.agregarAsistenciaAEstudiante(estudianteId, asistencias);
+      res.json({ estudiante: estudianteActualizado });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
   }
 };
 
-// Controlador para agregar inasistencia a un estudiante
+// Controlador para agregar inasistencias a un estudiante
 const agregarInasistenciaAEstudiante = async (req, res) => {
-  const { estudianteId, inasistenciaId } = req.body;
+  const { estudianteId } = req.params;
+  const { inasistencias } = req.body;
+
+  if (!Array.isArray(inasistencias) || inasistencias.length === 0) {
+      return res.status(400).json({ error: 'Se requiere un array de IDs de inasistencias' });
+  }
+
   try {
-    await logic.agregarInasistenciaAEstudiante(estudianteId, inasistenciaId);
-    res.status(200).json({ message: 'Inasistencia agregada correctamente' });
-  } catch (err) {
-    if (err.message === 'Estudiante no encontrado') {
-      return res.status(404).json({ error: err.message });
-    }
-    res.status(500).json({ error: 'Error interno del servidor' });
+      const estudianteActualizado = await logic.agregarInasistenciaAEstudiante(estudianteId, inasistencias);
+      res.json({ estudiante: estudianteActualizado });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
   }
 };
 
-// Controlador para agregar calificación a un estudiante
-const agregarCalificacionAEstudiante = async (req, res) => {
-  const { estudianteId, calificacionId } = req.body;
-  try {
-    await logic.agregarCalificacionAEstudiante(estudianteId, calificacionId);
-    res.status(200).json({ message: 'Calificación agregada correctamente' });
-  } catch (err) {
-    if (err.message === 'Estudiante no encontrado') {
-      return res.status(404).json({ error: err.message });
-    }
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-};
-
-// Controlador para agregar un certificado a un estudiante
+// Controlador para agregar certificados a un estudiante
 const agregarCertificadoAEstudiante = async (req, res) => {
-  const { estudianteId, certificadoId } = req.body;
+  const { estudianteId } = req.params;
+  const { certificados } = req.body;
+
+  if (!Array.isArray(certificados) || certificados.length === 0) {
+      return res.status(400).json({ error: 'Se requiere un array de IDs de certificados' });
+  }
+
   try {
-    await logic.agregarCertificadoAEstudiante(estudianteId, certificadoId);
-    res.status(200).json({ message: 'Certificado agregado correctamente' });
-  } catch (err) {
-    if (err.message === 'Estudiante no encontrado') {
-      return res.status(404).json({ error: err.message });
-    }
-    res.status(500).json({ error: 'Error interno del servidor' });
+      const estudianteActualizado = await logic.agregarCertificadoAEstudiante(estudianteId, certificados);
+      res.json({ estudiante: estudianteActualizado });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
   }
 };
+
+// Controlador para agregar calificaciones a un estudiante
+const agregarCalificacionAEstudiante = async (req, res) => {
+  const { estudianteId } = req.params;
+  const { calificaciones } = req.body;
+
+  if (!Array.isArray(calificaciones) || calificaciones.length === 0) {
+      return res.status(400).json({ error: 'Se requiere un array de IDs de calificaciones' });
+  }
+
+  try {
+      const estudianteActualizado = await logic.agregarCalificacionAEstudiante(estudianteId, calificaciones);
+      res.json({ estudiante: estudianteActualizado });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+
+// Controlador para agregar ediciones a un estudiante
+const agregarEdicionAEstudiante = async (req, res) => {
+  const { estudianteId } = req.params;
+  const { ediciones } = req.body;
+
+  if (!Array.isArray(ediciones) || ediciones.length === 0) {
+      return res.status(400).json({ error: 'Se requiere un array de IDs de ediciones' });
+  }
+
+  try {
+      const estudianteActualizado = await logic.agregarEdicionAEstudiante(estudianteId, ediciones);
+      res.json({ estudiante: estudianteActualizado });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+
 
 // Exportar los controladores adicionales
 module.exports = {
@@ -209,11 +211,9 @@ module.exports = {
   actualizarEstudiante,
   desactivarEstudiante,
   obtenerEstudiantePorId,
-  asignarColegioAEstudiante,
-  asignarUnidadAEstudiante,
-  asignarEdicionesAEstudiante,
   agregarAsistenciaAEstudiante,
   agregarInasistenciaAEstudiante,
-  agregarCalificacionAEstudiante,
   agregarCertificadoAEstudiante,
+  agregarCalificacionAEstudiante,
+  agregarEdicionAEstudiante
 };

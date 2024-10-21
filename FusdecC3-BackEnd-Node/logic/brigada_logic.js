@@ -38,7 +38,7 @@ async function editarBrigada(id, body) {
 
 // Función asíncrona para desactivar una brigada
 async function desactivarBrigada(id) {
-    const brigada = await Brigada.findByIdAndUpdate(id, { /* no se actualiza el estado */ }, { new: true });
+    const brigada = await Brigada.findByIdAndUpdate(id, { estadoBrigada: false }, { new: true });
     if (!brigada) {
         throw new Error(`Brigada con ID ${id} no encontrada`);
     }

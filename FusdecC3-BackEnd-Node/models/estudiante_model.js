@@ -60,18 +60,21 @@ const EstudianteSchema = new Schema({
     {
       type: Schema.Types.ObjectId, // Referencia a múltiples Calificaciones
       ref: "Calificacion",
+      required: false,
     },
   ],
   inasistencias: [
     {
       type: Schema.Types.ObjectId, //Referencia a múltiples Inasistencias
       ref: "Inasistencia",
+      required: false,
     },
   ],
   asistencias: [
     {
       type: Schema.Types.ObjectId, // Referencia a múltiples Asistencias
       ref: "Asistencia",
+      required: false,
     },
   ], 
   certificados: [
