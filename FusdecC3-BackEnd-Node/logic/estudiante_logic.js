@@ -3,6 +3,7 @@ const Inasistencia = require("../models/inasistencia_model");
 const Asistencia = require("../models/asistencia_model");
 const Certificado = require("../models/certificado_model");
 const Calificacion = require("../models/calificacion_model");
+
 // Función para crear un nuevo estudiante
 async function crearEstudiante(body) {
     // Verificar si ya existe un estudiante con el mismo correo o número de documento
@@ -113,78 +114,96 @@ async function obtenerEstudiantePorId(id) {
     return estudiante;
 }
 
-// Función para asignar un colegio a un estudiante
-async function asignarColegioAEstudiante(id, colegioId) {
-    let estudiante = await Estudiante.findById(id);
-    if (!estudiante) {
-        throw new Error("Estudiante no encontrado");
+// Lógica para agregar asistencias a un estudiante
+async function agregarAsistenciaAEstudiante(estudianteId, asistenciasIds) {
+    try {
+        const estudiante = await Estudiante.findOne({ estudianteId });
+        if (!estudiante) {
+            throw new Error('Estudiante no encontrado');
+        }
+        // Filtrar las asistencias ya existentes para no duplicarlas
+        const nuevasAsistencias = asistenciasIds.filter(asistenciaId => !estudiante.asistencias.includes(asistenciaId));
+        // Agregar las nuevas asistencias al array de asistencias del estudiante
+        estudiante.asistencias = [...estudiante.asistencias, ...nuevasAsistencias];
+        await estudiante.save();
+        return estudiante;
+    } catch (error) {
+        throw new Error(`Error al agregar asistencias: ${error.message}`);
     }
-    estudiante.colegioId = colegioId; 
-    await estudiante.save(); 
-    return estudiante; 
 }
 
-// Función para asignar una unidad a un estudiante
-async function asignarUnidadAEstudiante(id, unidadId) {
-    let estudiante = await Estudiante.findById(id);
-    if (!estudiante) {
-        throw new Error("Estudiante no encontrado");
+// Lógica para agregar inasistencias a un estudiante
+async function agregarInasistenciaAEstudiante(estudianteId, inasistenciasIds) {
+    try {
+        const estudiante = await Estudiante.findOne({ estudianteId });
+        if (!estudiante) {
+            throw new Error('Estudiante no encontrado');
+        }
+        // Filtrar las inasistencias ya existentes para no duplicarlas
+        const nuevasInasistencias = inasistenciasIds.filter(inasistenciaId => !estudiante.inasistencias.includes(inasistenciaId));
+        // Agregar las nuevas inasistencias al array de inasistencias del estudiante
+        estudiante.inasistencias = [...estudiante.inasistencias, ...nuevasInasistencias];
+        await estudiante.save();
+        return estudiante;
+    } catch (error) {
+        throw new Error(`Error al agregar inasistencias: ${error.message}`);
     }
-    estudiante.unidadId = unidadId; 
-    await estudiante.save(); 
-    return estudiante; 
 }
 
-// Función para asignar ediciones a un estudiante
-async function asignarEdicionesAEstudiante(id, edicionesIds) {
-    let estudiante = await Estudiante.findById(id);
-    if (!estudiante) {
-        throw new Error("Estudiante no encontrado");
+// Lógica para agregar certificados a un estudiante
+async function agregarCertificadoAEstudiante(estudianteId, certificadosIds) {
+    try {
+        const estudiante = await Estudiante.findOne({ estudianteId });
+        if (!estudiante) {
+            throw new Error('Estudiante no encontrado');
+        }
+        // Filtrar los certificados ya existentes para no duplicarlos
+        const nuevosCertificados = certificadosIds.filter(certificadoId => !estudiante.certificados.includes(certificadoId));
+        // Agregar los nuevos certificados al array de certificados del estudiante
+        estudiante.certificados = [...estudiante.certificados, ...nuevosCertificados];
+        await estudiante.save();
+        return estudiante;
+    } catch (error) {
+        throw new Error(`Error al agregar certificados: ${error.message}`);
     }
-    estudiante.ediciones.push(...edicionesIds); 
-    await estudiante.save(); 
-    return estudiante; 
 }
 
-// Función para agregar asistencia a un estudiante
-async function agregarAsistenciaAEstudiante(estudianteId, asistenciaId) {
-    let estudiante = await Estudiante.findById(estudianteId);
-    if (!estudiante) {
-        throw new Error("Estudiante no encontrado");
+// Lógica para agregar calificaciones a un estudiante
+async function agregarCalificacionAEstudiante(estudianteId, calificacionesIds) {
+    try {
+        const estudiante = await Estudiante.findOne({ estudianteId });
+        if (!estudiante) {
+            throw new Error('Estudiante no encontrado');
+        }
+        // Filtrar las calificaciones ya existentes para no duplicarlas
+        const nuevasCalificaciones = calificacionesIds.filter(calificacionId => !estudiante.calificaciones.includes(calificacionId));
+        // Agregar las nuevas calificaciones al array de calificaciones del estudiante
+        estudiante.calificaciones = [...estudiante.calificaciones, ...nuevasCalificaciones];
+        await estudiante.save();
+        return estudiante;
+    } catch (error) {
+        throw new Error(`Error al agregar calificaciones: ${error.message}`);
     }
-    estudiante.asistencias.push(asistenciaId); 
-    await estudiante.save(); 
 }
 
-// Función para agregar inasistencia a un estudiante
-async function agregarInasistenciaAEstudiante(estudianteId, inasistenciaId) {
-    let estudiante = await Estudiante.findById(estudianteId);
-    if (!estudiante) {
-        throw new Error("Estudiante no encontrado");
+// Lógica para agregar ediciones a un estudiante
+async function agregarEdicionAEstudiante(estudianteId, edicionesIds) {
+    try {
+        const estudiante = await Estudiante.findOne({ estudianteId });
+        if (!estudiante) {
+            throw new Error('Estudiante no encontrado');
+        }
+        // Filtrar las ediciones ya existentes para no duplicarlas
+        const nuevasEdiciones = edicionesIds.filter(edicionId => !estudiante.ediciones.includes(edicionId));
+        // Agregar las nuevas ediciones al array de ediciones del estudiante
+        estudiante.ediciones = [...estudiante.ediciones, ...nuevasEdiciones];
+        await estudiante.save();
+        return estudiante;
+    } catch (error) {
+        throw new Error(`Error al agregar ediciones: ${error.message}`);
     }
-    estudiante.inasistencias.push(inasistenciaId); 
-    await estudiante.save(); 
 }
 
-// Función para agregar calificación a un estudiante
-async function agregarCalificacionAEstudiante(estudianteId, calificacionId) {
-    let estudiante = await Estudiante.findById(estudianteId);
-    if (!estudiante) {
-        throw new Error("Estudiante no encontrado");
-    }
-    estudiante.calificaciones.push(calificacionId); 
-    await estudiante.save(); 
-}
-
-// Función para agregar un certificado a un estudiante
-async function agregarCertificadoAEstudiante(estudianteId, certificadoId) {
-    let estudiante = await Estudiante.findById(estudianteId);
-    if (!estudiante) {
-        throw new Error("Estudiante no encontrado");
-    }
-    estudiante.certificados.push(certificadoId); 
-    await estudiante.save(); 
-}
 
 // Función para desactivar un estudiante
 async function desactivarEstudiante(id) {
@@ -200,13 +219,11 @@ module.exports = {
     actualizarEstudiante,
     listarEstudiantes,
     obtenerEstudiantePorId,
-    asignarColegioAEstudiante,
-    asignarUnidadAEstudiante,
-    asignarEdicionesAEstudiante,
     agregarAsistenciaAEstudiante,
     agregarInasistenciaAEstudiante,
-    agregarCalificacionAEstudiante,
     agregarCertificadoAEstudiante,
+    agregarCalificacionAEstudiante,
+    agregarEdicionAEstudiante,
     desactivarEstudiante
 };
 

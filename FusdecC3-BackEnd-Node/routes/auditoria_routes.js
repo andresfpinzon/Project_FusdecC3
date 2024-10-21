@@ -143,4 +143,41 @@ router.post('/', auditoriaController.crearAuditoria);
  */
 router.get('/:id', auditoriaController.obtenerAuditoriaPorId);
 
+/**
+ * @swagger
+ * /api/auditorias/{id}:
+ *   delete:
+ *     tags: 
+ *       - Auditoría
+ *     summary: Desactivar una auditoría por su ID
+ *     description: Cambia el estado de una auditoría a inactivo.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la auditoría a desactivar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Auditoría desactivada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Auditoria'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                   nombreEmisor: "pedro perez"
+ *                   estadoAuditoria: true
+ *                   fechaAuditoria: "2023-10-01T12:00:00Z"
+ *                   certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
+ *       404:
+ *         description: Auditoría no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.delete('/:id', auditoriaController.desactivarAuditoria);
+
 module.exports = router;

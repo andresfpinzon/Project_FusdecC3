@@ -79,11 +79,26 @@ const obtenerUsuariosPorAuditoria = async (req, res) => {
     }
 };
 
+// Controlador para eliminar una asistencia
+const desactivarAuditoria = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const auditoriaDesactivada = await logic.desactivarAuditoria(id);
+      if (!auditoriaDesactivada) {
+        return res.status(404).json({ error: 'Asistencia no encontrada' });
+      }
+      res.json(auditoriaDesactivada);
+    } catch (err) {
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+
 // Exportar los controladores
 module.exports = {
     listarAuditorias,
     crearAuditoria,
     actualizarAuditoria,
+    desactivarAuditoria,
     obtenerAuditoriaPorId,
     obtenerUsuariosPorAuditoria
 };

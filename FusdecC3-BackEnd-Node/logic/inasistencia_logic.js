@@ -1,4 +1,4 @@
-const Inasistencia = require('../models/asistencia_model'); 
+const Inasistencia = require('../models/inasistencia_model'); 
 
 // Función asíncrona para crear una inasistencia
 async function crearInasistencia(body) {
@@ -8,7 +8,7 @@ async function crearInasistencia(body) {
         observacion: body.observacion,
         usuarioId: body.usuarioId,
         asistenciaId: body.asistenciaId,
-        estadoAsistencia: body.estadoAsistencia,
+        estadoInasistencia: body.estadoInasistencia,
         estudiantes: body.estudiantes || [], // Se puede pasar un array de estudiantes
     });
 
@@ -26,7 +26,7 @@ async function actualizarInasistencia(id, body) {
     inasistencia.observacion = body.observacion || inasistencia.observacion;
     inasistencia.usuarioId = body.usuarioId || inasistencia.usuarioId;
     inasistencia.asistenciaId = body.asistenciaId || inasistencia.asistenciaId;
-    inasistencia.estadoAsistencia = body.estadoAsistencia || inasistencia.estadoAsistencia;
+    inasistencia.estadoInasistencia = body.estadoInasistencia || inasistencia.estadoInasistencia;
 
     // Si se pasan estudiantes, evitamos duplicados
     if (body.estudiantes && body.estudiantes.length > 0) {
@@ -45,7 +45,8 @@ async function listarInasistencias() {
 
 // Función asíncrona para obtener una inasistencia por su ID
 async function obtenerInasistenciaPorId(id) {
-    const inasistencia = await Inasistencia.findById(id);
+    const inasistencia = await Inasistencia.findById(id)
+    .populate('estudiantes');
     if (!inasistencia) {
         throw new Error('Inasistencia no encontrada');
     }

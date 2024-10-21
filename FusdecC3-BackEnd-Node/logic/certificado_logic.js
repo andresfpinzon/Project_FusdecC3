@@ -1,16 +1,10 @@
 const Certificado = require('../models/certificado_model');
 const Estudiante = require('../models/estudiante_model');
 const Curso = require('../models/curso_model');
-//const certificadoSchemaValidation = require('../validations/certificado_validations');
+
 
 // Función asíncrona para crear certificados
 async function crearCertificado(body) {
-    // Validar los datos de entrada
-    const { error } = certificadoSchemaValidation.validate(body);
-    if (error) {
-        throw new Error(error.details[0].message);
-    }
-
     // Verificar si ya existe un certificado con el mismo código de verificación
     const certificadoExistente = await Certificado.findOne({ codigoVerificacion: body.codigoVerificacion });
     if (certificadoExistente) {
@@ -31,9 +25,7 @@ async function crearCertificado(body) {
 
 // Función asíncrona para listar certificados
 async function listarCertificados() {
-    return await Certificado.find()
-        .populate('estudianteId')
-        .populate('cursoId');
+    return await Certificado.find();
 }
 
 // Función asíncrona para buscar un certificado por su ID
@@ -49,9 +41,7 @@ async function buscarCertificadoPorId(id) {
 
 // Función asíncrona para editar un certificado
 async function editarCertificado(id, body) {
-    const certificado = await Certificado.findByIdAndUpdate(id, body, { new: true })
-        .populate('estudianteId')
-        .populate('cursoId');
+    const certificado = await Certificado.findByIdAndUpdate(id, body, { new: true });
     if (!certificado) {
         throw new Error(`Certificado con ID ${id} no encontrado`);
     }
@@ -60,7 +50,7 @@ async function editarCertificado(id, body) {
 
 // Función asíncrona para desactivar un certificado
 async function desactivarCertificado(id) {
-    const certificado = await Certificado.findByIdAndUpdate(id, { /* no se actualiza el estado */ }, { new: true });
+    const certificado = await Certificado.findByIdAndUpdate(id, { estadoCertificado: false }, { new: true });
     if (!certificado) {
         throw new Error(`Certificado con ID ${id} no encontrado`);
     }

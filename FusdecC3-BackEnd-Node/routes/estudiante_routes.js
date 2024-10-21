@@ -246,16 +246,16 @@ router.get('/:id', estudianteController.obtenerEstudiantePorId);
 
 /**
  * @swagger
- * /api/estudiantes/{id}/colegio:
+ * /api/estudiantes/{id}/asistencias:
  *   post:
- *     tags: 
+ *     tags:
  *       - Estudiantes
- *     summary: Asignar un colegio a un estudiante
+ *     summary: Agregar asistencias a un estudiante
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del estudiante
+ *         description: El ID del estudiante al que se le agregarán las asistencias.
  *         schema:
  *           type: string
  *     requestBody:
@@ -265,35 +265,50 @@ router.get('/:id', estudianteController.obtenerEstudiantePorId);
  *           schema:
  *             type: object
  *             properties:
- *               colegioId:
- *                 type: string
- *                 description: ID del colegio a asignar
- *           example:
- *             colegioId: "63f7d2bbf1a2b4b5c3cdb700"
+ *               asistencias:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 asistencias: [
+ *                   "60d21b4667d0d8992e610c81", // ID de asistencia 1
+ *                   "60d21b4667d0d8992e610c82"  // ID de asistencia 2
+ *                 ]
  *     responses:
  *       200:
- *         description: Colegio asignado correctamente.
+ *         description: Asistencias agregadas correctamente al estudiante.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Estudiante'
- *       404:
- *         description: Estudiante no encontrado.
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d21b4667d0d8992e610c84"
+ *                   nombreEstudiante: "Juan"
+ *                   apellidoEstudiante: "Pérez"
+ *                   correoEstudiante: "juan.perez@gmail.com"
+ *                   asistencias: [
+ *                     "60d21b4667d0d8992e610c81",
+ *                     "60d21b4667d0d8992e610c82"
+ *                   ]
  */
-router.post('/estudiantes/:id/colegio', estudianteController.asignarColegioAEstudiante);
+router.post('/:id/asistencias', estudianteController.agregarAsistenciaAEstudiante);
 
 /**
  * @swagger
- * /api/estudiantes/{id}/unidad:
+ * /api/estudiantes/{id}/inasistencias:
  *   post:
- *     tags: 
+ *     tags:
  *       - Estudiantes
- *     summary: Asignar una unidad a un estudiante
+ *     summary: Agregar inasistencias a un estudiante
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del estudiante
+ *         description: El ID del estudiante al que se le agregarán las inasistencias.
  *         schema:
  *           type: string
  *     requestBody:
@@ -303,35 +318,156 @@ router.post('/estudiantes/:id/colegio', estudianteController.asignarColegioAEstu
  *           schema:
  *             type: object
  *             properties:
- *               unidadId:
- *                 type: string
- *                 description: ID de la unidad a asignar
- *           example:
- *             unidadId: "63f7d2bbf1a2b4b5c3cdb701"
+ *               inasistencias:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 inasistencias: [
+ *                   "60d21b4667d0d8992e610c83", // ID de inasistencia 1
+ *                   "60d21b4667d0d8992e610c84"  // ID de inasistencia 2
+ *                 ]
  *     responses:
  *       200:
- *         description: Unidad asignada correctamente.
+ *         description: Inasistencias agregadas correctamente al estudiante.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Estudiante'
- *       404:
- *         description: Estudiante no encontrado.
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d21b4667d0d8992e610c84"
+ *                   nombreEstudiante: "Juan"
+ *                   apellidoEstudiante: "Pérez"
+ *                   correoEstudiante: "juan.perez@gmail.com"
+ *                   inasistencias: [
+ *                     "60d21b4667d0d8992e610c83",
+ *                     "60d21b4667d0d8992e610c84"
+ *                   ]
  */
-router.post('/estudiantes/:id/unidad', estudianteController.asignarUnidadAEstudiante);
+router.post('/:id/inasistencias', estudianteController.agregarInasistenciaAEstudiante);
+
+/**
+ * @swagger
+ * /api/estudiantes/{id}/certificados:
+ *   post:
+ *     tags:
+ *       - Estudiantes
+ *     summary: Agregar certificados a un estudiante
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del estudiante al que se le agregarán los certificados.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               certificados:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 certificados: [
+ *                   "60d21b4667d0d8992e610c85", // ID de certificado 1
+ *                   "60d21b4667d0d8992e610c86"  // ID de certificado 2
+ *                 ]
+ *     responses:
+ *       200:
+ *         description: Certificados agregados correctamente al estudiante.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Estudiante'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d21b4667d0d8992e610c84"
+ *                   nombreEstudiante: "Juan"
+ *                   apellidoEstudiante: "Pérez"
+ *                   correoEstudiante: "juan.perez@gmail.com"
+ *                   certificados: [
+ *                     "60d21b4667d0d8992e610c85",
+ *                     "60d21b4667d0d8992e610c86"
+ *                   ]
+ */
+router.post('/:id/certificados', estudianteController.agregarCertificadoAEstudiante);
+
+/**
+ * @swagger
+ * /api/estudiantes/{id}/calificaciones:
+ *   post:
+ *     tags:
+ *       - Estudiantes
+ *     summary: Agregar calificaciones a un estudiante
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del estudiante al que se le agregarán las calificaciones.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               calificaciones:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 calificaciones: [
+ *                   "60d21b4667d0d8992e610c91", // ID de calificación 1
+ *                   "60d21b4667d0d8992e610c92"  // ID de calificación 2
+ *                 ]
+ *     responses:
+ *       200:
+ *         description: Calificaciones agregadas correctamente al estudiante.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Estudiante'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d21b4667d0d8992e610c84"
+ *                   nombreEstudiante: "Juan"
+ *                   apellidoEstudiante: "Pérez"
+ *                   correoEstudiante: "juan.perez@gmail.com"
+ *                   calificaciones: [
+ *                     "60d21b4667d0d8992e610c91",
+ *                     "60d21b4667d0d8992e610c92"
+ *                   ]
+ */
+router.post('/:id/calificaciones', estudianteController.agregarCalificacionAEstudiante);
 
 /**
  * @swagger
  * /api/estudiantes/{id}/ediciones:
  *   post:
- *     tags: 
+ *     tags:
  *       - Estudiantes
- *     summary: Asignar ediciones a un estudiante
+ *     summary: Agregar ediciones a un estudiante
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del estudiante
+ *         description: El ID del estudiante al que se le agregarán las ediciones.
  *         schema:
  *           type: string
  *     requestBody:
@@ -341,131 +477,37 @@ router.post('/estudiantes/:id/unidad', estudianteController.asignarUnidadAEstudi
  *           schema:
  *             type: object
  *             properties:
- *               edicionesIds:
+ *               ediciones:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: IDs de las ediciones a asignar
- *           example:
- *             edicionesIds: ["63f7d2bbf1a2b4b5c3cdb702", "63f7d2bbf1a2b4b5c3cdb703"]
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 ediciones: [
+ *                   "60d21b4667d0d8992e610c93", // ID de edición 1
+ *                   "60d21b4667d0d8992e610c94"  // ID de edición 2
+ *                 ]
  *     responses:
  *       200:
- *         description: Ediciones asignadas correctamente.
+ *         description: Ediciones agregadas correctamente al estudiante.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Estudiante'
- *       404:
- *         description: Estudiante no encontrado.
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d21b4667d0d8992e610c84"
+ *                   nombreEstudiante: "Juan"
+ *                   apellidoEstudiante: "Pérez"
+ *                   correoEstudiante: "juan.perez@gmail.com"
+ *                   ediciones: [
+ *                     "60d21b4667d0d8992e610c93",
+ *                     "60d21b4667d0d8992e610c94"
+ *                   ]
  */
-router.post('/estudiantes/:id/ediciones', estudianteController.asignarEdicionesAEstudiante);
+router.post('/:id/ediciones', estudianteController.agregarEdicionAEstudiante);
 
-/**
- * @swagger
- * /api/estudiantes/asistencia:
- *   post:
- *     tags: 
- *       - Estudiantes
- *     summary: Agregar asistencia a un estudiante
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               estudianteId:
- *                 type: string
- *               asistenciaId:
- *                 type: string
- *           example:
- *             estudianteId: "63f7d2bbf1a2b4b5c3cdb704"
- *             asistenciaId: "63f7d2bbf1a2b4b5c3cdb705"
- *     responses:
- *       200:
- *         description: Asistencia agregada correctamente.
- */
-router.post('/estudiantes/:id/asistencias', estudianteController.agregarAsistenciaAEstudiante);
-
-/**
- * @swagger
- * /api/estudiantes/inasistencia:
- *   post:
- *     tags: 
- *       - Estudiantes
- *     summary: Agregar inasistencia a un estudiante
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               estudianteId:
- *                 type: string
- *               inasistenciaId:
- *                 type: string
- *           example:
- *             estudianteId: "63f7d2bbf1a2b4b5c3cdb706"
- *             inasistenciaId: "63f7d2bbf1a2b4b5c3cdb707"
- *     responses:
- *       200:
- *         description: Inasistencia agregada correctamente.
- */
-router.post('/estudiantes/:id/inasistencias', estudianteController.agregarInasistenciaAEstudiante);
-
-/**
- * @swagger
- * /api/estudiantes/calificacion:
- *   post:
- *     tags: 
- *       - Estudiantes
- *     summary: Agregar calificación a un estudiante
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               estudianteId:
- *                 type: string
- *               calificacionId:
- *                 type: string
- *           example:
- *             estudianteId: "63f7d2bbf1a2b4b5c3cdb708"
- *             calificacionId: "63f7d2bbf1a2b4b5c3cdb709"
- *     responses:
- *       200:
- *         description: Calificación agregada correctamente.
- */
-router.post('/estudiantes/:id/calificaciones', estudianteController.agregarCalificacionAEstudiante);
-
-/**
- * @swagger
- * /api/estudiantes/certificado:
- *   post:
- *     tags: 
- *       - Estudiantes
- *     summary: Agregar un certificado a un estudiante
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               estudianteId:
- *                 type: string
- *               certificadoId:
- *                 type: string
- *           example:
- *             estudianteId: "63f7d2bbf1a2b4b5c3cdb710"
- *             certificadoId: "63f7d2bbf1a2b4b5c3cdb711"
- *     responses:
- *       200:
- *         description: Certificado agregado correctamente.
- */
-router.post('/estudiantes/:id/certificados', estudianteController.agregarCertificadoAEstudiante);
 
 module.exports = router;

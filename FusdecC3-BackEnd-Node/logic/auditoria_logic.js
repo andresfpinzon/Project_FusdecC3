@@ -58,7 +58,7 @@ async function buscarUsuariosPorAuditoria(id) {
 
 // Función asíncrona para desactivar una auditoría (si se requiere)
 async function desactivarAuditoria(id) {
-    const auditoria = await Auditoria.findByIdAndUpdate(id, { estadoAsistencia: false }, { new: true });
+    const auditoria = await Auditoria.findByIdAndUpdate(id, { estadoAuditoria: false }, { new: true });
     if (!auditoria) {
         throw new Error(`Auditoría con ID ${id} no encontrada`);
     }
