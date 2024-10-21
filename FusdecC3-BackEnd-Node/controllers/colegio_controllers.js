@@ -95,6 +95,23 @@ const obtenerColegiosPorId = async (req, res) => {
   }
 };
 
+// Controlador para agregar estudiantes a un colegio
+const agregarEstudianteAColegio = async (req, res) => {
+  const { colegioId } = req.params;
+  const { estudiantes } = req.body;
+
+  if (!Array.isArray(estudiantes) || estudiantes.length === 0) {
+      return res.status(400).json({ error: 'Se requiere un array de IDs de estidiantes' });
+  }
+
+  try {
+      const colegioActualizado = await logic.agregarEstudianteAColegio(colegioId, estudiantes);
+      res.json({ colegio: colegioActualizado });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+
 // Exportar los controladores
 module.exports = {
   crearColegio,
@@ -102,4 +119,5 @@ module.exports = {
   desactivarColegio,
   listarColegiosActivos,
   obtenerColegiosPorId,
+  agregarEstudianteAColegio
 };
