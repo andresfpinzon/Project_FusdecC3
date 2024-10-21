@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login } = require('../controllers/auth_controllers'); // Ajusta la ruta según tu estructura de carpetas
+const { login } = require('../controllers/autenticacion_controllers'); // Ajusta la ruta según tu estructura de carpetas
 
 /**
  * @swagger
