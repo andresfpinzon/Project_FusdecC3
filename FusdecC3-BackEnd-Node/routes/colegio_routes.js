@@ -296,6 +296,6 @@ router.get("/:id", colegioController.obtenerColegiosPorId);
  *             example:
  *               error: 'Error al agregar estudiantes: [detalles del error]'
  */
-router.post("/:id/estudiantes", agregarEstudianteAColegio);
+router.post("/:id/estudiantes", colegioController.agregarEstudianteAColegio);
 
 module.exports = router;
