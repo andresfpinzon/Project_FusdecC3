@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usuarioController = require('../controllers/usuario_controllers'); 
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger

@@ -14,6 +14,7 @@ const inasistenciaRoutes = require('./routes/inasistencia_routes');
 const rolRoutes = require('./routes/rol_routes');
 const unidadRoutes = require('./routes/unidad_routes');
 const usuarioRoutes = require('./routes/usuario_routes');
+const authRoutes = require('./routes/auth_routes')
 //const fundacionRoutes = require('./routes/fundacion_routes'); 
 
 // Importaciones básicas de Express y otras dependencias
@@ -53,6 +54,7 @@ app.use('/api/inasistencias', inasistenciaRoutes);
 app.use('/api/roles', rolRoutes);
 app.use('/api/unidades', unidadRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+app.use('api/auth', authRoutes)
 //app.use('/api/fundaciones', fundacionRoutes); 
 
 // Puerto del servidor

@@ -1,6 +1,7 @@
 const express = require('express');
 const auditoriaController = require('../controllers/auditoria_controllers');
 const router = express.Router();
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -65,6 +66,7 @@ const router = express.Router();
  *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a2"
  */
 router.get('/', auditoriaController.listarAuditorias);
+
 
 /**
  * @swagger

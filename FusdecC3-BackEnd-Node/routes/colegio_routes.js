@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router(); // Crear router
 const colegioController = require("../controllers/colegio_controllers"); // Importar controladores
-
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger

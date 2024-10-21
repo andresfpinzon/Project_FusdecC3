@@ -1,6 +1,7 @@
 const express = require('express');
 const cursoController = require('../controllers/curso_controllers'); // Importa el controlador
 const router = express.Router(); // Define el enrutador
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger

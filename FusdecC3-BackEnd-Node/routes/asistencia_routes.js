@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const asistenciaController = require('../controllers/asistencia_controllers'); 
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -71,6 +72,7 @@ const asistenciaController = require('../controllers/asistencia_controllers');
  *                     estudiantes: ["estudiante1", "estudiante2"]
  */
 router.get('/', asistenciaController.listarAsistencias);
+//router.get('/', verifyJWT, verifyRole(['Administrador', 'Instructor']), asistenciaController.listarAsistencias);
 
 /**
  * @swagger

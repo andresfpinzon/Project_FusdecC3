@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const brigadaController = require('../controllers/brigada_controllers');
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger

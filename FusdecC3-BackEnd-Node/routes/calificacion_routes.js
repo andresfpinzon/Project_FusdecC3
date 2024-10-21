@@ -1,6 +1,7 @@
 const express = require("express");
 const calificacionController = require("../controllers/calificacion_controllers");
 const router = express.Router(); // Define el enrutador
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger

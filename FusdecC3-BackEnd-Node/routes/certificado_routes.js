@@ -1,6 +1,7 @@
 const express = require('express');
 const certificadoController = require('../controllers/certificado_controllers');
 const router = express.Router();
+//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger

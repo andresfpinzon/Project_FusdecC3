@@ -1,4 +1,6 @@
 const Usuario = require('../models/usuario_model');
+const bcrypt = require('bcryptjs');
+const SALT_ROUNDS = 10; // Número de rondas de sal para el hash
 
 // Función asíncrona para crear un usuario
 async function crearUsuario(body) {
@@ -8,12 +10,15 @@ async function crearUsuario(body) {
         throw new Error('El correo electrónico ya está registrado');
     }
 
+    // Hashear la contraseña antes de guardarla
+    const contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS);
+
     let usuario = new Usuario({
         nombreUsuario: body.nombreUsuario,
         apellidoUsuario: body.apellidoUsuario,
         numeroDocumento: body.numeroDocumento,
         correo: body.correo,
-        contraseñaHash: body.contraseñaHash,
+        contraseñaHash: contraseñaHash, // Guardar el hash en lugar de la contraseña real
         roles: body.roles || [],// Si hay roles en el cuerpo de la solicitud, se agregan
         estadoUsuario: body.estadoUsuario,
         creadoEn: body.creadoEn,
@@ -33,7 +38,10 @@ async function actualizarUsuario(id, body) {
     usuario.nombreUsuario = body.nombreUsuario || usuario.nombreUsuario;
     usuario.apellidoUsuario = body.apellidoUsuario || usuario.apellidoUsuario;
     usuario.numeroDocumento = body.numeroDocumento || usuario.numeroDocumento;
-    usuario.contraseñaHash = body.contraseñaHash || usuario.contraseñaHash;
+    // Solo actualizar el hash de la contraseña si se proporciona una nueva contraseña
+    if (body.contraseñaHash) {
+        usuario.contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS);
+    }
     usuario.estadoUsuario = body.estadoUsuario || usuario.estadoUsuario;
     usuario.creadoEn = body.creadoEn || usuario.estadoUsuario;
 
