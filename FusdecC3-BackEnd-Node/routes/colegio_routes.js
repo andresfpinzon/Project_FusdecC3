@@ -214,4 +214,88 @@ router.delete("/:id", colegioController.desactivarColegio);
  */
 router.get("/:id", colegioController.obtenerColegiosPorId);
 
+/**
+ * @swagger
+ * /api/colegios/{id}/estudiantes:
+ *   post:
+ *     tags:
+ *       - Colegios
+ *     summary: Agregar estudiantes a un colegio
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del colegio al que se le agregarán los estudiantes.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               estudiantes:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 estudiantes: [
+ *                   "60d21b4667d0d8992e610c81", // ID del estudiante 1
+ *                   "60d21b4667d0d8992e610c82"  // ID del estudiante 2
+ *                 ]
+ *     responses:
+ *       200:
+ *         description: Estudiantes agregados correctamente al colegio.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Colegio'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d21b4667d0d8992e610c84"
+ *                   nombreColegio: "Colegio Ejemplo"
+ *                   estudiantes: [
+ *                     "60d21b4667d0d8992e610c81",
+ *                     "60d21b4667d0d8992e610c82"
+ *                   ]
+ *       400:
+ *         description: Error de validación.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             example:
+ *               error: 'Se requiere un array de IDs de estudiantes'
+ *       404:
+ *         description: Colegio no encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             example:
+ *               error: 'Colegio no encontrado'
+ *       500:
+ *         description: Error interno del servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             example:
+ *               error: 'Error al agregar estudiantes: [detalles del error]'
+ */
+router.post("/:id/estudiantes", agregarEstudianteAColegio);
+
 module.exports = router;
