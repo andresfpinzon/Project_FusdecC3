@@ -80,6 +80,8 @@ const brigadaController = require('../controllers/brigada_controllers');
  *                     estadoBrigada: true
  *                     comandoId: "60d5ec49f1a2c8b1f8e4e1a7"
  *                     unidades: []
+ *       400:
+ *         description: Datos inválidos
  */
 router.get('/', brigadaController.listarBrigadas);
 
@@ -269,7 +271,7 @@ router.delete('/:id', brigadaController.desactivarBrigada);
  * /api/brigadas/{id}/unidades:
  *   post:
  *     tags:
- *       - Brigadas
+ *       - Brigada
  *     summary: Agregar unidades a una brigada
  *     parameters:
  *       - in: path
