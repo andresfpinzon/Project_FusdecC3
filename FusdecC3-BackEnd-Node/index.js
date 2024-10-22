@@ -23,7 +23,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Cargar todas las rutas automáticamente
 loadRoutes(app);
 
-
 // Puerto del servidor
 const port = process.env.PORT || 3000;
 

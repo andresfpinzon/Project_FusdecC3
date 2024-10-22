@@ -38,7 +38,7 @@ const { login } = require('../controllers/autenticacion_controllers'); // Ajusta
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/autenticaciones/login:
  *   post:
  *     summary: Iniciar sesión
  *     description: Permite a los usuarios iniciar sesión en la aplicación y obtener un token JWT.
