@@ -60,21 +60,21 @@ async function desactivarComando(id) {
     return comando;
 }
 
-// Lógica para agregar asistencias a un estudiante
+// Lógica para agregar brigada a un comando
 async function agregarBrigadaAComando(comandoId, brigadasIds) {
     try {
         const comando = await Comando.findOne({ comandoId });
         if (!comando) {
             throw new Error('Estudiante no encontrado');
         }
-        // Filtrar las asistencias ya existentes para no duplicarlas
+        // Filtrar las brigadas ya existentes para no duplicarlas
         const nuevasBrigadas = brigadasIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
-        // Agregar las nuevas asistencias al array de asistencias del estudiante
+        // Agregar las nuevas asistencias al array de asistencias de brigada
         comando.brigadas = [...comando.brigadas, ...nuevasBrigadas];
         await comando.save();
         return comando;
     } catch (error) {
-        throw new Error(`Error al agregar asistencias: ${error.message}`);
+        throw new Error(`Error al agregar brigada : ${error.message}`);
     }
 }
 
