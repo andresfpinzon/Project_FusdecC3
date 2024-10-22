@@ -14,7 +14,7 @@ import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
 import LinkBehavior from "./LinkBehavior"; // Asegúrate de importar el componente personalizado
 import normalizeText from "../../utils/textUtils"; // Importación de la función de normalización de texto
-import logoFusdec from "../../assets/images/logoFusdec.png";
+import logoFusdec from "../../assets/images/logoFu.png";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +56,7 @@ export default function Navbar() {
   const drawer = (
     <div className={classes.drawer}>
       <List>
-        {["Home", "Login", "Roles", "Usuarios","Más Información"].map((text) => (
+        {["Home", "Cursos", "Usuarios", "Más Información"].map((text) => (
           <ListItem
             button
             component={LinkBehavior}
