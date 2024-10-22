@@ -102,6 +102,27 @@ const buscarBrigadasPorUnidadId = async (req, res) => {
     }
 };
 
+// Controlador para agregar unidades a una brigada
+const agregarunidades = async (req, res) => {
+    const { brigadaId } = req.params; // Obtener el ID del comando de los parámetros
+    const { unidadIds } = req.body; // Extraer brigadasIds del cuerpo de la solicitud
+
+    // Validar que brigadasIds sea un array y no esté vacío
+    if (!Array.isArray(unidadIds) || unidadIds.length === 0) {
+        return res.status(400).json({ error: 'Se requiere un array de IDs de unidades' });
+    }
+
+    try {
+        const brigadaActualizada = await logic.agregarUnidadesAbrigada(brigadaId, unidadIds); // Llamar a la lógica para agregar brigadas
+        return res.status(200).json({
+            message: 'unidad agregadas con éxito',
+            brigadaIds: brigadaActualizada // Devolver la brigada actualizada
+        });
+    } catch (error) {
+        return res.status(500).json({ error: error.message }); // Manejo de errores
+    }
+};
+
 // Exportar los controladores
 module.exports = {
     listarBrigadas,
@@ -110,5 +131,6 @@ module.exports = {
     desactivarBrigada,
     obtenerBrigadaPorId,
     buscarBrigadasPorComandoId,
-    buscarBrigadasPorUnidadId
+    buscarBrigadasPorUnidadId,
+    agregarunidades
 };

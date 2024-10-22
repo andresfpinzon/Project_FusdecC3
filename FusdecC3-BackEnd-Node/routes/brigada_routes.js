@@ -80,6 +80,8 @@ const brigadaController = require('../controllers/brigada_controllers');
  *                     estadoBrigada: true
  *                     comandoId: "60d5ec49f1a2c8b1f8e4e1a7"
  *                     unidades: []
+ *       400:
+ *         description: Datos inválidos
  */
 router.get('/', brigadaController.listarBrigadas);
 
@@ -263,5 +265,56 @@ router.put('/:id', brigadaController.actualizarBrigada);
  *         description: Brigada no encontrada
  */
 router.delete('/:id', brigadaController.desactivarBrigada);
+
+/**
+ * @swagger
+ * /api/brigadas/{id}/unidades:
+ *   post:
+ *     tags:
+ *       - Brigada
+ *     summary: Agregar unidades a una brigada
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID de la brigada a la que se le agregarán las unidades.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               unidadIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *           examples:
+ *             ejemplo1:
+ *               value:
+ *                 unidadIds: [
+ *                   "60d21b4667d0d8992e610c81",
+ * 
+ *                 ]
+ *     responses:
+ *       200:
+ *         description: Unidades agregadas correctamente a la brigada.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Brigada'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d21b4667d0d8992e610c84"
+ *                   nombreBrigada: "Brigada A"
+ *                   unidades: [
+ *                     "60d21b4667d0d8992e610c81",
+ *                     "60d21b4667d0d8992e610c82"
+ *                   ]
+ */
+router.post('/:id/unidades', brigadaController.agregarunidades);
 
 module.exports = router;
