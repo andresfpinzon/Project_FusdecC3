@@ -14,7 +14,7 @@ import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
 import LinkBehavior from "./LinkBehavior"; // Asegúrate de importar el componente personalizado
 import normalizeText from "../../utils/textUtils"; // Importación de la función de normalización de texto
-{/*import logoFusdec from "../../assets/images/logoFusdc";*/}
+import logoFusdec from "../../assets/images/logoFusdec.png";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -74,7 +74,7 @@ export default function Navbar() {
     <>
       <AppBar position="fixed">
         <Toolbar className={classes.toolbar}>
-          {/*<img src={logoFusdec} alt="Fusdec Logo" className={classes.logo} />*/}
+          <img src={logoFusdec} alt="Fusdec Logo" className={classes.logo} />
           <Typography variant="h6" className={classes.title}>
             Fusdec
           </Typography>
