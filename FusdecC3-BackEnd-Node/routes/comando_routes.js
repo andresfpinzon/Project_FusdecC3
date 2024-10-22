@@ -231,14 +231,13 @@ router.delete('/:id', comandoControllers.desactivarComando);
  *             ejemplo1:
  *               value:
  *                 brigadasIds: [
- *                   "67102a9b00c1dbc1ac85ab1f", // ID de brigada 1
- *                   "67102afc00c1dbc1ac85ab21"  // ID de brigada 2
+ *                   "67102a9b00c1dbc1ac85ab1f",
  *                 ]
  *             ejemplo2:
  *               value:
  *                 brigadasIds: [
- *                   "67102b0c00c1dbc1ac85ab22", // ID de brigada 3
- *                   "67102b1c00c1dbc1ac85ab23"  // ID de brigada 4
+ *                   "67102b0c00c1dbc1ac85ab22",
+
  *                 ]
  *     responses:
  *       200:

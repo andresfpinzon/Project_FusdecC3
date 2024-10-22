@@ -63,6 +63,24 @@ async function buscarBrigadasPorUnidadId(unidadId) {
     return brigadas;
 }
 
+// Lógica para agregar unidades a una brigada
+async function agregarUnidadesAbrigada(brigadaId, unidadIds) {
+    try {
+        const brigada = await Brigada.findOne({ brigadaId });
+        if (!brigada) {
+            throw new Error('Brigada no encontrada');
+        }
+        // Filtrar las unidades ya existentes para no duplicarlas
+        const nuevasUnidades = unidadIds.filter(unidadId => !brigada.unidades.includes(unidadId));
+        // Agregar las nuevas unidades al array de unidades de la brigada
+        brigada.unidades = [...brigada.unidades, ...nuevasUnidades];
+        await brigada.save();
+        return brigada;
+    } catch (error) {
+        throw new Error(`Error al agregar unidades: ${error.message}`);
+    }
+}
+
 module.exports = {
     crearBrigada,
     listarBrigadas,
@@ -70,5 +88,6 @@ module.exports = {
     desactivarBrigada, 
     buscarBrigadaPorId,
     buscarBrigadasPorComandoId,
-    buscarBrigadasPorUnidadId
+    buscarBrigadasPorUnidadId,
+    agregarUnidadesAbrigada
 };
