@@ -19,7 +19,7 @@ const login = async (req, res) => {
         }
 
         // Extraer los nombres de los roles del usuario
-        const roles = usuario.roles.map(rol => rol.id);
+        const roles = usuario.roles.map(rol => rol.nombreRol);
 
         try {
             const token = jwt.sign(
