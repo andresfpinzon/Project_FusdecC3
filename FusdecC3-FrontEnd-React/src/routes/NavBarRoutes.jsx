@@ -6,12 +6,13 @@ import Cursos from "../pages/cursos/Cursos";
 import Usuarios from "../pages/usuarios/Usuarios";
 import MasInformacion from "../pages/masinformacion/MasInformacion";
 import Login from "../pages/login/Login";
-
+import Comandos from "../pages/comandos/Comandos";
 const NavbarRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/comandos" element={<Comandos />} />
       <Route path="/cursos" element={<Cursos />} />
       <Route path="/usuarios" element={<Usuarios />} />
       <Route path="/masinformacion" element={<MasInformacion />} />
