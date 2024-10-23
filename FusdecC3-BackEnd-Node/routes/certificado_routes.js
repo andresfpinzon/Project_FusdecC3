@@ -12,6 +12,11 @@ const router = express.Router();
  *       required:
  *         - nombre
  *         - fechaEmision
+ *         - usuarioId
+ *         - cursoId
+ *         - estudianteId
+ *         - nombreEmisorCertificado
+ *         - codigoVerificacion
  *       properties:
  *         _id:
  *           type: string
@@ -23,6 +28,21 @@ const router = express.Router();
  *           type: string
  *           format: date-time
  *           description: Fecha de emisión del certificado.
+ *         usuarioId:
+ *           type: string
+ *           description: ID del usuario que crea el certificado.
+ *         cursoId:
+ *           type: string
+ *           description: ID del curso asociado.
+ *         estudianteId:
+ *           type: string
+ *           description: ID del estudiante asociado.
+ *         nombreEmisorCertificado:
+ *           type: string
+ *           description: Nombre del emisor del certificado.
+ *         codigoVerificacion:
+ *           type: string
+ *           description: Código de verificación del certificado.
  */
 
 /**
@@ -54,9 +74,13 @@ const router = express.Router();
  *                   - _id: "60d5ec49f1a2c8b1f8e4e1a1"
  *                     nombre: "Certificado de Participación"
  *                     fechaEmision: "2023-10-01T12:00:00Z"
- *                   - _id: "60d5ec49f1a2c8b1f8e4e1a2"
- *                     nombre: "Certificado de Asistencia"
- *                     fechaEmision: "2023-10-02T12:00:00Z"
+ *                     usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                     cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
+ *                     estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
+ *                     nombreEmisorCertificado: "Instituto XYZ"
+ *                     codigoVerificacion: "ABC123"
+ *       400:
+ *         description: Datos inválidos
  */
 router.get('/', certificadoController.listarCertificados);
 
@@ -76,6 +100,11 @@ router.get('/', certificadoController.listarCertificados);
  *             required:
  *               - nombre
  *               - fechaEmision
+ *               - usuarioId
+ *               - cursoId
+ *               - estudianteId
+ *               - nombreEmisorCertificado
+ *               - codigoVerificacion
  *             properties:
  *               nombre:
  *                 type: string
@@ -84,14 +113,39 @@ router.get('/', certificadoController.listarCertificados);
  *                 type: string
  *                 format: date-time
  *                 description: Fecha de emisión del certificado.
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombre: "Certificado de Excelencia"
- *                 fechaEmision: "2023-10-20T14:00:00Z"
+ *               usuarioId:
+ *                 type: string
+ *                 description: ID del usuario que crea el certificado.
+ *               cursoId:
+ *                 type: string
+ *                 description: ID del curso asociado.
+ *               estudianteId:
+ *                 type: string
+ *                 description: ID del estudiante asociado.
+ *               nombreEmisorCertificado:
+ *                 type: string
+ *                 description: Nombre del emisor del certificado.
+ *               codigoVerificacion:
+ *                 type: string
+ *                 description: Código de verificación del certificado.
  *     responses:
  *       201:
  *         description: Certificado creado exitosamente, se genera una auditoría automáticamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Certificado'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   _id: "60d5ec49f1a2c8b1f8e4e1a5"
+ *                   nombre: "Certificado de Excelencia"
+ *                   fechaEmision: "2023-10-20T14:00:00Z"
+ *                   usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                   cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
+ *                   estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
+ *                   nombreEmisorCertificado: "Instituto XYZ"
+ *                   codigoVerificacion: "XYZ456"
  *       400:
  *         description: Datos inválidos
  */
@@ -124,6 +178,11 @@ router.post('/', certificadoController.crearCertificado);
  *                   _id: "60d5ec49f1a2c8b1f8e4e1a1"
  *                   nombre: "Certificado de Participación"
  *                   fechaEmision: "2023-10-01T12:00:00Z"
+ *                   usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                   cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
+ *                   estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
+ *                   nombreEmisorCertificado: "Instituto XYZ"
+ *                   codigoVerificacion: "ABC123"
  *       404:
  *         description: Certificado no encontrado
  */
@@ -152,6 +211,11 @@ router.get('/:id', certificadoController.obtenerCertificadoPorId);
  *             required:
  *               - nombre
  *               - fechaEmision
+ *               - usuarioId
+ *               - cursoId
+ *               - estudianteId
+ *               - nombreEmisorCertificado
+ *               - codigoVerificacion
  *             properties:
  *               nombre:
  *                 type: string
@@ -160,11 +224,21 @@ router.get('/:id', certificadoController.obtenerCertificadoPorId);
  *                 type: string
  *                 format: date-time
  *                 description: Fecha de emisión del certificado.
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombre: "Certificado de Participación Actualizado"
- *                 fechaEmision: "2023-10-21T14:00:00Z"
+ *               usuarioId:
+ *                 type: string
+ *                 description: ID del usuario que crea el certificado.
+ *               cursoId:
+ *                 type: string
+ *                 description: ID del curso asociado.
+ *               estudianteId:
+ *                 type: string
+ *                 description: ID del estudiante asociado.
+ *               nombreEmisorCertificado:
+ *                 type: string
+ *                 description: Nombre del emisor del certificado.
+ *               codigoVerificacion:
+ *                 type: string
+ *                 description: Código de verificación del certificado.
  *     responses:
  *       200:
  *         description: Certificado actualizado exitosamente

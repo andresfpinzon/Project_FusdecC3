@@ -1,5 +1,7 @@
 const logic = require('../logic/certificado_logic');
 const certificadoSchemaValidation = require('../validations/certificado_validations');
+const Certificado = require('../models/certificado_model');
+const mongoose = require('mongoose');
 
 // Controlador para listar certificados
 const listarCertificados = async (_req, res) => {
@@ -16,18 +18,24 @@ const listarCertificados = async (_req, res) => {
 
 // Controlador para crear un certificado
 const crearCertificado = async (req, res) => {
-    const { error, value } = certificadoSchemaValidation.validate(req.body);
-    if (error) {
-        return res.status(400).json({ error: error.details[0].message });
+    const { nombre, fechaEmision, usuarioId, cursoId, estudianteId, nombreEmisorCertificado, codigoVerificacion } = req.body;
+
+    // Validación simple
+    if (!nombre || !fechaEmision || !usuarioId || !cursoId || !estudianteId || !nombreEmisorCertificado || !codigoVerificacion) {
+        return res.status(400).json({ error: "Todos los campos son requeridos" });
     }
+
+    // Validar que los IDs sean ObjectId válidos
+    if (!mongoose.Types.ObjectId.isValid(usuarioId) || !mongoose.Types.ObjectId.isValid(cursoId) || !mongoose.Types.ObjectId.isValid(estudianteId)) {
+        return res.status(400).json({ error: "IDs inválidos" });
+    }
+
     try {
-        const nuevoCertificado = await logic.crearCertificado(value);
+        const nuevoCertificado = new Certificado({ nombre, fechaEmision, usuarioId, cursoId, estudianteId, nombreEmisorCertificado, codigoVerificacion });
+        await nuevoCertificado.save();
         res.status(201).json(nuevoCertificado);
-    } catch (err) {
-        if (err.message === 'El certificado con este código de verificación ya existe') {
-            return res.status(409).json({ error: err.message });
-        }
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al crear el certificado', details: error.message });
     }
 };
 

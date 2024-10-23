@@ -15,6 +15,8 @@ import { makeStyles } from "@mui/styles";
 import LinkBehavior from "./LinkBehavior"; // Asegúrate de importar el componente personalizado
 import normalizeText from "../../utils/textUtils"; // Importación de la función de normalización de texto
 import logoFusdec from "../../assets/images/logoFu.png";
+import { CircleNotificationsRounded } from "@mui/icons-material";
+import Certificados from "../../pages/certificados/Certificados";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +58,7 @@ export default function Navbar() {
   const drawer = (
     <div className={classes.drawer}>
       <List>
-        {["Home", "Comandos", "Cursos", "Usuarios", "Más Información"].map((text) => (
+        {["Home","Certificados", "Comandos", "Cursos", "Usuarios", "Más Información"].map((text) => (
           <ListItem
             button
             component={LinkBehavior}
@@ -88,7 +90,7 @@ export default function Navbar() {
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {["Home", "Comandos", "Cursos", "Usuarios", "Más Información"].map((text) => (
+            {["Home", "Certificados","Comandos", "Cursos", "Usuarios", "Más Información"].map((text) => (
               <Button
                 color="inherit"
                 component={LinkBehavior}

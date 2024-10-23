@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Container,
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -16,10 +15,13 @@ import {
   Switch,
   FormControlLabel,
   Box,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
-const ComandosPage = () => {
+const Comandos = () => {
   const [comandos, setComandos] = useState([]);
+  const [fundaciones, setFundaciones] = useState([]); // Para almacenar las fundaciones
   const [selectedComando, setSelectedComando] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -34,17 +36,31 @@ const ComandosPage = () => {
 
   useEffect(() => {
     fetchComandos();
+    fetchFundaciones(); // Llama a la función para obtener fundaciones
   }, []);
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("https://localhost:3000/api/comandos");
+      const response = await fetch("http://localhost:3000/api/comandos");
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
       setComandos(data);
     } catch (error) {
       console.error("Error al obtener comandos:", error);
       setErrorMessage("Error al obtener comandos");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchFundaciones = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/fundaciones"); // Cambia la URL si es necesario
+      if (!response.ok) throw new Error("Error al obtener fundaciones");
+      const data = await response.json();
+      setFundaciones(data);
+    } catch (error) {
+      console.error("Error al obtener fundaciones:", error);
+      setErrorMessage("Error al obtener fundaciones");
       setOpenSnackbar(true);
     }
   };
@@ -69,7 +85,7 @@ const ComandosPage = () => {
   };
 
   const handleInputChange = (e) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setFormValues({
       ...formValues,
       [e.target.name]: value,
@@ -90,8 +106,8 @@ const ComandosPage = () => {
   const handleSubmit = async () => {
     try {
       const url = isEditing
-        ? `https://localhost:3000/api/comandos/${selectedComando._id}`
-        : "https://localhost:3000/api/comandos";
+        ? `http://localhost:3000/api/comandos/${selectedComando._id}`
+        : "http://localhost:3000/api/comandos";
       const method = isEditing ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -125,7 +141,7 @@ const ComandosPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ pl: 0 }}>
-      <Box sx={{ textAlign: 'left', mb: 3, ml: 0 }}>
+      <Box sx={{ textAlign: "left", mb: 3, ml: 0 }}>
         <Typography variant="h4" gutterBottom>
           Gestión de Comandos
         </Typography>
@@ -139,23 +155,27 @@ const ComandosPage = () => {
         </Button>
       </Box>
       <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={3} sx={{ ml: 0 }}>
-        {comandos.map((comando) => (
-          <Box gridColumn={{ xs: "span 12", sm: "span 6", md: "span 4" }} key={comando._id}>
-            <Card onClick={() => handleCardClick(comando)}>
-              <CardContent>
-                <Typography variant="h6" component="div">
-                  {comando.nombreComando}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Ubicación: {comando.ubicacionComando}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Estado: {comando.estadoComando ? "Activo" : "Inactivo"}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Box>
-        ))}
+        {Array.isArray(comandos) && comandos.length > 0 ? (
+          comandos.map((comando) => (
+            <Box gridColumn={{ xs: "span 12", sm: "span 6", md: "span 4" }} key={comando._id}>
+              <Card onClick={() => handleCardClick(comando)}>
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    {comando.nombreComando}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Ubicación: {comando.ubicacionComando}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Estado: {comando.estadoComando ? "Activo" : "Inactivo"}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Box>
+          ))
+        ) : (
+          <Typography>No hay comandos disponibles.</Typography>
+        )}
       </Box>
       
       <Dialog
@@ -193,14 +213,20 @@ const ComandosPage = () => {
             }
             label="Estado del Comando"
           />
-          <TextField
-            label="ID de la Fundación"
+          <Select
+            label="Fundación"
             name="fundacionId"
             value={formValues.fundacionId}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
-          />
+          >
+            {fundaciones.map(fundacion => (
+              <MenuItem key={fundacion._id} value={fundacion._id}>
+                {fundacion.nombreFundacion} {/* Asegúrate de que esto sea el campo correcto */}
+              </MenuItem>
+            ))}
+          </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
@@ -229,4 +255,4 @@ const ComandosPage = () => {
   );
 };
 
-export default ComandosPage;
+export default Comandos; // Cambiado a "Comandos"
