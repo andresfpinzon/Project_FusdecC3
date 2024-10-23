@@ -1,6 +1,6 @@
-const Fundacion = require('../models/Fundacion_model');
-const Comando = require('../models/Comando_model'); 
-// fundacionSchemaValiadation = require('..validations/fundacion_validations');
+const Fundacion = require('../models/fundacion_model');
+const Comando = require('../models/comando_model'); 
+fundacionSchemaValiadation = require('..validations/fundacion_validations');
 // Fundacion asincrona para crear fundaciones
 async function crearFundacion( body ) {// validar los datos de entrada 
     const {error} = fundacionSchemaValidation.validate(body); 
@@ -31,6 +31,22 @@ async function buscarFundacionPorId(id){
     }
     return fundacion;
     }
+
+
+    // Logica para agregar comandos a fundacion 
+     async  function agregarComando(fundacionId, comandoId) {
+        try{
+              const fundacion = await Fundacion.findOne({ fundacionId });
+              if (!fundacion){
+                 throw new Error('Fundacion no encontrada');
+              }            
+        } catch(Error){
+            throw new Error('Fundacion no encontrada');
+        }
+
+     }
+
+
     //Funcion asincrona para editar una fundacion
     async function editarFundacion(id, body){
         const fundacion = await Fundacion.findByIdAndUpdate(id, body, { new : true })
@@ -51,14 +67,7 @@ async function buscarFundacionPorId(id){
      module.exports={
         crearFundacion,
         buscarFundacionPorId,
+        agregarComando,
         editarFundacion,
         desactivarFundacion,
-     }; 
-
-
-        
-        
-
-
-
-
+     };
