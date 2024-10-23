@@ -21,7 +21,7 @@ import {
 
 const Comandos = () => {
   const [comandos, setComandos] = useState([]);
-  const [fundaciones, setFundaciones] = useState([]); // Para almacenar las fundaciones
+  const [fundaciones, setFundaciones] = useState([]);
   const [selectedComando, setSelectedComando] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -36,7 +36,7 @@ const Comandos = () => {
 
   useEffect(() => {
     fetchComandos();
-    fetchFundaciones(); // Llama a la función para obtener fundaciones
+    fetchFundaciones();
   }, []);
 
   const fetchComandos = async () => {
@@ -54,7 +54,7 @@ const Comandos = () => {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/fundaciones"); // Cambia la URL si es necesario
+      const response = await fetch("http://localhost:3000/api/fundaciones");
       if (!response.ok) throw new Error("Error al obtener fundaciones");
       const data = await response.json();
       setFundaciones(data);
@@ -110,12 +110,24 @@ const Comandos = () => {
         : "http://localhost:3000/api/comandos";
       const method = isEditing ? "PUT" : "POST";
 
+      // Crear un objeto para enviar, omitiendo fundacionId si está vacío
+      const dataToSend = {
+        nombreComando: formValues.nombreComando,
+        ubicacionComando: formValues.ubicacionComando,
+        estadoComando: formValues.estadoComando,
+      };
+
+      // Solo agregar fundacionId si no está vacío
+      if (formValues.fundacionId) {
+        dataToSend.fundacionId = formValues.fundacionId;
+      }
+
       const response = await fetch(url, {
         method: method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) {
@@ -223,7 +235,7 @@ const Comandos = () => {
           >
             {fundaciones.map(fundacion => (
               <MenuItem key={fundacion._id} value={fundacion._id}>
-                {fundacion.nombreFundacion} {/* Asegúrate de que esto sea el campo correcto */}
+                {fundacion.nombreFundacion}
               </MenuItem>
             ))}
           </Select>
@@ -255,4 +267,4 @@ const Comandos = () => {
   );
 };
 
-export default Comandos; // Cambiado a "Comandos"
+export default Comandos;
