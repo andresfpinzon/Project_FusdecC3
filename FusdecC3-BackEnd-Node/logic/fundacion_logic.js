@@ -56,7 +56,7 @@ async function buscarFundacionPorId(id){
          }
          return fundacion; 
         }
-        //Fundacion asincrona para desactivar un comando 
+        //Fundacion asincrona para desactivar una fundacion 
         async function desactivarFundacion(id){
             const fundacion = await Fundacion.findByIdAndUpdate(id, {/*no se actualiza el esstado*/},{ new : true }); 
             if(!fundacion){
