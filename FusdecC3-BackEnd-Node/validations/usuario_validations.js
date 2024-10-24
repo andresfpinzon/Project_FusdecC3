@@ -48,7 +48,7 @@ const usuarioSchemaValidation = Joi.object({
 
   contraseñaHash: Joi.string()
     .min(8)
-    .required()
+    .optional()
     .messages({
       'string.base': 'La contraseña debe ser un texto',
       'string.empty': 'La contraseña no puede estar vacía',
@@ -78,5 +78,10 @@ const usuarioSchemaValidation = Joi.object({
     }),
 });
 
-module.exports = usuarioSchemaValidation;
+// Para el mensaje específico de actualización
+const crearSchemaValidation = usuarioSchemaValidation.fork(['contraseñaHash'], (field) =>
+  field.required()
+);
+
+module.exports = { usuarioSchemaValidation, crearSchemaValidation };
 

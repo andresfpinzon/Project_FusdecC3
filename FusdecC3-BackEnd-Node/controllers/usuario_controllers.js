@@ -1,5 +1,6 @@
 const logic = require('../logic/usuario_logic');
-const usuarioSchemaValidation = require('../validations/usuario_validations'); // Importa la validación
+const { usuarioSchemaValidation, crearSchemaValidation } = require('../validations/usuario_validations');
+
 
 // Controlador para listar todos los usuarios
 const listarUsuarios = async (req, res) => {
@@ -17,7 +18,7 @@ const listarUsuarios = async (req, res) => {
 // Controlador para crear un usuario
 const crearUsuario = async (req, res) => {
   const body = req.body;
-  const { error, value } = usuarioSchemaValidation.validate({
+  const { error, value } = crearSchemaValidation.validate({
     nombreUsuario: body.nombreUsuario,
     apellidoUsuario: body.apellidoUsuario,
     numeroDocumento: body.numeroDocumento,
@@ -40,22 +41,32 @@ const crearUsuario = async (req, res) => {
   }
 };
 
-// Controlador para actualizar un usuario
 const actualizarUsuario = async (req, res) => {
   const { id } = req.params;
   const body = req.body;
+
+  // Obtenemos el usuario actual para mantener su contraseña si no se proporciona una nueva
+  const usuarioActual = await logic.obtenerUsuarioPorId(id);
+  
+  if (!usuarioActual) {
+    return res.status(404).json({ error: 'Usuario no encontrado' });
+  }
+
+  // Validamos la entrada
   const { error, value } = usuarioSchemaValidation.validate({
     nombreUsuario: body.nombreUsuario,
     apellidoUsuario: body.apellidoUsuario,
     numeroDocumento: body.numeroDocumento,
     correo: body.correo,
-    contraseñaHash: body.contraseñaHash,
+    contraseñaHash: body.contraseñaHash || usuarioActual.contraseñaHash, // Mantener la contraseña existente si no se proporciona
     roles: body.roles,
-    estadoUsuario: body.estadoUsuario
+    estadoUsuario: body.estadoUsuario,
   });
+
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
+
   try {
     const usuarioActualizado = await logic.actualizarUsuario(id, value);
     if (!usuarioActualizado) {
@@ -66,6 +77,7 @@ const actualizarUsuario = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 
 // Controlador para desactivar un usuario
 const desactivarUsuario = async (req, res) => {

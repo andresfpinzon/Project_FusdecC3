@@ -52,32 +52,35 @@ async function actualizarUsuario(id, body) {
     usuario.nombreUsuario = body.nombreUsuario || usuario.nombreUsuario;
     usuario.apellidoUsuario = body.apellidoUsuario || usuario.apellidoUsuario;
     usuario.numeroDocumento = body.numeroDocumento || usuario.numeroDocumento;
-    // Solo actualizar el hash de la contraseña si se proporciona una nueva contraseña
+    
+    // Solo actualizar el hash de la contraseña si se proporciona una nueva
     if (body.contraseñaHash) {
         usuario.contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS);
     }
-    usuario.estadoUsuario = body.estadoUsuario || usuario.estadoUsuario;
-    usuario.creadoEn = body.creadoEn || usuario.estadoUsuario;
+    
+    usuario.estadoUsuario = body.estadoUsuario !== undefined ? body.estadoUsuario : usuario.estadoUsuario;
 
-    // Si se están pasando roles, evitamos duplicados
+    // Aquí sobrescribes completamente el array de roles con los nuevos roles
     if (body.roles && body.roles.length > 0) {
-        const nuevosRoles = body.roles.filter(rolId => !usuario.roles.includes(rolId));
-        usuario.roles.push(...nuevosRoles); 
+        usuario.roles = body.roles; // Sobreescribe el array de roles directamente
+    } else {
+        usuario.roles = []; // Si no se pasa roles, se vacía el array
     }
 
     await usuario.save();
-    return Usuario.findById(id).populate('roles');
+    return Usuario.findById(id).populate('roles'); // Asegúrate de devolver los roles con populate
 }
+
 
 // Función para obtener todos los usuarios
 async function listarUsuarios() {
-    return await Usuario.find({}).populate('roles');
+    return await Usuario.find({}).populate('roles', 'nombreRol');
 }
 
 // Función para obtener un usuario específico por su ID
 async function obtenerUsuarioPorId(id) {
     const usuario = await Usuario.findById(id)
-    .populate('roles');
+    .populate('roles', 'nombreRol');
     if (!usuario) {
         throw new Error('Usuario no encontrado');
     }
