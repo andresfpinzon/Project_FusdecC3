@@ -269,29 +269,28 @@ const Usuarios = () => {
           fullWidth
           margin="normal"
         />
-
-<FormControl fullWidth margin="normal">
-  <InputLabel>Roles</InputLabel>
-  <Select
-    multiple
-    value={formValues.roles} // Los roles preseleccionados
-    onChange={handleRoleChange}
-    input={<OutlinedInput label="Roles" />}
-    renderValue={(selected) =>
-      roles
-        .filter((rol) => selected.includes(rol._id))
-        .map((rol) => rol.nombreRol)
-        .join(", ")
-    }
-  >
-    {roles.map((rol) => (
-      <MenuItem key={rol._id} value={rol._id}>
-        <Checkbox checked={formValues.roles.indexOf(rol._id) > -1} />
-        <ListItemText primary={rol.nombreRol} />
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Roles</InputLabel>
+          <Select
+            multiple
+            value={formValues.roles} // Los roles preseleccionados
+            onChange={handleRoleChange}
+            input={<OutlinedInput label="Roles" />}
+            renderValue={(selected) =>
+              roles
+                .filter((rol) => selected.includes(rol._id))
+                .map((rol) => rol.nombreRol)
+                .join(", ")
+            }
+          >
+            {roles.map((rol) => (
+              <MenuItem key={rol._id} value={rol._id}>
+                <Checkbox checked={formValues.roles.indexOf(rol._id) > -1} />
+                <ListItemText primary={rol.nombreRol} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
 
         <Box marginTop={2} marginBottom={2}>

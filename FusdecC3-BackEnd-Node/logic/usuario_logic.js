@@ -42,22 +42,22 @@ async function crearUsuario(body) {
     return await usuario.save();
 }
 
-// Función asíncrona para actualizar un usuario sin permitir modificar el email
 async function actualizarUsuario(id, body) {
     let usuario = await Usuario.findById(id);
     if (!usuario) {
         throw new Error('Usuario no encontrado');
     }
 
+    // Actualiza los campos del usuario
     usuario.nombreUsuario = body.nombreUsuario || usuario.nombreUsuario;
     usuario.apellidoUsuario = body.apellidoUsuario || usuario.apellidoUsuario;
     usuario.numeroDocumento = body.numeroDocumento || usuario.numeroDocumento;
-    
+
     // Solo actualizar el hash de la contraseña si se proporciona una nueva
-    if (body.contraseñaHash) {
+    if (body.contraseñaHash && body.contraseñaHash.trim() !== '') {
         usuario.contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS);
     }
-    
+
     usuario.estadoUsuario = body.estadoUsuario !== undefined ? body.estadoUsuario : usuario.estadoUsuario;
 
     // Aquí sobrescribes completamente el array de roles con los nuevos roles

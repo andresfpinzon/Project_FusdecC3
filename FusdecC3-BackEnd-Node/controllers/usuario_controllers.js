@@ -52,13 +52,13 @@ const actualizarUsuario = async (req, res) => {
     return res.status(404).json({ error: 'Usuario no encontrado' });
   }
 
-  // Validamos la entrada
+  // Validamos la entrada, sin incluir la contraseña en la validación a menos que esté presente
   const { error, value } = usuarioSchemaValidation.validate({
     nombreUsuario: body.nombreUsuario,
     apellidoUsuario: body.apellidoUsuario,
     numeroDocumento: body.numeroDocumento,
     correo: body.correo,
-    contraseñaHash: body.contraseñaHash || usuarioActual.contraseñaHash, // Mantener la contraseña existente si no se proporciona
+    // No asignar contraseñaHash aquí, ya que lo manejamos en la lógica de actualización
     roles: body.roles,
     estadoUsuario: body.estadoUsuario,
   });
@@ -68,10 +68,12 @@ const actualizarUsuario = async (req, res) => {
   }
 
   try {
-    const usuarioActualizado = await logic.actualizarUsuario(id, value);
+    const usuarioActualizado = await logic.actualizarUsuario(id, { ...value, contraseñaHash: body.contraseñaHash });
+    
     if (!usuarioActualizado) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
+    
     res.json(usuarioActualizado);
   } catch (err) {
     res.status(500).json({ error: 'Error interno del servidor' });
