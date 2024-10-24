@@ -20,11 +20,17 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
 const Brigadas = () => {
   const [brigadas, setBrigadas] = useState([]);
+  const [comandos, setComandos] = useState([]);
   const [selectedBrigada, setSelectedBrigada] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreBrigada: "",
@@ -38,6 +44,7 @@ const Brigadas = () => {
 
   useEffect(() => {
     fetchBrigadas();
+    fetchComandos();
   }, []);
 
   const fetchBrigadas = async () => {
@@ -49,6 +56,19 @@ const Brigadas = () => {
     } catch (error) {
       console.error("Error al obtener brigadas:", error);
       setErrorMessage("Error al obtener brigadas");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchComandos = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/comandos");
+      if (!response.ok) throw new Error("Error al obtener comandos");
+      const data = await response.json();
+      setComandos(data);
+    } catch (error) {
+      console.error("Error al obtener comandos:", error);
+      setErrorMessage("Error al obtener comandos");
       setOpenSnackbar(true);
     }
   };
@@ -137,7 +157,7 @@ const Brigadas = () => {
 
       if (response.ok) {
         setBrigadas(brigadas.filter((brigada) => brigada._id !== selectedBrigada._id));
-        handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+        handleCloseDeleteDialog();
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar brigada");
@@ -183,39 +203,56 @@ const Brigadas = () => {
     <Container>
       <h1>Gestión de Brigadas</h1>
       <form noValidate autoComplete="off">
-        <TextField
-          label="Nombre de la Brigada"
-          name="nombreBrigada"
-          value={formValues.nombreBrigada}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Ubicación de la Brigada"
-          name="ubicacionBrigada"
-          value={formValues.ubicacionBrigada}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estadoBrigada}
-            onChange={handleSwitchChange}
-            name="estadoBrigada"
-            color="primary"
-          />
-          Estado Activo
-        </Box>
-        <TextField
-          label="Comando ID"
-          name="comandoId"
-          value={formValues.comandoId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Nombre de la Brigada"
+              name="nombreBrigada"
+              value={formValues.nombreBrigada}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Ubicación de la Brigada"
+              name="ubicacionBrigada"
+              value={formValues.ubicacionBrigada}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Box marginTop={2} marginBottom={2}>
+              <Switch
+                checked={formValues.estadoBrigada}
+                onChange={handleSwitchChange}
+                name="estadoBrigada"
+                color="primary"
+              />
+              Estado Activo
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="comando-select-label">Comando</InputLabel>
+              <Select
+                labelId="comando-select-label"
+                name="comandoId"
+                value={formValues.comandoId}
+                onChange={handleInputChange}
+              >
+                {comandos.map((comando) => (
+                  <MenuItem key={comando._id} value={comando._id}>
+                    {comando.nombreComando} {/* Mostrar el nombre del comando */}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
         <Button
           variant="contained"
           color="primary"
@@ -231,6 +268,7 @@ const Brigadas = () => {
               <TableCell>Nombre</TableCell>
               <TableCell>Ubicación</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Comando</TableCell> {/* Nueva columna para el comando */}
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -240,6 +278,7 @@ const Brigadas = () => {
                 <TableCell>{brigada.nombreBrigada}</TableCell>
                 <TableCell>{brigada.ubicacionBrigada}</TableCell>
                 <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
+                <TableCell>{comandos.find(comando => comando._id === brigada.comandoId)?.nombreComando || "No asignado"}</TableCell> {/* Mostrar el nombre del comando */}
                 <TableCell>
                   <IconButton onClick={() => handleEditClick(brigada)} color="primary">
                     <Edit />

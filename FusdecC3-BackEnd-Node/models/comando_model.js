@@ -21,7 +21,7 @@ const ComandoSchema = new Schema({
     },
     fundacionId: {
         type: Schema.Types.ObjectId,
-        required: true,
+        required: false,
         ref: "Fundacion", // Referencia al modelo Fundación
     },
     brigadas: [

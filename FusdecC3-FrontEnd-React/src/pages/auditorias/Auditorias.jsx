@@ -181,7 +181,7 @@ const Auditorias = () => {
   return (
     <Container>
       <h1>Gestión de Auditorías</h1>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} component="section">
         <Grid item xs={12} md={6}>
           <h2>Información de Auditoría</h2>
           <TextField
@@ -206,6 +206,15 @@ const Auditorias = () => {
             name="certificadoId"
             value={formValues.certificadoId}
             onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Estado de Auditoría"
+            name="estadoAuditoria"
+            type="checkbox"
+            checked={formValues.estadoAuditoria}
+            onChange={handleSwitchChange}
             fullWidth
             margin="normal"
           />

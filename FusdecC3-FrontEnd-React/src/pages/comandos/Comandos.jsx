@@ -20,17 +20,23 @@ import {
   Typography,
   Snackbar,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
 const Comandos = () => {
   const [comandos, setComandos] = useState([]);
+  const [fundaciones, setFundaciones] = useState([]);
   const [selectedComando, setSelectedComando] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreComando: "",
     ubicacionComando: "",
     estadoComando: true,
-    fundacionId: "",
+    fundacionId: "", // Almacena el ID de la fundación, puede ser vacío
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -38,6 +44,7 @@ const Comandos = () => {
 
   useEffect(() => {
     fetchComandos();
+    fetchFundaciones();
   }, []);
 
   const fetchComandos = async () => {
@@ -49,6 +56,19 @@ const Comandos = () => {
     } catch (error) {
       console.error("Error al obtener comandos:", error);
       setErrorMessage("Error al obtener comandos");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchFundaciones = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/fundaciones");
+      if (!response.ok) throw new Error("Error al obtener fundaciones");
+      const data = await response.json();
+      setFundaciones(data);
+    } catch (error) {
+      console.error("Error al obtener fundaciones:", error);
+      setErrorMessage("Error al obtener fundaciones");
       setOpenSnackbar(true);
     }
   };
@@ -68,6 +88,11 @@ const Comandos = () => {
   };
 
   const handleCreateComando = async () => {
+    if (!formValues.fundacionId) {
+      // Si fundacionId está vacío, puedes decidir no enviarlo o manejarlo de otra manera
+      delete formValues.fundacionId; // Eliminar el campo si está vacío
+    }
+
     try {
       const response = await fetch("http://localhost:3000/api/comandos", {
         method: "POST",
@@ -137,7 +162,7 @@ const Comandos = () => {
 
       if (response.ok) {
         setComandos(comandos.filter((comando) => comando._id !== selectedComando._id));
-        handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+        handleCloseDeleteDialog();
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar comando");
@@ -155,7 +180,7 @@ const Comandos = () => {
       nombreComando: comando.nombreComando || "",
       ubicacionComando: comando.ubicacionComando || "",
       estadoComando: comando.estadoComando !== undefined ? comando.estadoComando : true,
-      fundacionId: comando.fundacionId || "",
+      fundacionId: comando.fundacionId || "", // Permitir que sea vacío
     });
   };
 
@@ -174,7 +199,7 @@ const Comandos = () => {
       nombreComando: "",
       ubicacionComando: "",
       estadoComando: true,
-      fundacionId: "",
+      fundacionId: "", // Permitir que sea vacío
     });
     setSelectedComando(null);
   };
@@ -182,80 +207,96 @@ const Comandos = () => {
   return (
     <Container>
       <h1>Gestión de Comandos</h1>
-      <form noValidate autoComplete="off">
-        <TextField
-          label="Nombre del Comando"
-          name="nombreComando"
-          value={formValues.nombreComando}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Ubicación del Comando"
-          name="ubicacionComando"
-          value={formValues.ubicacionComando}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estadoComando}
-            onChange={handleSwitchChange}
-            name="estadoComando"
-            color="primary"
-          />
-          Estado Activo
-        </Box>
-        <TextField
-          label="Fundación ID"
-          name="fundacionId"
-          value={formValues.fundacionId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={selectedComando ? handleUpdateComando : handleCreateComando}
-        >
-          {selectedComando ? "Actualizar Comando" : "Crear Comando"}
-        </Button>
-      </form>
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Ubicación</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {comandos.map((comando) => (
-              <TableRow key={comando._id}>
-                <TableCell>{comando.nombreComando}</TableCell>
-                <TableCell>{comando.ubicacionComando}</TableCell>
-                <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(comando)} color="primary">
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => {
-                    setSelectedComando(comando);
-                    setOpenDeleteDialog(true);
-                  }} color="secondary">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Ubicación</TableCell>
+                  <TableCell>Estado</TableCell>
+                  <TableCell>Fundación</TableCell>
+                  <TableCell>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {comandos.map((comando) => (
+                  <TableRow key={comando._id}>
+                    <TableCell>{comando.nombreComando}</TableCell>
+                    <TableCell>{comando.ubicacionComando}</TableCell>
+                    <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
+                    <TableCell>{fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEditClick(comando)} color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton onClick={() => {
+                        setSelectedComando(comando);
+                        setOpenDeleteDialog(true);
+                      }} color="secondary">
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <form noValidate autoComplete="off">
+            <TextField
+              label="Nombre del Comando"
+              name="nombreComando"
+              value={formValues.nombreComando}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Ubicación del Comando"
+              name="ubicacionComando"
+              value={formValues.ubicacionComando}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <Box marginTop={2} marginBottom={2}>
+              <Switch
+                checked={formValues.estadoComando}
+                onChange={handleSwitchChange}
+                name="estadoComando"
+                color="primary"
+              />
+              Estado Activo
+            </Box>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="fundacion-select-label">Fundación (Opcional)</InputLabel>
+              <Select
+                labelId="fundacion-select-label"
+                name="fundacionId"
+                value={formValues.fundacionId}
+                onChange={handleInputChange}
+              >
+                <MenuItem value="">Ninguna</MenuItem> {/* Opción para no seleccionar ninguna fundación */}
+                {fundaciones.map((fundacion) => (
+                  <MenuItem key={fundacion._id} value={fundacion._id}>
+                    {fundacion.nombreFundacion} {/* Mostrar el nombre de la fundación */}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={selectedComando ? handleUpdateComando : handleCreateComando}
+            >
+              {selectedComando ? "Actualizar Comando" : "Crear Comando"}
+            </Button>
+          </form>
+        </Grid>
+      </Grid>
 
       {/* Modal de Confirmación de Eliminación */}
       <Dialog
