@@ -11,7 +11,6 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Box,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -19,8 +18,13 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Info } from "@mui/icons-material";
 
 const Certificados = () => {
   const [certificados, setCertificados] = useState([]);
@@ -34,12 +38,19 @@ const Certificados = () => {
     nombreEmisorCertificado: "",
     codigoVerificacion: "",
   });
+  const [usuarios, setUsuarios] = useState([]);
+  const [cursos, setCursos] = useState([]);
+  const [estudiantes, setEstudiantes] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     fetchCertificados();
+    fetchUsuarios();
+    fetchCursos();
+    fetchEstudiantes();
   }, []);
 
   const fetchCertificados = async () => {
@@ -53,6 +64,24 @@ const Certificados = () => {
       setErrorMessage("Error al obtener certificados");
       setOpenSnackbar(true);
     }
+  };
+
+  const fetchUsuarios = async () => {
+    const response = await fetch("http://localhost:3000/api/usuarios");
+    const data = await response.json();
+    setUsuarios(data);
+  };
+
+  const fetchCursos = async () => {
+    const response = await fetch("http://localhost:3000/api/cursos");
+    const data = await response.json();
+    setCursos(data);
+  };
+
+  const fetchEstudiantes = async () => {
+    const response = await fetch("http://localhost:3000/api/estudiantes");
+    const data = await response.json();
+    setEstudiantes(data);
   };
 
   const handleInputChange = (e) => {
@@ -157,8 +186,18 @@ const Certificados = () => {
     });
   };
 
+  const handleDetailsClick = (certificado) => {
+    setSelectedCertificado(certificado);
+    setOpenDetailsDialog(true);
+  };
+
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
+    setSelectedCertificado(null);
+  };
+
+  const handleCloseDetailsDialog = () => {
+    setOpenDetailsDialog(false);
     setSelectedCertificado(null);
   };
 
@@ -183,105 +222,141 @@ const Certificados = () => {
   return (
     <Container>
       <h1>Gestión de Certificados</h1>
-      <form noValidate autoComplete="off">
-        <TextField
-          label="Nombre"
-          name="nombre"
-          value={formValues.nombre}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Fecha de Emisión"
-          name="fechaEmision"
-          type="date"
-          value={formValues.fechaEmision}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <TextField
-          label="Usuario ID"
-          name="usuarioId"
-          value={formValues.usuarioId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Curso ID"
-          name="cursoId"
-          value={formValues.cursoId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Estudiante ID"
-          name="estudianteId"
-          value={formValues.estudianteId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Nombre del Emisor"
-          name="nombreEmisorCertificado"
-          value={formValues.nombreEmisorCertificado}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Código de Verificación"
-          name="codigoVerificacion"
-          value={formValues.codigoVerificacion}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={selectedCertificado ? handleUpdateCertificado : handleCreateCertificado}
-        >
-          {selectedCertificado ? "Actualizar Certificado" : "Crear Certificado"}
-        </Button>
-      </form>
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Fecha de Emisión</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {certificados.map((certificado) => (
-              <TableRow key={certificado._id}>
-                <TableCell>{certificado.nombre}</TableCell>
-                <TableCell>{new Date(certificado.fechaEmision).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(certificado)} color="primary">
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => {
-                    setSelectedCertificado(certificado);
-                    setOpenDeleteDialog(true);
-                  }} color="secondary">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Fecha de Emisión</TableCell>
+                  <TableCell>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {certificados.map((certificado) => (
+                  <TableRow key={certificado._id}>
+                    <TableCell>{certificado.nombre}</TableCell>
+                    <TableCell>{new Date(certificado.fechaEmision).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEditClick(certificado)} color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton onClick={() => handleDetailsClick(certificado)} color="default">
+                        <Info />
+                      </IconButton>
+                      <IconButton onClick={() => {
+                        setSelectedCertificado(certificado);
+                        setOpenDeleteDialog(true);
+                      }} color="secondary">
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <form noValidate autoComplete="off">
+            <TextField
+              label="Nombre"
+              name="nombre"
+              value={formValues.nombre}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Fecha de Emisión"
+              name="fechaEmision"
+              type="date"
+              value={formValues.fechaEmision}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            {/* Campo de selección para Usuario */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="usuario-label">Usuario</InputLabel>
+              <Select
+                labelId="usuario-label"
+                name="usuarioId"
+                value={formValues.usuarioId}
+                onChange={handleInputChange}
+              >
+                {usuarios.map((usuario) => (
+                  <MenuItem key={usuario._id} value={usuario._id}>
+                    {usuario.nombre} {/* Asegúrate de que 'nombre' sea el campo correcto */}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Campo de selección para Curso */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="curso-label">Curso</InputLabel>
+              <Select
+                labelId="curso-label"
+                name="cursoId"
+                value={formValues.cursoId}
+                onChange={handleInputChange}
+              >
+                {cursos.map((curso) => (
+                  <MenuItem key={curso._id} value={curso._id}>
+                    {curso.nombre} {/* Asegúrate de que 'nombre' sea el campo correcto */}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Campo de selección para Estudiante */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="estudiante-label">Estudiante</InputLabel>
+              <Select
+                labelId="estudiante-label"
+                name="estudianteId"
+                value={formValues.estudianteId}
+                onChange={handleInputChange}
+              >
+                {estudiantes.map((estudiante) => (
+                  <MenuItem key={estudiante._id} value={estudiante._id}>
+                    {estudiante.nombre} {/* Asegúrate de que 'nombre' sea el campo correcto */}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <TextField
+              label="Nombre del Emisor"
+              name="nombreEmisorCertificado"
+              value={formValues.nombreEmisorCertificado}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Código de Verificación"
+              name="codigoVerificacion"
+              value={formValues.codigoVerificacion}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={selectedCertificado ? handleUpdateCertificado : handleCreateCertificado}
+            >
+              {selectedCertificado ? "Actualizar Certificado" : "Crear Certificado"}
+            </Button>
+          </form>
+        </Grid>
+      </Grid>
 
       {/* Modal de Confirmación de Eliminación */}
       <Dialog
@@ -303,6 +378,34 @@ const Certificados = () => {
           </Button>
           <Button onClick={handleDeleteCertificado} color="secondary">
             Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal de Detalles del Certificado */}
+      <Dialog
+        open={openDetailsDialog}
+        onClose={handleCloseDetailsDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Detalles del Certificado</DialogTitle>
+        <DialogContent dividers>
+          {selectedCertificado && (
+            <div>
+              <Typography variant="h6">Nombre: {selectedCertificado.nombre}</Typography>
+              <Typography variant="body1">Fecha de Emisión: {new Date(selectedCertificado.fechaEmision).toLocaleDateString()}</Typography>
+              <Typography variant="body1">Usuario ID: {selectedCertificado.usuarioId}</Typography>
+              <Typography variant="body1">Curso ID: {selectedCertificado.cursoId}</Typography>
+              <Typography variant="body1">Estudiante ID: {selectedCertificado.estudianteId}</Typography>
+              <Typography variant="body1">Nombre del Emisor: {selectedCertificado.nombreEmisorCertificado}</Typography>
+              <Typography variant="body1">Código de Verificación: {selectedCertificado.codigoVerificacion}</Typography>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDetailsDialog} color="default">
+            Cerrar
           </Button>
         </DialogActions>
       </Dialog>

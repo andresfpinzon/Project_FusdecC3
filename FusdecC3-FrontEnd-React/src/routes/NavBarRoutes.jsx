@@ -6,16 +6,19 @@ import Cursos from "../pages/cursos/Cursos";
 import Usuarios from "../pages/usuarios/Usuarios";
 import MasInformacion from "../pages/masinformacion/MasInformacion";
 import Login from "../pages/login/Login";
+import Auditorias from "../pages/auditorias/Auditorias";
 import Comandos from "../pages/comandos/Comandos";
 import Certificados from "../pages/certificados/Certificados";
 import Brigadas from "../pages/brigadas/Brigadas";
-import Unidades from "../pages/unidades/Unidades"; // Asegúrate de que la ruta sea correcta
+import Unidades from "../pages/unidades/Unidades";
+
 
 const NavbarRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
+      <Route path="auditorias" element={<Auditorias />} />
       <Route path="/brigadas" element={<Brigadas />} />
       <Route path="/certificados" element={<Certificados />} />
       <Route path="/comandos" element={<Comandos />} />

@@ -20,6 +20,11 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
@@ -33,12 +38,18 @@ const Unidades = () => {
     usuarioId: "",
     estudiantes: [],
   });
+  const [brigadas, setBrigadas] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [estudiantes, setEstudiantes] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     fetchUnidades();
+    fetchBrigadas();
+    fetchUsuarios();
+    fetchEstudiantes();
   }, []);
 
   const fetchUnidades = async () => {
@@ -51,6 +62,36 @@ const Unidades = () => {
       console.error("Error al obtener unidades:", error);
       setErrorMessage("Error al obtener unidades");
       setOpenSnackbar(true);
+    }
+  };
+
+  const fetchBrigadas = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/brigadas");
+      const data = await response.json();
+      setBrigadas(data);
+    } catch (error) {
+      console.error("Error al obtener brigadas:", error);
+    }
+  };
+
+  const fetchUsuarios = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/usuarios");
+      const data = await response.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error("Error al obtener usuarios:", error);
+    }
+  };
+
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
     }
   };
 
@@ -203,22 +244,59 @@ const Unidades = () => {
           />
           Estado Activo
         </Box>
-        <TextField
-          label="Brigada ID"
-          name="brigadaId"
-          value={formValues.brigadaId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Usuario ID"
-          name="usuarioId"
-          value={formValues.usuarioId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
+
+        {/* Campo de selección para Brigada */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="brigada-label">Brigada</InputLabel>
+          <Select
+            labelId="brigada-label"
+            name="brigadaId"
+            value={formValues.brigadaId}
+            onChange={handleInputChange}
+          >
+            {brigadas.map((brigada) => (
+              <MenuItem key={brigada._id} value={brigada._id}>
+                {brigada.nombre} {/* Asegúrate de que 'nombre' sea el campo correcto */}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Campo de selección para Usuario */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="usuario-label">Usuario</InputLabel>
+          <Select
+            labelId="usuario-label"
+            name="usuarioId"
+            value={formValues.usuarioId}
+            onChange={handleInputChange}
+          >
+            {usuarios.map((usuario) => (
+              <MenuItem key={usuario._id} value={usuario._id}>
+                {usuario.nombre} {/* Asegúrate de que 'nombre' sea el campo correcto */}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Campo de selección para Estudiantes */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="estudiante-label">Estudiantes</InputLabel>
+          <Select
+            labelId="estudiante-label"
+            name="estudiantes"
+            multiple
+            value={formValues.estudiantes}
+            onChange={handleInputChange}
+          >
+            {estudiantes.map((estudiante) => (
+              <MenuItem key={estudiante._id} value={estudiante._id}>
+                {estudiante.nombre} {/* Asegúrate de que 'nombre' sea el campo correcto */}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Button
           variant="contained"
           color="primary"
@@ -227,6 +305,7 @@ const Unidades = () => {
           {selectedUnidad ? "Actualizar Unidad" : "Crear Unidad"}
         </Button>
       </form>
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>

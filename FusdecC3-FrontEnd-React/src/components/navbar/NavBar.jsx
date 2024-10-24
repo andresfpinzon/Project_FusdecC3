@@ -58,7 +58,7 @@ export default function Navbar() {
   const drawer = (
     <div className={classes.drawer}>
       <List>
-        {["Home","brigadas","Certificados","Comandos", "Cursos", "unidades","Usuarios", "Más Información"].map((text) => (
+        {["Home","Auditorias","Brigadas","Certificados","Comandos", "Cursos", "Unidades","Usuarios", "Más Información"].map((text) => (
           <ListItem
             button
             component={LinkBehavior}
@@ -90,7 +90,7 @@ export default function Navbar() {
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {["Home", "brigadas","certificados","Comandos", "Cursos", "unidades","Usuarios", "Más Información"].map((text) => (
+            {["Home", "Auditorias","Brigadas","Certificados","Comandos", "Cursos", "Unidades","Usuarios", "Más Información"].map((text) => (
               <Button
                 color="inherit"
                 component={LinkBehavior}
