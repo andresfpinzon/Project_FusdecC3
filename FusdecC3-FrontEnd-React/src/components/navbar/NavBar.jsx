@@ -16,7 +16,6 @@ import LinkBehavior from "./LinkBehavior"; // Asegúrate de importar el componen
 import normalizeText from "../../utils/textUtils"; // Importación de la función de normalización de texto
 import logoFusdec from "../../assets/images/logoFu.png";
 import { CircleNotificationsRounded } from "@mui/icons-material";
-import Certificados from "../../pages/certificados/Certificados";
 
 
 const useStyles = makeStyles((theme) => ({
