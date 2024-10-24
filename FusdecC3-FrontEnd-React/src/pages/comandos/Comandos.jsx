@@ -1,42 +1,43 @@
 import React, { useState, useEffect } from "react";
 import {
   Container,
-  Card,
-  CardContent,
-  Typography,
+  TextField,
   Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Switch,
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
+  Typography,
   Snackbar,
   Alert,
-  Switch,
-  FormControlLabel,
-  Box,
-  Select,
-  MenuItem,
 } from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 
 const Comandos = () => {
   const [comandos, setComandos] = useState([]);
-  const [fundaciones, setFundaciones] = useState([]);
   const [selectedComando, setSelectedComando] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
   const [formValues, setFormValues] = useState({
     nombreComando: "",
     ubicacionComando: "",
     estadoComando: true,
     fundacionId: "",
   });
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     fetchComandos();
-    fetchFundaciones();
   }, []);
 
   const fetchComandos = async () => {
@@ -52,204 +53,235 @@ const Comandos = () => {
     }
   };
 
-  const fetchFundaciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/fundaciones");
-      if (!response.ok) throw new Error("Error al obtener fundaciones");
-      const data = await response.json();
-      setFundaciones(data);
-    } catch (error) {
-      console.error("Error al obtener fundaciones:", error);
-      setErrorMessage("Error al obtener fundaciones");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const handleCardClick = (comando) => {
-    setSelectedComando(comando);
-    setFormValues(comando);
-    setIsEditing(true);
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setSelectedComando(null);
-    setFormValues({
-      nombreComando: "",
-      ubicacionComando: "",
-      estadoComando: true,
-      fundacionId: "",
-    });
-    setIsEditing(false);
-  };
-
   const handleInputChange = (e) => {
-    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setFormValues({
       ...formValues,
-      [e.target.name]: value,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleCreateComando = () => {
-    setIsEditing(false);
+  const handleSwitchChange = (e) => {
     setFormValues({
-      nombreComando: "",
-      ubicacionComando: "",
-      estadoComando: true,
-      fundacionId: "",
+      ...formValues,
+      [e.target.name]: e.target.checked,
     });
-    setOpenModal(true);
   };
 
-  const handleSubmit = async () => {
+  const handleCreateComando = async () => {
     try {
-      const url = isEditing
-        ? `http://localhost:3000/api/comandos/${selectedComando._id}`
-        : "http://localhost:3000/api/comandos";
-      const method = isEditing ? "PUT" : "POST";
-
-      // Crear un objeto para enviar, omitiendo fundacionId si está vacío
-      const dataToSend = {
-        nombreComando: formValues.nombreComando,
-        ubicacionComando: formValues.ubicacionComando,
-        estadoComando: formValues.estadoComando,
-      };
-
-      // Solo agregar fundacionId si no está vacío
-      if (formValues.fundacionId) {
-        dataToSend.fundacionId = formValues.fundacionId;
-      }
-
-      const response = await fetch(url, {
-        method: method,
+      const response = await fetch("http://localhost:3000/api/comandos", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(dataToSend),
+        body: JSON.stringify(formValues),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const nuevoComando = await response.json();
+        setComandos([...comandos, nuevoComando]);
+        clearForm();
+      } else {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al procesar la solicitud");
+        throw new Error(errorData.error || "Error al crear comando");
       }
-
-      setErrorMessage(isEditing ? "Comando actualizado con éxito" : "Comando creado con éxito");
-      setOpenSnackbar(true);
-      handleCloseModal();
-      fetchComandos();
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error al crear comando:", error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
 
+  const handleUpdateComando = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/comandos/${selectedComando._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formValues),
+        }
+      );
+
+      if (response.ok) {
+        const comandoActualizado = await response.json();
+        setComandos(
+          comandos.map((comando) =>
+            comando._id === selectedComando._id ? comandoActualizado : comando
+          )
+        );
+        clearForm();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al actualizar comando");
+      }
+    } catch (error) {
+      console.error("Error al actualizar comando:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleDeleteComando = async () => {
+    if (!selectedComando) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/comandos/${selectedComando._id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setComandos(comandos.filter((comando) => comando._id !== selectedComando._id));
+        handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al eliminar comando");
+      }
+    } catch (error) {
+      console.error("Error al eliminar comando:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleEditClick = (comando) => {
+    setSelectedComando(comando);
+    setFormValues({
+      nombreComando: comando.nombreComando || "",
+      ubicacionComando: comando.ubicacionComando || "",
+      estadoComando: comando.estadoComando !== undefined ? comando.estadoComando : true,
+      fundacionId: comando.fundacionId || "",
+    });
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setSelectedComando(null);
+  };
+
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
-    setErrorMessage("");
+    setErrorMessage(null);
+  };
+
+  const clearForm = () => {
+    setFormValues({
+      nombreComando: "",
+      ubicacionComando: "",
+      estadoComando: true,
+      fundacionId: "",
+    });
+    setSelectedComando(null);
   };
 
   return (
-    <Container maxWidth="lg" sx={{ pl: 0 }}>
-      <Box sx={{ textAlign: "left", mb: 3, ml: 0 }}>
-        <Typography variant="h4" gutterBottom>
-          Gestión de Comandos
-        </Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={handleCreateComando}
-          sx={{ mt: 2 }}
+    <Container>
+      <h1>Gestión de Comandos</h1>
+      <form noValidate autoComplete="off">
+        <TextField
+          label="Nombre del Comando"
+          name="nombreComando"
+          value={formValues.nombreComando}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Ubicación del Comando"
+          name="ubicacionComando"
+          value={formValues.ubicacionComando}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <Box marginTop={2} marginBottom={2}>
+          <Switch
+            checked={formValues.estadoComando}
+            onChange={handleSwitchChange}
+            name="estadoComando"
+            color="primary"
+          />
+          Estado Activo
+        </Box>
+        <TextField
+          label="Fundación ID"
+          name="fundacionId"
+          value={formValues.fundacionId}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={selectedComando ? handleUpdateComando : handleCreateComando}
         >
-          Crear Nuevo Comando
+          {selectedComando ? "Actualizar Comando" : "Crear Comando"}
         </Button>
-      </Box>
-      <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={3} sx={{ ml: 0 }}>
-        {Array.isArray(comandos) && comandos.length > 0 ? (
-          comandos.map((comando) => (
-            <Box gridColumn={{ xs: "span 12", sm: "span 6", md: "span 4" }} key={comando._id}>
-              <Card onClick={() => handleCardClick(comando)}>
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    {comando.nombreComando}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Ubicación: {comando.ubicacionComando}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Estado: {comando.estadoComando ? "Activo" : "Inactivo"}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          ))
-        ) : (
-          <Typography>No hay comandos disponibles.</Typography>
-        )}
-      </Box>
-      
+      </form>
+      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Ubicación</TableCell>
+              <TableCell>Estado</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {comandos.map((comando) => (
+              <TableRow key={comando._id}>
+                <TableCell>{comando.nombreComando}</TableCell>
+                <TableCell>{comando.ubicacionComando}</TableCell>
+                <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEditClick(comando)} color="primary">
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => {
+                    setSelectedComando(comando);
+                    setOpenDeleteDialog(true);
+                  }} color="secondary">
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Modal de Confirmación de Eliminación */}
       <Dialog
-        open={openModal}
-        onClose={handleCloseModal}
-        maxWidth="sm"
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        maxWidth="xs"
         fullWidth
       >
-        <DialogTitle>{isEditing ? "Editar Comando" : "Crear Nuevo Comando"}</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Nombre del Comando"
-            name="nombreComando"
-            value={formValues.nombreComando}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Ubicación del Comando"
-            name="ubicacionComando"
-            value={formValues.ubicacionComando}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={formValues.estadoComando}
-                onChange={handleInputChange}
-                name="estadoComando"
-                color="primary"
-              />
-            }
-            label="Estado del Comando"
-          />
-          <Select
-            label="Fundación"
-            name="fundacionId"
-            value={formValues.fundacionId}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          >
-            {fundaciones.map(fundacion => (
-              <MenuItem key={fundacion._id} value={fundacion._id}>
-                {fundacion.nombreFundacion}
-              </MenuItem>
-            ))}
-          </Select>
+        <DialogTitle>Confirmar Eliminación</DialogTitle>
+        <DialogContent dividers>
+          <Typography>
+            ¿Estás seguro de que quieres eliminar el comando{" "}
+            <strong>{selectedComando?.nombreComando}</strong>?
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
+          <Button onClick={handleCloseDeleteDialog} color="default">
             Cancelar
           </Button>
-          <Button onClick={handleSubmit} color="primary">
-            {isEditing ? "Actualizar" : "Crear"}
+          <Button onClick={handleDeleteComando} color="secondary">
+            Eliminar
           </Button>
         </DialogActions>
       </Dialog>
 
+      {/* Snackbar para mensajes de error */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
@@ -257,7 +289,7 @@ const Comandos = () => {
       >
         <Alert
           onClose={handleCloseSnackbar}
-          severity={errorMessage.includes("éxito") ? "success" : "error"}
+          severity="error"
           sx={{ width: "100%" }}
         >
           {errorMessage}
