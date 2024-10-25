@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const mongoose = require ("mongoose"); 
 const { Schema } = mongoose; 
 
@@ -26,3 +27,5 @@ comandos:[
  
 const Fundacion= mongoose.model("Fundacion",Fundacionschema);
 module.exports= Fundacion; 
+=======
+>>>>>>> feature/fundacionlogic
