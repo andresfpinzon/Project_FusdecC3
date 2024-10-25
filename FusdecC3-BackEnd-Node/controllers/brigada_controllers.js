@@ -24,6 +24,10 @@ const crearBrigada = async (req, res) => {
         const nuevaBrigada = await logic.crearBrigada(value);
         res.status(201).json(nuevaBrigada);
     } catch (err) {
+        // Manejo de errores específicos
+        if (err.message.includes('Ya existe una brigada')) {
+            return res.status(409).json({ error: err.message }); // 409 Conflict
+        }
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
@@ -104,19 +108,19 @@ const buscarBrigadasPorUnidadId = async (req, res) => {
 
 // Controlador para agregar unidades a una brigada
 const agregarunidades = async (req, res) => {
-    const { brigadaId } = req.params; // Obtener el ID del comando de los parámetros
-    const { unidadIds } = req.body; // Extraer brigadasIds del cuerpo de la solicitud
+    const { id } = req.params; // Cambiado a id
+    const { unidadIds } = req.body; // Extraer unidadIds del cuerpo de la solicitud
 
-    // Validar que brigadasIds sea un array y no esté vacío
+    // Validar que unidadIds sea un array y no esté vacío
     if (!Array.isArray(unidadIds) || unidadIds.length === 0) {
         return res.status(400).json({ error: 'Se requiere un array de IDs de unidades' });
     }
 
     try {
-        const brigadaActualizada = await logic.agregarUnidadesAbrigada(brigadaId, unidadIds); // Llamar a la lógica para agregar brigadas
+        const brigadaActualizada = await logic.agregarUnidadesAbrigada(id, unidadIds); // Llamar a la lógica para agregar unidades
         return res.status(200).json({
-            message: 'unidad agregadas con éxito',
-            brigadaIds: brigadaActualizada // Devolver la brigada actualizada
+            message: 'Unidades agregadas con éxito',
+            brigada: brigadaActualizada // Devolver la brigada actualizada
         });
     } catch (error) {
         return res.status(500).json({ error: error.message }); // Manejo de errores

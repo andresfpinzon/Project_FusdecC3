@@ -26,7 +26,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Info } from "@mui/icons-material";
 
 const Unidades = () => {
   const [unidades, setUnidades] = useState([]);
@@ -42,6 +42,8 @@ const Unidades = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  const [infoUnidad, setInfoUnidad] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -179,7 +181,7 @@ const Unidades = () => {
 
       if (response.ok) {
         setUnidades(unidades.filter((unidad) => unidad._id !== selectedUnidad._id));
-        handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+        handleCloseDeleteDialog();
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar unidad");
@@ -202,9 +204,19 @@ const Unidades = () => {
     });
   };
 
+  const handleInfoClick = (unidad) => {
+    setInfoUnidad(unidad);
+    setOpenInfoDialog(true);
+  };
+
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setSelectedUnidad(null);
+  };
+
+  const handleCloseInfoDialog = () => {
+    setOpenInfoDialog(false);
+    setInfoUnidad(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -312,8 +324,8 @@ const Unidades = () => {
             <TableRow>
               <TableCell>Nombre</TableCell>
               <TableCell>Estado</TableCell>
-              <TableCell>Brigada ID</TableCell>
-              <TableCell>Usuario ID</TableCell>
+              <TableCell>Brigada</TableCell>
+              <TableCell>Usuario</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -333,6 +345,9 @@ const Unidades = () => {
                     setOpenDeleteDialog(true);
                   }} color="secondary">
                     <Delete />
+                  </IconButton>
+                  <IconButton onClick={() => handleInfoClick(unidad)} color="default">
+                    <Info />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -362,6 +377,30 @@ const Unidades = () => {
           <Button onClick={handleDeleteUnidad} color="secondary">
             Eliminar
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal de Información de la Unidad */}
+      <Dialog
+        open={openInfoDialog}
+        onClose={handleCloseInfoDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Información de la Unidad</DialogTitle>
+        <DialogContent dividers>
+          {infoUnidad && (
+            <div>
+              <Typography variant="h6">Nombre: {infoUnidad.nombreUnidad}</Typography>
+              <Typography variant="body1">Estado: {infoUnidad.estadoUnidad ? "Activo" : "Inactivo"}</Typography>
+              <Typography variant="body1">Brigada: {brigadas.find(brigada => brigada._id === infoUnidad.brigadaId)?.nombre || "No asignada"}</Typography>
+              <Typography variant="body1">Usuario: {usuarios.find(usuario => usuario._id === infoUnidad.usuarioId)?.nombre || "No asignado"}</Typography>
+              <Typography variant="body1">Estudiantes: {infoUnidad.estudiantes.map(est => estudiantes.find(e => e._id === est)?.nombre).join(", ") || "Sin estudiantes"}</Typography>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
         </DialogActions>
       </Dialog>
 

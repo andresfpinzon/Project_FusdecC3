@@ -2,6 +2,16 @@ const Brigada = require('../models/brigada_model');
 
 // Función asíncrona para crear brigadas
 async function crearBrigada(body) {
+    // Verificar si ya existe una brigada con el mismo nombre y comando
+    const brigadaExistente = await Brigada.findOne({
+        nombreBrigada: body.nombreBrigada,
+        comandoId: body.comandoId
+    });
+
+    if (brigadaExistente) {
+        throw new Error(`Ya existe una brigada con el nombre "${body.nombreBrigada}" para el comando con ID ${body.comandoId}`);
+    }
+
     const brigada = new Brigada({
         nombreBrigada: body.nombreBrigada,
         ubicacionBrigada: body.ubicacionBrigada,
@@ -66,7 +76,7 @@ async function buscarBrigadasPorUnidadId(unidadId) {
 // Lógica para agregar unidades a una brigada
 async function agregarUnidadesAbrigada(brigadaId, unidadIds) {
     try {
-        const brigada = await Brigada.findOne({ brigadaId });
+        const brigada = await Brigada.findById(brigadaId); // Cambiado a findById
         if (!brigada) {
             throw new Error('Brigada no encontrada');
         }

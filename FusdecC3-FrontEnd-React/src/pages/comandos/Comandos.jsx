@@ -26,7 +26,7 @@ import {
   MenuItem,
   Grid,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Info } from "@mui/icons-material";
 
 const Comandos = () => {
   const [comandos, setComandos] = useState([]);
@@ -36,9 +36,11 @@ const Comandos = () => {
     nombreComando: "",
     ubicacionComando: "",
     estadoComando: true,
-    fundacionId: "", // Almacena el ID de la fundación, puede ser vacío
+    fundacionId: "",
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  const [infoComando, setInfoComando] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -89,7 +91,6 @@ const Comandos = () => {
 
   const handleCreateComando = async () => {
     if (!formValues.fundacionId) {
-      // Si fundacionId está vacío, puedes decidir no enviarlo o manejarlo de otra manera
       delete formValues.fundacionId; // Eliminar el campo si está vacío
     }
 
@@ -180,13 +181,23 @@ const Comandos = () => {
       nombreComando: comando.nombreComando || "",
       ubicacionComando: comando.ubicacionComando || "",
       estadoComando: comando.estadoComando !== undefined ? comando.estadoComando : true,
-      fundacionId: comando.fundacionId || "", // Permitir que sea vacío
+      fundacionId: comando.fundacionId || "",
     });
+  };
+
+  const handleInfoClick = (comando) => {
+    setInfoComando(comando);
+    setOpenInfoDialog(true);
   };
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setSelectedComando(null);
+  };
+
+  const handleCloseInfoDialog = () => {
+    setOpenInfoDialog(false);
+    setInfoComando(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -199,7 +210,7 @@ const Comandos = () => {
       nombreComando: "",
       ubicacionComando: "",
       estadoComando: true,
-      fundacionId: "", // Permitir que sea vacío
+      fundacionId: "",
     });
     setSelectedComando(null);
   };
@@ -230,6 +241,9 @@ const Comandos = () => {
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(comando)} color="primary">
                         <Edit />
+                      </IconButton>
+                      <IconButton onClick={() => handleInfoClick(comando)} color="primary">
+                        <Info />
                       </IconButton>
                       <IconButton onClick={() => {
                         setSelectedComando(comando);
@@ -279,10 +293,10 @@ const Comandos = () => {
                 value={formValues.fundacionId}
                 onChange={handleInputChange}
               >
-                <MenuItem value="">Ninguna</MenuItem> {/* Opción para no seleccionar ninguna fundación */}
+                <MenuItem value="">Ninguna</MenuItem>
                 {fundaciones.map((fundacion) => (
                   <MenuItem key={fundacion._id} value={fundacion._id}>
-                    {fundacion.nombreFundacion} {/* Mostrar el nombre de la fundación */}
+                    {fundacion.nombreFundacion}
                   </MenuItem>
                 ))}
               </Select>
@@ -319,6 +333,29 @@ const Comandos = () => {
           <Button onClick={handleDeleteComando} color="secondary">
             Eliminar
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal de Información del Comando */}
+      <Dialog
+        open={openInfoDialog}
+        onClose={handleCloseInfoDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Información del Comando</DialogTitle>
+        <DialogContent dividers>
+          {infoComando && (
+            <div>
+              <Typography variant="h6">Nombre: {infoComando.nombreComando}</Typography>
+              <Typography variant="body1">Ubicación: {infoComando.ubicacionComando}</Typography>
+              <Typography variant="body1">Estado: {infoComando.estadoComando ? "Activo" : "Inactivo"}</Typography>
+              <Typography variant="body1">Fundación: {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}</Typography>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
         </DialogActions>
       </Dialog>
 

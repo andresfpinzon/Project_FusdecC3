@@ -15,7 +15,7 @@ async function crearComando(body) {
         nombreComando: body.nombreComando,
         estadoComando: body.estadoComando,
         ubicacionComando: body.ubicacionComando,
-        fundacionId: body.fundacionId,
+        fundacionId: body.fundacionId || null, // Permitir que fundacionId pueda estar vacío
         brigadas: body.brigadas || [] // Asegurarse de que brigadas sea un array
     });
 

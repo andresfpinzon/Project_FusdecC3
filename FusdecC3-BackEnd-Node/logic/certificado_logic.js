@@ -50,11 +50,11 @@ async function editarCertificado(id, body) {
 
 // Función asíncrona para desactivar un certificado
 async function desactivarCertificado(id) {
-    const certificado = await Certificado.findByIdAndUpdate(id, { estadoCertificado: false }, { new: true });
+    let certificado = await Certificado.findByIdAndUpdate(id, { estadoCertificado: false }, { new: true });
     if (!certificado) {
-        throw new Error(`Certificado con ID ${id} no encontrado`);
+        throw new Error('Certificado no encontrado');
     }
-    return certificado;
+    return certificado; 
 }
 
 module.exports = {

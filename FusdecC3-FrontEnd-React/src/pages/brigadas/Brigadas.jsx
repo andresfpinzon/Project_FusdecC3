@@ -11,22 +11,21 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Switch,
-  Box,
+  Snackbar,
+  Alert,
+  Grid,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Typography,
-  Snackbar,
-  Alert,
-  Grid,
+  Switch,
   Select,
   MenuItem,
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Info } from "@mui/icons-material";
 
 const Brigadas = () => {
   const [brigadas, setBrigadas] = useState([]);
@@ -35,10 +34,12 @@ const Brigadas = () => {
   const [formValues, setFormValues] = useState({
     nombreBrigada: "",
     ubicacionBrigada: "",
-    estadoBrigada: true,
     comandoId: "",
+    estadoBrigada: true,
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  const [infoBrigada, setInfoBrigada] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -52,6 +53,7 @@ const Brigadas = () => {
       const response = await fetch("http://localhost:3000/api/brigadas");
       if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
+      console.log(data); // Verifica la estructura de los datos
       setBrigadas(data);
     } catch (error) {
       console.error("Error al obtener brigadas:", error);
@@ -174,14 +176,24 @@ const Brigadas = () => {
     setFormValues({
       nombreBrigada: brigada.nombreBrigada || "",
       ubicacionBrigada: brigada.ubicacionBrigada || "",
-      estadoBrigada: brigada.estadoBrigada !== undefined ? brigada.estadoBrigada : true,
       comandoId: brigada.comandoId || "",
+      estadoBrigada: brigada.estadoBrigada !== undefined ? brigada.estadoBrigada : true,
     });
+  };
+
+  const handleInfoClick = (brigada) => {
+    setInfoBrigada(brigada);
+    setOpenInfoDialog(true);
   };
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setSelectedBrigada(null);
+  };
+
+  const handleCloseInfoDialog = () => {
+    setOpenInfoDialog(false);
+    setInfoBrigada(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -193,108 +205,109 @@ const Brigadas = () => {
     setFormValues({
       nombreBrigada: "",
       ubicacionBrigada: "",
-      estadoBrigada: true,
       comandoId: "",
+      estadoBrigada: true,
     });
     setSelectedBrigada(null);
   };
 
   return (
-    <Container>
+    <Container maxWidth="lg">
       <h1>Gestión de Brigadas</h1>
-      <form noValidate autoComplete="off">
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Nombre de la Brigada"
-              name="nombreBrigada"
-              value={formValues.nombreBrigada}
+      <Grid container spacing={2} component="section">
+        <Grid item xs={12} md={6}>
+          <h2>Información de Brigada</h2>
+          <TextField
+            label="Nombre de la Brigada"
+            name="nombreBrigada"
+            value={formValues.nombreBrigada}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Ubicación de la Brigada"
+            name="ubicacionBrigada"
+            value={formValues.ubicacionBrigada}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="comando-select-label">Comando</InputLabel>
+            <Select
+              labelId="comando-select-label"
+              name="comandoId"
+              value={formValues.comandoId}
               onChange={handleInputChange}
-              fullWidth
-              margin="normal"
+            >
+              {comandos.map((comando) => (
+                <MenuItem key={comando._id} value={comando._id}>
+                  {comando.nombre} {/* Asegúrate de que 'nombre' es la propiedad correcta */}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <div>
+            <label>Estado de Brigada</label>
+            <Switch
+              name="estadoBrigada"
+              checked={formValues.estadoBrigada}
+              onChange={handleSwitchChange}
+              color="primary"
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Ubicación de la Brigada"
-              name="ubicacionBrigada"
-              value={formValues.ubicacionBrigada}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Box marginTop={2} marginBottom={2}>
-              <Switch
-                checked={formValues.estadoBrigada}
-                onChange={handleSwitchChange}
-                name="estadoBrigada"
-                color="primary"
-              />
-              Estado Activo
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="comando-select-label">Comando</InputLabel>
-              <Select
-                labelId="comando-select-label"
-                name="comandoId"
-                value={formValues.comandoId}
-                onChange={handleInputChange}
-              >
-                {comandos.map((comando) => (
-                  <MenuItem key={comando._id} value={comando._id}>
-                    {comando.nombreComando} {/* Mostrar el nombre del comando */}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
+          </div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={selectedBrigada ? handleUpdateBrigada : handleCreateBrigada}
+          >
+            {selectedBrigada ? "Actualizar Brigada" : "Crear Brigada"}
+          </Button>
         </Grid>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={selectedBrigada ? handleUpdateBrigada : handleCreateBrigada}
-        >
-          {selectedBrigada ? "Actualizar Brigada" : "Crear Brigada"}
-        </Button>
-      </form>
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Ubicación</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Comando</TableCell> {/* Nueva columna para el comando */}
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {brigadas.map((brigada) => (
-              <TableRow key={brigada._id}>
-                <TableCell>{brigada.nombreBrigada}</TableCell>
-                <TableCell>{brigada.ubicacionBrigada}</TableCell>
-                <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
-                <TableCell>{comandos.find(comando => comando._id === brigada.comandoId)?.nombreComando || "No asignado"}</TableCell> {/* Mostrar el nombre del comando */}
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(brigada)} color="primary">
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => {
-                    setSelectedBrigada(brigada);
-                    setOpenDeleteDialog(true);
-                  }} color="secondary">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+        <Grid item xs={12} md={6}>
+          <h2>Lista de Brigadas</h2>
+          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Ubicación</TableCell>
+                  <TableCell>Comando</TableCell>
+                  <TableCell>Estado</TableCell>
+                  <TableCell>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {brigadas.map((brigada) => (
+                  <TableRow key={brigada._id}>
+                    <TableCell>{brigada.nombreBrigada}</TableCell>
+                    <TableCell>{brigada.ubicacionBrigada}</TableCell>
+                    <TableCell>{brigada.comandoId?.nombre || "Sin comando"}</TableCell>
+                    <TableCell>
+                      {brigada.estadoBrigada ? "Activo" : "Inactivo"}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEditClick(brigada)} color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton onClick={() => {
+                        setSelectedBrigada(brigada);
+                        setOpenDeleteDialog(true);
+                      }} color="secondary">
+                        <Delete />
+                      </IconButton>
+                      <IconButton onClick={() => handleInfoClick(brigada)} color="default">
+                        <Info />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+      </Grid>
 
       {/* Modal de Confirmación de Eliminación */}
       <Dialog
@@ -317,6 +330,29 @@ const Brigadas = () => {
           <Button onClick={handleDeleteBrigada} color="secondary">
             Eliminar
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal de Información de la Brigada */}
+      <Dialog
+        open={openInfoDialog}
+        onClose={handleCloseInfoDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Información de la Brigada</DialogTitle>
+        <DialogContent dividers>
+          {infoBrigada && (
+            <div>
+              <Typography variant="h6">Nombre: {infoBrigada.nombreBrigada}</Typography>
+              <Typography variant="body1">Ubicación: {infoBrigada.ubicacionBrigada}</Typography>
+              <Typography variant="body1">Comando: {infoBrigada.comandoId?.nombre || "Sin comando"}</Typography>
+              <Typography variant="body1">Estado: {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}</Typography>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
         </DialogActions>
       </Dialog>
 
