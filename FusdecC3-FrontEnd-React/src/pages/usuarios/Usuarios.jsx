@@ -347,7 +347,7 @@ const Usuarios = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteClick(usuario)}
-                    color="secondary"
+                    color="error"
                   >
                     <Delete />
                   </IconButton>

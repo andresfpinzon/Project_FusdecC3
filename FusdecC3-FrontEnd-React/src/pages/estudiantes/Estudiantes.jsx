@@ -314,7 +314,7 @@ const Estudiantes = () => {
       tipoDocumento: estudiante.tipoDocumento,
       fechaNacimiento: estudiante.fechaNacimiento,
       generoEstudiante: estudiante.generoEstudiante,
-      unidadId: estudiante.unidadId?._id || "", // Asegúrate que estás accediendo al _id
+      unidadId: estudiante.unidadId?._id || "", 
       colegioId: estudiante.colegioId?._id || "", 
       estadoEstudiante: estudiante.estadoEstudiante,
       ediciones: estudiante.ediciones.map((edicion) => edicion._id),
@@ -512,14 +512,14 @@ const Estudiantes = () => {
                 <TableCell>{estudiante.colegioId?.nombreColegio || "Colegio no encontrado"}</TableCell>
                 <TableCell>{estudiante.estadoEstudiante ? "Activo" : "Inactivo"}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditClick(estudiante)}>
+                  <IconButton onClick={() => handleEditClick(estudiante)} color="primary">
                     <Edit />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteClick(estudiante)}>
-                    <Delete />
-                  </IconButton>
-                  <IconButton onClick={() => handleInfoClick(estudiante)}>
+                  <IconButton onClick={() => handleInfoClick(estudiante)} color="primary">
                     <Info />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteClick(estudiante)} color="error">
+                    <Delete />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -539,7 +539,7 @@ const Estudiantes = () => {
         </DialogActions>
       </Dialog>
 
-      {infoEstudiante && (
+      
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
         <DialogTitle>Información del Estudiante</DialogTitle>
         <DialogContent>
@@ -570,7 +570,7 @@ const Estudiantes = () => {
           <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
         </DialogActions>
       </Dialog>
-    )}
+
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
         <Alert onClose={() => setOpenSnackbar(false)} severity="error">

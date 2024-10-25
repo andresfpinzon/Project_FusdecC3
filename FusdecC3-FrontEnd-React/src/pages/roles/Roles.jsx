@@ -232,7 +232,7 @@ const Roles = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteClick(rol)}
-                    color="secondary"
+                    color="error"
                   >
                     <Delete />
                   </IconButton>

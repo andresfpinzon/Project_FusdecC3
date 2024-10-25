@@ -38,14 +38,15 @@ async function actualizarAsistencia(id, body) {
 
 // Función asíncrona para listar las asistencias activas
 async function listarAsistenciasActivas() {
-    let asistencias = await Asistencia.find({ estadoAsistencia: true });
+    let asistencias = await Asistencia.find({ estadoAsistencia: true })
+    .populate('estudiantes','nombreEstudiante');;
     return asistencias;
 }
 
 // Función asíncrona para obtener una asistencia por su ID
 async function obtenerAsistenciaPorId(id) {
     const asistencia = await Asistencia.findById(id)
-    .populate('estudiantes');
+    .populate('estudiantes','nombreEstudiante');
     if (!asistencia) {
         throw new Error('Asistencia no encontrada');
     }

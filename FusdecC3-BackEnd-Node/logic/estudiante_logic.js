@@ -83,11 +83,6 @@ async function actualizarEstudiante(id, body) {
     estudiante.colegioId = body.colegioId || estudiante.colegioId;
     estudiante.estadoEstudiante = body.estadoEstudiante || estudiante.estadoEstudiante;
     estudiante.ediciones = body.ediciones || estudiante.ediciones;
-    estudiante.calificaciones = body.calificaciones || estudiante.calificaciones;
-    estudiante.inasistencias = body.inasistencias || estudiante.inasistencias;
-    estudiante.asistencias = body.asistencias || estudiante.asistencias;
-    estudiante.certificados = body.certificados || estudiante.certificados;
-
     await estudiante.save();
     return estudiante; 
 }
