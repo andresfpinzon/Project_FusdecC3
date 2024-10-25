@@ -58,7 +58,6 @@ const actualizarUsuario = async (req, res) => {
     apellidoUsuario: body.apellidoUsuario,
     numeroDocumento: body.numeroDocumento,
     correo: body.correo,
-    // No asignar contraseñaHash aquí, ya que lo manejamos en la lógica de actualización
     roles: body.roles,
     estadoUsuario: body.estadoUsuario,
   });

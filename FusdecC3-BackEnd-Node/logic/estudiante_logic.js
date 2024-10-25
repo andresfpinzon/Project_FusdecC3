@@ -94,25 +94,26 @@ async function actualizarEstudiante(id, body) {
 
 // Función para listar todos los estudiantes
 async function listarEstudiantes() {
-    return await Estudiante.find({}).populate('unidadId')
-    .populate('colegioId')
-    .populate('ediciones')
-    .populate('calificaciones')
-    .populate('inasistencias') 
-    .populate('asistencias')
-    .populate('certificados');
+    return await Estudiante.find({})
+    .populate('unidadId', 'nombreUnidad')
+    .populate('colegioId', 'nombreColegio')
+    .populate('ediciones', 'tituloEdicion')
+    .populate('calificaciones', 'tituloCalificacion')
+    .populate('inasistencias', 'tituloInasistencia') 
+    .populate('asistencias', 'tituloAsistencia')
+    .populate('certificados', 'codigoVerificacion');
 }
 
 // Función para obtener un estudiante por ID
 async function obtenerEstudiantePorId(id) {
     const estudiante = await Estudiante.findById(id)
-    .populate('unidadId')
-    .populate('colegioId')
-    .populate('ediciones')
-    .populate('calificaciones')
-    .populate('inasistencias') 
-    .populate('asistencias')
-    .populate('certificados');
+    .populate('unidadId', 'nombreUnidad')
+    .populate('colegioId', 'nombreColegio')
+    .populate('ediciones', 'tituloEdicion')
+    .populate('calificaciones', 'tituloCalificacion')
+    .populate('inasistencias', 'tituloInasistencia') 
+    .populate('asistencias', 'tituloAsistencia')
+    .populate('certificados', 'codigoVerificacion');
     if (!estudiante) {
         throw new Error("Estudiante no encontrado");
     }

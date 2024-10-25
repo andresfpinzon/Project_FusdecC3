@@ -6,6 +6,7 @@ import Cursos from "../pages/cursos/Cursos";
 import Usuarios from "../pages/usuarios/Usuarios";
 import MasInformacion from "../pages/masinformacion/MasInformacion";
 import Roles from "../pages/roles/Roles";
+import Estudiantes from "../pages/estudiantes/Estudiantes"
 import Login from "../pages/login/Login";
 
 
@@ -19,6 +20,7 @@ const NavbarRoutes = () => {
       <Route path="/masinformacion" element={<MasInformacion />} />
       <Route path="/login" element={<Login />} />
       <Route path="/roles" element={<Roles />} />
+      <Route path="/Estudiantes" element={<Estudiantes />} />
     </Routes>
   );
 };

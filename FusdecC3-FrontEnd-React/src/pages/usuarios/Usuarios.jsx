@@ -291,8 +291,6 @@ const Usuarios = () => {
             ))}
           </Select>
         </FormControl>
-
-
         <Box marginTop={2} marginBottom={2}>
           <Switch
             checked={formValues.estadoUsuario}
