@@ -55,7 +55,8 @@ async function desactivarCurso(id) {
 
 // Función asíncrona para listar los cursos activos
 async function listarCursosActivos() {
-  let cursos = await Curso.find({ estadoCurso: true });
+  let cursos = await Curso.find({ estadoCurso: true })
+  .populate('fundacionId', 'nombreFundacion');
   return cursos;
 };
 
