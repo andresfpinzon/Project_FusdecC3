@@ -272,7 +272,9 @@ const Auditorias = () => {
                       {new Date(auditoria.fechaAuditoria).toLocaleDateString("es-ES")}
                     </TableCell>
                     <TableCell>{auditoria.nombreEmisor}</TableCell>
-                    <TableCell>{auditoria.certificadoId?.nombre || "Sin certificado"}</TableCell>
+                    <TableCell>
+                      {certificados.find(cert => cert._id === auditoria.certificadoId)?.nombre || "Sin certificado"}
+                    </TableCell>
                     <TableCell>
                       {auditoria.estadoAuditoria ? "Activo" : "Inactivo"}
                     </TableCell>
