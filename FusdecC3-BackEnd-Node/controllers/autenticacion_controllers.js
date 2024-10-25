@@ -27,7 +27,6 @@ const login = async (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
-            console.log('JWT generado:', token);
             return res.json({ token });
         } catch (jwtError) {
             console.error('Error al generar el JWT:', jwtError);
