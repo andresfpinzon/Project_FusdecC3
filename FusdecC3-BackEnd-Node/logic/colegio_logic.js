@@ -23,6 +23,12 @@ async function crearColegio(body) {
 
 // Función asíncrona para actualizar colegios
 async function actualizarColegio(id, body) {
+
+  // Verificar si ya existe un colegio con el mismo nombre
+  const colegioExistente = await Colegio.findOne({
+    nombreColegio: body.nombreColegio,
+  });
+
   let colegios = await Colegio.findByIdAndUpdate(
     id,
     {

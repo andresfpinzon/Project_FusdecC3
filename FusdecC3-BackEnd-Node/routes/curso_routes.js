@@ -229,3 +229,11 @@ router.delete('/:id', cursoController.desactivarCurso);
 router.get('/:id', cursoController.obtenerCursoPorId);
 
 module.exports = router;
+
+/* 
+router.get('/', cursoController.listarCursosActivos);
+router.post('/', cursoController.crearCurso);
+router.put('/:id', cursoController.actualizarCurso);
+router.delete('/:id', cursoController.desactivarCurso);
+router.get('/:id', cursoController.obtenerCursoPorId);
+*/

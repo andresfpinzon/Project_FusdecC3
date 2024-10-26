@@ -39,60 +39,42 @@ const Cursos = () => {
     descripcionCurso: "",
     intensidadHorariaCurso: "",
     estadoCurso: true,
-    fundacionId: "", // Agregado si es necesario
-    ediciones: [], // Agregado si es necesario
+    //fundacionId: "",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [cursoToDelete, setEstudianteToDelete] = useState(null);
+  const [cursoToDelete, setCursoToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCurso, setInfoCurso] = useState(null);
 
+  
+  
+
+  //constante con promise.all para que se ejecuten en paralelo los fetch de cursos, funacione y ediciones
+  const fetchData = async () => {
+    try {
+      const [cursosData, fundacionesData, edicionesData] = await Promise.all([
+        fetch("http://localhost:3000/api/cursos").then((res) => res.json()),
+        //fetch("http://localhost:3000/api/fundaciones").then((res) => res.json()),
+        fetch("http://localhost:3000/api/ediciones").then((res) => res.json()),
+      ]);
+      setCursos(cursosData);
+      setFundaciones(fundacionesData);
+      setEdiciones(edicionesData);
+    } catch (error) {
+      handleError("Error al cargar los datos");
+    } 
+  };
+  
   useEffect(() => {
-    fetchCursos();
-    fetchFundaciones();
-    fetchEdiciones();
+    fetchData();
   }, []);
-
-  const fetchCursos = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/cursos");
-      if (!response.ok) throw new Error("Error al obtener cursos");
-      const data = await response.json();
-      setCursos(data);
-    } catch (error) {
-      console.error("Error al obtener cursos:", error);
-      setErrorMessage("Error al obtener cursos");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchFundaciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/fundaciones");
-      if (!response.ok) throw new Error("Error al obtener fundaciones");
-      const data = await response.json();
-      setFundaciones(data);
-    } catch (error) {
-      console.error("Error al obtener fundaciones:", error);
-      setErrorMessage("Error al obtener fundaciones");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchEdiciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/ediciones");
-      if (!response.ok) throw new Error("Error al obtener ediciones");
-      const data = await response.json();
-      setEdiciones(data);
-    } catch (error) {
-      console.error("Error al obtener ediciones:", error);
-      setErrorMessage("Error al obtener ediciones");
-      setOpenSnackbar(true);
-    }
+  
+  const handleError = (message) => {
+    setErrorMessage(message);
+    setOpenSnackbar(true);
   };
 
   const handleInputChange = (e) => {
@@ -110,36 +92,41 @@ const Cursos = () => {
   };
 
   const handleCreateCurso = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/cursos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formValues),
-      });
-
-      if (response.ok) {
-        const nuevoCurso = await response.json();
-        setCursos([...cursos, nuevoCurso]);
-        setFormValues({
-          nombreCurso: "",
-          descripcionCurso: "",
-          intensidadHorariaCurso: "",
-          estadoCurso: true,
-          fundacionId: "",
-          ediciones: [],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear curso");
-      }
-    } catch (error) {
-      console.error("Error al crear curso:", error);
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+    if (!formValues.nombreCurso || !formValues.descripcionCurso || !formValues.intensidadHorariaCurso) {
+        setErrorMessage("Todos los campos son obligatorios");
+        setOpenSnackbar(true);
+        return;
     }
-  };
+    try {
+        const response = await fetch("http://localhost:3000/api/cursos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formValues),
+        });
+
+        // Maneja la respuesta
+        if (response.ok) {
+            const nuevoCurso = await response.json();
+            setCursos([...cursos, nuevoCurso]);
+            setFormValues({
+                nombreCurso: "",
+                descripcionCurso: "",
+                intensidadHorariaCurso: "",
+                estadoCurso: true,
+                //fundacionId: "",
+            });
+            console.log('Curso creado exitosamente:', nuevoCurso);
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Error al crear curso");
+        }
+    } catch (error) {
+        console.error("Error al crear curso:", error);
+        handleError("Error al crear cursos");
+    }
+};
 
   const handleUpdateCurso = async () => {
     if (!selectedCurso) return;
@@ -169,8 +156,7 @@ const Cursos = () => {
           descripcionCurso: "",
           intensidadHorariaCurso: "",
           estadoCurso: true,
-          fundacionId: "", // Reiniciar si es necesario
-          ediciones: [], // Reiniciar si es necesario
+          //fundacionId: "",
         });
       } else {
         const errorData = await response.json();
@@ -178,24 +164,23 @@ const Cursos = () => {
       }
     } catch (error) {
       console.error("Error al actualizar curso:", error);
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+      handleError("Error al obtener cursos");
     }
   };
 
   const handleDeleteCurso = async () => {
-    if (!selectedCurso) return;
+    if (!cursoToDelete) return;
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cursos/${selectedCurso._id}`,
+        `http://localhost:3000/api/cursos/${cursoToDelete._id}`,
         {
           method: "DELETE",
         }
       );
 
       if (response.ok) {
-        setCursos(cursos.filter((curso) => curso._id !== selectedCurso._id));
+        setCursos(cursos.filter((curso) => curso._id !== cursoToDelete._id));
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
       } else {
         const errorData = await response.json();
@@ -203,8 +188,7 @@ const Cursos = () => {
       }
     } catch (error) {
       console.error("Error al eliminar curso:", error);
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+      handleError("Error al obtener cursos");
     }
   };
 
@@ -215,18 +199,17 @@ const Cursos = () => {
       descripcionCurso: curso.descripcionCurso || "",
       intensidadHorariaCurso: curso.intensidadHorariaCurso || "",
       estadoCurso: curso.estadoCurso !== undefined ? curso.estadoCurso : true,
-      fundacionId: curso.fundacionId || "",
-      ediciones: curso.ediciones || "", 
+      //fundacionId: curso.fundacionId || "",
     });
   };  
 
   const handleDeleteClick = (curso) => {
-    setSelectedCurso(curso);
+    setCursoToDelete(curso);
     setOpenDeleteDialog(true);
   };
 
   const handleInfoClick = async (curso) => {
-    const response = await fetch(`http://localhost:3000/api/cursos/${curso._id}`);
+    const response = await fetch(`http://localhost:3000/api/cursos/${curso._id}`,);
     const data = await response.json();
     setInfoCurso(data);
     setOpenInfoDialog(true);
@@ -234,12 +217,11 @@ const Cursos = () => {
 
   const handleCloseInfoDialog = () => {
     setOpenInfoDialog(false);
-    setUsuariosInscritos([]);
   };
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
-    setSelectedCurso(null);
+    setCursoToDelete(null);
   };
 
   return (
@@ -270,7 +252,7 @@ const Cursos = () => {
           fullWidth
           margin="normal"
         />
-
+       {/*
         <FormControl fullWidth margin="normal">
           <InputLabel>Fundacion</InputLabel>
           <Select
@@ -286,6 +268,7 @@ const Cursos = () => {
             ))}
           </Select>
         </FormControl>
+        */}
         
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -366,7 +349,8 @@ const Cursos = () => {
           <Typography>Intensidad horaria: {infoCurso?.intensidadHorariaCurso}</Typography>
           <Typography>Estado: {infoCurso?.estadoCurso ? "Activo" : "Inactivo"}</Typography>
           <Typography>Fundacion: {infoCurso?.fundacionId?.nombreFundacion || "Fundacion no encontrada"}</Typography>
-          <Typography>Ediciones: {infoCurso?.edicionId?.tituloEdicion || "Edicion no encontrada"}</Typography>
+          <Typography>Ediciones: {infoCurso?.ediciones?.length > 0? infoCurso.ediciones.map((edicion) => 
+            edicion.tituloEdicion).join(", "): "Ediciones no encontradas"}</Typography>
         </DialogContent>
 
         <DialogActions>

@@ -50,6 +50,19 @@ const actualizarCurso = async (req, res) => {
   }
 };
 
+// Controlador para listar los cursos activos
+const listarCursosActivos = async (req, res) => {
+  try {
+    const cursosActivos = await logic.listarCursosActivos();
+    if (cursosActivos.length === 0) {
+      return res.status(204).send(); // 204 No Content
+    }
+    res.json(cursosActivos);
+  } catch (err) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
 // Controlador para desactivar un curso
 const desactivarCurso = async (req, res) => {
   const { id } = req.params;
@@ -59,19 +72,6 @@ const desactivarCurso = async (req, res) => {
       return res.status(404).json({ error: "Curso no encontrado" });
     }
     res.json(cursoDesactivado);
-  } catch (err) {
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
-};
-
-// Controlador para listar los cursos activos
-const listarCursosActivos = async (req, res) => {
-  try {
-    const cursosActivos = await logic.listarCursosActivos();
-    if (cursosActivos.length === 0) {
-      return res.status(204).send(); // 204 No Content
-    }
-    res.json(cursosActivos);
   } catch (err) {
     res.status(500).json({ error: "Error interno del servidor" });
   }

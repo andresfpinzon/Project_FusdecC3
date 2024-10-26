@@ -24,6 +24,7 @@ const CursoSchema = new Schema({
   fundacionId: {
     type: Schema.Types.ObjectId,
     ref: "Fundacion", // Referencia a la colección de Fundacion
+    default: null, // permite que la fundacion en el curso sea opcional
   },
   ediciones: [
     {
