@@ -22,6 +22,12 @@ async function crearHorario(body) {
 
 // Función asíncrona para actualizar horarios
 async function actualizarHorario(id, body) {
+
+  // Verificar si ya existe un horario con el mismo titulo
+  const horarioExistente = await Horario.findOne({
+    tituloHorario: body.tituloHorario,
+  });
+
   let horario = await Horario.findByIdAndUpdate(
     id,
     {

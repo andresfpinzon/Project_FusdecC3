@@ -30,9 +30,10 @@ const cursoSchemaValidation = Joi.object({
   fundacionId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
     .optional()
+    .allow(null, "") // Permitir null o un string vacío
     .messages({
       "string.pattern.base":
-        "EL id de la funcacion debe ser un id válido (24 caracteres hexadecimales)",
+        "El id de la fundación debe ser válido (24 caracteres hexadecimales)",
     }),
 
   ediciones: Joi.array()

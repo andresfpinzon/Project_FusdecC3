@@ -22,6 +22,13 @@ async function crearCurso(body) {
 
 // Función asíncrona para actualizar cursos
 async function actualizarCurso(id, body) {
+
+  // Verificar si ya existe un curso con el mismo título
+  const cursoExistente = await Curso.findOne({ nombreCurso: body.nombreCurso });
+  if (cursoExistente) {
+    throw new Error("El curso con este título ya existe");
+  }
+  
   let curso = await Curso.findByIdAndUpdate(
     id,
     {
@@ -55,7 +62,9 @@ async function desactivarCurso(id) {
 
 // Función asíncrona para listar los cursos activos
 async function listarCursosActivos() {
-  let cursos = await Curso.find({ estadoCurso: true });
+  let cursos = await Curso.find({ estadoCurso: true })
+  .populate('fundacionId', 'nombreFundacion')
+  .populate('ediciones', 'tituloEdicion')
   return cursos;
 };
 

@@ -27,6 +27,15 @@ async function crearEdicion(body) {
 
 // Función asíncrona para actualizar ediciones
 async function actualizarEdicion(id, body) {
+
+  // Verificar si ya existe una edicion con el mismo título
+  const edicionExistente = await Edicion.findOne({
+    tituloEdicion: body.tituloEdicion,
+  });
+  if (edicionExistente) {
+    throw new Error("La edición con este título ya existe");
+  }
+
   let edicion = await Edicion.findByIdAndUpdate(
     id,
     {
