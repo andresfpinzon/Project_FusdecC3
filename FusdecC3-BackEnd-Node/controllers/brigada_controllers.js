@@ -5,12 +5,10 @@ const brigadaSchemaValidation = require('../validations/brigada_validations');
 const listarBrigadas = async (_req, res) => {
     try {
         const brigadas = await logic.listarBrigadas();
-        if (brigadas.length === 0) {
-            return res.status(204).send(); // 204 No Content
-        }
         res.json(brigadas);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener las brigadas' });
     }
 };
 

@@ -14,51 +14,38 @@ import {
   Snackbar,
   Alert,
   Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Typography,
-  Switch,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 
 const Auditorias = () => {
-  const [auditorias, setAuditorias] = useState([]);
-  const [certificados, setCertificados] = useState([]);
-  const [selectedAuditoria, setSelectedAuditoria] = useState(null);
   const [formValues, setFormValues] = useState({
     fechaAuditoria: "",
     nombreEmisor: "",
     certificadoId: "",
-    estadoAuditoria: true,
   });
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openInfoDialog, setOpenInfoDialog] = useState(false);
-  const [infoAuditoria, setInfoAuditoria] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [certificados, setCertificados] = useState([]);
+  const [auditorias, setAuditorias] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [auditoriaToDelete, setAuditoriaToDelete] = useState(null);
+  const [auditoriaDetails, setAuditoriaDetails] = useState(null);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   useEffect(() => {
-    fetchAuditorias();
     fetchCertificados();
+    fetchAuditorias();
   }, []);
-
-  const fetchAuditorias = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/auditorias");
-      if (!response.ok) throw new Error("Error al obtener auditorías");
-      const data = await response.json();
-      setAuditorias(data);
-    } catch (error) {
-      setErrorMessage("Error al obtener auditorías");
-      setOpenSnackbar(true);
-    }
-  };
 
   const fetchCertificados = async () => {
     try {
@@ -67,7 +54,21 @@ const Auditorias = () => {
       const data = await response.json();
       setCertificados(data);
     } catch (error) {
+      console.error("Error al obtener certificados:", error);
       setErrorMessage("Error al obtener certificados");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchAuditorias = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/auditorias");
+      if (!response.ok) throw new Error("Error al obtener auditorías");
+      const data = await response.json();
+      setAuditorias(data);
+    } catch (error) {
+      console.error("Error al obtener auditorías:", error);
+      setErrorMessage("Error al obtener auditorías");
       setOpenSnackbar(true);
     }
   };
@@ -76,13 +77,6 @@ const Auditorias = () => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSwitchChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.checked,
     });
   };
 
@@ -95,138 +89,67 @@ const Auditorias = () => {
         },
         body: JSON.stringify(formValues),
       });
-
-      if (response.ok) {
-        const nuevaAuditoria = await response.json();
-        setAuditorias((prev) => [...prev, nuevaAuditoria]);
-        clearForm();
-      } else {
-        throw new Error("Error al crear auditoría");
-      }
+      if (!response.ok) throw new Error("Error al crear auditoría");
+      const newAuditoria = await response.json();
+      setAuditorias([...auditorias, newAuditoria]);
+      setFormValues({ fechaAuditoria: "", nombreEmisor: "", certificadoId: "" });
     } catch (error) {
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
-    }
-  };
-
-  const handleUpdateAuditoria = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/auditorias/${selectedAuditoria._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formValues),
-      });
-
-      if (response.ok) {
-        const auditoriaActualizada = await response.json();
-        setAuditorias((prev) =>
-          prev.map((auditoria) =>
-            auditoria._id === selectedAuditoria._id ? auditoriaActualizada : auditoria
-          )
-        );
-        clearForm();
-      } else {
-        throw new Error("Error al actualizar auditoría");
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
+      console.error("Error al crear auditoría:", error);
+      setErrorMessage("Error al crear auditoría");
       setOpenSnackbar(true);
     }
   };
 
   const handleDeleteAuditoria = async () => {
-    if (!selectedAuditoria) return;
-
     try {
-      const response = await fetch(`http://localhost:3000/api/auditorias/${selectedAuditoria._id}`, {
+      const response = await fetch(`http://localhost:3000/api/auditorias/${auditoriaToDelete._id}`, {
         method: "DELETE",
       });
-
-      if (response.ok) {
-        setAuditorias((prev) => prev.filter((auditoria) => auditoria._id !== selectedAuditoria._id));
-        handleCloseDeleteDialog();
-      } else {
-        throw new Error("Error al eliminar auditoría");
-      }
+      if (!response.ok) throw new Error("Error al eliminar auditoría");
+      setAuditorias(auditorias.filter(auditoria => auditoria._id !== auditoriaToDelete._id));
+      setOpenDeleteDialog(false);
     } catch (error) {
-      setErrorMessage(error.message);
+      console.error("Error al eliminar auditoría:", error);
+      setErrorMessage("Error al eliminar auditoría");
       setOpenSnackbar(true);
     }
   };
 
-  const handleEditClick = (auditoria) => {
-    setSelectedAuditoria(auditoria);
-    setFormValues({
-      fechaAuditoria: auditoria.fechaAuditoria || "",
-      nombreEmisor: auditoria.nombreEmisor || "",
-      certificadoId: auditoria.certificadoId || "",
-      estadoAuditoria: auditoria.estadoAuditoria !== undefined ? auditoria.estadoAuditoria : true,
-    });
-  };
-
-  const handleInfoClick = (auditoria) => {
-    setInfoAuditoria(auditoria);
-    setOpenInfoDialog(true);
-  };
-
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
-    setSelectedAuditoria(null);
   };
 
-  const handleCloseInfoDialog = () => {
-    setOpenInfoDialog(false);
-    setInfoAuditoria(null);
+  const handleOpenDetailsDialog = (auditoria) => {
+    setAuditoriaDetails(auditoria);
+    setOpenDetailsDialog(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-    setErrorMessage(null);
+  const handleCloseDetailsDialog = () => {
+    setOpenDetailsDialog(false);
+    setAuditoriaDetails(null);
   };
 
-  const clearForm = () => {
-    setFormValues({
-      fechaAuditoria: "",
-      nombreEmisor: "",
-      certificadoId: "",
-      estadoAuditoria: true,
-    });
-    setSelectedAuditoria(null);
+  // Función para obtener el nombre del certificado
+  const getCertificadoNombre = (certificadoId) => {
+    const certificado = certificados.find(cert => cert._id === certificadoId);
+    return certificado ? certificado.nombre : "Nombre no disponible";
   };
 
   return (
-    <Container maxWidth="lg">
-      <h1>Gestión de Auditorías</h1>
-      <Grid container spacing={2} component="section">
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Crear Auditoría
+      </Typography>
+      <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          <h2>Información de Auditoría</h2>
-          <TextField
-            label="Fecha de Auditoría"
-            name="fechaAuditoria"
-            type="date"
-            value={formValues.fechaAuditoria}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            label="Nombre del Emisor"
-            name="nombreEmisor"
-            value={formValues.nombreEmisor}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
           <FormControl fullWidth margin="normal">
-            <InputLabel id="certificado-select-label">Certificado</InputLabel>
+            <InputLabel id="certificado-label">Certificado</InputLabel>
             <Select
-              labelId="certificado-select-label"
+              labelId="certificado-label"
               name="certificadoId"
               value={formValues.certificadoId}
               onChange={handleInputChange}
+              input={<OutlinedInput label="Certificado" />}
             >
               {certificados.map((certificado) => (
                 <MenuItem key={certificado._id} value={certificado._id}>
@@ -235,25 +158,38 @@ const Auditorias = () => {
               ))}
             </Select>
           </FormControl>
-          <div>
-            <label>Estado de Auditoría</label>
-            <Switch
-              name="estadoAuditoria"
-              checked={formValues.estadoAuditoria}
-              onChange={handleSwitchChange}
-              color="primary"
-            />
-          </div>
+          <TextField
+            label="Nombre del Emisor"
+            name="nombreEmisor"
+            value={formValues.nombreEmisor}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Fecha de Auditoría"
+            name="fechaAuditoria"
+            type="date"
+            value={formValues.fechaAuditoria}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
           <Button
             variant="contained"
             color="primary"
-            onClick={selectedAuditoria ? handleUpdateAuditoria : handleCreateAuditoria}
+            onClick={handleCreateAuditoria}
           >
-            {selectedAuditoria ? "Actualizar Auditoría" : "Crear Auditoría"}
+            Crear Auditoría
           </Button>
         </Grid>
         <Grid item xs={12} md={6}>
-          <h2>Lista de Auditorías</h2>
+          <Typography variant="h4" gutterBottom>
+            Lista de Auditorías
+          </Typography>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
               <TableHead>
@@ -261,31 +197,23 @@ const Auditorias = () => {
                   <TableCell>Fecha</TableCell>
                   <TableCell>Emisor</TableCell>
                   <TableCell>Certificado</TableCell>
-                  <TableCell>Estado</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {auditorias.map((auditoria) => (
                   <TableRow key={auditoria._id}>
-                    <TableCell>
-                      {new Date(auditoria.fechaAuditoria).toLocaleDateString("es-ES")}
-                    </TableCell>
+                    <TableCell>{new Date(auditoria.fechaAuditoria).toLocaleDateString("es-ES")}</TableCell>
                     <TableCell>{auditoria.nombreEmisor}</TableCell>
+                    <TableCell>{getCertificadoNombre(auditoria.certificadoId)}</TableCell>
                     <TableCell>
-                      {certificados.find(cert => cert._id === auditoria.certificadoId)?.nombre || "Sin certificado"}
-                    </TableCell>
-                    <TableCell>
-                      {auditoria.estadoAuditoria ? "Activo" : "Inactivo"}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleEditClick(auditoria)} color="primary">
-                        <Edit />
+                      <IconButton onClick={() => handleOpenDetailsDialog(auditoria)} color="primary">
+                        Detalles
                       </IconButton>
                       <IconButton onClick={() => {
-                        setSelectedAuditoria(auditoria);
+                        setAuditoriaToDelete(auditoria);
                         setOpenDeleteDialog(true);
-                      }} color="secondary">
+                      }} color="error">
                         <Delete />
                       </IconButton>
                     </TableCell>
@@ -297,66 +225,59 @@ const Auditorias = () => {
         </Grid>
       </Grid>
 
-      {/* Modal de Confirmación de Eliminación */}
+      {/* Snackbar para mensajes de error */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+
+      {/* Diálogo de confirmación de eliminación */}
       <Dialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}
-        maxWidth="xs"
-        fullWidth
       >
         <DialogTitle>Confirmar Eliminación</DialogTitle>
-        <DialogContent dividers>
+        <DialogContent>
           <Typography>
-            ¿Estás seguro de que quieres eliminar la auditoría <strong>{selectedAuditoria?.nombreEmisor}</strong>?
+            ¿Estás seguro de que deseas eliminar esta auditoría?
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="default">
             Cancelar
           </Button>
-          <Button onClick={handleDeleteAuditoria} color="secondary">
+          <Button onClick={handleDeleteAuditoria} color="error">
             Eliminar
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Modal de Información de la Auditoría */}
+      {/* Diálogo de detalles de auditoría */}
       <Dialog
-        open={openInfoDialog}
-        onClose={handleCloseInfoDialog}
-        maxWidth="sm"
-        fullWidth
+        open={openDetailsDialog}
+        onClose={handleCloseDetailsDialog}
       >
-        <DialogTitle>Información de la Auditoría</DialogTitle>
-        <DialogContent dividers>
-          {infoAuditoria && (
+        <DialogTitle>Detalles de la Auditoría</DialogTitle>
+        <DialogContent>
+          {auditoriaDetails && (
             <div>
-              <Typography variant="h6">Fecha: {new Date(infoAuditoria.fechaAuditoria).toLocaleString()}</Typography>
-              <Typography variant="body1">Emisor: {infoAuditoria.nombreEmisor}</Typography>
-              <Typography variant="body1">Certificado ID: {infoAuditoria.certificadoId}</Typography>
-              <Typography variant="body1">Estado: {infoAuditoria.estadoAuditoria ? "Activo" : "Inactivo"}</Typography>
+              <Typography><strong>Fecha:</strong> {new Date(auditoriaDetails.fechaAuditoria).toLocaleDateString("es-ES")}</Typography>
+              <Typography><strong>Emisor:</strong> {auditoriaDetails.nombreEmisor}</Typography>
+              <Typography><strong>Certificado:</strong> {getCertificadoNombre(auditoriaDetails.certificadoId)}</Typography>
             </div>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseDetailsDialog} color="default">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Snackbar para mensajes de error */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {errorMessage}
-        </Alert>
-      </Snackbar>
     </Container>
   );
 };

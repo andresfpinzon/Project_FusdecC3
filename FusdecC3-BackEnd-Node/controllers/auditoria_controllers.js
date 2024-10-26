@@ -1,16 +1,16 @@
 const logic = require('../logic/auditoria_logic');
 const auditoriaSchemaValidation = require('../validations/auditoria_validations');
+const Auditoria = require('../models/auditoria_model');
+const Certificado = require('../models/certificado_model');
 
 // Controlador para listar auditorías
-const listarAuditorias = async (_req, res) => {
+const listarAuditorias = async (req, res) => {
     try {
-        const auditorias = await logic.listarAuditorias();
-        if (auditorias.length === 0) {
-            return res.status(204).send(); // 204 No Content
-        }
+        const auditorias = await Auditoria.find().populate('certificadoId', 'nombreEmisorCertificado');
         res.json(auditorias);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    } catch (error) {
+        console.error("Error al listar auditorías:", error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
@@ -23,7 +23,6 @@ const crearAuditoria = async (req, res) => {
     }
 
     try {
-        // Llamar a la lógica para crear la auditoría
         const nuevaAuditoria = await logic.crearAuditoria(value);
         res.status(201).json(nuevaAuditoria);  // 201 Created
     } catch (err) {
@@ -35,9 +34,11 @@ const crearAuditoria = async (req, res) => {
 const actualizarAuditoria = async (req, res) => {
     const { id } = req.params;
     const { error, value } = auditoriaSchemaValidation.validate(req.body);
+    
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
     }
+
     try {
         const auditoriaActualizada = await logic.actualizarAuditoria(id, value);
         if (!auditoriaActualizada) {
@@ -48,8 +49,6 @@ const actualizarAuditoria = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
-
-
 
 // Controlador para obtener una auditoría por su ID
 const obtenerAuditoriaPorId = async (req, res) => {
@@ -65,40 +64,25 @@ const obtenerAuditoriaPorId = async (req, res) => {
     }
 };
 
-// Controlador para buscar usuarios asociados a una auditoría
-const obtenerUsuariosPorAuditoria = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const usuarios = await logic.buscarUsuariosPorAuditoria(id);
-        if (!usuarios || usuarios.length === 0) {
-            return res.status(404).json({ error: `No se encontraron usuarios para la auditoría con ID ${id}` });
-        }
-        res.json(usuarios);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor al buscar los usuarios de la auditoría', details: err.message });
-    }
-};
-
-// Controlador para eliminar una asistencia
+// Controlador para desactivar una auditoría
 const desactivarAuditoria = async (req, res) => {
     const { id } = req.params;
     try {
-      const auditoriaDesactivada = await logic.desactivarAuditoria(id);
-      if (!auditoriaDesactivada) {
-        return res.status(404).json({ error: 'Asistencia no encontrada' });
-      }
-      res.json(auditoriaDesactivada);
+        const auditoriaDesactivada = await logic.desactivarAuditoria(id);
+        if (!auditoriaDesactivada) {
+            return res.status(404).json({ error: 'Auditoría no encontrada' });
+        }
+        res.json(auditoriaDesactivada);
     } catch (err) {
-      res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
-  };
+};
 
 // Exportar los controladores
 module.exports = {
     listarAuditorias,
     crearAuditoria,
     actualizarAuditoria,
-    desactivarAuditoria,
     obtenerAuditoriaPorId,
-    obtenerUsuariosPorAuditoria
+    desactivarAuditoria
 };

@@ -17,14 +17,15 @@ const AuditoriaSchema = new Schema({
     certificadoId: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "Certificado", // Referencia al modelo Certificado
+        ref: "Certificado",
     },
     estadoAuditoria: {
         type: Boolean,
         default: true,
         required: true,
-      },
+    },
 });
 
+// Crear el modelo
 const Auditoria = mongoose.model("Auditoria", AuditoriaSchema);
 module.exports = Auditoria;

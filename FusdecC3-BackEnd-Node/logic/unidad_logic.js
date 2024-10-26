@@ -4,30 +4,17 @@ const Usuario = require('../models/usuario_model');
 const unidadSchemaValidation = require('../validations/unidad_validations');
 
 // Función asíncrona para crear unidades
-async function crearUnidad(body) {
-    // Validar los datos de entrada
-    const { error } = unidadSchemaValidation.validate(body);
-    if (error) {
-        throw new Error(error.details[0].message);
-    }
-
-    const unidad = new Unidad({
-        nombreUnidad: body.nombreUnidad,
-        brigadaId: body.brigadaId,
-        usuarioId: body.usuarioId,
-        estadoUnidad: body.estadoUnidad,
-        estudiantes: body.estudiantes || [] // Asegurarse de que estudiantes sea un array
-    });
-
-    return await unidad.save();
+async function crearUnidad(data) {
+    const nuevaUnidad = new Unidad(data);
+    return await nuevaUnidad.save();
 }
 
 // Función asíncrona para listar unidades
 async function listarUnidades() {
     return await Unidad.find()
-        .populate('brigadaId')
-        .populate('usuarioId')
-        .populate('estudiantes');
+        .populate('brigadaId') // Asegúrate de que esto esté poblado
+        .populate('usuarioId') // Asegúrate de que esto esté poblado
+        .populate('estudiantes'); // Asegúrate de que esto esté poblado
 }
 
 // Función asíncrona para editar una unidad
@@ -53,14 +40,10 @@ async function desactivarUnidad(id) {
 
 // Función asíncrona para buscar una unidad por su ID
 async function buscarUnidadPorId(id) {
-    const unidad = await Unidad.findById(id)
-        .populate('brigadaId')
-        .populate('usuarioId')
-        .populate('estudiantes');
-    if (!unidad) {
-        throw new Error(`Unidad con ID ${id} no encontrada`);
-    }
-    return unidad;
+    return await Unidad.findById(id)
+        .populate('brigadaId') // Poblamos la brigada
+        .populate('usuarioId') // Poblamos el usuario
+        .populate('estudiantes'); // Poblamos los estudiantes
 }
 
 // Función asíncrona para buscar unidades por brigadaId

@@ -13,24 +13,21 @@ const UnidadSchema = new Schema({
     estadoUnidad: {
         type: Boolean,
         default: true,
-        required: true,
     },
     brigadaId: {
         type: Schema.Types.ObjectId,
+        ref: 'Brigada', // Asegúrate de que esto coincida con el modelo de Brigada
         required: true,
-        ref: "Brigada", // Referencia al modelo Brigada
     },
-    usuarioId:{
+    usuarioId: {
         type: Schema.Types.ObjectId,
+        ref: 'Usuario', // Asegúrate de que esto coincida con el modelo de Usuario
         required: true,
-        ref: "Usuario", // Referencia al modelo Usuario
     },
-    estudiantes: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Estudiante", // Referencia al modelo Estudiante
-        },
-    ],
+    estudiantes: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Estudiante', // Asegúrate de que esto coincida con el modelo de Estudiante
+    }],
 });
 
 const Unidad = mongoose.model("Unidad", UnidadSchema);

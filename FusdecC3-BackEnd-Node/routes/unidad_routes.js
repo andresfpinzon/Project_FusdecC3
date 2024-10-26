@@ -1,7 +1,7 @@
 const express = require('express');
 const unidadControllers = require('../controllers/unidad_controllers'); // Importa el controlador
 const router = express.Router(); // Define el enrutador
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+// const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -26,11 +26,25 @@ const router = express.Router(); // Define el enrutador
  *           description: Estado de la unidad (activo/inactivo).
  *           default: true
  *         brigadaId:
- *           type: string
- *           description: ID de la brigada a la que pertenece la unidad.
+ *           type: object
+ *           description: Información de la brigada a la que pertenece la unidad.
+ *           properties:
+ *             _id:
+ *               type: string
+ *               description: ID de la brigada.
+ *             nombre:
+ *               type: string
+ *               description: Nombre de la brigada.
  *         usuarioId:
- *           type: string
- *           description: ID del usuario responsable de la unidad.
+ *           type: object
+ *           description: Información del usuario responsable de la unidad.
+ *           properties:
+ *             _id:
+ *               type: string
+ *               description: ID del usuario.
+ *             nombre:
+ *               type: string
+ *               description: Nombre del usuario.
  *         estudiantes:
  *           type: array
  *           items:
@@ -67,15 +81,20 @@ const router = express.Router(); // Define el enrutador
  *                   - id: "63f7d2bbf1a2b4b5c3cdb800"
  *                     nombreUnidad: "Unidad de Rescate"
  *                     estadoUnidad: true
- *                     brigadaId: "63f7d2bbf1a2b4b5c3cdb801"
- *                     usuarioId: "63f7d2bbf1a2b4b5c3cdb802"
- *                     estudiantes: ["63f7d2bbf1a2b4b5c3cdb803"]
+ *                     brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
+ *                     usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb802", nombre: "Usuario 1" }
+ *                     estudiantes: [
+ *                       { _id: "63f7d2bbf1a2b4b5c3cdb803", nombre: "Estudiante 1" },
+ *                       { _id: "63f7d2bbf1a2b4b5c3cdb804", nombre: "Estudiante 2" }
+ *                     ]
  *                   - id: "63f7d2bbf1a2b4b5c3cdb801"
  *                     nombreUnidad: "Unidad de Emergencia"
  *                     estadoUnidad: false
- *                     brigadaId: "63f7d2bbf1a2b4b5c3cdb801"
- *                     usuarioId: "63f7d2bbf1a2b4b5c3cdb804"
- *                     estudiantes: ["63f7d2bbf1a2b4b5c3cdb805"]
+ *                     brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
+ *                     usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb804", nombre: "Usuario 2" }
+ *                     estudiantes: [
+ *                       { _id: "63f7d2bbf1a2b4b5c3cdb805", nombre: "Estudiante 3" }
+ *                     ]
  */
 router.get('/', unidadControllers.listarUnidades);
 
@@ -106,8 +125,8 @@ router.get('/', unidadControllers.listarUnidades);
  *                   id: "63f7d2bbf1a2b4b5c3cdb800"
  *                   nombreUnidad: "Unidad de Rescate"
  *                   estadoUnidad: true
- *                   brigadaId: "63f7d2bbf1a2b4b5c3cdb801"
- *                   usuarioId: "63f7d2bbf1a2b4b5c3cdb802"
+ *                   brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
+ *                   usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb802", nombre: "Usuario 1" }
  *                   estudiantes: ["63f7d2bbf1a2b4b5c3cdb803"]
  *       404:
  *         description: Unidad no encontrada
@@ -148,8 +167,8 @@ router.get('/:id', unidadControllers.obtenerUnidadPorId);
  *                   id: "63f7d2bbf1a2b4b5c3cdb900"
  *                   nombreUnidad: "Unidad de Emergencia"
  *                   estadoUnidad: true
- *                   brigadaId: "63f7d2bbf1a2b4b5c3cdb801"
- *                   usuarioId: "63f7d2bbf1a2b4b5c3cdb802"
+ *                   brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
+ *                   usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb802", nombre: "Usuario 1" }
  *                   estudiantes: ["63f7d2bbf1a2b4b5c3cdb803"]
  *       400:
  *         description: Datos inválidos en la solicitud

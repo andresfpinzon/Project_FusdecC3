@@ -24,10 +24,11 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  OutlinedInput,
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
-const Brigadas = () => {
+export default function Brigadas() {
   const [brigadas, setBrigadas] = useState([]);
   const [comandos, setComandos] = useState([]);
   const [selectedBrigada, setSelectedBrigada] = useState(null);
@@ -53,7 +54,6 @@ const Brigadas = () => {
       const response = await fetch("http://localhost:3000/api/brigadas");
       if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
-      console.log(data); // Verifica la estructura de los datos
       setBrigadas(data);
     } catch (error) {
       console.error("Error al obtener brigadas:", error);
@@ -68,6 +68,7 @@ const Brigadas = () => {
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
       setComandos(data);
+      console.log(data); // Verifica que los datos se están obteniendo correctamente
     } catch (error) {
       console.error("Error al obtener comandos:", error);
       setErrorMessage("Error al obtener comandos");
@@ -240,10 +241,11 @@ const Brigadas = () => {
               name="comandoId"
               value={formValues.comandoId}
               onChange={handleInputChange}
+              input={<OutlinedInput label="Comando" />}
             >
               {comandos.map((comando) => (
                 <MenuItem key={comando._id} value={comando._id}>
-                  {comando.nombre} {/* Asegúrate de que 'nombre' es la propiedad correcta */}
+                  {comando.nombreComando} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
                 </MenuItem>
               ))}
             </Select>
@@ -283,10 +285,10 @@ const Brigadas = () => {
                   <TableRow key={brigada._id}>
                     <TableCell>{brigada.nombreBrigada}</TableCell>
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
-                    <TableCell>{brigada.comandoId?.nombre || "Sin comando"}</TableCell>
                     <TableCell>
-                      {brigada.estadoBrigada ? "Activo" : "Inactivo"}
+                      {comandos.find(comando => comando._id === brigada.comandoId)?.nombreComando || "Sin comando"}
                     </TableCell>
+                    <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(brigada)} color="primary">
                         <Edit />
@@ -346,7 +348,9 @@ const Brigadas = () => {
             <div>
               <Typography variant="h6">Nombre: {infoBrigada.nombreBrigada}</Typography>
               <Typography variant="body1">Ubicación: {infoBrigada.ubicacionBrigada}</Typography>
-              <Typography variant="body1">Comando: {infoBrigada.comandoId?.nombre || "Sin comando"}</Typography>
+              <Typography variant="body1">
+                Comando: {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
+              </Typography>
               <Typography variant="body1">Estado: {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}</Typography>
             </div>
           )}
@@ -372,6 +376,4 @@ const Brigadas = () => {
       </Snackbar>
     </Container>
   );
-};
-
-export default Brigadas;
+}

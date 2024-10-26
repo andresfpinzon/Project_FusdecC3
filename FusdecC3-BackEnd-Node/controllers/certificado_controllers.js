@@ -2,6 +2,7 @@ const logic = require('../logic/certificado_logic');
 const certificadoSchemaValidation = require('../validations/certificado_validations');
 const Certificado = require('../models/certificado_model');
 const mongoose = require('mongoose');
+const auditoriaLogic = require('../logic/auditoria_logic'); // Importar lógica de auditoría
 
 // Controlador para listar certificados
 const listarCertificados = async (_req, res) => {
@@ -12,30 +13,26 @@ const listarCertificados = async (_req, res) => {
         }
         res.json(certificados);
     } catch (err) {
+        console.error(err); // Agrega un log para ver el error
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
 
 // Controlador para crear un certificado
 const crearCertificado = async (req, res) => {
-    const { nombre, fechaEmision, usuarioId, cursoId, estudianteId, nombreEmisorCertificado, codigoVerificacion } = req.body;
-
-    // Validación simple
-    if (!nombre || !fechaEmision || !usuarioId || !cursoId || !estudianteId || !nombreEmisorCertificado || !codigoVerificacion) {
-        return res.status(400).json({ error: "Todos los campos son requeridos" });
-    }
-
-    // Validar que los IDs sean ObjectId válidos
-    if (!mongoose.Types.ObjectId.isValid(usuarioId) || !mongoose.Types.ObjectId.isValid(cursoId) || !mongoose.Types.ObjectId.isValid(estudianteId)) {
-        return res.status(400).json({ error: "IDs inválidos" });
-    }
-
     try {
-        const nuevoCertificado = new Certificado({ nombre, fechaEmision, usuarioId, cursoId, estudianteId, nombreEmisorCertificado, codigoVerificacion });
+        // Convertir la fecha a un objeto Date
+        req.body.fechaEmision = new Date(req.body.fechaEmision);
+        
+        const nuevoCertificado = new Certificado(req.body);
         await nuevoCertificado.save();
         res.status(201).json(nuevoCertificado);
     } catch (error) {
-        res.status(500).json({ error: 'Error al crear el certificado', details: error.message });
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'El código de verificación ya existe.' });
+        }
+        console.error("Error al crear certificado:", error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
@@ -47,7 +44,10 @@ const actualizarCertificado = async (req, res) => {
         return res.status(400).json({ error: error.details[0].message });
     }
     try {
-        const certificadoActualizado = await logic.editarCertificado(id, value);
+        // Convertir la fecha a un objeto Date
+        value.fechaEmision = new Date(value.fechaEmision);
+        
+        const certificadoActualizado = await Certificado.findByIdAndUpdate(id, value, { new: true });
         if (!certificadoActualizado) {
             return res.status(404).json({ error: 'Certificado no encontrado' });
         }

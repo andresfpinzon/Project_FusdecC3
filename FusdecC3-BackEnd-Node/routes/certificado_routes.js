@@ -26,8 +26,8 @@ const router = express.Router();
  *           description: Nombre del certificado.
  *         fechaEmision:
  *           type: string
- *           format: date-time
- *           description: Fecha de emisión del certificado.
+ *           format: date
+ *           description: Fecha de emisión del certificado en formato YYYY-MM-DD.
  *         usuarioId:
  *           type: string
  *           description: ID del usuario que crea el certificado.
@@ -111,8 +111,8 @@ router.get('/', certificadoController.listarCertificados);
  *                 description: Nombre del certificado.
  *               fechaEmision:
  *                 type: string
- *                 format: date-time
- *                 description: Fecha de emisión del certificado.
+ *                 format: date
+ *                 description: Fecha de emisión del certificado en formato YYYY-MM-DD.
  *               usuarioId:
  *                 type: string
  *                 description: ID del usuario que crea el certificado.
@@ -140,7 +140,7 @@ router.get('/', certificadoController.listarCertificados);
  *                 value:
  *                   _id: "60d5ec49f1a2c8b1f8e4e1a5"
  *                   nombre: "Certificado de Excelencia"
- *                   fechaEmision: "2023-10-20T14:00:00Z"
+ *                   fechaEmision: "2023-10-20"
  *                   usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
  *                   cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
  *                   estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
@@ -222,8 +222,8 @@ router.get('/:id', certificadoController.obtenerCertificadoPorId);
  *                 description: Nombre del certificado.
  *               fechaEmision:
  *                 type: string
- *                 format: date-time
- *                 description: Fecha de emisión del certificado.
+ *                 format: date
+ *                 description: Fecha de emisión del certificado en formato YYYY-MM-DD.
  *               usuarioId:
  *                 type: string
  *                 description: ID del usuario que crea el certificado.

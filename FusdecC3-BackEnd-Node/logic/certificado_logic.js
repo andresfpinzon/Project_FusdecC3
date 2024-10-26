@@ -17,7 +17,8 @@ async function crearCertificado(body) {
         estadoCertificado: body.estadoCertificado,
         estudianteId: body.estudianteId,
         cursoId: body.cursoId,
-        usuarioId: body.usuarioId
+        usuarioId: body.usuarioId,
+        fechaEmision: new Date(body.fechaEmision), // Asegúrate de que la fecha esté en formato correcto
     });
 
     return await certificado.save();
@@ -25,14 +26,12 @@ async function crearCertificado(body) {
 
 // Función asíncrona para listar certificados
 async function listarCertificados() {
-    return await Certificado.find();
+    return await Certificado.find().populate('estudianteId cursoId');
 }
 
 // Función asíncrona para buscar un certificado por su ID
 async function buscarCertificadoPorId(id) {
-    const certificado = await Certificado.findById(id)
-        .populate('estudianteId')
-        .populate('cursoId');
+    const certificado = await Certificado.findById(id).populate('estudianteId cursoId');
     if (!certificado) {
         throw new Error(`Certificado con ID ${id} no encontrado`);
     }
@@ -50,11 +49,11 @@ async function editarCertificado(id, body) {
 
 // Función asíncrona para desactivar un certificado
 async function desactivarCertificado(id) {
-    let certificado = await Certificado.findByIdAndUpdate(id, { estadoCertificado: false }, { new: true });
+    const certificado = await Certificado.findByIdAndUpdate(id, { estadoCertificado: false }, { new: true });
     if (!certificado) {
-        throw new Error('Certificado no encontrado');
+        throw new Error(`Certificado con ID ${id} no encontrado`);
     }
-    return certificado; 
+    return certificado;
 }
 
 module.exports = {

@@ -24,8 +24,7 @@ async function crearBrigada(body) {
 
 // Función asíncrona para listar brigadas
 async function listarBrigadas() {
-    let brigadas = await Brigada.find().populate('comandoId').populate('unidades');
-    return brigadas;
+    return await Brigada.find();
 }
 
 // Función asíncrona para buscar una brigada por su ID
