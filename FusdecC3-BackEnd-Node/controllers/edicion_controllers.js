@@ -1,8 +1,18 @@
 const logic = require("../logic/edicion_logic");
 const edicionSchemaValidation = require("../validations/edicion_validations");
+//necesario para cambiar el formato de la fecha
+const dayjs = require('dayjs');
+
+const transformarFecha = (fecha) => {
+  return dayjs(fecha, "DD/MM/YYYY").toDate();
+};
+
 
 // Controlador para crear una edicion
 const crearEdicion = async (req, res) => {
+  //Transforma las fechas recibidas del front (DD/MM/YYYY) a la recibida por mongo
+  req.body.fechaInicioEdicion = transformarFecha(req.body.fechaInicioEdicion);
+  req.body.fechaFinEdicion = transformarFecha(req.body.fechaFinEdicion);
   const body = req.body;
   const { error, value } = edicionSchemaValidation.validate({
     tituloEdicion: body.tituloEdicion,

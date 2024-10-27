@@ -340,3 +340,12 @@ router.post('/:id/estudiantes', edicionController.agregarEstudianteAEdicion);
 
 
 module.exports = router;
+
+/*
+router.get("/", edicionController.listarEdicionesActivas);
+router.post("/", edicionController.crearEdicion);
+router.put("/:id", edicionController.actualizarEdicion);
+router.delete("/:id", edicionController.desactivarEdicion);
+router.get("/:id", edicionController.obtenerEdicionPorId);
+router.post('/:id/estudiantes', edicionController.agregarEstudianteAEdicion);
+*/

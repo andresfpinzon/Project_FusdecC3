@@ -1,10 +1,11 @@
-const Joi = require('@hapi/joi');
+const Joi = require('@hapi/joi').extend(require('@joi/date'));
 
 const edicionSchemaValidation = Joi.object({
 
   tituloEdicion: Joi.string()
-    .min(3)
-    .max(10)
+    .min(4)
+    .max(20)
+    .pattern(/^[a-zA-Z0-9\s-]+$/)
     .required()
     .messages({
       'string.base': 'El título de la edición debe ser un texto',
@@ -15,6 +16,7 @@ const edicionSchemaValidation = Joi.object({
     }),
 
   fechaInicioEdicion: Joi.date()
+    .format("DD/MM/YYYY")
     .required()
     .messages({
       'date.base': 'La fecha de inicio de la edición debe ser una fecha válida',
@@ -22,6 +24,7 @@ const edicionSchemaValidation = Joi.object({
     }),
 
   fechaFinEdicion: Joi.date()
+    .format("DD/MM/YYYY")
     .greater(Joi.ref('fechaInicioEdicion')) // Asegura que la fecha de fin sea posterior a la de inicio
     .required()
     .messages({
@@ -39,6 +42,7 @@ const edicionSchemaValidation = Joi.object({
   cursoId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
     .optional()
+    .allow(null, "") // Permitir null o un string vacío
     .messages({
       'string.pattern.base': 'El id del curso debe ser un id válido (24 caracteres hexadecimales)',
     }),

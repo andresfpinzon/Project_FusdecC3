@@ -49,8 +49,8 @@ async function actualizarEdicion(id, body) {
     },
     { new: true }
   )
-  .populate('cursoId')
-  .populate('horarios');
+  .populate('cursoId', 'nombreCurso')
+  .populate('horarios', 'tituloHorario')
 
   return edicion;
 }

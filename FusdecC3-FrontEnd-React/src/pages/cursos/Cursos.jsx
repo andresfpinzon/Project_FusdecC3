@@ -20,11 +20,6 @@ import {
   Typography,
   Snackbar,
   Alert,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
 } from "@mui/material";
 
 import { Edit, Delete, Info } from "@mui/icons-material";
@@ -52,7 +47,7 @@ const Cursos = () => {
   
   
 
-  //constante con promise.all para que se ejecuten en paralelo los fetch de cursos, funacione y ediciones
+  //constante con promise.all para que se ejecuten en paralelo los fetch de cursos, funaciones y ediciones
   const fetchData = async () => {
     try {
       const [cursosData, fundacionesData, edicionesData] = await Promise.all([
@@ -123,7 +118,6 @@ const Cursos = () => {
             throw new Error(errorData.error || "Error al crear curso");
         }
     } catch (error) {
-        console.error("Error al crear curso:", error);
         handleError("Error al crear cursos");
     }
 };
@@ -163,8 +157,7 @@ const Cursos = () => {
         throw new Error(errorData.error || "Error al actualizar curso");
       }
     } catch (error) {
-      console.error("Error al actualizar curso:", error);
-      handleError("Error al obtener cursos");
+      handleError("Error al actualizar cursos");
     }
   };
 
@@ -187,8 +180,7 @@ const Cursos = () => {
         throw new Error(errorData.error || "Error al eliminar curso");
       }
     } catch (error) {
-      console.error("Error al eliminar curso:", error);
-      handleError("Error al obtener cursos");
+      handleError("Error al eliminar curso");
     }
   };
 
