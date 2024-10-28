@@ -77,8 +77,8 @@ const Unidades = () => {
   const fetchBrigadas = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/brigadas");
-      if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
+      console.log(data); // Verifica que los datos se están obteniendo
       setBrigadas(data);
     } catch (error) {
       console.error("Error al obtener brigadas:", error);
@@ -207,6 +207,22 @@ const Unidades = () => {
     setInfoUnidad(null);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await fetch(`http://localhost:3000/api/unidades/${unidad._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(unidad),
+      });
+      // Actualiza la lista de unidades después de la edición
+    } catch (error) {
+      console.error("Error al editar la unidad:", error);
+    }
+  };
+
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 4, mb: 4 }}>
@@ -238,11 +254,15 @@ const Unidades = () => {
                     input={<OutlinedInput label="Brigada" />}
                     startAdornment={<Group sx={{ mr: 1 }} />}
                   >
-                    {brigadas.map((brigada) => (
-                      <MenuItem key={brigada._id} value={brigada._id}>
-                        {brigada.nombre}
-                      </MenuItem>
-                    ))}
+                    {brigadas.length > 0 ? (
+                      brigadas.map((brigada) => (
+                        <MenuItem key={brigada._id} value={brigada._id}>
+                          {brigada.nombre}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled>No hay brigadas disponibles</MenuItem>
+                    )}
                   </Select>
                 </FormControl>
                 <FormControl fullWidth margin="normal" variant="outlined">
