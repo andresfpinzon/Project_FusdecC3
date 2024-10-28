@@ -64,10 +64,10 @@ const Ediciones = () => {
         fetch("http://localhost:3000/api/horarios").then((res) => res.json()),
         fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
       ]);
-      setCursos(edicionesData);
+      setEdiciones(edicionesData);
       setCursos(cursosData);
-      setFundaciones(horariosData);
-      setEdiciones(estudiantesData);
+      setHorarios(horariosData);
+      setEstudiantes(estudiantesData);
     } catch (error) {
       handleError("Error al cargar los datos");
     } 
