@@ -190,10 +190,6 @@ const Certificados = () => {
     });
   };
 
-  const handleDeleteClick = (certificado) => {
-    setCertificadoToDelete(certificado);
-    setOpenDeleteDialog(true);
-  };
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
