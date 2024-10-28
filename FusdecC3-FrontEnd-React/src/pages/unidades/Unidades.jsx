@@ -11,34 +11,30 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Snackbar,
-  Alert,
-  Grid,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  OutlinedInput,
+  Switch,
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Typography,
+  Snackbar,
+  Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
   Checkbox,
   ListItemText,
-  Card,
-  CardContent,
-  Tooltip,
-  Switch,
-  Box,
+  OutlinedInput,
 } from "@mui/material";
-import { Edit, Delete, School, Group, Person, Info } from "@mui/icons-material";
+import { Edit, Delete, Info } from "@mui/icons-material";
 
 const Unidades = () => {
   const [unidades, setUnidades] = useState([]);
+  const [estudiantes, setEstudiantes] = useState([]);
   const [brigadas, setBrigadas] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
   const [formValues, setFormValues] = useState({
     nombreUnidad: "",
     estadoUnidad: true,
@@ -46,19 +42,19 @@ const Unidades = () => {
     usuarioId: "",
     estudiantes: [],
   });
+  const [selectedUnidad, setSelectedUnidad] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [unidadToDelete, setUnidadToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoUnidad, setInfoUnidad] = useState(null);
-  const [selectedUnidad, setSelectedUnidad] = useState(null);
 
   useEffect(() => {
     fetchUnidades();
+    fetchEstudiantes();
     fetchBrigadas();
     fetchUsuarios();
-    fetchEstudiantes();
   }, []);
 
   const fetchUnidades = async () => {
@@ -74,11 +70,24 @@ const Unidades = () => {
     }
   };
 
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes");
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage("Error al obtener estudiantes");
+      setOpenSnackbar(true);
+    }
+  };
+
   const fetchBrigadas = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/brigadas");
+      if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
-      console.log(data); // Verifica que los datos se están obteniendo
       setBrigadas(data);
     } catch (error) {
       console.error("Error al obtener brigadas:", error);
@@ -100,23 +109,18 @@ const Unidades = () => {
     }
   };
 
-  const fetchEstudiantes = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
-      if (!response.ok) throw new Error("Error al obtener estudiantes");
-      const data = await response.json();
-      setEstudiantes(data);
-    } catch (error) {
-      console.error("Error al obtener estudiantes:", error);
-      setErrorMessage("Error al obtener estudiantes");
-      setOpenSnackbar(true);
-    }
-  };
-
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setFormValues({
       ...formValues,
-      [e.target.name]: e.target.value,
+      [name]: value, // Esto debe actualizar correctamente el estado
+    });
+  };
+
+  const handleSwitchChange = (e) => {
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.checked,
     });
   };
 
@@ -131,7 +135,13 @@ const Unidades = () => {
   };
 
   const handleCreateUnidad = async () => {
+    console.log("Valores del formulario antes de enviar:", formValues); // Agrega esta línea
     try {
+      if (!formValues.brigadaId) {
+        setErrorMessage("El campo Brigada es obligatorio.");
+        setOpenSnackbar(true);
+        return; // Detiene la ejecución si brigadaId está vacío
+      }
       const response = await fetch("http://localhost:3000/api/unidades", {
         method: "POST",
         headers: {
@@ -146,7 +156,7 @@ const Unidades = () => {
         setFormValues({
           nombreUnidad: "",
           estadoUnidad: true,
-          brigadaId: "",
+          brigadaId: "", // Asegúrate de que esto se reinicie correctamente
           usuarioId: "",
           estudiantes: [],
         });
@@ -161,22 +171,60 @@ const Unidades = () => {
     }
   };
 
+  const handleUpdateUnidad = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/unidades/${selectedUnidad._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formValues),
+        }
+      );
+
+      if (response.ok) {
+        const unidadActualizada = await response.json();
+        const updatedUnidades = unidades.map((unidad) =>
+          unidad._id === unidadActualizada._id ? unidadActualizada : unidad
+        );
+        setUnidades(updatedUnidades);
+        setSelectedUnidad(null);
+        setFormValues({
+          nombreUnidad: "",
+          estadoUnidad: true,
+          brigadaId: "",
+          usuarioId: "",
+          estudiantes: [],
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al actualizar unidad");
+      }
+    } catch (error) {
+      console.error("Error al actualizar unidad:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
+
   const handleDeleteUnidad = async () => {
+    if (!unidadToDelete) return;
     try {
       const response = await fetch(
         `http://localhost:3000/api/unidades/${unidadToDelete._id}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+        }
       );
-      if (!response.ok) {
+      if (response.ok) {
+        setUnidades(unidades.filter((unidad) => unidad._id !== unidadToDelete._id));
+        handleCloseDeleteDialog();
+      } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar unidad");
       }
-      const updatedUnidades = unidades.filter(
-        (unidad) => unidad._id !== unidadToDelete._id
-      );
-      setUnidades(updatedUnidades);
-      setOpenDeleteDialog(false);
-      setUnidadToDelete(null);
     } catch (error) {
       console.error("Error al eliminar unidad:", error);
       setErrorMessage(error.message);
@@ -191,8 +239,18 @@ const Unidades = () => {
       estadoUnidad: unidad.estadoUnidad,
       brigadaId: unidad.brigadaId?._id || "",
       usuarioId: unidad.usuarioId?._id || "",
-      estudiantes: unidad.estudiantes.map((est) => est._id),
+      estudiantes: unidad.estudiantes.map((estudiante) => estudiante._id),
     });
+  };
+
+  const handleDeleteClick = (unidad) => {
+    setUnidadToDelete(unidad);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setUnidadToDelete(null);
   };
 
   const handleInfoClick = async (unidad) => {
@@ -207,230 +265,164 @@ const Unidades = () => {
     setInfoUnidad(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await fetch(`http://localhost:3000/api/unidades/${unidad._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(unidad),
-      });
-      // Actualiza la lista de unidades después de la edición
-    } catch (error) {
-      console.error("Error al editar la unidad:", error);
-    }
-  };
-
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 4, mb: 4 }}>
-        Gestión de Unidades
-      </Typography>
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" component="h2" gutterBottom>
-                {selectedUnidad ? "Editar Unidad" : "Crear Nueva Unidad"}
-              </Typography>
-              <form noValidate autoComplete="off">
-                <TextField
-                  label="Nombre de la Unidad"
-                  name="nombreUnidad"
-                  value={formValues.nombreUnidad}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                />
-                <FormControl fullWidth margin="normal" variant="outlined">
-                  <InputLabel>Brigada</InputLabel>
-                  <Select
-                    name="brigadaId"
-                    value={formValues.brigadaId}
-                    onChange={handleInputChange}
-                    input={<OutlinedInput label="Brigada" />}
-                    startAdornment={<Group sx={{ mr: 1 }} />}
-                  >
-                    {brigadas.length > 0 ? (
-                      brigadas.map((brigada) => (
-                        <MenuItem key={brigada._id} value={brigada._id}>
-                          {brigada.nombre}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem disabled>No hay brigadas disponibles</MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal" variant="outlined">
-                  <InputLabel>Usuario</InputLabel>
-                  <Select
-                    name="usuarioId"
-                    value={formValues.usuarioId}
-                    onChange={handleInputChange}
-                    input={<OutlinedInput label="Usuario" />}
-                    startAdornment={<Person sx={{ mr: 1 }} />}
-                  >
-                    {usuarios.map((usuario) => (
-                      <MenuItem key={usuario._id} value={usuario._id}>
-                        {usuario.nombre}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal" variant="outlined">
-                  <InputLabel>Estudiantes</InputLabel>
-                  <Select
-                    multiple
-                    name="estudiantes"
-                    value={formValues.estudiantes}
-                    onChange={handleStudentChange}
-                    input={<OutlinedInput label="Estudiantes" />}
-                    renderValue={(selected) =>
-                      `${selected.length} estudiante(s) seleccionado(s)`
-                    }
-                    startAdornment={<School sx={{ mr: 1 }} />}
-                  >
-                    {estudiantes.map((estudiante) => (
-                      <MenuItem key={estudiante._id} value={estudiante._id}>
-                        <Checkbox checked={formValues.estudiantes.indexOf(estudiante._id) > -1} />
-                        <ListItemText primary={estudiante.nombre} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <Box display="flex" alignItems="center" marginTop={2} marginBottom={2}>
-                  <Switch
-                    checked={formValues.estadoUnidad}
-                    onChange={(e) => setFormValues({ ...formValues, estadoUnidad: e.target.checked })}
-                    name="estadoUnidad"
-                    color="primary"
-                  />
-                  <Typography>Estado Activo</Typography>
-                </Box>
-                <Box marginTop={3}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={selectedUnidad ? handleUpdateUnidad : handleCreateUnidad}
-                    fullWidth
-                  >
-                    {selectedUnidad ? "Actualizar Unidad" : "Crear Unidad"}
-                  </Button>
-                </Box>
-              </form>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" component="h2" gutterBottom>
-                Listado de Unidades
-              </Typography>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Nombre</TableCell>
-                      <TableCell>Estado</TableCell>
-                      <TableCell>Brigada</TableCell>
-                      <TableCell>Usuario</TableCell>
-                      <TableCell>Estudiantes</TableCell>
-                      <TableCell>Acciones</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {unidades.map((unidad) => (
-                      <TableRow key={unidad._id}>
-                        <TableCell>{unidad.nombreUnidad}</TableCell>
-                        <TableCell>
-                          <Tooltip title={unidad.estadoUnidad ? "Activo" : "Inactivo"}>
-                            <Switch
-                              checked={unidad.estadoUnidad}
-                              size="small"
-                              readOnly
-                            />
-                          </Tooltip>
-                        </TableCell>
-                        <TableCell>{unidad.brigadaId?.nombre || "No asignada"}</TableCell>
-                        <TableCell>{unidad.usuarioId?.nombre || "No asignado"}</TableCell>
-                        <TableCell>
-                          {unidad.estudiantes.length} estudiante(s)
-                        </TableCell>
-                        <TableCell>
-                          <Tooltip title="Editar">
-                            <IconButton onClick={() => handleEditClick(unidad)} color="primary" size="small">
-                              <Edit />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Información">
-                            <IconButton onClick={() => handleInfoClick(unidad)} color="info" size="small">
-                              <Info />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Eliminar">
-                            <IconButton onClick={() => {
-                              setUnidadToDelete(unidad);
-                              setOpenDeleteDialog(true);
-                            }} color="error" size="small">
-                              <Delete />
-                            </IconButton>
-                          </Tooltip>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+    <Container>
+      <h1>Gestión de Unidades:</h1>
+      <form noValidate autoComplete="off">
+        <TextField
+          label="Nombre de la Unidad"
+          name="nombreUnidad"
+          value={formValues.nombreUnidad}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <Box marginTop={2} marginBottom={2}>
+          <Switch
+            checked={formValues.estadoUnidad}
+            onChange={handleSwitchChange}
+            name="estadoUnidad"
+            color="primary"
+          />
+          Estado Activo
+        </Box>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="brigada-select-label">Brigada</InputLabel>
+          <Select
+            labelId="brigada-select-label"
+            name="brigadaId" // Asegúrate de que el nombre coincida
+            value={formValues.brigadaId} // Debe estar vinculado a formValues.brigadaId
+            onChange={handleInputChange}
+            input={<OutlinedInput label="Brigada" />}
+          >
+            {brigadas.map((brigada) => (
+              <MenuItem key={brigada._id} value={brigada._id}>
+                {brigada.nombreBrigada} {/* Asegúrate de que 'nombreBrigada' es la propiedad correcta */}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="usuario-select-label">Usuario</InputLabel>
+          <Select
+            labelId="usuario-select-label"
+            name="usuarioId"
+            value={formValues.usuarioId} // Asegúrate de que esto esté vinculado correctamente
+            onChange={handleInputChange}
+            input={<OutlinedInput label="Usuario" />}
+          >
+            {usuarios.map((usuario) => (
+              <MenuItem key={usuario._id} value={usuario._id}>
+                {usuario.nombreUsuario}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Estudiantes</InputLabel>
+          <Select
+            multiple
+            name="estudiantes"
+            value={formValues.estudiantes}
+            onChange={handleStudentChange}
+            renderValue={(selected) =>
+              estudiantes
+                .filter((estudiante) => selected.includes(estudiante._id))
+                .map((estudiante) => estudiante.nombreEstudiante)
+                .join(", ")
+            }
+          >
+            {estudiantes.map((estudiante) => (
+              <MenuItem key={estudiante._id} value={estudiante._id}>
+                <Checkbox checked={formValues.estudiantes.indexOf(estudiante._id) > -1} />
+                <ListItemText primary={estudiante.nombreEstudiante} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Box marginTop={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={selectedUnidad ? handleUpdateUnidad : handleCreateUnidad}
+          >
+            {selectedUnidad ? "Actualizar Unidad" : "Crear Unidad"}
+          </Button>
+        </Box>
+      </form>
 
-      {/* Snackbar para mensajes de error */}
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
-        </Alert>
-      </Snackbar>
+      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Nombre de la Unidad</TableCell>
+              <TableCell>Estado</TableCell>
+              <TableCell>Brigada</TableCell>
+              <TableCell>Usuario</TableCell>
+              <TableCell>Estudiantes</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {unidades.map((unidad) => (
+              <TableRow key={unidad._id}>
+                <TableCell>{unidad.nombreUnidad}</TableCell>
+                <TableCell>{unidad.estadoUnidad ? "Activo" : "Inactivo"}</TableCell>
+                <TableCell>
+                  {unidad.brigadaId?.nombre || "Brigada no encontrada"}
+                </TableCell>
+                <TableCell>
+                  {unidad.usuarioId?.nombre || "Usuario no encontrado"}
+                </TableCell>
+                <TableCell>
+                  {unidad.estudiantes.length > 0
+                    ? unidad.estudiantes.map(est => est.nombreEstudiante).join(", ")
+                    : "Sin estudiantes"}
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEditClick(unidad)} color="primary">
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteClick(unidad)} color="error">
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      {/* Diálogo de confirmación de eliminación */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Eliminar Unidad</DialogTitle>
         <DialogContent>
-          <Typography>
-            ¿Estás seguro de que deseas eliminar la unidad {unidadToDelete?.nombreUnidad}?
-          </Typography>
+          <Typography>¿Estás seguro de que deseas eliminar la unidad {unidadToDelete?.nombreUnidad}?</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteUnidad} color="error">Eliminar</Button>
+          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
+          <Button onClick={handleDeleteUnidad} color="secondary">Eliminar</Button>
         </DialogActions>
       </Dialog>
 
-      {/* Diálogo de información de la unidad */}
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
         <DialogTitle>Información de la Unidad</DialogTitle>
         <DialogContent>
-          <Typography><strong>Nombre:</strong> {infoUnidad?.nombreUnidad}</Typography>
-          <Typography><strong>Estado:</strong> {infoUnidad?.estadoUnidad ? "Activo" : "Inactivo"}</Typography>
-          <Typography><strong>Brigada:</strong> {infoUnidad?.brigadaId?.nombre || "No asignada"}</Typography>
-          <Typography><strong>Usuario:</strong> {infoUnidad?.usuarioId?.nombre || "No asignado"}</Typography>
-          <Typography><strong>Estudiantes:</strong></Typography>
-          <ul>
-            {infoUnidad?.estudiantes?.map((est) => (
-              <li key={est._id}>{est.nombre}</li>
-            )) || <li>Sin estudiantes</li>}
-          </ul>
+          <Typography>Nombre: {infoUnidad?.nombreUnidad}</Typography>
+          <Typography>Estado: {infoUnidad?.estadoUnidad ? "Activo" : "Inactivo"}</Typography>
+          <Typography>Brigada: {infoUnidad?.brigadaId?.nombre || "Brigada no encontrada"}</Typography>
+          <Typography>Usuario: {infoUnidad?.usuarioId?.nombre || "Usuario no encontrado"}</Typography>
+          <Typography>Estudiantes: {infoUnidad?.estudiantes.map(est => est.nombreEstudiante).join(", ") || "Sin estudiantes"}</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
