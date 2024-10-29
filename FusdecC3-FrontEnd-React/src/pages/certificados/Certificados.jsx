@@ -29,12 +29,11 @@ import { Edit, Delete } from "@mui/icons-material";
 
 const Certificados = () => {
   const [formValues, setFormValues] = useState({
-    nombre: "",
     fechaEmision: "",
     usuarioId: "",
     cursoId: "",
     estudianteId: "",
-    nombreEmisor: "", // Cambiado a nombreEmisor para que coincida con el backend
+    nombreEmisorCertificado: "", 
     codigoVerificacion: "",
   });
   const [usuarios, setUsuarios] = useState([]);
@@ -122,7 +121,6 @@ const Certificados = () => {
         },
         body: JSON.stringify({
           ...formValues,
-          fechaEmision: new Date(formValues.fechaEmision).toISOString(),
         }),
       });
 
@@ -150,12 +148,11 @@ const Certificados = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nombre: formValues.nombre,
-          fechaEmision: new Date(formValues.fechaEmision).toISOString(),
+          fechaEmision: formValues.fechaEmision,
           usuarioId: formValues.usuarioId,
           cursoId: formValues.cursoId,
           estudianteId: formValues.estudianteId,
-          nombreEmisor: formValues.nombreEmisor, // Asegúrate de que este campo sea válido
+          nombreEmisorCertificado: formValues.nombreEmisorCertificado,
           codigoVerificacion: formValues.codigoVerificacion,
         }),
       });
@@ -180,12 +177,11 @@ const Certificados = () => {
   const handleEditClick = (certificado) => {
     setSelectedCertificado(certificado);
     setFormValues({
-      nombre: certificado.nombre,
       fechaEmision: certificado.fechaEmision,
       usuarioId: certificado.usuarioId,
       cursoId: certificado.cursoId,
       estudianteId: certificado.estudianteId,
-      nombreEmisor: certificado.nombreEmisor, // Asegúrate de que este campo coincida
+      nombreEmisorCertificado: certificado.nombreEmisor, 
       codigoVerificacion: certificado.codigoVerificacion,
     });
   };
@@ -221,12 +217,11 @@ const Certificados = () => {
 
   const clearForm = () => {
     setFormValues({
-      nombre: "",
       fechaEmision: "",
       usuarioId: "",
       cursoId: "",
       estudianteId: "",
-      nombreEmisor: "", // Cambiado a nombreEmisor
+      nombreEmisorCertificado: "", // Cambiado a nombreEmisor
       codigoVerificacion: "",
     });
     setSelectedCertificado(null);
@@ -237,14 +232,6 @@ const Certificados = () => {
       <h1>Gestión de Certificados</h1>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          <TextField
-            label="Nombre"
-            name="nombre"
-            value={formValues.nombre}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
           <TextField
             label="Fecha de Emisión"
             type="date"
@@ -305,8 +292,8 @@ const Certificados = () => {
           </FormControl>
           <TextField
             label="Nombre del Emisor"
-            name="nombreEmisor"
-            value={formValues.nombreEmisor}
+            name="nombreEmisorCertificado"
+            value={formValues.nombreEmisorCertificado}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -333,7 +320,7 @@ const Certificados = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Nombre</TableCell>
+                  <TableCell>Codigo</TableCell>
                   <TableCell>Fecha de Emisión</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
@@ -341,9 +328,11 @@ const Certificados = () => {
               <TableBody>
                 {certificados.map((certificado) => (
                   <TableRow key={certificado._id}>
-                    <TableCell>{certificado.nombre || "Nombre no disponible"}</TableCell>
                     <TableCell>
-                      {certificado.fechaEmision ? new Date(certificado.fechaEmision).toLocaleDateString("es-ES") : "Fecha no válida"}
+                      {certificado.codigoVerificacion}
+                    </TableCell>
+                    <TableCell>
+                      {certificado.fechaEmision}
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(certificado)} color="primary">

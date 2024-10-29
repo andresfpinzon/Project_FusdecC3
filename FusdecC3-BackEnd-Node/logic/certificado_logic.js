@@ -18,7 +18,7 @@ async function crearCertificado(body) {
         estudianteId: body.estudianteId,
         cursoId: body.cursoId,
         usuarioId: body.usuarioId,
-        fechaEmision: new Date(body.fechaEmision), // Asegúrate de que la fecha esté en formato correcto
+        fechaEmision: body.fechaEmision, // Asegúrate de que la fecha esté en formato correcto
     });
 
     return await certificado.save();

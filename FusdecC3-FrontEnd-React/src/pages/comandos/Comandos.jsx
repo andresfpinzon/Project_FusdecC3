@@ -46,7 +46,7 @@ const Comandos = () => {
 
   useEffect(() => {
     fetchComandos();
-    fetchFundaciones();
+    //fetchFundaciones();
   }, []);
 
   const fetchComandos = async () => {
@@ -138,6 +138,13 @@ const Comandos = () => {
             comando._id === selectedComando._id ? comandoActualizado : comando
           )
         );
+        setFormValues({
+          nombreComando: "",
+          ubicacionComando: "",
+          estadoComando: true,
+          fundacionId: "",
+          brigadas: [],
+        })
         clearForm();
       } else {
         const errorData = await response.json();

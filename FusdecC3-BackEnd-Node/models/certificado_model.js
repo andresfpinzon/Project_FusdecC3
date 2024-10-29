@@ -6,10 +6,6 @@ const CertificadoSchema = new Schema({
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
   },*/
-  nombre: {
-    type: String,
-    required: true,
-  },
   fechaEmision: {
     type: Date,
     required: true,

@@ -369,10 +369,10 @@ const Unidades = () => {
                 <TableCell>{unidad.nombreUnidad}</TableCell>
                 <TableCell>{unidad.estadoUnidad ? "Activo" : "Inactivo"}</TableCell>
                 <TableCell>
-                  {unidad.brigadaId?.nombre || "Brigada no encontrada"}
+                  {unidad.brigadaId?.nombreBrigada || "Brigada no encontrada"}
                 </TableCell>
                 <TableCell>
-                  {unidad.usuarioId?.nombre || "Usuario no encontrado"}
+                  {unidad.usuarioId?.nombreUsuario || "Usuario no encontrado"}
                 </TableCell>
                 <TableCell>
                   {unidad.estudiantes.length > 0
@@ -403,7 +403,7 @@ const Unidades = () => {
           <Button onClick={handleDeleteUnidad} color="secondary">Eliminar</Button>
         </DialogActions>
       </Dialog>
-
+//quit
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
         <DialogTitle>Información de la Unidad</DialogTitle>
         <DialogContent>
