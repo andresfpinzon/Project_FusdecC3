@@ -276,6 +276,7 @@ export default function Brigadas() {
                   <TableCell>Nombre</TableCell>
                   <TableCell>Ubicación</TableCell>
                   <TableCell>Comando</TableCell>
+                  <TableCell>Unidades</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
@@ -287,6 +288,11 @@ export default function Brigadas() {
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
                     <TableCell>
                       {comandos.find(comando => comando._id === brigada.comandoId)?.nombreComando || "Sin comando"}
+                    </TableCell>
+                    <TableCell>
+                      {brigada.unidades ? brigada.unidades.map(unidad => (
+                        <div key={unidad._id}>{unidad.nombreUnidad}</div> // Visualiza el nombre de cada unidad asignada
+                      )) : "Sin unidades"}
                     </TableCell>
                     <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>

@@ -348,7 +348,7 @@ const Comandos = () => {
           {infoComando && (
             <div>
               <Typography variant="h6">Nombre: {infoComando.nombreComando}</Typography>
-              <Typography variant="body1">Ubicación: {infoComando.ubicacionComando}</Typography>
+              <Typography variant="body1">Ubicacion: {infoComando.ubicacionComando}</Typography>
               <Typography variant="body1">Estado: {infoComando.estadoComando ? "Activo" : "Inactivo"}</Typography>
               <Typography variant="body1">Fundación: {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}</Typography>
             </div>

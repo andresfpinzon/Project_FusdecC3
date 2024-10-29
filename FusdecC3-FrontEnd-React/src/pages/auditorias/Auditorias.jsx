@@ -26,6 +26,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import Certificados from "../certificados/Certificados";
 
 const Auditorias = () => {
   const [formValues, setFormValues] = useState({
@@ -142,10 +143,10 @@ const Auditorias = () => {
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="certificado-label">Certificado</InputLabel>
+        <FormControl fullWidth margin="normal">
+            <InputLabel id="comando-select-label">Cerificado</InputLabel>
             <Select
-              labelId="certificado-label"
+              labelId="certificado-select-label"
               name="certificadoId"
               value={formValues.certificadoId}
               onChange={handleInputChange}
@@ -153,7 +154,7 @@ const Auditorias = () => {
             >
               {certificados.map((certificado) => (
                 <MenuItem key={certificado._id} value={certificado._id}>
-                  {certificado.nombre}
+                  {certificado.nombreCcertificado} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
                 </MenuItem>
               ))}
             </Select>

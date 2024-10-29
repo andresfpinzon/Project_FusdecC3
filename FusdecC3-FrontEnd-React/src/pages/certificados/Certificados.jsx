@@ -34,7 +34,7 @@ const Certificados = () => {
     usuarioId: "",
     cursoId: "",
     estudianteId: "",
-    nombreEmisorCertificado: "",
+    nombreEmisor: "", // Cambiado a nombreEmisor para que coincida con el backend
     codigoVerificacion: "",
   });
   const [usuarios, setUsuarios] = useState([]);
@@ -150,13 +150,12 @@ const Certificados = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // Incluye los campos que son válidos para la actualización
-          nombre: formValues.nombre, // Asegúrate de que este campo sea válido
-          fechaEmision: new Date(formValues.fechaEmision).toISOString(), // Formato correcto de la fecha
+          nombre: formValues.nombre,
+          fechaEmision: new Date(formValues.fechaEmision).toISOString(),
           usuarioId: formValues.usuarioId,
           cursoId: formValues.cursoId,
           estudianteId: formValues.estudianteId,
-          nombreEmisorCertificado: formValues.nombreEmisorCertificado,
+          nombreEmisor: formValues.nombreEmisor, // Asegúrate de que este campo sea válido
           codigoVerificacion: formValues.codigoVerificacion,
         }),
       });
@@ -186,15 +185,11 @@ const Certificados = () => {
       usuarioId: certificado.usuarioId,
       cursoId: certificado.cursoId,
       estudianteId: certificado.estudianteId,
-      nombreEmisorCertificado: certificado.nombreEmisorCertificado,
+      nombreEmisor: certificado.nombreEmisor, // Asegúrate de que este campo coincida
       codigoVerificacion: certificado.codigoVerificacion,
     });
   };
 
-  const handleDeleteClick = (certificado) => {
-    setCertificadoToDelete(certificado);
-    setOpenDeleteDialog(true);
-  };
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
@@ -231,7 +226,7 @@ const Certificados = () => {
       usuarioId: "",
       cursoId: "",
       estudianteId: "",
-      nombreEmisorCertificado: "",
+      nombreEmisor: "", // Cambiado a nombreEmisor
       codigoVerificacion: "",
     });
     setSelectedCertificado(null);
@@ -310,8 +305,8 @@ const Certificados = () => {
           </FormControl>
           <TextField
             label="Nombre del Emisor"
-            name="nombreEmisorCertificado"
-            value={formValues.nombreEmisorCertificado}
+            name="nombreEmisor"
+            value={formValues.nombreEmisor}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
