@@ -16,8 +16,7 @@ async function crearAsistencia(body) {
 
 // Función asíncrona para actualizar una asistencia
 async function actualizarAsistencia(id, body) {
-    let asistencia = await Asistencia.findById(id)
-    .populate('estudiantes');
+    let asistencia = await Asistencia.findById(id).populate('estudiantes');
     if (!asistencia) {
         throw new Error('Asistencia no encontrada');
     }
@@ -27,15 +26,15 @@ async function actualizarAsistencia(id, body) {
     asistencia.usuarioId = body.usuarioId || asistencia.usuarioId;
     asistencia.estadoAsistencia = body.estadoAsistencia || asistencia.estadoAsistencia;
 
-    // Si se pasan estudiantes, evitamos duplicados
+    // Reemplaza completamente el array de estudiantes si se pasan estudiantes en el cuerpo
     if (body.estudiantes && body.estudiantes.length > 0) {
-        const nuevosEstudiantes = body.estudiantes.filter(estudianteId => !asistencia.estudiantes.includes(estudianteId));
-        asistencia.estudiantes.push(...nuevosEstudiantes); 
+        asistencia.estudiantes = body.estudiantes;
     }
 
     await asistencia.save();
     return asistencia;
 }
+
 
 // Función asíncrona para listar las asistencias activas
 async function listarAsistenciasActivas() {
