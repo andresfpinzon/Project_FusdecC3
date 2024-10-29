@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const brigadaController = require('../controllers/brigada_controllers');
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+// const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -80,8 +80,10 @@ const brigadaController = require('../controllers/brigada_controllers');
  *                     estadoBrigada: true
  *                     comandoId: "60d5ec49f1a2c8b1f8e4e1a7"
  *                     unidades: []
- *       400:
- *         description: Datos inválidos
+ *       204:
+ *         description: No hay brigadas disponibles
+ *       500:
+ *         description: Error interno del servidor
  */
 router.get('/', brigadaController.listarBrigadas);
 
@@ -120,7 +122,6 @@ router.get('/', brigadaController.listarBrigadas);
  *                 type: array
  *                 items:
  *                   type: string
- *                   description: ID de las unidades asociadas (ObjectId válido).
  *           examples:
  *             ejemplo1:
  *               value:
@@ -147,6 +148,10 @@ router.get('/', brigadaController.listarBrigadas);
  *                   unidades: []
  *       400:
  *         description: Datos inválidos
+ *       409:
+ *         description: Conflicto, brigada ya existe
+ *       500:
+ *         description: Error interno del servidor
  */
 router.post('/', brigadaController.crearBrigada);
 
@@ -182,6 +187,8 @@ router.post('/', brigadaController.crearBrigada);
  *                   unidades: ["60d5ec49f1a2c8b1f8e4e1a5"]
  *       404:
  *         description: Brigada no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
 router.get('/:id', brigadaController.obtenerBrigadaPorId);
 
@@ -227,7 +234,6 @@ router.get('/:id', brigadaController.obtenerBrigadaPorId);
  *                 type: array
  *                 items:
  *                   type: string
- *                   description: ID de las unidades asociadas (ObjectId válido).
  *           examples:
  *             ejemplo1:
  *               value:
@@ -241,6 +247,8 @@ router.get('/:id', brigadaController.obtenerBrigadaPorId);
  *         description: Brigada actualizada exitosamente
  *       404:
  *         description: Brigada no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
 router.put('/:id', brigadaController.actualizarBrigada);
 
@@ -263,6 +271,8 @@ router.put('/:id', brigadaController.actualizarBrigada);
  *         description: Brigada desactivada correctamente
  *       404:
  *         description: Brigada no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
 router.delete('/:id', brigadaController.desactivarBrigada);
 
@@ -296,7 +306,6 @@ router.delete('/:id', brigadaController.desactivarBrigada);
  *               value:
  *                 unidadIds: [
  *                   "60d21b4667d0d8992e610c81",
- * 
  *                 ]
  *     responses:
  *       200:
@@ -314,6 +323,12 @@ router.delete('/:id', brigadaController.desactivarBrigada);
  *                     "60d21b4667d0d8992e610c81",
  *                     "60d21b4667d0d8992e610c82"
  *                   ]
+ *       400:
+ *         description: Datos inválidos
+ *       404:
+ *         description: Brigada no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
 router.post('/:id/unidades', brigadaController.agregarunidades);
 

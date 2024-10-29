@@ -1,0 +1,10 @@
+const fetchComandos = async () => {
+  // ... código existente ...
+  setComandos(data); // Actualiza el estado con los comandos obtenidos
+  // ... código existente ...
+};
+
+useEffect(() => {
+  fetchBrigadas(); // Llama a la función para obtener brigadas
+  fetchComandos(); // Llama a la función para obtener comandos
+}, []);

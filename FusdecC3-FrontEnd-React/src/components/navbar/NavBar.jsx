@@ -17,6 +17,7 @@ import normalizeText from "../../utils/textUtils"; // Importación de la funció
 import logoFusdec from "../../assets/images/logoFu.png";
 
 
+
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: "flex",
@@ -56,7 +57,7 @@ export default function Navbar() {
   const drawer = (
     <div className={classes.drawer}>
       <List>
-        {["Home", "Cursos", "Usuarios", "Ediciones", "Más Información", "Roles", "Estudiantes", "Asistencias","Inasistencias"].map((text) => (
+      {["Home", "Asistencias", "Auditorias","Brigadas","Certificados","Comandos", "Cursos", "Ediciones", "Más Información", "Estudiantes", "Inasistencias", "Roles", "Unidades", "Usuarios"].map((text) => (
           <ListItem
             button
             component={LinkBehavior}
@@ -88,7 +89,7 @@ export default function Navbar() {
             <MenuIcon />
           </IconButton>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {["Home", "Cursos", "Usuarios", "Ediciones", "Más Información","Roles","Estudiantes", "Asistencias","Inasistencias"].map((text) => (
+            {["Home", "Asistencias", "Auditorias","Brigadas","Certificados","Comandos", "Cursos", "Ediciones", "Más Información", "Estudiantes", "Inasistencias", "Roles", "Unidades", "Usuarios"].map((text) => (
               <Button
                 color="inherit"
                 component={LinkBehavior}

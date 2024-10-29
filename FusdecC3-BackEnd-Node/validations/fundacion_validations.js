@@ -4,7 +4,6 @@ const fundacionSchemaValidation =Joi.object({
     nombreFundacion: Joi.string()
     .min(3)
     .max(100)
-    .required()
     .messages({
         'string.base': 'El nombre de la fundacion debe ser un texto', 
         'string.empty': 'El nombre de la fundacion no debe esstar vacio', 

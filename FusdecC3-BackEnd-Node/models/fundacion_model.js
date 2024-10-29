@@ -8,12 +8,10 @@ const Fundacionschema =new Schema ({
    },*/ 
    nombreFundacion: { 
     type: String, 
-    required: true,
    }, 
    estadoFundacion: {
       type: Boolean,
       default: true,
-      required: true,
     },
 comandos:[
     {

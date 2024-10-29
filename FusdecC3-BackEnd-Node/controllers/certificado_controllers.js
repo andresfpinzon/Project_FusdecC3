@@ -1,5 +1,8 @@
 const logic = require('../logic/certificado_logic');
 const certificadoSchemaValidation = require('../validations/certificado_validations');
+const Certificado = require('../models/certificado_model');
+const mongoose = require('mongoose');
+const auditoriaLogic = require('../logic/auditoria_logic'); // Importar lógica de auditoría
 
 // Controlador para listar certificados
 const listarCertificados = async (_req, res) => {
@@ -10,24 +13,26 @@ const listarCertificados = async (_req, res) => {
         }
         res.json(certificados);
     } catch (err) {
+        console.error(err); // Agrega un log para ver el error
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
 
 // Controlador para crear un certificado
 const crearCertificado = async (req, res) => {
-    const { error, value } = certificadoSchemaValidation.validate(req.body);
-    if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-    }
     try {
-        const nuevoCertificado = await logic.crearCertificado(value);
+        // Convertir la fecha a un objeto Date
+        req.body.fechaEmision = new Date(req.body.fechaEmision);
+        
+        const nuevoCertificado = new Certificado(req.body);
+        await nuevoCertificado.save();
         res.status(201).json(nuevoCertificado);
-    } catch (err) {
-        if (err.message === 'El certificado con este código de verificación ya existe') {
-            return res.status(409).json({ error: err.message });
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'El código de verificación ya existe.' });
         }
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+        console.error("Error al crear certificado:", error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
@@ -39,7 +44,10 @@ const actualizarCertificado = async (req, res) => {
         return res.status(400).json({ error: error.details[0].message });
     }
     try {
-        const certificadoActualizado = await logic.editarCertificado(id, value);
+        // Convertir la fecha a un objeto Date
+        value.fechaEmision = new Date(value.fechaEmision);
+        
+        const certificadoActualizado = await Certificado.findByIdAndUpdate(id, value, { new: true });
         if (!certificadoActualizado) {
             return res.status(404).json({ error: 'Certificado no encontrado' });
         }

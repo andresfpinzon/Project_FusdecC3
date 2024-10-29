@@ -88,3 +88,4 @@ const EstudianteSchema = new Schema({
 
 const Estudiante = mongoose.model("Estudiante", EstudianteSchema);
 module.exports = Estudiante;
+

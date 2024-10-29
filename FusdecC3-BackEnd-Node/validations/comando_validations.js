@@ -34,12 +34,10 @@ const comandoSchemaValidation = Joi.object({
 
   fundacionId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
-    .required()
+    .allow(null, '') // Permitir que fundacionId esté vacío o sea null
     .messages({
       'string.base': 'El fundacionId debe ser un texto',
-      'string.empty': 'El fundacionId no puede estar vacío',
       'string.pattern.base': 'El fundacionId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
-      'any.required': 'El fundacionId es un campo requerido',
     }),
 
   brigadas: Joi.array()

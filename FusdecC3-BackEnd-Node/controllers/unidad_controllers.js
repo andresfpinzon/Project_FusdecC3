@@ -5,7 +5,7 @@ const unidadSchemaValidation = require('../validations/unidad_validations');
 const listarUnidades = async (_req, res) => {
     try {
         const unidades = await logic.listarUnidades();
-        res.json(unidades); // No es necesario verificar si está vacío, ya que se puede enviar un array vacío
+        res.json(unidades); // Ahora incluirá estudiantes
     } catch (error) {
         console.error(error); // Registrar el error en el log
         res.status(500).json({ error: 'Error al obtener las unidades' });
@@ -66,7 +66,7 @@ const obtenerUnidadPorId = async (req, res) => {
         if (!unidad) {
             return res.status(404).json({ error: `Unidad con ID ${id} no encontrada` });
         }
-        res.json(unidad);
+        res.json(unidad); // Ahora incluirá estudiantes
     } catch (err) {
         res.status(500).json({ error: 'Error interno del servidor al buscar la unidad', details: err.message });
     }
