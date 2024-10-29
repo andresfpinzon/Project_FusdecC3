@@ -312,7 +312,7 @@ const Asistencias = () => {
         <DialogContent>
           <Typography>Título: {selectedAsistencia?.tituloAsistencia}</Typography>
           <Typography>Fecha: {selectedAsistencia?.fechaAsistencia}</Typography>
-          <Typography>Estudiantes: {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ")|| "Sin ediciones"}</Typography>
+          <Typography>Estudiantes: {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ")|| "Sin estudiantes"}</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>

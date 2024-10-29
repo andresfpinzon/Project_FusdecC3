@@ -9,6 +9,7 @@ import MasInformacion from "../pages/masinformacion/MasInformacion";
 import Roles from "../pages/roles/Roles";
 import Estudiantes from "../pages/estudiantes/Estudiantes"
 import Asistencias from "../pages/asistencias/Asistencias";
+import Inasistencias from "../pages/inasistencias/Inasistencias";
 import Login from "../pages/login/Login";
 
 
@@ -23,8 +24,9 @@ const NavbarRoutes = () => {
       <Route path="/masinformacion" element={<MasInformacion />} />
       <Route path="/login" element={<Login />} />
       <Route path="/roles" element={<Roles />} />
-      <Route path="/Estudiantes" element={<Estudiantes />} />
-      <Route path="/Asistencias" element={<Asistencias />} />
+      <Route path="/estudiantes" element={<Estudiantes />} />
+      <Route path="/asistencias" element={<Asistencias />} />
+      <Route path="/inasistencias" element={<Inasistencias/>}/>
     </Routes>
   );
 };

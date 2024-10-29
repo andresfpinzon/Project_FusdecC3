@@ -1,9 +1,378 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Switch,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Snackbar,
+  Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Checkbox,
+  ListItemText,
+} from "@mui/material";
+import { Edit, Delete, Info } from "@mui/icons-material";
 
-export default function Horarios() {
+const Inasistencias = () => {
+  const [asistencias, setAsistencias] = useState([]);
+  const [estudiantes, setEstudiantes] = useState([]);
+  const [inasistencias, setInasistencias] = useState([]);
+  const [selectedInasistencia, setSelectedInasistencia] = useState(null);
+  const [formValues, setFormValues] = useState({
+    tituloInasistencia: "",
+    observacion: "",
+    usuarioId: "",
+    asistenciaId: "",
+    estadoInasistencia: true,
+    estudiantes: [],
+  });
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [inasistenciaToDelete, setInasistenciaToDelete] = useState(null);
+  const [openInfoDialog, setOpenInfoDialog] = useState(false);
+
+  useEffect(() => {
+    fetchAsistencias();
+    fetchEstudiantes();
+    fetchInasistencias();
+  }, []);
+
+  const fetchAsistencias = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/asistencias");
+      if (!response.ok) throw new Error("Error al obtener asistencias");
+      const data = await response.json();
+      setAsistencias(data);
+    } catch (error) {
+      setErrorMessage("Error al obtener asistencias", error);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchInasistencias = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/inasistencias");
+      if (!response.ok) throw new Error("Error al obtener inasistencias");
+      const data = await response.json();
+      setInasistencias(data);
+    } catch (error) {
+      setErrorMessage("Error al obtener inasistencias", error);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes");
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      setErrorMessage("Error al obtener estudiantes", error);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSwitchChange = (e) => {
+    setFormValues({
+      ...formValues,
+      [e.target.name]: e.target.checked,
+    });
+  };
+
+  const handleEstudianteChange = (e) => {
+    const { target: { value } } = e;
+    setFormValues({
+      ...formValues,
+      estudiantes: typeof value === "string" ? value.split(",") : value,
+    });
+  };
+
+  const handleCreateInasistencia = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/inasistencias", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
+      });
+
+      if (response.ok) {
+        const nuevaInasistencia = await response.json();
+        setInasistencias([...asistencias, nuevaInasistencia]);
+        setFormValues({
+          tituloInasistencia: "",
+          observacion: "",
+          usuarioId: "",
+          asistenciaId: "",
+          estadoInasistencia: true,
+          estudiantes: [],
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al crear inasistencia");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleUpdateInasistencia = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/inasistencias/${selectedInasistencia._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
+      });
+
+      if (response.ok) {
+        const updatedInasistencia = await response.json();
+        const updatedInasistencias = inasistencias.map((inasistencia) =>
+          inasistencia._id === updatedInasistencia._id ? updatedInasistencia : inasistencia
+        );
+        setAsistencias(updatedInasistencias);
+        setSelectedInasistencia(null);
+        setFormValues({
+          tituloInasistencia: "",
+          observacion: "",
+          usuarioId: "",
+          asistenciaId: "",
+          estadoInasistencia: true,
+          estudiantes: [],
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al actualizar Inasistencia");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleDeleteInasistencia = async () => {
+    if (!inasistenciaToDelete) return;
+    try {
+      const response = await fetch(`http://localhost:3000/api/inasistencias/${inasistenciaToDelete._id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setAsistencias(asistencias.filter((inasistencia) => inasistencia._id !== inasistenciaToDelete._id));
+        handleCloseDeleteDialog();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al eliminar asistencia");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleEditClick = (inasistencia) => {
+    setSelectedInasistencia(inasistencia);
+    setFormValues({
+      tituloInasistencia: inasistencia.tituloInasistencia,
+      observacion: inasistencia.observacion,
+      usuarioId: inasistencia.usuarioId,
+      asistenciaId: inasistencia.asistenciaId?._id || "",
+      estadoInasistencia: inasistencia.estadoInasistencia,
+      estudiantes: inasistencia.estudiantes.map((estudiante) => estudiante._id),
+    });
+  };
+
+  const handleInfoClick = (inasistencia) => {
+    setSelectedInasistencia(inasistencia);
+    setOpenInfoDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setInasistenciaToDelete(null);
+  };
+
+  const handleCloseInfoDialog = () => {
+    setOpenInfoDialog(false);
+  };
+
   return (
-    <>
-      <h1>Gestion de Horarios</h1>
-    </>
+    <Container>
+      <h1>Gestión de Inasistencias</h1>
+      <form noValidate autoComplete="off">
+        <TextField
+          label="Título de Inasistencia"
+          name="tituloInasistencia"
+          value={formValues.tituloInasistencia}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Observacion"
+          name="observacion"
+          value={formValues.observacion}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Id de usuario"
+          name="usuarioId"
+          value={formValues.usuarioId}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ shrink: true }}
+        />
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Asistencia</InputLabel>
+          <Select
+            name="asistenciaId"
+            value={formValues.asistenciaId}
+            onChange={handleInputChange}
+            input={<OutlinedInput label="Asistencia" />}
+          >
+            {asistencias.map((asistencia) => (
+              <MenuItem key={asistencia._id} value={asistencia._id}>
+                {asistencia.tituloAsistencia}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Estudiantes</InputLabel>
+          <Select
+            multiple
+            value={formValues.estudiantes}
+            onChange={handleEstudianteChange}
+            input={<OutlinedInput label="Estudiantes" />}
+            renderValue={(selected) =>
+              estudiantes
+                .filter((est) => selected.includes(est._id))
+                .map((est) => est.nombreEstudiante)
+                .join(", ")
+            }
+          >
+            {estudiantes.map((est) => (
+              <MenuItem key={est._id} value={est._id}>
+                <Checkbox checked={formValues.estudiantes.indexOf(est._id) > -1} />
+                <ListItemText primary={est.nombreEstudiante} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Box marginTop={2} marginBottom={2}>
+          <Switch
+            checked={formValues.estadoInasistencia}
+            onChange={handleSwitchChange}
+            name="estadoInasistencia"
+            color="primary"
+          />
+          Estado Activo
+        </Box>
+        <Box marginTop={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={selectedInasistencia ? handleUpdateInasistencia : handleCreateInasistencia}
+          >
+            {selectedInasistencia ? "Actualizar Inasistencia" : "Crear Inasistencia"}
+          </Button>
+        </Box>
+      </form>
+
+      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Título</TableCell>
+              <TableCell>asistencia</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {inasistencias.map((inasistencia) => (
+              <TableRow key={inasistencia._id}>
+                <TableCell>{inasistencia.tituloInasistencia}</TableCell>
+                <TableCell>{inasistencia.asistenciaId?.tituloAsistencia || "Asistencia no encontrada"}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEditClick(inasistencia)} color="primary">
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => handleInfoClick(inasistencia)} color="primary">
+                    <Info />
+                  </IconButton>
+                  <IconButton onClick={() => setOpenDeleteDialog(true) & setInasistenciaToDelete(inasistencia)} color="error">
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
+        <DialogTitle>Detalles de la Inasistencia</DialogTitle>
+        <DialogContent>
+          <Typography>Título: {selectedInasistencia?.tituloInasistencia}</Typography>
+          <Typography>Observacion: {selectedInasistencia?.observacion}</Typography>
+          <Typography>Asistencia: {selectedInasistencia?.asistenciaId?.tituloAsistencia || "Asistencia no encontrada"}</Typography>
+          <Typography>Estudiantes: {selectedInasistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ")|| "Sin estudiantes"}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Eliminar Asistencia</DialogTitle>
+        <DialogContent>
+          <Typography>¿Estás seguro de que quieres eliminar esta Inasistencia {inasistenciaToDelete?.tituloInasistencia}?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
+          <Button onClick={handleDeleteInasistencia} color="error">Eliminar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert severity="error" onClose={() => setOpenSnackbar(false)}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
-}
+};
+
+export default Inasistencias;

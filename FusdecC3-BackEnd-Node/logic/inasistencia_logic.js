@@ -30,8 +30,7 @@ async function actualizarInasistencia(id, body) {
 
     // Si se pasan estudiantes, evitamos duplicados
     if (body.estudiantes && body.estudiantes.length > 0) {
-        const nuevosEstudiantes = body.estudiantes.filter(estudianteId => !inasistencia.estudiantes.includes(estudianteId));
-        inasistencia.estudiantes.push(...nuevosEstudiantes); 
+        inasistencia.estudiantes = body.estudiantes;
     }
 
     await inasistencia.save();
@@ -40,12 +39,15 @@ async function actualizarInasistencia(id, body) {
 
 // Función asíncrona para listar todas las inasistencias
 async function listarInasistencias() {
-    return await Inasistencia.find({});
+    return await Inasistencia.find({})
+    .populate('asistenciaId')
+    .populate('estudiantes');
 }
 
 // Función asíncrona para obtener una inasistencia por su ID
 async function obtenerInasistenciaPorId(id) {
     const inasistencia = await Inasistencia.findById(id)
+    .populate('asistenciaId')
     .populate('estudiantes');
     if (!inasistencia) {
         throw new Error('Inasistencia no encontrada');
