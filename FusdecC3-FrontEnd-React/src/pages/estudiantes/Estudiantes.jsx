@@ -545,7 +545,9 @@ const Estudiantes = () => {
         <DialogContent>
           <Typography>Nombre: {infoEstudiante?.nombreEstudiante}</Typography>
           <Typography>Apellido: {infoEstudiante?.apellidoEstudiante}</Typography>
+          <Typography>Tipo de Docoumento: {infoEstudiante?.tipoDocumento}</Typography>
           <Typography>Número de Documento: {infoEstudiante?.numeroDocumento}</Typography>
+          <Typography>Fecha de Nacimiento: {infoEstudiante?.fechaNacimiento}</Typography>
           <Typography>Correo: {infoEstudiante?.correoEstudiante}</Typography>
           <Typography>Unidad: {infoEstudiante?.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
           <Typography>Colegio: {infoEstudiante?.colegioId?.nombreColegio || "Colegio no encontrado"}</Typography>
