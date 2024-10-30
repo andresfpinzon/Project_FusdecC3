@@ -18,7 +18,9 @@ const CalificacionSchemaValidation = Joi.object({
 
   usuarioId: Joi.string()
   .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
-    .required()
+    //.required()
+    .optional()
+    .allow(null, "") // Permitir null o un string vacío
     .messages({
       'string.base': 'El id del usuario debe ser un texto',
       'string.empty': 'El id del usuario no puede estar vacío',

@@ -33,7 +33,9 @@ async function actualizarCalificacion(id, body) {
       },
     },
     { new: true }
-  );
+  )
+  .populate('usuarioId')
+  .populate('estudiantes');
 
   return calificacion;
 }
@@ -55,7 +57,9 @@ async function desactivarCalificacion(id) {
 
 // Función asíncrona para listar las calificaciones activas
 async function listarCalificacionesActivas() {
-  let calificacion = await Calificacion.find({ estadoCalificacion: true });
+  let calificacion = await Calificacion.find({ estadoCalificacion: true })
+  .populate('usuarioId')
+  .populate('estudiantes');
   return calificacion;
 }
 
@@ -63,6 +67,7 @@ async function listarCalificacionesActivas() {
 async function buscarCalificacionPorId(id) {
   try {
     const calificacion = await Calificacion.findById(id)
+    .populate('usuarioId')
     .populate('estudiantes');
     if (!calificacion) {
       throw new Error(`Calificación con ID ${id} no encontrado`);

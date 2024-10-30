@@ -20,7 +20,8 @@ const CalificacionSchema = new Schema({
   usuarioId: {
     type: String,
     maxlength: 450,
-    required: true,
+    default: null,
+    //required: true,
   },
 
   estadoCalificacion: {

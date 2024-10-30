@@ -60,9 +60,9 @@ const Ediciones = () => {
     try {
       const [edicionesData, cursosData, horariosData, estudiantesData] = await Promise.all([
         fetch("http://localhost:3000/api/ediciones").then((res) => res.json()),
-        fetch("http://localhost:3000/api/cursos").then((res) => res.json()),
+        //fetch("http://localhost:3000/api/cursos").then((res) => res.json()),
         fetch("http://localhost:3000/api/horarios").then((res) => res.json()),
-        fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
+        //fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
       ]);
       setEdiciones(edicionesData);
       setCursos(cursosData);
