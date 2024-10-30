@@ -254,7 +254,7 @@ const Ediciones = () => {
           onChange={handleInputChange}
           sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
         />
-        
+        <br /><br />
         <TextField
           label="Fecha de Fin"
           type="date"
