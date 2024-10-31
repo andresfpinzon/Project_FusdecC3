@@ -78,11 +78,23 @@ const desactivarAuditoria = async (req, res) => {
     }
 };
 
+// Controlador para obtener auditorías por certificado
+const obtenerAuditoriasPorCertificado = async (req, res) => {
+    const { certificadoId } = req.params;
+    try {
+        const auditorias = await Auditoria.find({ certificadoId });
+        res.json(auditorias);
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};
+
 // Exportar los controladores
 module.exports = {
     listarAuditorias,
     crearAuditoria,
     actualizarAuditoria,
     obtenerAuditoriaPorId,
-    desactivarAuditoria
+    desactivarAuditoria,
+    obtenerAuditoriasPorCertificado
 };

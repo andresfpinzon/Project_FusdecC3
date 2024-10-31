@@ -22,7 +22,6 @@ const AuditoriaSchema = new Schema({
     estadoAuditoria: {
         type: Boolean,
         default: true,
-        required: true,
     },
 });
 

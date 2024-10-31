@@ -25,7 +25,7 @@ import {
   DialogActions,
   Typography,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Description } from "@mui/icons-material";
 
 const Certificados = () => {
   const [formValues, setFormValues] = useState({
@@ -40,6 +40,7 @@ const Certificados = () => {
   const [cursos, setCursos] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
   const [certificados, setCertificados] = useState([]);
+  const [auditorias, setAuditorias] = useState([]);
   const [selectedCertificado, setSelectedCertificado] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -51,6 +52,7 @@ const Certificados = () => {
     fetchCursos();
     fetchEstudiantes();
     fetchCertificados();
+    fetchAuditorias();
   }, []);
 
   const fetchUsuarios = async () => {
@@ -105,11 +107,22 @@ const Certificados = () => {
     }
   };
 
+  const fetchAuditorias = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/auditorias");
+      if (!response.ok) throw new Error("Error al obtener auditorías");
+      const data = await response.json();
+      setAuditorias(data);
+    } catch (error) {
+      console.error("Error al obtener auditorías:", error);
+      setErrorMessage("Error al obtener auditorías");
+      setOpenSnackbar(true);
+    }
+  };
+
   const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
   };
 
   const handleCreateCertificado = async () => {
@@ -127,6 +140,7 @@ const Certificados = () => {
       if (response.ok) {
         const nuevoCertificado = await response.json();
         setCertificados([...certificados, nuevoCertificado]);
+        setAuditorias([...auditorias, nuevoCertificado.nuevaAuditoria]);
         clearForm();
       } else {
         const errorData = await response.json();
@@ -221,10 +235,19 @@ const Certificados = () => {
       usuarioId: "",
       cursoId: "",
       estudianteId: "",
-      nombreEmisorCertificado: "", // Cambiado a nombreEmisor
+      nombreEmisorCertificado: "",
       codigoVerificacion: "",
     });
     setSelectedCertificado(null);
+  };
+
+  const handleAuditoria = (id) => {
+    const auditoria = auditorias.find(aud => aud.certificadoId === id);
+    if (auditoria) {
+      console.log(`Auditoría para el certificado con ID: ${id}`, auditoria);
+    } else {
+      console.log(`No se encontró auditoría para el certificado con ID: ${id}`);
+    }
   };
 
   return (
@@ -332,7 +355,7 @@ const Certificados = () => {
                       {certificado.codigoVerificacion}
                     </TableCell>
                     <TableCell>
-                      {certificado.fechaEmision}
+                      {new Date(certificado.fechaEmision).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(certificado)} color="primary">
@@ -344,6 +367,9 @@ const Certificados = () => {
                       }} color="error">
                         <Delete />
                       </IconButton>
+                      <Button onClick={() => handleAuditoria(certificado._id)}>
+                        <Description />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

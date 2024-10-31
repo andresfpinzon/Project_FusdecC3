@@ -202,4 +202,43 @@ router.get('/:id', auditoriaController.obtenerAuditoriaPorId);
  */
 router.delete('/:id', auditoriaController.desactivarAuditoria);
 
+/**
+ * @swagger
+ * /api/auditorias/certificado/{certificadoId}:
+ *   get:
+ *     tags: 
+ *       - Auditoría
+ *     summary: Obtener auditorías por certificado ID
+ *     parameters:
+ *       - in: path
+ *         name: certificadoId
+ *         required: true
+ *         description: ID del certificado
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de auditorías asociadas al certificado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Auditoria'
+ *             examples:
+ *               ejemplo1:
+ *                 value:
+ *                   - _id: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                     fechaAuditoria: "2023-10-01T12:00:00Z"
+ *                     nombreEmisor: "Carlos Martínez"
+ *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                   - _id: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                     fechaAuditoria: "2023-10-02T12:00:00Z"
+ *                     nombreEmisor: "Ana Gómez"
+ *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *       404:
+ *         description: Auditorías no encontradas
+ */
+router.get('/auditorias/:certificadoId', auditoriaController.obtenerAuditoriasPorCertificado);
+
 module.exports = router;

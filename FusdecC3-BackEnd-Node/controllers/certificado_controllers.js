@@ -1,6 +1,7 @@
 const logic = require('../logic/certificado_logic');
 const certificadoSchemaValidation = require('../validations/certificado_validations');
 const Certificado = require('../models/certificado_model');
+const Auditoria = require('../models/auditoria_model'); // Asegúrate de importar el modelo de auditoría
 const mongoose = require('mongoose');
 const auditoriaLogic = require('../logic/auditoria_logic'); // Importar lógica de auditoría
 
@@ -21,18 +22,35 @@ const listarCertificados = async (_req, res) => {
 // Controlador para crear un certificado
 const crearCertificado = async (req, res) => {
     try {
+        // Validar los datos de entrada
+        const { error } = certificadoSchemaValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+        }
+
         // Convertir la fecha a un objeto Date
         req.body.fechaEmision = new Date(req.body.fechaEmision);
         
         const nuevoCertificado = new Certificado(req.body);
         await nuevoCertificado.save();
-        res.status(201).json(nuevoCertificado);
+
+        // Crear auditoría automáticamente
+        const nuevaAuditoria = new Auditoria({
+            fechaAuditoria: new Date(),
+            nombreEmisor: req.body.nombreEmisorCertificado, // Asegúrate de que este campo esté en el body
+            certificadoId: nuevoCertificado._id,
+            estadoAuditoria: true,
+        });
+
+        await nuevaAuditoria.save(); // Guardar la auditoría
+
+        res.status(201).json({ nuevoCertificado, nuevaAuditoria });
     } catch (error) {
+        console.error("Error al crear certificado:", error);
         if (error.code === 11000) {
             return res.status(400).json({ error: 'El código de verificación ya existe.' });
         }
-        console.error("Error al crear certificado:", error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Error interno del servidor', details: error.message });
     }
 };
 

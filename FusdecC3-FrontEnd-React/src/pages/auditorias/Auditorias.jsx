@@ -154,7 +154,7 @@ const Auditorias = () => {
             >
               {certificados.map((certificado) => (
                 <MenuItem key={certificado._id} value={certificado._id}>
-                  {certificado.nombreCcertificado} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
+                  {certificado.nombreCertificado} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
                 </MenuItem>
               ))}
             </Select>
