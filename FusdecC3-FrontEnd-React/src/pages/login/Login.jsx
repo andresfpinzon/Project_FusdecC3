@@ -35,9 +35,15 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formValues),
       });
-
+  
       if (response.ok) {
-        // Lógica para redirigir o guardar el token
+        const data = await response.json();
+        const { token } = data;
+        localStorage.setItem("token", token); // Almacena el token en localStorage
+  
+        const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica el JWT
+        localStorage.setItem("roles", JSON.stringify(payload.roles)); // Almacena roles
+  
         navigate("/home");
       } else {
         const errorData = await response.json();
@@ -48,6 +54,7 @@ const Login = () => {
       setOpenSnackbar(true);
     }
   };
+  
 
   return (
     <Container maxWidth="sm" style={{ display: "flex", alignItems: "center", minHeight: "100vh" }}>
