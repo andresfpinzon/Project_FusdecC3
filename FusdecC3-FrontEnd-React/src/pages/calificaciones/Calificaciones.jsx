@@ -402,7 +402,7 @@ const Calificaciones = () => {
           <Typography>Usuario: {infoCalificacion?.usuario?.nombreUsuario || "Usuario no encontrado"}</Typography>
           <Typography>Estado: {infoCalificacion?.estadoCalificacion ? "Activa" : "Inactiva"}</Typography>
           <Typography> 
-            calificaciones: {infoCalificacion?.estudiantes?.map((ca) => es.estudiantes).join(", ") || "Sin estudiantes"} 
+            estudiantes: {infoCalificacion?.estudiantes?.map((ca) => es.estudiantes).join(", ") || "Sin estudiantes"} 
           </Typography>
            
         </DialogContent>

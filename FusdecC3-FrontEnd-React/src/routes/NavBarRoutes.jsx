@@ -18,6 +18,7 @@ import Certificados from "../pages/certificados/Certificados";
 import Brigadas from "../pages/brigadas/Brigadas";
 import Unidades from "../pages/unidades/Unidades";
 import Calificaciones from "../pages/calificaciones/Calificaciones";
+import Colegios from "../pages/colegios/Colegios";
 
 
 
@@ -30,6 +31,7 @@ const NavbarRoutes = () => {
       <Route path="/brigadas" element={<Brigadas />} />
       <Route path="/calificaciones" element={<Calificaciones />} />
       <Route path="/certificados" element={<Certificados />} />
+      <Route path="/colegios" element={<Colegios />} />
       <Route path="/comandos" element={<Comandos />} />
       <Route path="/cursos" element={<Cursos />} />
       <Route path="/ediciones" element={<Ediciones />} />
