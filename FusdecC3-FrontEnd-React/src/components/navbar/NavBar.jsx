@@ -17,12 +17,31 @@ import LinkBehavior from "./LinkBehavior";
 import logoFusdec from "../../assets/images/logoFu.png";
 
 const useStyles = makeStyles((theme) => ({
-  toolbar: { display: "flex", justifyContent: "space-between", minHeight: "64px" },
-  logo: { height: "40px", width: "40px", marginRight: theme.spacing(2) },
-  title: { flexGrow: 1 },
-  link: { color: "white", textDecoration: "none", margin: theme.spacing(2) },
-  drawer: { width: 250 },
-  drawerLink: { textDecoration: "none", color: theme.palette.text.primary },
+  toolbar: { 
+    display: "flex", 
+    justifyContent: "space-between", 
+    minHeight: "64px" 
+  },
+  logo: { 
+    height: "40px", 
+    width: "40px", 
+    marginRight: theme.spacing(2) 
+  },
+  title: { 
+    flexGrow: 1 
+  },
+  link: { 
+    color: "white", 
+    textDecoration: "none", 
+    margin: theme.spacing(2) 
+  },
+  drawer: { 
+    width: 250 
+  },
+  drawerLink: { 
+    textDecoration: "none", 
+    color: theme.palette.text.primary 
+  },
 }));
 
 export default function Navbar() {
@@ -53,6 +72,7 @@ export default function Navbar() {
     navigate("/home");
   };
 
+  
   // Define las rutas visibles según el rol del usuario
   const rutasPermitidas = [
     { nombre: "Home", ruta: "/home", roles: [] },
@@ -71,6 +91,19 @@ export default function Navbar() {
           { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor"] },
         ]
       : []),
+    /*...(isAuthenticated && (roles.includes("Instructor") || roles.includes("Administrador"))
+  ? [
+      ...(roles.includes("Administrador") ? [
+        { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador"] },
+        { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrador"] },
+        { nombre: "Usuarios", ruta: "/usuarios", roles: ["Administrador"] },
+      ] : []),
+      ...(roles.includes("Instructor") ? [
+        { nombre: "Cursos", ruta: "/cursos", roles: ["Instructor"] },
+        { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor"] },
+      ] : []),
+    ] : [])
+*/
   ];
 
   const drawer = (
