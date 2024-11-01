@@ -25,7 +25,7 @@ import {
   DialogActions,
   Typography,
 } from "@mui/material";
-import { Edit, Delete, Description } from "@mui/icons-material";
+import { Edit, Delete, Description, Info } from "@mui/icons-material";
 
 const Certificados = () => {
   const [formValues, setFormValues] = useState({
@@ -367,9 +367,15 @@ const Certificados = () => {
                       }} color="error">
                         <Delete />
                       </IconButton>
-                      <Button onClick={() => handleAuditoria(certificado._id)}>
+                      <IconButton
+                        onClick={() => handleAuditoria(certificado._id)}
+                        sx={{ color: 'purple' }}
+                      >
                         <Description />
-                      </Button>
+                      </IconButton>
+                      <IconButton onClick={() => handleDetailsClick(certificado)} color="success">
+                        <Info />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
