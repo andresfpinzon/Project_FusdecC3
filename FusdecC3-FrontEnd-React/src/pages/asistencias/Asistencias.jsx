@@ -30,6 +30,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Asistencias = () => {
   const [asistencias, setAsistencias] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
@@ -54,8 +56,17 @@ const Asistencias = () => {
   }, []);
 
   const fetchAsistencias = async () => {
+    console.log(token);
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias");
+      console.log("Token enviado:", token); 
+      const response = await fetch("http://localhost:3000/api/asistencias", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "auth-token": token 
+        }
+        
+    });
       if (!response.ok) throw new Error("Error al obtener asistencias");
       const data = await response.json();
       setAsistencias(data);

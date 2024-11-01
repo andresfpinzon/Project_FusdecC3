@@ -39,7 +39,9 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         const { token } = data;
-        localStorage.setItem("token", token); // Almacena el token en localStorage
+        localStorage.setItem("token", token);
+        console.log("Token guardado en localStorage:", localStorage.getItem("token"));
+        // Almacena el token en localStorage
   
         const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica el JWT
         localStorage.setItem("roles", JSON.stringify(payload.roles)); // Almacena roles

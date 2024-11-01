@@ -89,6 +89,7 @@ export default function Navbar() {
       ? [
           { nombre: "Cursos", ruta: "/cursos", roles: ["Instructor"] },
           { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor"] },
+          { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador"] },
         ]
       : []),
     /*...(isAuthenticated && (roles.includes("Instructor") || roles.includes("Administrador"))
