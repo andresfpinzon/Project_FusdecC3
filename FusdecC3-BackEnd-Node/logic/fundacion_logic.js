@@ -1,7 +1,7 @@
 const Fundacion = require('../models/fundacion_model');
 const Comando = require('../models/comando_model'); 
-fundacionSchemaValiadation = require('..validations/fundacion_validations');
-// Fundacion asincrona para crear fundaciones
+fundacionSchemaValidation = require('../validations/fundacion_validations');
+// Funcion asincrona para crear fundaciones
 async function crearFundacion( body ) {// validar los datos de entrada 
     const {error} = fundacionSchemaValidation.validate(body); 
     if (error){
@@ -16,18 +16,18 @@ async function crearFundacion( body ) {// validar los datos de entrada
     });
     return await fundacion.save();
 }
-// Funcion asincrona para alistar fundaciones 
-async  function listarFundacion(){
+// Funcion asincrona para listar fundaciones 
+async  function listarFundaciones(){
     return await Fundacion.find()
-    .populate('Comandos');
+    .populate('comando');
 
 }
 //funcion asincrona para buscar una fundacion por su id 
 async function buscarFundacionPorId(id){
-    const Fundacion = await Fundacion.findById(id)
-    .populate('Comandos');
+    const fundacion = await Fundacion.findById(id)
+    .populate('comando');
     if(!fundacion){
-        throw new Error('Fundacion con ID ${id} no encontrado');
+        throw new Error('Fundacion con ID ${id} no encontrada');
     }
     return fundacion;
     }
@@ -50,24 +50,26 @@ async function buscarFundacionPorId(id){
     //Funcion asincrona para editar una fundacion
     async function editarFundacion(id, body){
         const fundacion = await Fundacion.findByIdAndUpdate(id, body, { new : true })
-        .populate('Comandos');
+        .populate('comando');
          if (!fundacion){
-            throw new Error('Fundacion con ID ${ID} no encotrado');
+            throw new Error('Fundacion con ID ${ID} no encotrada');
          }
          return fundacion; 
         }
-        //Fundacion asincrona para desactivar una fundacion 
+        //Fundacion asincrona para desactivar un comando 
         async function desactivarFundacion(id){
-            const fundacion = await Fundacion.findByIdAndUpdate(id, {/*no se actualiza el esstado*/},{ new : true }); 
+            const fundacion = await Fundacion.findByIdAndUpdate(id, { estadoFundacion: false},{ new : true }); 
             if(!fundacion){
-                throw new Error('Fundacion con ID ${ID} no encontrado'); 
+                throw new Error('Fundacion con ID ${ID} no encontrada'); 
             }
                 return fundacion; 
      }
      module.exports={
         crearFundacion,
+        listarFundaciones,
         buscarFundacionPorId,
         agregarComando,
         editarFundacion,
         desactivarFundacion,
      };
+

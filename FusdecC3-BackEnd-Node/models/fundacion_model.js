@@ -1,7 +1,7 @@
 const mongoose = require ("mongoose"); 
 const { Schema } = mongoose; 
 
-const Fundacionschema =new Schema ({ 
+const fundacionSchema =new Schema ({ 
    /*fundacionId: { 
     Type: Schema.Types.objectId,
     default: () => new mongoose.Types.objectId (),  
@@ -13,7 +13,7 @@ const Fundacionschema =new Schema ({
       type: Boolean,
       default: true,
     },
-comandos:[
+comando:[
     {
          type: Schema.Types.ObjectId,
          ref: "Comando",
@@ -22,5 +22,5 @@ comandos:[
 
 }); 
  
-const Fundacion= mongoose.model("Fundacion",Fundacionschema);
+const Fundacion= mongoose.model("Fundacion",fundacionSchema);
 module.exports= Fundacion; 
