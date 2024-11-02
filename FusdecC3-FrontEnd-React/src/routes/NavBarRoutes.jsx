@@ -19,6 +19,7 @@ import Brigadas from "../pages/brigadas/Brigadas";
 import Unidades from "../pages/unidades/Unidades";
 import Calificaciones from "../pages/calificaciones/Calificaciones";
 import Colegios from "../pages/colegios/Colegios";
+import ProtectedRoute from "../components/protectedRoute/ProtectedRoute";
 
 
 
@@ -27,23 +28,24 @@ const NavbarRoutes = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/masinformacion" element={<MasInformacion />} />
+      <Route path="/login" element={<Login />} />
+      {/* Rutas Protegidas*/}
       <Route path="auditorias" element={<Auditorias />} />
       <Route path="/brigadas" element={<Brigadas />} />
       <Route path="/calificaciones" element={<Calificaciones />} />
       <Route path="/certificados" element={<Certificados />} />
       <Route path="/colegios" element={<Colegios />} />
       <Route path="/comandos" element={<Comandos />} />
-      <Route path="/cursos" element={<Cursos />} />
+      <Route path="/cursos" element={<ProtectedRoute element={Cursos} allowedRoles={["Instructor"]}/>} />
       <Route path="/ediciones" element={<Ediciones />} />
       <Route path="/horarios" element={<Horarios />} />
       <Route path="/unidades" element={<Unidades />} />
       <Route path="/usuarios" element={<Usuarios />} />
-      <Route path="/masinformacion" element={<MasInformacion />} />
       <Route path="/roles" element={<Roles />} />
       <Route path="/estudiantes" element={<Estudiantes />} />
       <Route path="/asistencias" element={<Asistencias />} />
       <Route path="/inasistencias" element={<Inasistencias/>}/>
-      <Route path="/login" element={<Login />} />
     </Routes>
   );
 };
