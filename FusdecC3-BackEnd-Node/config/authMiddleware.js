@@ -2,20 +2,20 @@ const jwt = require('jsonwebtoken');
 
 // Middleware para verificar el JWT
 const verifyJWT = (req, res, next) => {
-    console.log("Encabezados recibidos:", req.headers);
-    const token = req.header('auth-token');
+    // Verificar token
+    const token = req.header('Authorization');
     if (!token) {
         return res.status(401).json({ message: 'Token no proporcionado' });
     }
-
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Decodificamos el token y obtenemos el id y los roles
+        req.user = decoded;
         next();
     } catch (error) {
         return res.status(401).json({ message: 'Token no válido' });
     }
 };
+
 
 // Middleware para verificar roles específicos
 const verifyRole = (rolesPermitidos) => (req, res, next) => {

@@ -56,14 +56,12 @@ const Asistencias = () => {
   }, []);
 
   const fetchAsistencias = async () => {
-    console.log(token);
     try {
-      console.log("Token enviado:", token); 
       const response = await fetch("http://localhost:3000/api/asistencias", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "auth-token": token 
+            "Authorization": token 
         }
         
     });

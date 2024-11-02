@@ -75,6 +75,8 @@ router.get('/', verifyJWT, verifyRole(['Instructor']), asistenciaController.list
 
 /**
  * @swagger
+ * 
+ * 
  * /api/asistencias:
  *   post:
  *     tags: 
