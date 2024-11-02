@@ -91,6 +91,7 @@ router.get('/', certificadoController.listarCertificados);
  *     tags: 
  *       - Certificado
  *     summary: Crear un nuevo certificado
+ *     description: Crea un nuevo certificado y genera una auditoría automáticamente.
  *     requestBody:
  *       required: true
  *       content:
@@ -130,26 +131,39 @@ router.get('/', certificadoController.listarCertificados);
  *                 description: Código de verificación del certificado.
  *     responses:
  *       201:
- *         description: Certificado creado exitosamente, se genera una auditoría automáticamente.
+ *         description: Certificado creado exitosamente; también se genera una auditoría automáticamente.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Certificado'
+ *               type: object
+ *               properties:
+ *                 certificado:
+ *                   $ref: '#/components/schemas/Certificado'
+ *                 auditoria:
+ *                   $ref: '#/components/schemas/Auditoria'
  *             examples:
  *               ejemplo1:
  *                 value:
- *                   _id: "60d5ec49f1a2c8b1f8e4e1a5"
- *                   nombre: "Certificado de Excelencia"
- *                   fechaEmision: "2023-10-20"
- *                   usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
- *                   cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
- *                   estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
- *                   nombreEmisorCertificado: "Instituto XYZ"
- *                   codigoVerificacion: "XYZ456"
+ *                   certificado:
+ *                     _id: "60d5ec49f1a2c8b1f8e4e1a5"
+ *                     nombre: "Certificado de Excelencia"
+ *                     fechaEmision: "2023-10-20"
+ *                     usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                     cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
+ *                     estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
+ *                     nombreEmisorCertificado: "Instituto XYZ"
+ *                     codigoVerificacion: "XYZ456"
+ *                   auditoria:
+ *                     _id: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                     fechaAuditoria: "2023-10-01T12:00:00Z"
+ *                     nombreEmisor: "Instituto XYZ"
+ *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a5"
+ *                     estadoAuditoria: true
  *       400:
  *         description: Datos inválidos
  */
 router.post('/', certificadoController.crearCertificado);
+
 
 /**
  * @swagger

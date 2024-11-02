@@ -2,7 +2,41 @@ const logic = require('../logic/certificado_logic');
 const certificadoSchemaValidation = require('../validations/certificado_validations');
 const Certificado = require('../models/certificado_model');
 const mongoose = require('mongoose');
-const auditoriaLogic = require('../logic/auditoria_logic'); // Importar lógica de auditoría
+//necesario para crear la uditoria autimaticamente
+const Auditoria = require('../models/auditoria_model');
+const auditoriaController = require('./auditoria_controllers');
+
+// Controlador para crear un certificado
+const crearCertificado = async (req, res) => {
+    try {
+        // Convertir la fecha a un objeto Date
+        req.body.fechaEmision = new Date(req.body.fechaEmision);
+        
+        const nuevoCertificado = new Certificado(req.body);
+        const certificadoGuardado = await nuevoCertificado.save();
+
+        // con esto cramos la auditoria inmediatamente despues de la creacion de certificado
+        const auditoriaData = {
+            fechaAuditoria: new Date(req.body.fechaAuditoria),
+            nombreEmisor: req.body.nombreEmisorCertificado, // o el valor correspondiente
+            certificadoId: certificadoGuardado._id,
+            estadoAuditoria: true
+        };
+  
+        // Guardar la auditoría directamente en el modelo o a través del controlador
+        const nuevaAuditoria = await Auditoria.create(auditoriaData);
+        res.status(201).json({
+            certificado: certificadoGuardado,
+            auditoria: nuevaAuditoria
+          });
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'El código de verificación ya existe.' });
+        }
+        console.error("Error al crear certificado:", error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
 
 // Controlador para listar certificados
 const listarCertificados = async (_req, res) => {
@@ -15,24 +49,6 @@ const listarCertificados = async (_req, res) => {
     } catch (err) {
         console.error(err); // Agrega un log para ver el error
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
-    }
-};
-
-// Controlador para crear un certificado
-const crearCertificado = async (req, res) => {
-    try {
-        // Convertir la fecha a un objeto Date
-        req.body.fechaEmision = new Date(req.body.fechaEmision);
-        
-        const nuevoCertificado = new Certificado(req.body);
-        await nuevoCertificado.save();
-        res.status(201).json(nuevoCertificado);
-    } catch (error) {
-        if (error.code === 11000) {
-            return res.status(400).json({ error: 'El código de verificación ya existe.' });
-        }
-        console.error("Error al crear certificado:", error);
-        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
