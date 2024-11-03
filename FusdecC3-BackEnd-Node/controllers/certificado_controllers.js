@@ -5,7 +5,7 @@ const Auditoria = require('../models/auditoria_model'); // Asegúrate de importa
 const mongoose = require('mongoose');
 //Necesario para crear la Auditoria autimaticamente
 const auditoriaController = require('./auditoria_controllers');
-
+/*
 // Controlador para crear un certificado
 const crearCertificado = async (req, res) => {
     try {
@@ -36,7 +36,7 @@ const crearCertificado = async (req, res) => {
         console.error("Error al crear certificado:", error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
-};
+};*/
 
 // Controlador para listar certificados
 const listarCertificados = async (_req, res) => {
@@ -52,7 +52,7 @@ const listarCertificados = async (_req, res) => {
     }
 };
 
-/*
+
 // Controlador para crear un certificado
 const crearCertificado = async (req, res) => {
     try {
@@ -86,7 +86,7 @@ const crearCertificado = async (req, res) => {
         }
         res.status(500).json({ error: 'Error interno del servidor', details: error.message });
     }
-};*/
+};
 
 // Controlador para actualizar un certificado
 const actualizarCertificado = async (req, res) => {

@@ -15,6 +15,7 @@ import { makeStyles } from "@mui/styles";
 import normalizeText from "../../utils/textUtils";
 import LinkBehavior from "./LinkBehavior";
 import logoFusdec from "../../assets/images/logoFu.png";
+import obtenerRutasPermitidas from "../../routes/rutasPermitidas"
 
 const useStyles = makeStyles((theme) => ({
   toolbar: { 
@@ -72,40 +73,7 @@ export default function Navbar() {
     navigate("/home");
   };
 
-  
-  // Define las rutas visibles según el rol del usuario
-  const rutasPermitidas = [
-    { nombre: "Home", ruta: "/home", roles: [] },
-    { nombre: "Más Información", ruta: "/masinformacion", roles: [] },
-    ...(isAuthenticated ? [] : [{ nombre: "Login", ruta: "/login", roles: [] }]),
-    ...(isAuthenticated && roles.includes("Administrador")
-      ? [
-          { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador"] },
-          { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrador"] },
-          { nombre: "Usuarios", ruta: "/usuarios", roles: ["Administrador"] },
-        ]
-      : []),
-    ...(isAuthenticated && roles.includes("Instructor")
-      ? [
-          { nombre: "Cursos", ruta: "/cursos", roles: ["Instructor"] },
-          { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor"] },
-          { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador"] },
-        ]
-      : []),
-    /*...(isAuthenticated && (roles.includes("Instructor") || roles.includes("Administrador"))
-  ? [
-      ...(roles.includes("Administrador") ? [
-        { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador"] },
-        { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrador"] },
-        { nombre: "Usuarios", ruta: "/usuarios", roles: ["Administrador"] },
-      ] : []),
-      ...(roles.includes("Instructor") ? [
-        { nombre: "Cursos", ruta: "/cursos", roles: ["Instructor"] },
-        { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor"] },
-      ] : []),
-    ] : [])
-*/
-  ];
+  const rutasPermitidas = obtenerRutasPermitidas(isAuthenticated, roles);
 
   const drawer = (
     <div className={classes.drawer}>
