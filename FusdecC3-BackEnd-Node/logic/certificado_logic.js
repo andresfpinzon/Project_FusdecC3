@@ -1,7 +1,7 @@
 const Certificado = require('../models/certificado_model');
 const Estudiante = require('../models/estudiante_model');
 const Curso = require('../models/curso_model');
-
+const Auditoria = require('../models/auditoria_model');
 
 // Función asíncrona para crear certificados
 async function crearCertificado(body) {
@@ -21,7 +21,20 @@ async function crearCertificado(body) {
         fechaEmision: body.fechaEmision, // Asegúrate de que la fecha esté en formato correcto
     });
 
-    return await certificado.save();
+    // Guardar el certificado
+    const nuevoCertificado = await certificado.save();
+
+    // Crear auditoría automáticamente
+    const nuevaAuditoria = new Auditoria({
+        fechaAuditoria: new Date(),
+        nombreEmisor: body.nombreEmisorCertificado, // Asegúrate de que este campo esté en el body
+        certificadoId: nuevoCertificado._id,
+        estadoAuditoria: true,
+    });
+
+    await nuevaAuditoria.save(); // Guardar la auditoría
+
+    return nuevoCertificado; // Retornar el certificado creado
 }
 
 // Función asíncrona para listar certificados

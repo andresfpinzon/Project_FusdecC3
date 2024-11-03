@@ -90,7 +90,18 @@ export default function Brigadas() {
     });
   };
 
+  const isValidGoogleMapsLink = (link) => {
+    const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)/;
+    return regex.test(link);
+  };
+
   const handleCreateBrigada = async () => {
+    if (!formValues.nombreBrigada || !isValidGoogleMapsLink(formValues.ubicacionBrigada)) {
+      setErrorMessage("Por favor, ingresa un enlace válido de Google Maps en la ubicación.");
+      setOpenSnackbar(true);
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:3000/api/brigadas", {
         method: "POST",
@@ -216,7 +227,7 @@ export default function Brigadas() {
     <Container maxWidth="lg">
       <h1>Gestión de Brigadas</h1>
       <Grid container spacing={2} component="section">
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <h2>Información de Brigada</h2>
           <TextField
             label="Nombre de la Brigada"
@@ -245,7 +256,7 @@ export default function Brigadas() {
             >
               {comandos.map((comando) => (
                 <MenuItem key={comando._id} value={comando._id}>
-                  {comando.nombreComando} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
+                  {comando.nombreComando}
                 </MenuItem>
               ))}
             </Select>
@@ -267,16 +278,15 @@ export default function Brigadas() {
             {selectedBrigada ? "Actualizar Brigada" : "Crear Brigada"}
           </Button>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={8}>
           <h2>Lista de Brigadas</h2>
-          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+          <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>Nombre</TableCell>
                   <TableCell>Ubicación</TableCell>
                   <TableCell>Comando</TableCell>
-                  <TableCell>Unidades</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
@@ -288,11 +298,6 @@ export default function Brigadas() {
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
                     <TableCell>
                       {comandos.find(comando => comando._id === brigada.comandoId)?.nombreComando || "Sin comando"}
-                    </TableCell>
-                    <TableCell>
-                      {brigada.unidades ? brigada.unidades.map(unidad => (
-                        <div key={unidad._id}>{unidad.nombreUnidad}</div> // Visualiza el nombre de cada unidad asignada
-                      )) : "Sin unidades"}
                     </TableCell>
                     <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
@@ -353,11 +358,21 @@ export default function Brigadas() {
           {infoBrigada && (
             <div>
               <Typography variant="h6">Nombre: {infoBrigada.nombreBrigada}</Typography>
-              <Typography variant="body1">Ubicación: {infoBrigada.ubicacionBrigada}</Typography>
+              <Typography variant="body1">
+                Ubicación: 
+                <a 
+                    href={infoBrigada.ubicacionBrigada} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                    {infoBrigada.ubicacionBrigada}
+                </a>
+              </Typography>
               <Typography variant="body1">
                 Comando: {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
               </Typography>
               <Typography variant="body1">Estado: {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}</Typography>
+              <Typography>Unidad: {infoBrigada?.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
             </div>
           )}
         </DialogContent>

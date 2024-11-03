@@ -146,19 +146,13 @@ router.get('/', certificadoController.listarCertificados);
  *                 value:
  *                   certificado:
  *                     _id: "60d5ec49f1a2c8b1f8e4e1a5"
- *                     nombre: "Certificado de Excelencia"
+ *                     nombre: "Certificado de servicio social"
  *                     fechaEmision: "2023-10-20"
  *                     usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
  *                     cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
  *                     estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
  *                     nombreEmisorCertificado: "Instituto XYZ"
- *                     codigoVerificacion: "XYZ456"
- *                   auditoria:
- *                     _id: "60d5ec49f1a2c8b1f8e4e1a1"
- *                     fechaAuditoria: "2023-10-01T12:00:00Z"
- *                     nombreEmisor: "Instituto XYZ"
- *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a5"
- *                     estadoAuditoria: true
+ *                     codigoVerificacion: "XYZ45610W9383717AETD"
  *       400:
  *         description: Datos inválidos
  */

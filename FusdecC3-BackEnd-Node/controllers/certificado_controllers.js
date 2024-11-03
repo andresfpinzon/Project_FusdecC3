@@ -1,9 +1,9 @@
 const logic = require('../logic/certificado_logic');
 const certificadoSchemaValidation = require('../validations/certificado_validations');
 const Certificado = require('../models/certificado_model');
+const Auditoria = require('../models/auditoria_model'); // Asegúrate de importar el modelo de auditoría
 const mongoose = require('mongoose');
-//necesario para crear la uditoria autimaticamente
-const Auditoria = require('../models/auditoria_model');
+//Necesario para crear la Auditoria autimaticamente
 const auditoriaController = require('./auditoria_controllers');
 
 // Controlador para crear un certificado
@@ -51,6 +51,42 @@ const listarCertificados = async (_req, res) => {
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
+
+/*
+// Controlador para crear un certificado
+const crearCertificado = async (req, res) => {
+    try {
+        // Validar los datos de entrada
+        const { error } = certificadoSchemaValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+        }
+
+        // Convertir la fecha a un objeto Date
+        req.body.fechaEmision = new Date(req.body.fechaEmision);
+        
+        const nuevoCertificado = new Certificado(req.body);
+        await nuevoCertificado.save();
+
+        // Crear auditoría automáticamente
+        const nuevaAuditoria = new Auditoria({
+            fechaAuditoria: new Date(),
+            nombreEmisor: req.body.nombreEmisorCertificado, // Asegúrate de que este campo esté en el body
+            certificadoId: nuevoCertificado._id,
+            estadoAuditoria: true,
+        });
+
+        await nuevaAuditoria.save(); // Guardar la auditoría
+
+        res.status(201).json({ nuevoCertificado, nuevaAuditoria });
+    } catch (error) {
+        console.error("Error al crear certificado:", error);
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'El código de verificación ya existe.' });
+        }
+        res.status(500).json({ error: 'Error interno del servidor', details: error.message });
+    }
+};*/
 
 // Controlador para actualizar un certificado
 const actualizarCertificado = async (req, res) => {

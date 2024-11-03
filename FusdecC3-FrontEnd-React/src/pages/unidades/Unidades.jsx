@@ -27,6 +27,7 @@ import {
   Checkbox,
   ListItemText,
   OutlinedInput,
+  Autocomplete,
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
@@ -303,42 +304,38 @@ const Unidades = () => {
           </Select>
         </FormControl>
         <FormControl fullWidth margin="normal">
-          <InputLabel id="usuario-select-label">Usuario</InputLabel>
-          <Select
-            labelId="usuario-select-label"
+          <TextField
+            label="ID de Usuario"
             name="usuarioId"
-            value={formValues.usuarioId} // Asegúrate de que esto esté vinculado correctamente
+            value={formValues.usuarioId}
             onChange={handleInputChange}
-            input={<OutlinedInput label="Usuario" />}
-          >
-            {usuarios.map((usuario) => (
-              <MenuItem key={usuario._id} value={usuario._id}>
-                {usuario.nombreUsuario}
-              </MenuItem>
-            ))}
-          </Select>
+          />
         </FormControl>
         <FormControl fullWidth margin="normal">
-          <InputLabel>Estudiantes</InputLabel>
-          <Select
+          <Autocomplete
             multiple
-            name="estudiantes"
-            value={formValues.estudiantes}
-            onChange={handleStudentChange}
-            renderValue={(selected) =>
-              estudiantes
-                .filter((estudiante) => selected.includes(estudiante._id))
-                .map((estudiante) => estudiante.nombreEstudiante)
-                .join(", ")
-            }
-          >
-            {estudiantes.map((estudiante) => (
-              <MenuItem key={estudiante._id} value={estudiante._id}>
-                <Checkbox checked={formValues.estudiantes.indexOf(estudiante._id) > -1} />
-                <ListItemText primary={estudiante.nombreEstudiante} />
-              </MenuItem>
-            ))}
-          </Select>
+            options={estudiantes}
+            getOptionLabel={(option) => `${option.nombreEstudiante} ${option.apellidoEstudiante}`}
+            value={formValues.estudiantes.map((id) => estudiantes.find(est => est._id === id))}
+            onChange={(event, newValue) => {
+              setFormValues({
+                ...formValues,
+                estudiantes: newValue.map((est) => est._id),
+              });
+            }}
+            renderInput={(params) => (
+              <TextField 
+                {...params} 
+                label="Estudiantes" 
+                placeholder="Selecciona estudiantes" 
+              />
+            )}
+            renderOption={(props, option) => (
+              <li {...props}>
+                {option.nombreEstudiante} {option.apellidoEstudiante} - {option.tipoDocumento}: {option.numeroDocumento}
+              </li>
+            )}
+          />
         </FormControl>
         <Box marginTop={3}>
           <Button
@@ -376,7 +373,11 @@ const Unidades = () => {
                 </TableCell>
                 <TableCell>
                   {unidad.estudiantes.length > 0
-                    ? unidad.estudiantes.map(est => est.nombreEstudiante).join(", ")
+                    ? unidad.estudiantes.map(est => (
+                        <div key={est._id}>
+                          {est.nombreEstudiante} {est.apellidoEstudiante} - {est.tipoDocumento}: {est.numeroDocumento}
+                        </div>
+                      )).reduce((prev, curr) => [prev, ', ', curr])
                     : "Sin estudiantes"}
                 </TableCell>
                 <TableCell>
@@ -403,7 +404,7 @@ const Unidades = () => {
           <Button onClick={handleDeleteUnidad} color="secondary">Eliminar</Button>
         </DialogActions>
       </Dialog>
-//quit
+
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
         <DialogTitle>Información de la Unidad</DialogTitle>
         <DialogContent>
@@ -411,7 +412,18 @@ const Unidades = () => {
           <Typography>Estado: {infoUnidad?.estadoUnidad ? "Activo" : "Inactivo"}</Typography>
           <Typography>Brigada: {infoUnidad?.brigadaId?.nombre || "Brigada no encontrada"}</Typography>
           <Typography>Usuario: {infoUnidad?.usuarioId?.nombre || "Usuario no encontrado"}</Typography>
-          <Typography>Estudiantes: {infoUnidad?.estudiantes.map(est => est.nombreEstudiante).join(", ") || "Sin estudiantes"}</Typography>
+          
+          {/* Aquí se muestra la información del estudiante */}
+          <Typography>Estudiantes:</Typography>
+          {infoUnidad?.estudiantes?.map((estudiante) => (
+            <div key={estudiante._id}>
+              <Typography>
+                Nombre: {estudiante.nombreEstudiante} {estudiante.apellidoEstudiante} {/* Mostrar nombre y apellido */}
+              </Typography>
+              <Typography>Tipo de Documento: {estudiante.tipoDocumento}</Typography> {/* Mostrar tipo de documento */}
+              <Typography>Número de Documento: {estudiante.numeroDocumento}</Typography> {/* Mostrar número de documento */}
+            </div>
+          )) || <Typography>Sin estudiantes</Typography>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>

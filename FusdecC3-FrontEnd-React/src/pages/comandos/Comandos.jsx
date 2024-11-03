@@ -90,8 +90,15 @@ const Comandos = () => {
   };
 
   const handleCreateComando = async () => {
+    // Validar que los campos requeridos no estén vacíos
+    if (!formValues.nombreComando || !isValidGoogleMapsLink(formValues.ubicacionComando)) {
+        setErrorMessage("Por favor, ingresa un enlace válido de Google Maps en la ubicación.");
+        setOpenSnackbar(true);
+        return;
+    }
+
     if (!formValues.fundacionId) {
-      delete formValues.fundacionId; // Eliminar el campo si está vacío
+        delete formValues.fundacionId; // Eliminar el campo si está vacío
     }
 
     try {
@@ -222,11 +229,17 @@ const Comandos = () => {
     setSelectedComando(null);
   };
 
+  // Función para validar el enlace de Google Maps
+  const isValidGoogleMapsLink = (link) => {
+    const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)/;
+    return regex.test(link);
+  };
+
   return (
-    <Container>
+    <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <h1>Gestión de Comandos</h1>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={8}>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
               <TableHead>
@@ -265,7 +278,7 @@ const Comandos = () => {
             </Table>
           </TableContainer>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4} style={{ paddingLeft: '20px' }}>
           <form noValidate autoComplete="off">
             <TextField
               label="Nombre del Comando"
@@ -355,7 +368,16 @@ const Comandos = () => {
           {infoComando && (
             <div>
               <Typography variant="h6">Nombre: {infoComando.nombreComando}</Typography>
-              <Typography variant="body1">Ubicacion: {infoComando.ubicacionComando}</Typography>
+              <Typography variant="body1">
+                Ubicación: 
+                <a 
+                    href={infoComando.ubicacionComando} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                    {infoComando.ubicacionComando}
+                </a>
+              </Typography>
               <Typography variant="body1">Estado: {infoComando.estadoComando ? "Activo" : "Inactivo"}</Typography>
               <Typography variant="body1">Fundación: {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}</Typography>
             </div>
