@@ -1,7 +1,10 @@
 const Joi = require('@hapi/joi');
 
 const certificadoSchemaValidation = Joi.object({
-  
+  fechaEmision: Joi.date().required().messages({
+    'date.base': 'La fecha de emisión debe ser una fecha válida',
+    'any.required': 'La fecha de emisión es un campo requerido',
+  }),
   codigoVerificacion: Joi.string()
     .min(5)
     .max(20)
@@ -13,7 +16,6 @@ const certificadoSchemaValidation = Joi.object({
       'string.max': 'El código de verificación no puede exceder los 20 caracteres',
       'any.required': 'El código de verificación es un campo requerido',
     }),
-
   nombreEmisorCertificado: Joi.string()
     .min(3)
     .max(100)
@@ -22,16 +24,14 @@ const certificadoSchemaValidation = Joi.object({
       'string.base': 'El nombre del emisor del certificado debe ser un texto',
       'string.empty': 'El nombre del emisor del certificado no puede estar vacío',
       'string.min': 'El nombre del emisor del certificado debe tener al menos 3 caracteres',
-      'string.max': 'El nombre del emisor del certificado no puede exceder los 100 caracteres',
+      'string.max': 'El nombre del emisor del certificado debe exceder los 100 caracteres',
       'any.required': 'El nombre del emisor del certificado es un campo requerido',
     }),
-
   estadoCertificado: Joi.boolean()
     .default(true)
     .messages({
       'boolean.base': 'El estado del certificado debe ser un booleano',
     }),
-
   estudianteId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
     .required()
@@ -41,7 +41,6 @@ const certificadoSchemaValidation = Joi.object({
       'string.pattern.base': 'El estudianteId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
       'any.required': 'El estudianteId es un campo requerido',
     }),
-
   cursoId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
     .required()
@@ -51,8 +50,7 @@ const certificadoSchemaValidation = Joi.object({
       'string.pattern.base': 'El cursoId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
       'any.required': 'El cursoId es un campo requerido',
     }),
-    
-    usuarioId: Joi.string()
+  usuarioId: Joi.string()
     .max(450)
     .required()
     .messages({

@@ -46,6 +46,8 @@ const Certificados = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [certificadoToDelete, setCertificadoToDelete] = useState(null);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [selectedCertificadoDetails, setSelectedCertificadoDetails] = useState(null);
 
   useEffect(() => {
     fetchUsuarios();
@@ -134,6 +136,7 @@ const Certificados = () => {
         },
         body: JSON.stringify({
           ...formValues,
+          fechaEmision: formValues.fechaEmision,
         }),
       });
 
@@ -250,6 +253,11 @@ const Certificados = () => {
     }
   };
 
+  const handleDetailsClick = (certificado) => {
+    setSelectedCertificadoDetails(certificado);
+    setOpenDetailsDialog(true);
+  };
+
   return (
     <Container maxWidth="lg">
       <h1>Gestión de Certificados</h1>
@@ -355,7 +363,7 @@ const Certificados = () => {
                       {certificado.codigoVerificacion}
                     </TableCell>
                     <TableCell>
-                      {new Date(certificado.fechaEmision).toLocaleDateString()}
+                      {certificado.fechaEmision}
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(certificado)} color="primary">
@@ -366,12 +374,6 @@ const Certificados = () => {
                         setOpenDeleteDialog(true);
                       }} color="error">
                         <Delete />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleAuditoria(certificado._id)}
-                        sx={{ color: 'purple' }}
-                      >
-                        <Description />
                       </IconButton>
                       <IconButton onClick={() => handleDetailsClick(certificado)} color="success">
                         <Info />
@@ -413,6 +415,38 @@ const Certificados = () => {
           </Button>
           <Button onClick={handleDeleteCertificado} color="error">
             Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo para mostrar detalles del certificado */}
+      <Dialog
+        open={openDetailsDialog}
+        onClose={() => setOpenDetailsDialog(false)}
+      >
+        <DialogTitle>Detalles del Certificado</DialogTitle>
+        <DialogContent>
+          {selectedCertificadoDetails && (
+            <div>
+              <Typography variant="body1">
+                <strong>Nombre:</strong> {selectedCertificadoDetails.nombre}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Fecha de Emisión:</strong> {selectedCertificadoDetails.fechaEmision}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Código de Verificación:</strong> {selectedCertificadoDetails.codigoVerificacion}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Nombre del Emisor:</strong> {selectedCertificadoDetails.nombreEmisorCertificado}
+              </Typography>
+              {/* Agrega más campos según sea necesario */}
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDetailsDialog(false)} color="primary">
+            Cerrar
           </Button>
         </DialogActions>
       </Dialog>
