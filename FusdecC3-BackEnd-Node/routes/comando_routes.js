@@ -1,7 +1,7 @@
 const express = require('express');
 const comandoControllers = require('../controllers/comando_controllers'); // Importa el controlador
 const router = express.Router(); // Define el enrutador
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ const router = express.Router(); // Define el enrutador
  *                     fundacionId: "63f7d2bbf1a2b4b5c3cdb903"
  *                     brigadas: ["63f7d2bbf1a2b4b5c3cdb904"]
  */
-router.get('/', comandoControllers.listarComandos);
+router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), comandoControllers.listarComandos);
 
 // Obtener comando por Id
 /**
@@ -112,7 +112,7 @@ router.get('/', comandoControllers.listarComandos);
  *       404:
  *         description: Comando no encontrado
  */
-router.get('/:id', comandoControllers.obtenerComandoPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador','Root']), comandoControllers.obtenerComandoPorId);
 
 // Crear un comando
 /**
@@ -141,7 +141,7 @@ router.get('/:id', comandoControllers.obtenerComandoPorId);
  *       400:
  *         description: Datos inválidos en la solicitud
  */
-router.post('/', comandoControllers.crearComando);
+router.post('/', verifyJWT, verifyRole(['Administrador','Root']), comandoControllers.crearComando);
 
 // Actualizar comando
 /**
@@ -177,7 +177,7 @@ router.post('/', comandoControllers.crearComando);
  *       404:
  *         description: Comando no encontrado
  */
-router.put('/:id', comandoControllers.actualizarComando);
+router.put('/:id', verifyJWT, verifyRole(['Administrador','Root']), comandoControllers.actualizarComando);
 
 // Desactivar comando
 /**
@@ -199,7 +199,7 @@ router.put('/:id', comandoControllers.actualizarComando);
  *       404:
  *         description: Comando no encontrado
  */
-router.delete('/:id', comandoControllers.desactivarComando);
+router.delete('/:id', verifyJWT, verifyRole(['Administrador','Root']), comandoControllers.desactivarComando);
 
 // Ruta para agregar brigadas a un comando
 /**
@@ -245,6 +245,6 @@ router.delete('/:id', comandoControllers.desactivarComando);
  *       400:
  *         description: Datos inválidos en la solicitud
  */
-router.post('/:id/brigadas', comandoControllers.agregarBrigadas);
+router.post('/:id/brigadas', verifyJWT, verifyRole(['Administrador','Root']), comandoControllers.agregarBrigadas);
 
 module.exports = router;

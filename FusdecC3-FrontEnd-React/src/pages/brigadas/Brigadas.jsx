@@ -28,6 +28,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 export default function Brigadas() {
   const [brigadas, setBrigadas] = useState([]);
   const [comandos, setComandos] = useState([]);
@@ -51,7 +53,13 @@ export default function Brigadas() {
 
   const fetchBrigadas = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/brigadas");
+      const response = await fetch("http://localhost:3000/api/brigadas",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
       setBrigadas(data);
@@ -64,7 +72,13 @@ export default function Brigadas() {
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/comandos");
+      const response = await fetch("http://localhost:3000/api/comandos",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
       setComandos(data);
@@ -107,6 +121,7 @@ export default function Brigadas() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token
         },
         body: JSON.stringify(formValues),
       });
@@ -134,6 +149,7 @@ export default function Brigadas() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token
           },
           body: JSON.stringify(formValues),
         }
@@ -166,6 +182,10 @@ export default function Brigadas() {
         `http://localhost:3000/api/brigadas/${selectedBrigada._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 

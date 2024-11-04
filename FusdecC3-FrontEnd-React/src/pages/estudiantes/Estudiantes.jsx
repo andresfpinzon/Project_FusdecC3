@@ -30,6 +30,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Estudiantes = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [unidades, setUnidades] = useState([]);
@@ -74,7 +76,13 @@ const Estudiantes = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -87,7 +95,13 @@ const Estudiantes = () => {
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/unidades");
+      const response = await fetch("http://localhost:3000/api/unidades",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
       setUnidades(data);
@@ -100,7 +114,13 @@ const Estudiantes = () => {
 
   const fetchColegios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/colegios");
+      const response = await fetch("http://localhost:3000/api/colegios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener colegios");
       const data = await response.json();
       setColegios(data);
@@ -113,7 +133,13 @@ const Estudiantes = () => {
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones");
+      const response = await fetch("http://localhost:3000/api/ediciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
       setEdiciones(data);
@@ -126,7 +152,13 @@ const Estudiantes = () => {
 
   const fetchCertificados = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/certificados");
+      const response = await fetch("http://localhost:3000/api/certificados",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener certificados");
       const data = await response.json();
       setCertificados(data);
@@ -139,7 +171,13 @@ const Estudiantes = () => {
 
   const fetchAsistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias");
+      const response = await fetch("http://localhost:3000/api/asistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener asistencias");
       const data = await response.json();
       setAsistencias(data);
@@ -152,7 +190,13 @@ const Estudiantes = () => {
 
   const fetchInasistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/inasistencias");
+      const response = await fetch("http://localhost:3000/api/inasistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener inasistencias");
       const data = await response.json();
       setInasistencias(data);
@@ -165,7 +209,13 @@ const Estudiantes = () => {
 
   const fetchCalificaciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/calificaciones");
+      const response = await fetch("http://localhost:3000/api/calificaciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener calificaciones");
       const data = await response.json();
       setCalificaciones(data);
@@ -206,6 +256,7 @@ const Estudiantes = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -245,6 +296,7 @@ const Estudiantes = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -288,6 +340,10 @@ const Estudiantes = () => {
         `http://localhost:3000/api/estudiantes/${estudianteToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
       if (response.ok) {
@@ -332,7 +388,13 @@ const Estudiantes = () => {
   };
 
   const handleInfoClick = async (estudiante) => {
-    const response = await fetch(`http://localhost:3000/api/estudiantes/${estudiante._id}`);
+    const response = await fetch(`http://localhost:3000/api/estudiantes/${estudiante._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoEstudiante(data);
     setOpenInfoDialog(true);

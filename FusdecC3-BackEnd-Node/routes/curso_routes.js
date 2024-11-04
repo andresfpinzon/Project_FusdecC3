@@ -1,7 +1,7 @@
 const express = require('express');
 const cursoController = require('../controllers/curso_controllers'); // Importa el controlador
 const router = express.Router(); // Define el enrutador
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -63,7 +63,7 @@ const router = express.Router(); // Define el enrutador
  *               items:
  *                 $ref: '#/components/schemas/Curso'
  */
-router.get('/', cursoController.listarCursosActivos);
+router.get('/', verifyJWT, verifyRole(['Secretario','Root']), cursoController.listarCursosActivos);
 
 /**
  * @swagger
@@ -105,7 +105,7 @@ router.get('/', cursoController.listarCursosActivos);
  *                   fundacionId: "605c72ef56d7b3e0e0f8b8d5"
  *                   ediciones: ["605c72ef56d7b3e0e0f8b8d6"]
  */
-router.post('/', cursoController.crearCurso);
+router.post('/', verifyJWT, verifyRole(['Secretario','Root']), cursoController.crearCurso);
 
 /**
  * @swagger
@@ -154,7 +154,7 @@ router.post('/', cursoController.crearCurso);
  *       404:
  *         description: Curso no encontrado.
  */
-router.put('/:id', cursoController.actualizarCurso);
+router.put('/:id', verifyJWT, verifyRole(['Secretario','Root']), cursoController.actualizarCurso);
 
 /**
  * @swagger
@@ -190,7 +190,7 @@ router.put('/:id', cursoController.actualizarCurso);
  *       404:
  *         description: Curso no encontrado.
  */
-router.delete('/:id', cursoController.desactivarCurso);
+router.delete('/:id', verifyJWT, verifyRole(['Secretario','Root']), cursoController.desactivarCurso);
 
 /**
  * @swagger
@@ -226,7 +226,7 @@ router.delete('/:id', cursoController.desactivarCurso);
  *       404:
  *         description: Curso no encontrado.
  */
-router.get('/:id', cursoController.obtenerCursoPorId);
+router.get('/:id', verifyJWT, verifyRole(['Secretario','Root']), cursoController.obtenerCursoPorId);
 
 module.exports = router;
 

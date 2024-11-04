@@ -22,7 +22,7 @@ const comandoSchemaValidation = Joi.object({
 
   ubicacionComando: Joi.string()
     .min(3)
-    .max(200)
+    .max(1000)
     .required()
     .messages({
       'string.base': 'La ubicación del comando debe ser un texto',

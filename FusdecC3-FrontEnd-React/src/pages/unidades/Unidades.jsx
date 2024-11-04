@@ -31,6 +31,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Unidades = () => {
   const [unidades, setUnidades] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
@@ -60,7 +62,13 @@ const Unidades = () => {
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/unidades");
+      const response = await fetch("http://localhost:3000/api/unidades",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
       setUnidades(data);
@@ -73,7 +81,13 @@ const Unidades = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -86,7 +100,13 @@ const Unidades = () => {
 
   const fetchBrigadas = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/brigadas");
+      const response = await fetch("http://localhost:3000/api/brigadas",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
       setBrigadas(data);
@@ -99,7 +119,13 @@ const Unidades = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios");
+      const response = await fetch("http://localhost:3000/api/usuarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
       setUsuarios(data);
@@ -147,6 +173,7 @@ const Unidades = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -180,6 +207,7 @@ const Unidades = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -217,6 +245,10 @@ const Unidades = () => {
         `http://localhost:3000/api/unidades/${unidadToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
       if (response.ok) {
@@ -255,7 +287,13 @@ const Unidades = () => {
   };
 
   const handleInfoClick = async (unidad) => {
-    const response = await fetch(`http://localhost:3000/api/unidades/${unidad._id}`);
+    const response = await fetch(`http://localhost:3000/api/unidades/${unidad._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoUnidad(data);
     setOpenInfoDialog(true);
@@ -304,12 +342,19 @@ const Unidades = () => {
           </Select>
         </FormControl>
         <FormControl fullWidth margin="normal">
-          <TextField
-            label="ID de Usuario"
+          <InputLabel>Usuario</InputLabel>
+          <Select
             name="usuarioId"
             value={formValues.usuarioId}
             onChange={handleInputChange}
-          />
+            input={<OutlinedInput label="Usuario" />}
+          >
+            {usuarios.map((usuario) => (
+              <MenuItem key={usuario._id} value={usuario._id}>
+                {usuario.nombreUsuario}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
         <FormControl fullWidth margin="normal">
           <Autocomplete

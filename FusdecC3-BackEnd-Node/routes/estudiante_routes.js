@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const estudianteController = require('../controllers/estudiante_controllers');
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -96,7 +96,7 @@ const estudianteController = require('../controllers/estudiante_controllers');
  *                     colegioId: "colegio456"
  *                     estadoEstudiante: true
  */
-router.get('/', estudianteController.listarEstudiantes);
+router.get('/', verifyJWT, verifyRole(['Administrador','Instructor','Secretario','Root']), estudianteController.listarEstudiantes);
 
 /**
  * @swagger
@@ -146,7 +146,7 @@ router.get('/', estudianteController.listarEstudiantes);
  *                   colegioId: "colegio789"
  *                   estadoEstudiante: true
  */
-router.post('/', estudianteController.crearEstudiante);
+router.post('/', verifyJWT, verifyRole(['Secretario','Root']), estudianteController.crearEstudiante);
 
 /**
  * @swagger
@@ -191,7 +191,7 @@ router.post('/', estudianteController.crearEstudiante);
  *       404:
  *         description: Estudiante no encontrado.
  */
-router.put('/:id', estudianteController.actualizarEstudiante);
+router.put('/:id', verifyJWT, verifyRole(['Secretario','Root']), estudianteController.actualizarEstudiante);
 
 /**
  * @swagger
@@ -217,7 +217,7 @@ router.put('/:id', estudianteController.actualizarEstudiante);
  *       404:
  *         description: Estudiante no encontrado.
  */
-router.delete('/:id', estudianteController.desactivarEstudiante);
+router.delete('/:id', verifyJWT, verifyRole(['Secretario','Root']), estudianteController.desactivarEstudiante);
 
 /**
  * @swagger
@@ -243,7 +243,7 @@ router.delete('/:id', estudianteController.desactivarEstudiante);
  *       404:
  *         description: Estudiante no encontrado.
  */
-router.get('/:id', estudianteController.obtenerEstudiantePorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador','Instructor','Secretario','Root']), estudianteController.obtenerEstudiantePorId);
 
 /**
  * @swagger
@@ -296,7 +296,7 @@ router.get('/:id', estudianteController.obtenerEstudiantePorId);
  *                     "60d21b4667d0d8992e610c82"
  *                   ]
  */
-router.post('/:id/asistencias', estudianteController.agregarAsistenciaAEstudiante);
+router.post('/:id/asistencias', verifyJWT, verifyRole(['Instructor','Secretario','Root']), estudianteController.agregarAsistenciaAEstudiante);
 
 /**
  * @swagger
@@ -349,7 +349,7 @@ router.post('/:id/asistencias', estudianteController.agregarAsistenciaAEstudiant
  *                     "60d21b4667d0d8992e610c84"
  *                   ]
  */
-router.post('/:id/inasistencias', estudianteController.agregarInasistenciaAEstudiante);
+router.post('/:id/inasistencias', verifyJWT, verifyRole(['Instructor','Secretario','Root']), estudianteController.agregarInasistenciaAEstudiante);
 
 /**
  * @swagger
@@ -402,7 +402,7 @@ router.post('/:id/inasistencias', estudianteController.agregarInasistenciaAEstud
  *                     "60d21b4667d0d8992e610c86"
  *                   ]
  */
-router.post('/:id/certificados', estudianteController.agregarCertificadoAEstudiante);
+router.post('/:id/certificados', verifyJWT, verifyRole(['Instructor','Secretario','Root']), estudianteController.agregarCertificadoAEstudiante);
 
 /**
  * @swagger
@@ -455,7 +455,7 @@ router.post('/:id/certificados', estudianteController.agregarCertificadoAEstudia
  *                     "60d21b4667d0d8992e610c92"
  *                   ]
  */
-router.post('/:id/calificaciones', estudianteController.agregarCalificacionAEstudiante);
+router.post('/:id/calificaciones', verifyJWT, verifyRole(['Instructor','Secretario','Root']), estudianteController.agregarCalificacionAEstudiante);
 
 /**
  * @swagger
@@ -508,7 +508,7 @@ router.post('/:id/calificaciones', estudianteController.agregarCalificacionAEstu
  *                     "60d21b4667d0d8992e610c94"
  *                   ]
  */
-router.post('/:id/ediciones', estudianteController.agregarEdicionAEstudiante);
+router.post('/:id/ediciones', verifyJWT, verifyRole(['Instructor','Secretario','Root']), estudianteController.agregarEdicionAEstudiante);
 
 
 module.exports = router;

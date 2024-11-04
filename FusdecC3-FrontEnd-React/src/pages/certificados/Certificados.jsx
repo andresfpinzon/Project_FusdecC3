@@ -27,6 +27,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Description, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Certificados = () => {
   const [formValues, setFormValues] = useState({
     fechaEmision: "",
@@ -57,7 +59,13 @@ const Certificados = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios");
+      const response = await fetch("http://localhost:3000/api/usuarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
       setUsuarios(data);
@@ -70,7 +78,13 @@ const Certificados = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/cursos");
+      const response = await fetch("http://localhost:3000/api/cursos", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
       setCursos(data);
@@ -83,7 +97,13 @@ const Certificados = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -96,7 +116,13 @@ const Certificados = () => {
 
   const fetchCertificados = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/certificados");
+      const response = await fetch("http://localhost:3000/api/certificados",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener certificados");
       const data = await response.json();
       setCertificados(data);
@@ -109,7 +135,13 @@ const Certificados = () => {
 
   const fetchAuditorias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auditorias");
+      const response = await fetch("http://localhost:3000/api/auditorias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener auditorías");
       const data = await response.json();
       setAuditorias(data);
@@ -131,6 +163,7 @@ const Certificados = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify({
           ...formValues,
@@ -160,6 +193,7 @@ const Certificados = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify({
           fechaEmision: formValues.fechaEmision,
@@ -213,6 +247,10 @@ const Certificados = () => {
         `http://localhost:3000/api/certificados/${certificadoToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
       if (response.ok) {

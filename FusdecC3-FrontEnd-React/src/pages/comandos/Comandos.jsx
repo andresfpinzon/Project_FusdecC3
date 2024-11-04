@@ -28,6 +28,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Comandos = () => {
   const [comandos, setComandos] = useState([]);
   const [fundaciones, setFundaciones] = useState([]);
@@ -51,7 +53,13 @@ const Comandos = () => {
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/comandos");
+      const response = await fetch("http://localhost:3000/api/comandos",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
       setComandos(data);
@@ -106,6 +114,7 @@ const Comandos = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -133,6 +142,7 @@ const Comandos = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -172,6 +182,10 @@ const Comandos = () => {
         `http://localhost:3000/api/comandos/${selectedComando._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 

@@ -26,7 +26,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import Certificados from "../certificados/Certificados";
+
+const token = localStorage.getItem("token");
 
 const Auditorias = () => {
   const [formValues, setFormValues] = useState({
@@ -50,7 +51,13 @@ const Auditorias = () => {
 //fech de auditorias
   const fetchCertificados = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/certificados");
+      const response = await fetch("http://localhost:3000/api/certificados",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener certificados");
       const data = await response.json();
       setCertificados(data);
@@ -63,7 +70,15 @@ const Auditorias = () => {
 
   const fetchAuditorias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auditorias");
+      const response = await fetch("http://localhost:3000/api/auditorias",
+        {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }
+      );
       if (!response.ok) throw new Error("Error al obtener auditorías");
       const data = await response.json();
       setAuditorias(data);
@@ -87,6 +102,7 @@ const Auditorias = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -105,6 +121,10 @@ const Auditorias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/auditorias/${auditoriaToDelete._id}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+        },
       });
       if (!response.ok) throw new Error("Error al eliminar auditoría");
       setAuditorias(auditorias.filter(auditoria => auditoria._id !== auditoriaToDelete._id));

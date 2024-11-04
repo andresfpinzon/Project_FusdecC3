@@ -15,7 +15,7 @@ const brigadaSchemaValidation = Joi.object({
 
   ubicacionBrigada: Joi.string()
     .min(3)
-    .max(200)
+    .max(1000)
     .required()
     .messages({
       'string.base': 'La ubicación de la brigada debe ser un texto',

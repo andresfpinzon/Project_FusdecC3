@@ -24,6 +24,8 @@ import {
 
 import { Edit, Delete } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Roles = () => {
   const [roles, setRoles] = useState([]);
   const [selectedRol, setSelectedRol] = useState(null);
@@ -41,7 +43,13 @@ const Roles = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/roles");
+      const response = await fetch("http://localhost:3000/api/roles",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener roles");
       const data = await response.json();
       setRoles(data);
@@ -72,6 +80,7 @@ const Roles = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -102,6 +111,7 @@ const Roles = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -138,6 +148,10 @@ const Roles = () => {
         `http://localhost:3000/api/roles/${selectedRol._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 

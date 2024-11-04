@@ -71,7 +71,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     estadoAsistencia: true
  *                     estudiantes: ["estudiante1", "estudiante2"]
  */
-router.get('/', verifyJWT, verifyRole(['Instructor']), asistenciaController.listarAsistencias);
+router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), asistenciaController.listarAsistencias);
 
 /**
  * @swagger
@@ -113,8 +113,8 @@ router.get('/', verifyJWT, verifyRole(['Instructor']), asistenciaController.list
  *                   estadoAsistencia: true
  *                   estudiantes: ["estudiante3", "estudiante4"]
  */
-router.post('/', verifyJWT, verifyRole(['Instructor']), asistenciaController.crearAsistencia);
-//router.post('/', asistenciaController.crearAsistencia);
+router.post('/', verifyJWT, verifyRole(['Instructor', 'Root']), asistenciaController.crearAsistencia);
+
 
 /**
  * @swagger
@@ -163,7 +163,7 @@ router.post('/', verifyJWT, verifyRole(['Instructor']), asistenciaController.cre
  *       404:
  *         description: Asistencia no encontrada.
  */
-router.put('/:id', asistenciaController.actualizarAsistencia);
+router.put('/:id',  verifyJWT, verifyRole(['Instructor', 'Root']), asistenciaController.actualizarAsistencia);
 
 /**
  * @swagger
@@ -198,7 +198,7 @@ router.put('/:id', asistenciaController.actualizarAsistencia);
  *       404:
  *         description: Asistencia no encontrada.
  */
-router.delete('/:id', asistenciaController.desactivarAsistencia);
+router.delete('/:id', verifyJWT, verifyRole(['Instructor', 'Root']), asistenciaController.desactivarAsistencia);
 
 /**
  * @swagger
@@ -233,7 +233,7 @@ router.delete('/:id', asistenciaController.desactivarAsistencia);
  *       404:
  *         description: Asistencia no encontrada.
  */
-router.get('/:id', asistenciaController.obtenerAsistenciaPorId);
+router.get('/:id', verifyJWT, verifyRole(['Instructor', 'Administrador', 'Root']), asistenciaController.obtenerAsistenciaPorId);
 
 module.exports = router;
 

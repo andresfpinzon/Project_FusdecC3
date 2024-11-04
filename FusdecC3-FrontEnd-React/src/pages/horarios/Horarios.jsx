@@ -24,6 +24,8 @@ import {
 
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Horarios = () => {
   const [horarios, setHorarios] = useState([]);
   const [selectedHorario, setSelectedHorario] = useState(null);
@@ -43,7 +45,13 @@ const Horarios = () => {
 
   const fetchHorarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/horarios");
+      const response = await fetch("http://localhost:3000/api/horarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener horarios");
       const data = await response.json();
       setHorarios(data);
@@ -78,6 +86,7 @@ const Horarios = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -111,6 +120,7 @@ const Horarios = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -149,6 +159,10 @@ const Horarios = () => {
         `http://localhost:3000/api/horarios/${horarioToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -177,7 +191,13 @@ const Horarios = () => {
   };
 
   const handleInfoClick = async (horario) => {
-    const response = await fetch(`http://localhost:3000/api/horarios/${horario._id}`,);
+    const response = await fetch(`http://localhost:3000/api/horarios/${horario._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoHorario(data);
     setOpenInfoDialog(true);

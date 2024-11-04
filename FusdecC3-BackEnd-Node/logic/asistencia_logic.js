@@ -39,7 +39,7 @@ async function actualizarAsistencia(id, body) {
 // Función asíncrona para listar las asistencias activas
 async function listarAsistenciasActivas() {
     let asistencias = await Asistencia.find({ estadoAsistencia: true })
-    .populate('estudiantes');;
+    .populate('estudiantes');
     return asistencias;
 }
 
