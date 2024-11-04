@@ -24,6 +24,8 @@ import {
 
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Cursos = () => {
   const [fundaciones, setFundaciones] = useState([]);
   const [ediciones, setEdiciones] = useState([]);
@@ -51,9 +53,28 @@ const Cursos = () => {
   const fetchData = async () => {
     try {
       const [cursosData, fundacionesData, edicionesData] = await Promise.all([
-        fetch("http://localhost:3000/api/cursos").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/fundaciones").then((res) => res.json()),
-        fetch("http://localhost:3000/api/ediciones").then((res) => res.json()),
+        fetch("http://localhost:3000/api/cursos",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
+      /*
+        fetch("http://localhost:3000/api/fundaciones",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),*/
+        fetch("http://localhost:3000/api/ediciones", {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
       ]);
       setCursos(cursosData);
       setFundaciones(fundacionesData);
@@ -97,6 +118,7 @@ const Cursos = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token 
             },
             body: JSON.stringify(formValues),
         });
@@ -132,6 +154,7 @@ const Cursos = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -169,6 +192,10 @@ const Cursos = () => {
         `http://localhost:3000/api/cursos/${cursoToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -201,7 +228,13 @@ const Cursos = () => {
   };
 
   const handleInfoClick = async (curso) => {
-    const response = await fetch(`http://localhost:3000/api/cursos/${curso._id}`,);
+    const response = await fetch(`http://localhost:3000/api/cursos/${curso._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoCurso(data);
     setOpenInfoDialog(true);

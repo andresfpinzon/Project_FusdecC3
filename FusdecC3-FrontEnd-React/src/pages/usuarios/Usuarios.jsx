@@ -30,6 +30,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -56,7 +58,13 @@ const Usuarios = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios");
+      const response = await fetch("http://localhost:3000/api/usuarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
       setUsuarios(data);
@@ -69,7 +77,13 @@ const Usuarios = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/roles");
+      const response = await fetch("http://localhost:3000/api/roles",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener roles");
       const data = await response.json();
       setRoles(data);
@@ -110,6 +124,7 @@ const Usuarios = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -145,6 +160,7 @@ const Usuarios = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -184,6 +200,10 @@ const Usuarios = () => {
         `http://localhost:3000/api/usuarios/${userToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
       if (response.ok) {

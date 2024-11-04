@@ -29,6 +29,8 @@ import {
 
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Ediciones = () => {
   const [ediciones, setEdiciones] = useState([]);
   const [cursos, setCursos] = useState([]);
@@ -52,17 +54,38 @@ const Ediciones = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoEdicion, setInfoEdicion] = useState(null);
 
-  
-  
-
   //constante con promise.all para que se ejecuten en paralelo los fetch de ediciones, cursos, horarios y estudiantes
   const fetchData = async () => {
     try {
       const [edicionesData, cursosData, horariosData, estudiantesData] = await Promise.all([
-        fetch("http://localhost:3000/api/ediciones").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/cursos").then((res) => res.json()),
-        fetch("http://localhost:3000/api/horarios").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
+        fetch("http://localhost:3000/api/ediciones",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
+        fetch("http://localhost:3000/api/cursos",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
+        fetch("http://localhost:3000/api/horarios",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
+        fetch("http://localhost:3000/api/estudiantes",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
       ]);
       setEdiciones(edicionesData);
       setCursos(cursosData);
@@ -97,18 +120,12 @@ const Ediciones = () => {
   };
 
   const handleCreateEdicion = async () => {
-    /*
-    if (!formValues.tituloEdicion || !formValues.fechaInicioEdicion || !formValues.fechaFinEdicion || !formValues.cursoId) {
-      setErrorMessage("Todos los campos son obligatorios");
-      setOpenSnackbar(true);
-      return;
-      }
-    */
     try {
         const response = await fetch("http://localhost:3000/api/ediciones", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token 
             },
             body: JSON.stringify(formValues),
         });
@@ -146,6 +163,7 @@ const Ediciones = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -185,6 +203,10 @@ const Ediciones = () => {
         `http://localhost:3000/api/ediciones/${edicionToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -219,7 +241,13 @@ const Ediciones = () => {
   };
 
   const handleInfoClick = async (edicion) => {
-    const response = await fetch(`http://localhost:3000/api/ediciones/${edicion._id}`,);
+    const response = await fetch(`http://localhost:3000/api/ediciones/${edicion._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoEdicion(data);
     setOpenInfoDialog(true);

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const horarioController = require("../controllers/horario_controllers");
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -66,7 +66,7 @@ const horarioController = require("../controllers/horario_controllers");
  *                     horaFin: "12:00"
  *                     estadoHorario: true
  */
-router.get("/", horarioController.listarHorariosActivos);
+router.get("/", verifyJWT, verifyRole(['Secretario','Root']), horarioController.listarHorariosActivos);
 
 /**
  * @swagger
@@ -104,7 +104,7 @@ router.get("/", horarioController.listarHorariosActivos);
  *                   horaFin: "17:00"
  *                   estadoHorario: true
  */
-router.post("/", horarioController.crearHorario);
+router.post("/", verifyJWT, verifyRole(['Secretario','Root']), horarioController.crearHorario);
 
 /**
  * @swagger
@@ -151,7 +151,7 @@ router.post("/", horarioController.crearHorario);
  *       404:
  *         description: Horario no encontrado.
  */
-router.put("/:id", horarioController.actualizarHorario);
+router.put("/:id", verifyJWT, verifyRole(['Secretario','Root']), horarioController.actualizarHorario);
 
 /**
  * @swagger
@@ -185,7 +185,7 @@ router.put("/:id", horarioController.actualizarHorario);
  *       404:
  *         description: Horario no encontrado.
  */
-router.delete("/:id", horarioController.desactivarHorario);
+router.delete("/:id", verifyJWT, verifyRole(['Secretario','Root']), horarioController.desactivarHorario);
 
 /**
  * @swagger
@@ -219,6 +219,6 @@ router.delete("/:id", horarioController.desactivarHorario);
  *       404:
  *         description: Horario no encontrado.
  */
-router.get("/:id", horarioController.obtenerHorarioPorId);
+router.get("/:id", verifyJWT, verifyRole(['Secretario','Root']), horarioController.obtenerHorarioPorId);
 
 module.exports = router;

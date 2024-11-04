@@ -24,6 +24,7 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
       { nombre: "Cursos", ruta: "/cursos", roles: ["Secretario", "Root"] },
       { nombre: "Ediciones", ruta: "/ediciones", roles: ["Secretario", "Root"] },
       { nombre: "Horarios", ruta: "/horarios", roles: ["Secretario", "Root"] },
+      { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Secretario", "Root"] },
     ];
   
     const rutasInstructor = [
@@ -32,7 +33,7 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
       { nombre: "Inasistencias", ruta: "/inasistencias", roles: ["Instructor", "Root"] },
       { nombre: "Calificaciones", ruta: "/calificaciones", roles: ["Instructor", "Root"] },
     ];
-  
+
     // Combinar las rutas según los roles del usuario
     let rutasPermitidas = [
       ...rutasBase,

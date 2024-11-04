@@ -1,7 +1,7 @@
 const express = require("express");
 const calificacionController = require("../controllers/calificacion_controllers");
 const router = express.Router(); // Define el enrutador
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -70,7 +70,7 @@ const router = express.Router(); // Define el enrutador
  *                     usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
  *                     estadoCalificacion: true
  */
-router.get("/", calificacionController.listarCalificacionesActivas);
+router.get("/", verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), calificacionController.listarCalificacionesActivas);
 
 /**
  * @swagger
@@ -110,7 +110,7 @@ router.get("/", calificacionController.listarCalificacionesActivas);
  *                   estadoCalificacion: true
  *                   estudiantes: ["61f7d2bbf1a2b4b5c3cdb71e"]
  */
-router.post("/", calificacionController.crearCalificacion);
+router.post("/", verifyJWT, verifyRole(['Instructor','Root']), calificacionController.crearCalificacion);
 
 /**
  * @swagger
@@ -159,7 +159,7 @@ router.post("/", calificacionController.crearCalificacion);
  *       404:
  *         description: Calificación no encontrada.
  */
-router.put("/:id", calificacionController.actualizarCalificacion);
+router.put("/:id", verifyJWT, verifyRole(['Instructor','Root']), calificacionController.actualizarCalificacion);
 
 /**
  * @swagger
@@ -193,7 +193,7 @@ router.put("/:id", calificacionController.actualizarCalificacion);
  *       404:
  *         description: Calificación no encontrada.
  */
-router.delete("/:id", calificacionController.desactivarCalificacion);
+router.delete("/:id", verifyJWT, verifyRole(['Instructor','Root']), calificacionController.desactivarCalificacion);
 
 /**
  * @swagger
@@ -227,6 +227,6 @@ router.delete("/:id", calificacionController.desactivarCalificacion);
  *       404:
  *         description: Calificación no encontrada.
  */
-router.get("/:id", calificacionController.obtenerCalificacionPorId);
+router.get("/:id", verifyJWT, verifyRole(['Instructor','Administrador','Root']), calificacionController.obtenerCalificacionPorId);
 
 module.exports = router;

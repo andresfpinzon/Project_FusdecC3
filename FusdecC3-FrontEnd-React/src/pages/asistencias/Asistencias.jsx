@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -53,6 +54,15 @@ const Asistencias = () => {
   useEffect(() => {
     fetchAsistencias();
     fetchEstudiantes();
+     // Decodificar el token y obtener el ID de usuario
+     if (token) {
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id, 
+      }));
+    }
   }, []);
 
   const fetchAsistencias = async () => {
@@ -63,7 +73,6 @@ const Asistencias = () => {
             "Content-Type": "application/json",
             "Authorization": token 
         }
-        
     });
       if (!response.ok) throw new Error("Error al obtener asistencias");
       const data = await response.json();
@@ -76,7 +85,15 @@ const Asistencias = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",
+        {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }
+      );
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -112,7 +129,9 @@ const Asistencias = () => {
     try {
       const response = await fetch("http://localhost:3000/api/asistencias", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
@@ -122,7 +141,7 @@ const Asistencias = () => {
         setFormValues({
           tituloAsistencia: "",
           fechaAsistencia: "",
-          usuarioId: "",
+          usuarioId: formValues.usuarioId,
           estadoAsistencia: true,
           estudiantes: [],
         });
@@ -140,7 +159,9 @@ const Asistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/asistencias/${selectedAsistencia._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
@@ -173,6 +194,9 @@ const Asistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/asistencias/${asistenciaToDelete._id}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
       });
       if (response.ok) {
         setAsistencias(asistencias.filter((asistencia) => asistencia._id !== asistenciaToDelete._id));
@@ -229,15 +253,6 @@ const Asistencias = () => {
           name="fechaAsistencia"
           type="date"
           value={formValues.fechaAsistencia}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
-        <TextField
-          label="Id de usuario"
-          name="usuarioId"
-          value={formValues.usuarioId}
           onChange={handleInputChange}
           fullWidth
           margin="normal"

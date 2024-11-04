@@ -30,6 +30,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
+const token = localStorage.getItem("token");
+
 const Inasistencias = () => {
   const [asistencias, setAsistencias] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
@@ -58,7 +60,13 @@ const Inasistencias = () => {
 
   const fetchAsistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias");
+      const response = await fetch("http://localhost:3000/api/asistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener asistencias");
       const data = await response.json();
       setAsistencias(data);
@@ -70,7 +78,13 @@ const Inasistencias = () => {
 
   const fetchInasistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/inasistencias");
+      const response = await fetch("http://localhost:3000/api/inasistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener inasistencias");
       const data = await response.json();
       setInasistencias(data);
@@ -82,7 +96,13 @@ const Inasistencias = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -147,7 +167,9 @@ const Inasistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/inasistencias/${selectedInasistencia._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
@@ -181,6 +203,10 @@ const Inasistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/inasistencias/${inasistenciaToDelete._id}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
       });
       if (response.ok) {
         setAsistencias(asistencias.filter((inasistencia) => inasistencia._id !== inasistenciaToDelete._id));

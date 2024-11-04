@@ -25,9 +25,13 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  Checkbox,
+  ListItemText
 } from "@mui/material";
 
 import { Edit, Delete, Info } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Calificaciones = () => {
   const [calificaciones, setCalificaciones] = useState([]);
@@ -37,8 +41,8 @@ const Calificaciones = () => {
   const [formValues, setFormValues] = useState({
     tituloCalificacion: "",
     aprobado: true,
-    //usuarioId: "",
-    //estudiantes: [],
+    usuarioId: "",
+    estudiantes: [],
     estadoCalificacion: true,
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -49,63 +53,39 @@ const Calificaciones = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCalificacion, setInfoCalificacion] = useState(null);
 
-  
-  
-
-  //constante con promise.all para que se ejecuten en paralelo los fetch de calificaciones, estudiantes y usuarios
   const fetchData = async () => {
     try {
       const [calificacionesData, estudiantesData, usuariosData] = await Promise.all([
-        fetch("http://localhost:3000/api/calificaciones").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/usuarios").then((res) => res.json()),
+        fetch("http://localhost:3000/api/calificaciones",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
+        fetch("http://localhost:3000/api/estudiantes",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
+        fetch("http://localhost:3000/api/usuarios",{
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }).then((res) => res.json()),
       ]);
       setCalificaciones(calificacionesData);
       setEstudiantes(estudiantesData);
       setUsuarios(usuariosData);
     } catch (error) {
-      handleError("Error al cargar los datos");
+      handleError("Error al cargar los datos", error);
     } 
   };
 
-  /*const fetchData = async () => {
-    try {
-      const results = await Promise.allSettled([
-        fetch("http://localhost:3000/api/calificaciones"),
-        fetch("http://localhost:3000/api/estudiantes"),
-        fetch("http://localhost:3000/api/usuarios"),
-      ]);
-  
-      // Función auxiliar para procesar las respuestas json
-      const processResponse = async (result) => {
-        if (result.status === "fulfilled" && result.value.ok) {
-          try {
-            return await result.value.json();
-          } catch {
-            console.warn("La respuesta no contiene un JSON válido.");
-            return null; // Si no hay JSON válido, devolvemos null
-          }
-        }
-        return null; // Si la solicitud falló o no es ok, devolvemos null
-      };
-  
-      // Procesamos cada resultado
-      const calificaciones = await processResponse(results[0]);
-      const estudiantes = await processResponse(results[1]);
-      const usuarios = await processResponse(results[2]);
-  
-      // Actualizamos los estados solo si los datos fueron obtenidos
-      if (calificaciones) setCalificaciones(calificaciones);
-      if (estudiantes) setEstudiantes(estudiantes);
-      if (usuarios) setUsuarios(usuarios);
-  
-    } catch (error) {
-      console.error("Error inesperado:", error);
-      handleError("Error al cargar los datos");
-    }
-  };  
-  */
-  
   useEffect(() => {
     fetchData();
   }, []);
@@ -130,18 +110,12 @@ const Calificaciones = () => {
   };
 
   const handleCreateCalificacion = async () => {
-    /*
-    if (!formValues.tituloEdicion || !formValues.fechaInicioEdicion || !formValues.fechaFinEdicion || !formValues.cursoId) {
-      setErrorMessage("Todos los campos son obligatorios");
-      setOpenSnackbar(true);
-      return;
-      }
-    */
     try {
         const response = await fetch("http://localhost:3000/api/calificaciones", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token 
             },
             body: JSON.stringify(formValues),
         });
@@ -153,8 +127,8 @@ const Calificaciones = () => {
             setFormValues({
               tituloCalificacion: "",
               aprobado: true,
-              //usuarioId: "",
-              //estudiantes: [],
+              usuarioId: "",
+              estudiantes: [],
               estadoCalificacion: true,
             });
             console.log('Calificación creada exitosamente:', nuevaCalificacion);
@@ -163,7 +137,7 @@ const Calificaciones = () => {
             throw new Error(errorData.error || "Error al crear calificación");
         }
     } catch (error) {
-        handleError("Error al crear calificación");
+        handleError("Error al crear calificación", error);
     }
 };
 
@@ -177,6 +151,7 @@ const Calificaciones = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -193,8 +168,8 @@ const Calificaciones = () => {
         setFormValues({
           tituloCalificacion: "",
           aprobado: true,
-          //usuarioId: "",
-          //estudiantes: [],
+          usuarioId: "",
+          estudiantes: [],
           estadoCalificacion: true,
         });
       } else {
@@ -202,7 +177,7 @@ const Calificaciones = () => {
         throw new Error(errorData.error || "Error al actualizar calificación");
       }
     } catch (error) {
-      handleError("Error al actualizar calificación");
+      handleError("Error al actualizar calificación", error);
     }
   };
 
@@ -214,6 +189,10 @@ const Calificaciones = () => {
         `http://localhost:3000/api/calificaciones/${calificacionToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -225,7 +204,7 @@ const Calificaciones = () => {
         throw new Error(errorData.error || "Error al eliminar calificación");
       }
     } catch (error) {
-      handleError("Error al eliminar calificación");
+      handleError("Error al eliminar calificación", error);
     }
   };
 
@@ -234,9 +213,17 @@ const Calificaciones = () => {
     setFormValues({
       tituloCalificacion: calificacion.tituloCalificacion,
       aprobado: calificacion.aprobado,
-      //usuarioId: calificacion.usuarioId,
-      //estudiantes: edicion.estudiantes || [],
+      usuarioId: calificacion.usuarioId,
+      estudiantes: calificacion.estudiantes || [],
       estadoCalificacion: calificacion.estadoCalificacion,
+    });
+  };
+  
+  const handleEstudianteChange = (e) => {
+    const { target: { value } } = e;
+    setFormValues({
+      ...formValues,
+      estudiantes: typeof value === "string" ? value.split(",") : value,
     });
   };
 
@@ -246,7 +233,13 @@ const Calificaciones = () => {
   };
 
   const handleInfoClick = async (calificacion) => {
-    const response = await fetch(`http://localhost:3000/api/calificaciones/${calificacion._id}`,);
+    const response = await fetch(`http://localhost:3000/api/calificaciones/${calificacion._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoCalificacion(data);
     setOpenInfoDialog(true);
@@ -283,7 +276,7 @@ const Calificaciones = () => {
           Aprobaron
         </Box>
 
-        {/* 
+        
         <FormControl fullWidth margin="normal">
           <InputLabel>Usuario</InputLabel>
           <Select
@@ -292,22 +285,19 @@ const Calificaciones = () => {
             onChange={handleInputChange}
             input={<OutlinedInput label="Usuario" />}
           >
-            {usuarios.map((usuario) => (
+            {Usuarios.map((usuario) => (
               <MenuItem key={usuario._id} value={usuario._id}>
                 {usuario.nombreUsuario}
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
-        */}
-
-        {/*
+        </FormControl>      
         <FormControl fullWidth margin="normal">
           <InputLabel>Estudiantes</InputLabel>
           <Select
             multiple
             value={formValues.estudiantes}
-            onChange={handleEditionChange}
+            onChange={handleEstudianteChange}
             input={<OutlinedInput label="Estudiantes" />}
             renderValue={(selected) =>
               estudiantes
@@ -325,7 +315,7 @@ const Calificaciones = () => {
             ))}
           </Select>
         </FormControl>
-        */}
+        
 
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -402,7 +392,7 @@ const Calificaciones = () => {
           <Typography>Usuario: {infoCalificacion?.usuario?.nombreUsuario || "Usuario no encontrado"}</Typography>
           <Typography>Estado: {infoCalificacion?.estadoCalificacion ? "Activa" : "Inactiva"}</Typography>
           <Typography> 
-            estudiantes: {infoCalificacion?.estudiantes?.map((ca) => es.estudiantes).join(", ") || "Sin estudiantes"} 
+            estudiantes: {infoCalificacion?.estudiantes?.map((es) => es.estudiantes).join(", ") || "Sin estudiantes"} 
           </Typography>
            
         </DialogContent>
