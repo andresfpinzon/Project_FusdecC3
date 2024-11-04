@@ -1,6 +1,14 @@
 const Joi = require('@hapi/joi');
 
 const certificadoSchemaValidation = Joi.object({
+
+  fechaEmision: Joi.date()
+    .required()
+    .messages({
+      'date.base': 'La fecha de emisión debe ser una fecha válida',
+      'date.empty': 'La fecha de emisión no puede estar vacía',
+      'any.required': 'La fecha de emisión es un campo requerido',
+    }),
   
   codigoVerificacion: Joi.string()
     .min(5)
@@ -39,7 +47,6 @@ const certificadoSchemaValidation = Joi.object({
       'string.base': 'El estudianteId debe ser un texto',
       'string.empty': 'El estudianteId no puede estar vacío',
       'string.pattern.base': 'El estudianteId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
-      'any.required': 'El estudianteId es un campo requerido',
     }),
 
   cursoId: Joi.string()

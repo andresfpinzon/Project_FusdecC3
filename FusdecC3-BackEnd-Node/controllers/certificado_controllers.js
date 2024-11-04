@@ -1,42 +1,57 @@
 const logic = require('../logic/certificado_logic');
 const certificadoSchemaValidation = require('../validations/certificado_validations');
 const Certificado = require('../models/certificado_model');
-const Auditoria = require('../models/auditoria_model'); // Asegúrate de importar el modelo de auditoría
 const mongoose = require('mongoose');
-//Necesario para crear la Auditoria autimaticamente
-const auditoriaController = require('./auditoria_controllers');
-/*
+
 // Controlador para crear un certificado
 const crearCertificado = async (req, res) => {
+    const { error, value } = certificadoSchemaValidation.validate(req.body);
+    
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+    }
+
     try {
-        // Convertir la fecha a un objeto Date
-        req.body.fechaEmision = new Date(req.body.fechaEmision);
-        
+        const nuevoCertificado = await logic.crearCertificado(value);
+        res.status(201).json(nuevoCertificado);  // 201 Created
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};
+
+
+/* const crearCertificado = async (req, res) => {
+    try {
+        // Convertir fecha de emisión
+        req.body.fechaEmision = transformarFecha(req.body.fechaEmision);
+
+        // Crear y guardar el nuevo certificado
         const nuevoCertificado = new Certificado(req.body);
         const certificadoGuardado = await nuevoCertificado.save();
 
-        // con esto cramos la auditoria inmediatamente despues de la creacion de certificado
-        const auditoriaData = {
-            fechaAuditoria: new Date(req.body.fechaAuditoria),
-            nombreEmisor: req.body.nombreEmisorCertificado, // o el valor correspondiente
+        // Configurar y validar los datos de auditoría
+        const datosAuditoria = {
+            fechaAuditoria: certificadoGuardado.fechaEmision,
+            nombreEmisor: certificadoGuardado.nombreEmisorCertificado,
             certificadoId: certificadoGuardado._id,
-            estadoAuditoria: true
+            estadoAuditoria: certificadoGuardado.estadoCertificado,
         };
-  
-        // Guardar la auditoría directamente en el modelo o a través del controlador
-        const nuevaAuditoria = await Auditoria.create(auditoriaData);
-        res.status(201).json({
-            certificado: certificadoGuardado,
-            auditoria: nuevaAuditoria
-          });
+        
+        const { error, value } = auditoriaSchemaValidation.validate(datosAuditoria);
+        if (error) return res.status(400).json({ error: error.details[0].message });
+
+        // Crear y guardar la auditoría en paralelo
+        const nuevaAuditoria = await logicA.crearAuditoria(value);
+
+        res.status(201).json({ certificado: certificadoGuardado, auditoria: nuevaAuditoria });
     } catch (error) {
-        if (error.code === 11000) {
-            return res.status(400).json({ error: 'El código de verificación ya existe.' });
-        }
+        if (error.code === 11000) return res.status(400).json({ error: 'El código de verificación ya existe.' });
+        
         console.error("Error al crear certificado:", error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
-};*/
+}; */
+
 
 // Controlador para listar certificados
 const listarCertificados = async (_req, res) => {
@@ -49,42 +64,6 @@ const listarCertificados = async (_req, res) => {
     } catch (err) {
         console.error(err); // Agrega un log para ver el error
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
-    }
-};
-
-
-// Controlador para crear un certificado
-const crearCertificado = async (req, res) => {
-    try {
-        // Validar los datos de entrada
-        const { error } = certificadoSchemaValidation.validate(req.body);
-        if (error) {
-            return res.status(400).json({ error: error.details[0].message });
-        }
-
-        // Convertir la fecha a un objeto Date
-        req.body.fechaEmision = new Date(req.body.fechaEmision);
-        
-        const nuevoCertificado = new Certificado(req.body);
-        await nuevoCertificado.save();
-
-        // Crear auditoría automáticamente
-        const nuevaAuditoria = new Auditoria({
-            fechaAuditoria: new Date(),
-            nombreEmisor: req.body.nombreEmisorCertificado, // Asegúrate de que este campo esté en el body
-            certificadoId: nuevoCertificado._id,
-            estadoAuditoria: true,
-        });
-
-        await nuevaAuditoria.save(); // Guardar la auditoría
-
-        res.status(201).json({ nuevoCertificado, nuevaAuditoria });
-    } catch (error) {
-        console.error("Error al crear certificado:", error);
-        if (error.code === 11000) {
-            return res.status(400).json({ error: 'El código de verificación ya existe.' });
-        }
-        res.status(500).json({ error: 'Error interno del servidor', details: error.message });
     }
 };
 
