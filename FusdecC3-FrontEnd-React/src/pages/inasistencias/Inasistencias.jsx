@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -56,6 +57,14 @@ const Inasistencias = () => {
     fetchAsistencias();
     fetchEstudiantes();
     fetchInasistencias();
+
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id, 
+      }));
+    }
   }, []);
 
   const fetchAsistencias = async () => {
@@ -138,7 +147,9 @@ const Inasistencias = () => {
     try {
       const response = await fetch("http://localhost:3000/api/inasistencias", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
@@ -148,7 +159,7 @@ const Inasistencias = () => {
         setFormValues({
           tituloInasistencia: "",
           observacion: "",
-          usuarioId: "",
+          usuarioId: formValues.usuarioId,
           asistenciaId: "",
           estadoInasistencia: true,
           estudiantes: [],
@@ -266,15 +277,6 @@ const Inasistencias = () => {
           onChange={handleInputChange}
           fullWidth
           margin="normal"
-        />
-        <TextField
-          label="Id de usuario"
-          name="usuarioId"
-          value={formValues.usuarioId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
         />
         <FormControl fullWidth margin="normal">
           <InputLabel>Asistencia</InputLabel>

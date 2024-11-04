@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -55,6 +56,15 @@ const Certificados = () => {
     fetchEstudiantes();
     fetchCertificados();
     fetchAuditorias();
+    // Decodificar el token y obtener el ID de usuario
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id,
+        nombreEmisorCertificado: decodedToken.nombre + " " + decodedToken.apellido, 
+      }));
+    }
   }, []);
 
   const fetchUsuarios = async () => {
@@ -173,6 +183,14 @@ const Certificados = () => {
       if (response.ok) {
         const nuevoCertificado = await response.json();
         setCertificados([...certificados, nuevoCertificado]);
+        setFormValues({
+          fechaEmision: "",
+          usuarioId: formValues.usuarioId,
+          cursoId: "",
+          estudianteId: "",
+          nombreEmisorCertificado: formValues.nombreEmisorCertificado,
+          codigoVerificacion: "",
+        });
         setAuditorias([...auditorias, nuevoCertificado.nuevaAuditoria]);
         clearForm();
       } else {
@@ -229,7 +247,7 @@ const Certificados = () => {
       usuarioId: certificado.usuarioId,
       cursoId: certificado.cursoId,
       estudianteId: certificado.estudianteId,
-      nombreEmisorCertificado: certificado.nombreEmisor, 
+      nombreEmisorCertificado: certificado.nombreEmisorCertificado, 
       codigoVerificacion: certificado.codigoVerificacion,
     });
   };
@@ -304,22 +322,6 @@ const Certificados = () => {
             InputLabelProps={{ shrink: true }}
           />
           <FormControl fullWidth margin="normal">
-            <InputLabel id="usuario-select-label">Usuario</InputLabel>
-            <Select
-              labelId="usuario-select-label"
-              name="usuarioId"
-              value={formValues.usuarioId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Usuario" />}
-            >
-              {usuarios.map((usuario) => (
-                <MenuItem key={usuario._id} value={usuario._id}>
-                  {usuario.nombreUsuario}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth margin="normal">
             <InputLabel id="curso-select-label">Curso</InputLabel>
             <Select
               labelId="curso-select-label"
@@ -351,14 +353,6 @@ const Certificados = () => {
               ))}
             </Select>
           </FormControl>
-          <TextField
-            label="Nombre del Emisor"
-            name="nombreEmisorCertificado"
-            value={formValues.nombreEmisorCertificado}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
           <TextField
             label="Código de Verificación"
             name="codigoVerificacion"

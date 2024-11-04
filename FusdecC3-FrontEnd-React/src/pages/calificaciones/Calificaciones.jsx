@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -88,6 +89,14 @@ const Calificaciones = () => {
 
   useEffect(() => {
     fetchData();
+    // Decodificar el token y obtener el ID de usuario
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id, 
+      }));
+    }
   }, []);
   
   const handleError = (message) => {
@@ -127,7 +136,7 @@ const Calificaciones = () => {
             setFormValues({
               tituloCalificacion: "",
               aprobado: true,
-              usuarioId: "",
+              usuarioId: formValues.usuarioId,
               estudiantes: [],
               estadoCalificacion: true,
             });
@@ -276,22 +285,6 @@ const Calificaciones = () => {
           Aprobaron
         </Box>
 
-        
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Usuario</InputLabel>
-          <Select
-            name="usuarioId"
-            value={formValues.usuarioId}
-            onChange={handleInputChange}
-            input={<OutlinedInput label="Usuario" />}
-          >
-            {Usuarios.map((usuario) => (
-              <MenuItem key={usuario._id} value={usuario._id}>
-                {usuario.nombreUsuario}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>      
         <FormControl fullWidth margin="normal">
           <InputLabel>Estudiantes</InputLabel>
           <Select
