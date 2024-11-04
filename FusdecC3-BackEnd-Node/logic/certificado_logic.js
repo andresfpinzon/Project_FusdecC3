@@ -18,7 +18,7 @@ async function crearCertificado(body) {
         estudianteId: body.estudianteId,
         cursoId: body.cursoId,
         usuarioId: body.usuarioId,
-        fechaEmision: body.fechaEmision, // Asegúrate de que la fecha esté en formato correcto
+        fechaEmision: body.fechaEmision,
     });
 
     // Guardar el certificado
@@ -27,10 +27,11 @@ async function crearCertificado(body) {
     // Crear auditoría automáticamente
     const nuevaAuditoria = new Auditoria({
         fechaAuditoria: new Date(),
-        nombreEmisor: body.nombreEmisorCertificado, // Asegúrate de que este campo esté en el body
-        certificadoId: nuevoCertificado._id,
+        nombreEmisor: body.nombreEmisorCertificado,
+        certificadoId: nuevoCertificado._id.toString(),
         estadoAuditoria: true,
     });
+    
 
     await nuevaAuditoria.save(); // Guardar la auditoría
 
