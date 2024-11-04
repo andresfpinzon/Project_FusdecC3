@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rolController = require('../controllers/rol_controllers');
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -55,7 +55,7 @@ const rolController = require('../controllers/rol_controllers');
  *                     nombreRol: "Admin"
  *                     estadoRol: true
  */
-router.get('/', rolController.listarRoles);
+router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.listarRoles);
 
 /**
  * @swagger
@@ -91,7 +91,7 @@ router.get('/', rolController.listarRoles);
  *       409:
  *         description: El nombre del rol ya existe.
  */
-router.post('/', rolController.crearRol);
+router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.crearRol);
 
 /**
  * @swagger
@@ -134,7 +134,7 @@ router.post('/', rolController.crearRol);
  *       404:
  *         description: Rol no encontrado.
  */
-router.put('/:id', rolController.actualizarRol);
+router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.actualizarRol);
 
 /**
  * @swagger
@@ -166,7 +166,7 @@ router.put('/:id', rolController.actualizarRol);
  *       404:
  *         description: Rol no encontrado.
  */
-router.delete('/:id', rolController.desactivarRol);
+router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.desactivarRol);
 
 /**
  * @swagger
@@ -198,6 +198,6 @@ router.delete('/:id', rolController.desactivarRol);
  *       404:
  *         description: Rol no encontrado.
  */
-router.get('/:id', rolController.obtenerRolPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.obtenerRolPorId);
 
 module.exports = router;

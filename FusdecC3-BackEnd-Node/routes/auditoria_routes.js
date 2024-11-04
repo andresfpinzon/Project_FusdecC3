@@ -1,7 +1,7 @@
 const express = require('express');
 const auditoriaController = require('../controllers/auditoria_controllers');
 const router = express.Router();
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -86,7 +86,7 @@ const router = express.Router();
  *                     nombreEmisor: "Ana Gómez"
  *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a2"
  */
-router.get('/', auditoriaController.listarAuditorias);
+router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.listarAuditorias);
 
 /**
  * @swagger
@@ -130,7 +130,7 @@ router.get('/', auditoriaController.listarAuditorias);
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', auditoriaController.crearAuditoria);
+router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.crearAuditoria);
 
 /**
  * @swagger
@@ -163,7 +163,7 @@ router.post('/', auditoriaController.crearAuditoria);
  *       404:
  *         description: Auditoría no encontrada
  */
-router.get('/:id', auditoriaController.obtenerAuditoriaPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.obtenerAuditoriaPorId);
 
 /**
  * @swagger
@@ -200,7 +200,7 @@ router.get('/:id', auditoriaController.obtenerAuditoriaPorId);
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', auditoriaController.desactivarAuditoria);
+router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.desactivarAuditoria);
 
 /**
  * @swagger
@@ -239,6 +239,6 @@ router.delete('/:id', auditoriaController.desactivarAuditoria);
  *       404:
  *         description: Auditorías no encontradas
  */
-router.get('/auditorias/:certificadoId', auditoriaController.obtenerAuditoriasPorCertificado);
+router.get('/auditorias/:certificadoId', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.obtenerAuditoriasPorCertificado);
 
 module.exports = router;

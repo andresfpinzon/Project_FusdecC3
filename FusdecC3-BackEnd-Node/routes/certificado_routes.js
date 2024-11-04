@@ -1,7 +1,7 @@
 const express = require('express');
 const certificadoController = require('../controllers/certificado_controllers');
 const router = express.Router();
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -82,7 +82,7 @@ const router = express.Router();
  *       400:
  *         description: Datos inválidos
  */
-router.get('/', certificadoController.listarCertificados);
+router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), certificadoController.listarCertificados);
 
 /**
  * @swagger
@@ -156,7 +156,7 @@ router.get('/', certificadoController.listarCertificados);
  *       400:
  *         description: Datos inválidos
  */
-router.post('/', certificadoController.crearCertificado);
+router.post('/', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.crearCertificado);
 
 
 /**
@@ -194,7 +194,7 @@ router.post('/', certificadoController.crearCertificado);
  *       404:
  *         description: Certificado no encontrado
  */
-router.get('/:id', certificadoController.obtenerCertificadoPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.obtenerCertificadoPorId);
 
 /**
  * @swagger
@@ -253,7 +253,7 @@ router.get('/:id', certificadoController.obtenerCertificadoPorId);
  *       404:
  *         description: Certificado no encontrado
  */
-router.put('/:id', certificadoController.actualizarCertificado);
+router.put('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.actualizarCertificado);
 
 /**
  * @swagger
@@ -275,6 +275,6 @@ router.put('/:id', certificadoController.actualizarCertificado);
  *       404:
  *         description: Certificado no encontrado
  */
-router.delete('/:id', certificadoController.desactivarCertificado);
+router.delete('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.desactivarCertificado);
 
 module.exports = router;

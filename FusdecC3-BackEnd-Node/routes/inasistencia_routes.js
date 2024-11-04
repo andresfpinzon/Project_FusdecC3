@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const inasistenciaController = require('../controllers/inasistencia_controllers'); 
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -75,7 +75,7 @@ const inasistenciaController = require('../controllers/inasistencia_controllers'
  *                     estadoInasistencia: true
  *                     estudiantes: ["estudiante1", "estudiante2"]
  */
-router.get('/', inasistenciaController.listarInasistencias);
+router.get('/', verifyJWT, verifyRole(['Instructor','Administrador', 'Root']), inasistenciaController.listarInasistencias);
 
 /**
  * @swagger
@@ -117,7 +117,7 @@ router.get('/', inasistenciaController.listarInasistencias);
  *                   estadoInasistencia: true
  *                   estudiantes: ["estudiante3", "estudiante4"]
  */
-router.post('/', inasistenciaController.crearInasistencia);
+router.post('/', verifyJWT, verifyRole(['Instructor', 'Root']), inasistenciaController.crearInasistencia);
 
 /**
  * @swagger
@@ -168,7 +168,7 @@ router.post('/', inasistenciaController.crearInasistencia);
  *       404:
  *         description: Inasistencia no encontrada.
  */
-router.put('/:id', inasistenciaController.actualizarInasistencia);
+router.put('/:id', verifyJWT, verifyRole(['Instructor', 'Root']), inasistenciaController.actualizarInasistencia);
 
 /**
  * @swagger
@@ -204,7 +204,7 @@ router.put('/:id', inasistenciaController.actualizarInasistencia);
  *       404:
  *         description: Inasistencia no encontrada.
  */
-router.delete('/:id', inasistenciaController.desactivarInasistencia);
+router.delete('/:id', verifyJWT, verifyRole(['Instructor', 'Root']), inasistenciaController.desactivarInasistencia);
 
 /**
  * @swagger
@@ -240,6 +240,6 @@ router.delete('/:id', inasistenciaController.desactivarInasistencia);
  *       404:
  *         description: Inasistencia no encontrada.
  */
-router.get('/:id', inasistenciaController.obtenerInasistenciaPorId);
+router.get('/:id', verifyJWT, verifyRole(['Instructor','Administrador', 'Root']), inasistenciaController.obtenerInasistenciaPorId);
 
 module.exports = router;

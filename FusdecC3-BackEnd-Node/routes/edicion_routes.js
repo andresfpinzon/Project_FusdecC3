@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const edicionController = require("../controllers/edicion_controllers");
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -83,7 +83,7 @@ const edicionController = require("../controllers/edicion_controllers");
  *                     horarios: ["horario1", "horario2"]
  *                     estudiantes: ["estudiante1", "estudiante2"]
  */
-router.get("/", edicionController.listarEdicionesActivas);
+router.get("/", verifyJWT, verifyRole(['Secretario','Root']), edicionController.listarEdicionesActivas);
 
 /**
  * @swagger
@@ -127,7 +127,7 @@ router.get("/", edicionController.listarEdicionesActivas);
  *                   horarios: ["horario3", "horario4"]
  *                   estudiantes: ["estudiante3", "estudiante4"]
  */
-router.post("/", edicionController.crearEdicion);
+router.post("/", verifyJWT, verifyRole(['Secretario','Root']), edicionController.crearEdicion);
 
 /**
  * @swagger
@@ -177,7 +177,7 @@ router.post("/", edicionController.crearEdicion);
  *       404:
  *         description: Edición no encontrada.
  */
-router.put("/:id", edicionController.actualizarEdicion);
+router.put("/:id", verifyJWT, verifyRole(['Secretario','Root']), edicionController.actualizarEdicion);
 
 /**
  * @swagger
@@ -214,7 +214,7 @@ router.put("/:id", edicionController.actualizarEdicion);
  *       404:
  *         description: Edición no encontrada.
  */
-router.delete("/:id", edicionController.desactivarEdicion);
+router.delete("/:id", verifyJWT, verifyRole(['Secretario','Root']), edicionController.desactivarEdicion);
 
 /**
  * @swagger
@@ -251,7 +251,7 @@ router.delete("/:id", edicionController.desactivarEdicion);
  *       404:
  *         description: Edición no encontrada.
  */
-router.get("/:id", edicionController.obtenerEdicionPorId);
+router.get("/:id", verifyJWT, verifyRole(['Secretario','Root']), edicionController.obtenerEdicionPorId);
 
 /**
  * @swagger
@@ -335,7 +335,7 @@ router.get("/:id", edicionController.obtenerEdicionPorId);
  *             example:
  *               error: 'Error al agregar estudiantes: [detalles del error]'
  */
-router.post('/:id/estudiantes', edicionController.agregarEstudianteAEdicion);
+router.post('/:id/estudiantes', verifyJWT, verifyRole(['Secretario','Root']), edicionController.agregarEstudianteAEdicion);
 
 
 

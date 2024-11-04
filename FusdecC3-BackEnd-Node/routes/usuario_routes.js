@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usuarioController = require('../controllers/usuario_controllers'); 
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -82,7 +82,7 @@ const usuarioController = require('../controllers/usuario_controllers');
  *                     correo: "juan.perez@mail.com"
  *                     estadoUsuario: true
  */
-router.get('/', usuarioController.listarUsuarios);
+router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.listarUsuarios);
 
 /**
  * @swagger
@@ -123,7 +123,7 @@ router.get('/', usuarioController.listarUsuarios);
  *                   correo: "maria.gonzalez@mail.com"
  *                   estadoUsuario: true
  */
-router.post('/', usuarioController.crearUsuario);
+router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.crearUsuario);
 
 /**
  * @swagger
@@ -173,7 +173,7 @@ router.post('/', usuarioController.crearUsuario);
  *       404:
  *         description: Usuario no encontrado.
  */
-router.put('/:id', usuarioController.actualizarUsuario);
+router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.actualizarUsuario);
 
 /**
  * @swagger
@@ -208,7 +208,7 @@ router.put('/:id', usuarioController.actualizarUsuario);
  *       404:
  *         description: Usuario no encontrado.
  */
-router.delete('/:id', usuarioController.desactivarUsuario);
+router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.desactivarUsuario);
 
 /**
  * @swagger
@@ -243,6 +243,6 @@ router.delete('/:id', usuarioController.desactivarUsuario);
  *       404:
  *         description: Usuario no encontrado.
  */
-router.get('/:id', usuarioController.obtenerUsuarioPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.obtenerUsuarioPorId);
 
 module.exports = router;
