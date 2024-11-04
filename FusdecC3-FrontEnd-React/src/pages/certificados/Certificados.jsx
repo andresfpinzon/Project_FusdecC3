@@ -49,6 +49,8 @@ const Certificados = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [certificadoToDelete, setCertificadoToDelete] = useState(null);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [certificadoDetails, setCertificadoDetails] = useState(null);
 
   useEffect(() => {
     fetchUsuarios();
@@ -306,6 +308,11 @@ const Certificados = () => {
     }
   };
 
+  const handleDetailsClick = (certificado) => {
+    setCertificadoDetails(certificado);
+    setOpenDetailsDialog(true);
+  };
+
   return (
     <Container maxWidth="lg">
       <h1>Gestión de Certificados</h1>
@@ -399,13 +406,7 @@ const Certificados = () => {
                       }} color="error">
                         <Delete />
                       </IconButton>
-                      <IconButton
-                        onClick={() => handleAuditoria(certificado._id)}
-                        sx={{ color: 'purple' }}
-                      >
-                        <Description />
-                      </IconButton>
-                      <IconButton onClick={() => handleDetailsClick(certificado)} color="success">
+                      <IconButton onClick={() => handleDetailsClick(certificado)} color="primary">
                         <Info />
                       </IconButton>
                     </TableCell>
@@ -445,6 +446,44 @@ const Certificados = () => {
           </Button>
           <Button onClick={handleDeleteCertificado} color="error">
             Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo para mostrar detalles del certificado */}
+      <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Detalles del Certificado</DialogTitle>
+        <DialogContent>
+          {certificadoDetails && (
+            <div>
+              <Typography variant="h6">Código de Verificación:</Typography>
+              <Typography variant="body1">{certificadoDetails.codigoVerificacion}</Typography>
+              
+              <Typography variant="h6">Fecha de Emisión:</Typography>
+              <Typography variant="body1">{new Date(certificadoDetails.fechaEmision).toLocaleDateString()}</Typography>
+              
+              <Typography variant="h6">Nombre del Emisor:</Typography>
+              <Typography variant="body1">{certificadoDetails.nombreEmisorCertificado}</Typography>
+              
+              {certificadoDetails.cursoId && (
+                <>
+                  <Typography variant="h6">Nombre del Curso:</Typography>
+                  <Typography variant="body1">{certificadoDetails.cursoId.nombreCurso}</Typography>
+                </>
+              )}
+              
+              {certificadoDetails.estudianteId && (
+                <>
+                  <Typography variant="h6">Nombre del Estudiante:</Typography>
+                  <Typography variant="body1">{certificadoDetails.estudianteId.nombreEstudiante} {certificadoDetails.estudianteId.apellidoEstudiante}</Typography>
+                </>
+              )}
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDetailsDialog(false)} color="primary">
+            Cerrar
           </Button>
         </DialogActions>
       </Dialog>
