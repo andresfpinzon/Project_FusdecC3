@@ -26,7 +26,7 @@ import {
   MenuItem,
   Grid,
 } from "@mui/material";
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, LocationOn, Assignment, VerifiedUser, History } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -371,34 +371,60 @@ const Comandos = () => {
       </Dialog>
 
       {/* Modal de Información del Comando */}
-      <Dialog
-        open={openInfoDialog}
-        onClose={handleCloseInfoDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Información del Comando</DialogTitle>
-        <DialogContent dividers>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información del Comando
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
           {infoComando && (
             <div>
-              <Typography variant="h6">Nombre: {infoComando.nombreComando}</Typography>
-              <Typography variant="body1">
-                Ubicación: 
-                <a 
+              {/* Nombre del Comando */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Assignment color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoComando.nombreComando || "Nombre no disponible"}</Typography>
+              </Box>
+              
+              {/* Ubicación del Comando */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <LocationOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  <a 
                     href={infoComando.ubicacionComando} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                >
+                    style={{ color: '#3f51b5', textDecoration: 'none' }}
+                  >
                     {infoComando.ubicacionComando}
-                </a>
-              </Typography>
-              <Typography variant="body1">Estado: {infoComando.estadoComando ? "Activo" : "Inactivo"}</Typography>
-              <Typography variant="body1">Fundación: {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}</Typography>
+                  </a>
+                </Typography>
+              </Box>
+              
+              {/* Estado del Comando */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <VerifiedUser color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoComando.estadoComando ? "Activo" : "Inactivo"}
+                </Typography>
+              </Box>
+              
+              {/* Fundación del Comando */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <History color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fundación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}
+                </Typography>
+              </Box>
             </div>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

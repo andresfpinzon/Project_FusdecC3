@@ -25,8 +25,9 @@ import {
   InputLabel,
   FormControl,
   OutlinedInput,
+  Box,
 } from "@mui/material";
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, LocationOn, Group, Assignment, CheckCircle, Cancel } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -367,39 +368,66 @@ export default function Brigadas() {
       </Dialog>
 
       {/* Modal de Información de la Brigada */}
-      <Dialog
-        open={openInfoDialog}
-        onClose={handleCloseInfoDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Información de la Brigada</DialogTitle>
-        <DialogContent dividers>
-          {infoBrigada && (
-            <div>
-              <Typography variant="h6">Nombre: {infoBrigada.nombreBrigada}</Typography>
-              <Typography variant="body1">
-                Ubicación: 
-                <a 
-                    href={infoBrigada.ubicacionBrigada} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                >
-                    {infoBrigada.ubicacionBrigada}
-                </a>
-              </Typography>
-              <Typography variant="body1">
-                Comando: {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
-              </Typography>
-              <Typography variant="body1">Estado: {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}</Typography>
-              <Typography>Unidad: {infoBrigada?.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
-        </DialogActions>
-      </Dialog>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+  <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+    Información de la Brigada
+  </DialogTitle>
+  <DialogContent sx={{ padding: '20px' }}>
+    {infoBrigada && (
+      <div>
+        {/* Nombre */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <Assignment color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoBrigada.nombreBrigada || "N/A"}</Typography>
+        </Box>
+        
+        {/* Ubicación */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <LocationOn color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>
+            <a href={infoBrigada.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
+              {infoBrigada.ubicacionBrigada || "N/A"}
+            </a>
+          </Typography>
+        </Box>
+        
+        {/* Comando */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <Group color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>
+            {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
+          </Typography>
+        </Box>
+        
+        {/* Estado */}
+        <Box display="flex" alignItems="center" mb={2}>
+          {infoBrigada.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>
+            {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}
+          </Typography>
+        </Box>
+        
+        {/* Unidad */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <Assignment color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidad:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>
+            {infoBrigada?.unidadId?.nombreUnidad || "Unidad no encontrada"}
+          </Typography>
+        </Box>
+      </div>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+      Cerrar
+    </Button>
+  </DialogActions>
+</Dialog>
 
       {/* Snackbar para mensajes de error */}
       <Snackbar

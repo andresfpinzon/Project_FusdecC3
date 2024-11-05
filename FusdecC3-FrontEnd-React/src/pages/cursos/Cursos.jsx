@@ -22,7 +22,7 @@ import {
   Alert,
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, School, Description, AccessTime, ToggleOn, Foundation, EventNote } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -366,20 +366,65 @@ const Cursos = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Información del Curso</DialogTitle>
-        <DialogContent>
-          <Typography>Nombre: {infoCurso?.nombreCurso}</Typography>
-          <Typography>Descripcion: {infoCurso?.descripcionCurso}</Typography>
-          <Typography>Intensidad horaria: {infoCurso?.intensidadHorariaCurso}</Typography>
-          <Typography>Estado: {infoCurso?.estadoCurso ? "Activo" : "Inactivo"}</Typography>
-          <Typography>Fundacion: {infoCurso?.fundacionId?.nombreFundacion || "Fundacion no encontrada"}</Typography>
-          <Typography>Ediciones: {infoCurso?.ediciones?.length > 0? infoCurso.ediciones.map((edicion) => 
-            edicion.tituloEdicion).join(", "): "Ediciones no encontradas"}</Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información del Curso
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoCurso && (
+            <div>
+              {/* Nombre del Curso */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.nombreCurso || "No disponible"}</Typography>
+              </Box>
+              
+              {/* Descripción */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Description color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Descripción:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.descripcionCurso || "No disponible"}</Typography>
+              </Box>
+              
+              {/* Intensidad Horaria */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <AccessTime color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Intensidad horaria:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.intensidadHorariaCurso || "No disponible"}</Typography>
+              </Box>
+              
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.estadoCurso ? "Activo" : "Inactivo"}</Typography>
+              </Box>
+              
+              {/* Fundación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Foundation color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fundación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCurso.fundacionId?.nombreFundacion || "Fundación no encontrada"}
+                </Typography>
+              </Box>
+              
+              {/* Ediciones */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <EventNote color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ediciones:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCurso.ediciones?.length > 0 ? infoCurso.ediciones.map((edicion) => edicion.tituloEdicion).join(", ") : "Ediciones no encontradas"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

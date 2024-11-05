@@ -22,7 +22,7 @@ import {
   Alert,
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, School, Email, VerifiedUser, People } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -316,20 +316,51 @@ const Colegios = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información de la Colegio</DialogTitle>
-        <DialogContent>
-          <Typography>Nombre: {infoColegio?.nombreColegio || "Nombre no disponible"}</Typography>
-          <Typography>Email: {infoColegio?.emailColegio || "Email no disponible"}</Typography>
-          <Typography>Estado: {infoColegio?.estadoColegio ? "Activo" : "Inactivo"}</Typography>
-          <Typography> 
-            estudiantes: {infoColegio?.estudiantes?.map((es) => es.nombreEstudiante).join(", ") || "Sin estudiantes"} 
-          </Typography>
-           
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información del Colegio
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          {infoColegio && (
+            <div>
+              {/* Nombre del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoColegio.nombreColegio || "Nombre no disponible"}</Typography>
+              </Box>
+              
+              {/* Email del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Email color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Email:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoColegio.emailColegio || "Email no disponible"}</Typography>
+              </Box>
+              
+              {/* Estado del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <VerifiedUser color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoColegio.estadoColegio ? "Activo" : "Inactivo"}
+                </Typography>
+              </Box>
+              
+              {/* Estudiantes del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <People color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoColegio.estudiantes?.map((es) => es.nombreEstudiante).join(", ") || "Sin estudiantes"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

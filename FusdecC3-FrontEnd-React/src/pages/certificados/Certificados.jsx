@@ -25,8 +25,9 @@ import {
   DialogContent,
   DialogActions,
   Typography,
+  Box,
 } from "@mui/material";
-import { Edit, Delete, Description, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Description, CalendarToday, VerifiedUser, School, Person } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -49,6 +50,8 @@ const Certificados = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [certificadoToDelete, setCertificadoToDelete] = useState(null);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [certificadoDetails, setCertificadoDetails] = useState(null);
 
   useEffect(() => {
     fetchUsuarios();
@@ -306,6 +309,11 @@ const Certificados = () => {
     }
   };
 
+  const handleDetailsClick = (certificado) => {
+    setCertificadoDetails(certificado);
+    setOpenDetailsDialog(true);
+  };
+
   return (
     <Container maxWidth="lg">
       <h1>Gestión de Certificados</h1>
@@ -399,13 +407,7 @@ const Certificados = () => {
                       }} color="error">
                         <Delete />
                       </IconButton>
-                      <IconButton
-                        onClick={() => handleAuditoria(certificado._id)}
-                        sx={{ color: 'purple' }}
-                      >
-                        <Description />
-                      </IconButton>
-                      <IconButton onClick={() => handleDetailsClick(certificado)} color="success">
+                      <IconButton onClick={() => handleDetailsClick(certificado)} color="primary">
                         <Info />
                       </IconButton>
                     </TableCell>
@@ -445,6 +447,66 @@ const Certificados = () => {
           </Button>
           <Button onClick={handleDeleteCertificado} color="error">
             Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo para mostrar detalles del certificado */}
+      <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Detalles del Certificado
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          {certificadoDetails && (
+            <div>
+              {/* Código de Verificación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <VerifiedUser color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Código de Verificación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.codigoVerificacion || "N/A"}</Typography>
+              </Box>
+              
+              {/* Fecha de Emisión */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CalendarToday color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Emisión:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {certificadoDetails.fechaEmision ? new Date(certificadoDetails.fechaEmision).toLocaleDateString() : "N/A"}
+                </Typography>
+              </Box>
+              
+              {/* Nombre del Emisor */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Emisor:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.nombreEmisorCertificado || "N/A"}</Typography>
+              </Box>
+              
+              {/* Nombre del Curso */}
+              {certificadoDetails.cursoId && (
+                <Box display="flex" alignItems="center" mb={2}>
+                  <School color="primary" sx={{ mr: 1 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Curso:</Typography>
+                  <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.cursoId.nombreCurso || "N/A"}</Typography>
+                </Box>
+              )}
+              
+              {/* Nombre del Estudiante */}
+              {certificadoDetails.estudianteId && (
+                <Box display="flex" alignItems="center" mb={2}>
+                  <Person color="primary" sx={{ mr: 1 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Estudiante:</Typography>
+                  <Typography variant="body1" sx={{ ml: 1 }}>
+                    {`${certificadoDetails.estudianteId.nombreEstudiante} ${certificadoDetails.estudianteId.apellidoEstudiante}`}
+                  </Typography>
+                </Box>
+              )}
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDetailsDialog(false)} variant="contained" color="primary">
+            Cerrar
           </Button>
         </DialogActions>
       </Dialog>

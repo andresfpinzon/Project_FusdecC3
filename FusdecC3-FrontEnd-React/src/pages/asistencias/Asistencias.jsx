@@ -29,7 +29,7 @@ import {
   Checkbox,
   ListItemText,
 } from "@mui/material";
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Event, Group, School } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -331,15 +331,45 @@ const Asistencias = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Detalles de la Asistencia</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {selectedAsistencia?.tituloAsistencia}</Typography>
-          <Typography>Fecha: {selectedAsistencia?.fechaAsistencia}</Typography>
-          <Typography>Estudiantes: {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ")|| "Sin estudiantes"}</Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Detalles de la Asistencia
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          <Box display="flex" alignItems="center" mb={2}>
+            <School color="primary" sx={{ mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Título:
+            </Typography>
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {selectedAsistencia?.tituloAsistencia || "N/A"}
+            </Typography>
+          </Box>
+          
+          <Box display="flex" alignItems="center" mb={2}>
+            <Event color="primary" sx={{ mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Fecha:
+            </Typography>
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {selectedAsistencia?.fechaAsistencia || "N/A"}
+            </Typography>
+          </Box>
+          
+          <Box display="flex" alignItems="center" mb={2}>
+            <Group color="primary" sx={{ mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Estudiantes:
+            </Typography>
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ") || "Sin estudiantes"}
+            </Typography>
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

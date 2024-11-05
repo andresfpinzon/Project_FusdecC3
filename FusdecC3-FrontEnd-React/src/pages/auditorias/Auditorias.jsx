@@ -25,7 +25,7 @@ import {
   DialogActions,
   Typography,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Delete, Info } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -153,71 +153,23 @@ const Auditorias = () => {
   // Función para obtener el nombre del certificado
   const getCertificadoNombre = (certificadoId) => {
     const certificado = certificados.find(cert => cert._id === certificadoId);
-    return certificado ? certificado.nombre : "Nombre no disponible";
+    return certificado ? certificado.codigoVerificacion : "Código no disponible";
   };
 
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Crear Auditoría
+        Lista de Auditorías
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-        <FormControl fullWidth margin="normal">
-            <InputLabel id="comando-select-label">Cerificado</InputLabel>
-            <Select
-              labelId="certificado-select-label"
-              name="certificadoId"
-              value={formValues.certificadoId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Certificado" />}
-            >
-              {certificados.map((certificado) => (
-                <MenuItem key={certificado._id} value={certificado._id}>
-                  {certificado.nombreCertificado} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            label="Nombre del Emisor"
-            name="nombreEmisor"
-            value={formValues.nombreEmisor}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Fecha de Auditoría"
-            name="fechaAuditoria"
-            type="date"
-            value={formValues.fechaAuditoria}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCreateAuditoria}
-          >
-            Crear Auditoría
-          </Button>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h4" gutterBottom>
-            Lista de Auditorías
-          </Typography>
-          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+        <Grid item xs={12}>
+          <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Emisor</TableCell>
-                  <TableCell>Certificado</TableCell>
+                  <TableCell>Fecha de Auditoría</TableCell>
+                  <TableCell>Nombre del Emisor</TableCell>
+                  <TableCell>Código de Verificación</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -229,13 +181,7 @@ const Auditorias = () => {
                     <TableCell>{getCertificadoNombre(auditoria.certificadoId)}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleOpenDetailsDialog(auditoria)} color="primary">
-                        Detalles
-                      </IconButton>
-                      <IconButton onClick={() => {
-                        setAuditoriaToDelete(auditoria);
-                        setOpenDeleteDialog(true);
-                      }} color="error">
-                        <Delete />
+                        <Info />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -246,50 +192,21 @@ const Auditorias = () => {
         </Grid>
       </Grid>
 
-      {/* Snackbar para mensajes de error */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
-        </Alert>
-      </Snackbar>
-
-      {/* Diálogo de confirmación de eliminación */}
-      <Dialog
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-      >
-        <DialogTitle>Confirmar Eliminación</DialogTitle>
-        <DialogContent>
-          <Typography>
-            ¿Estás seguro de que deseas eliminar esta auditoría?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="default">
-            Cancelar
-          </Button>
-          <Button onClick={handleDeleteAuditoria} color="error">
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       {/* Diálogo de detalles de auditoría */}
       <Dialog
         open={openDetailsDialog}
         onClose={handleCloseDetailsDialog}
+        fullWidth
+        maxWidth="md"
       >
         <DialogTitle>Detalles de la Auditoría</DialogTitle>
         <DialogContent>
           {auditoriaDetails && (
             <div>
               <Typography><strong>Fecha:</strong> {new Date(auditoriaDetails.fechaAuditoria).toLocaleDateString("es-ES")}</Typography>
-              <Typography><strong>Emisor:</strong> {auditoriaDetails.nombreEmisor}</Typography>
-              <Typography><strong>Certificado:</strong> {getCertificadoNombre(auditoriaDetails.certificadoId)}</Typography>
+              <Typography><strong>Certificado:</strong> {getCertificadoNombre(auditoriaDetails.certificadoId).codigoVerificacion}</Typography>
+              <Typography><strong>Nombre del Emisor:</strong> {auditoriaDetails.nombreEmisor}</Typography>
+              <Typography><strong>Descripción:</strong> {auditoriaDetails.descripcion}</Typography>
             </div>
           )}
         </DialogContent>

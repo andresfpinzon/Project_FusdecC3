@@ -22,7 +22,7 @@ import {
   Alert,
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Class,AccessTime, ToggleOn } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -315,19 +315,49 @@ const Horarios = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información del horario</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {infoHorario?.tituloHorario || "Título no disponible"}</Typography>
-          <Typography>hora de Inicio: {infoHorario?.horaInicio || "hora no disponible"}</Typography>
-          <Typography>hora de Finalización: {infoHorario?.horaFin || "hora no disponible"}</Typography>
-          <Typography>Estado: {infoHorario?.estadoHorario ? "Activa" : "Inactiva"}</Typography>
-        </DialogContent>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+  <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+    Información del Horario
+  </DialogTitle>
+  <DialogContent dividers sx={{ padding: '20px' }}>
+    {infoHorario && (
+      <div>
+        {/* Título */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <Class color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.tituloHorario || "Título no disponible"}</Typography>
+        </Box>
 
-        <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
-        </DialogActions>
-      </Dialog>
+        {/* Hora de Inicio */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <AccessTime color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Hora de Inicio:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.horaInicio || "Hora no disponible"}</Typography>
+        </Box>
+
+        {/* Hora de Finalización */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <AccessTime color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Hora de Finalización:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.horaFin || "Hora no disponible"}</Typography>
+        </Box>
+
+        {/* Estado */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <ToggleOn color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.estadoHorario ? "Activa" : "Inactiva"}</Typography>
+        </Box>
+      </div>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+      Cerrar
+    </Button>
+  </DialogActions>
+</Dialog>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
         <Alert onClose={() => setOpenSnackbar(false)} severity="error">

@@ -27,7 +27,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, School, DateRange, EventAvailable, ToggleOn, Class, Grade } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -381,21 +381,63 @@ const Ediciones = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información de la Edición</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {infoEdicion?.tituloEdicion || "Título no disponible"}</Typography>
-          <Typography>Fecha de Inicio: {infoEdicion?.fechaInicioEdicion || "Fecha no disponible"}</Typography>
-          <Typography>Fecha de Finalización: {infoEdicion?.fechaFinEdicion || "Fecha no disponible"}</Typography>
-          <Typography>Estado: {infoEdicion?.estadoEdicion ? "Activa" : "Inactiva"}</Typography>
-          <Typography>Curso: {infoEdicion?.curso?.nombreCurso || "Curso no encontrado"}</Typography>
-          <Typography> 
-            calificaciones: {infoEdicion?.estudiantes?.map((ca) => es.estudiantes).join(", ") || "Sin estudiantes"} 
-          </Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información de la Edición
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoEdicion && (
+            <div>
+              {/* Título */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Class color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.tituloEdicion || "Título no disponible"}</Typography>
+              </Box>
+              
+              {/* Fecha de Inicio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <DateRange color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Inicio:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaInicioEdicion || "Fecha no disponible"}</Typography>
+              </Box>
+              
+              {/* Fecha de Finalización */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <EventAvailable color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Finalización:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaFinEdicion || "Fecha no disponible"}</Typography>
+              </Box>
+              
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.estadoEdicion ? "Activa" : "Inactiva"}</Typography>
+              </Box>
+              
+              {/* Curso */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Curso:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.curso?.nombreCurso || "Curso no encontrado"}</Typography>
+              </Box>
+              
+              {/* Calificaciones */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Grade color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Calificaciones:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoEdicion.estudiantes?.map((estudiante) => estudiante.nombreEstudiante).join(", ") || "Sin estudiantes"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

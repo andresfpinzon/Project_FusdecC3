@@ -30,7 +30,7 @@ import {
   ListItemText
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Grade, CheckCircle, Person, ToggleOn, Group } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -377,21 +377,58 @@ const Calificaciones = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información de la Calificación</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {infoCalificacion?.tituloCalificacion || "Título no disponible"}</Typography>
-          <Typography>Aprobado: {infoCalificacion?.aprobado  ? "Si" : "No"}</Typography>
-          <Typography>Usuario: {infoCalificacion?.usuario?.nombreUsuario || "Usuario no encontrado"}</Typography>
-          <Typography>Estado: {infoCalificacion?.estadoCalificacion ? "Activa" : "Inactiva"}</Typography>
-          <Typography> 
-            estudiantes: {infoCalificacion?.estudiantes?.map((es) => es.estudiantes).join(", ") || "Sin estudiantes"} 
-          </Typography>
-           
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información de la Calificación
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoCalificacion && (
+            <div>
+              {/* Título de la Calificación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Grade color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCalificacion.tituloCalificacion || "Título no disponible"}</Typography>
+              </Box>
+              
+              {/* Aprobado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CheckCircle color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Aprobado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCalificacion.aprobado ? "Sí" : "No"}</Typography>
+              </Box>
+              
+              {/* Usuario */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Usuario:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCalificacion.usuario?.nombreUsuario || "Usuario no encontrado"}
+                </Typography>
+              </Box>
+              
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCalificacion.estadoCalificacion ? "Activa" : "Inactiva"}</Typography>
+              </Box>
+              
+              {/* Estudiantes */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Group color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCalificacion.estudiantes?.map((es) => es.nombreEstudiante).join(", ") || "Sin estudiantes"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

@@ -9,7 +9,10 @@ import {
   Alert,
   Link,
   Paper,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -17,6 +20,7 @@ const Login = () => {
     correo: "",
     contraseña: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -35,17 +39,13 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formValues),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         const { token } = data;
         localStorage.setItem("token", token);
-        console.log("Token guardado en localStorage:", localStorage.getItem("token"));
-        // Almacena el token en localStorage
-  
-        const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica el JWT
-        localStorage.setItem("roles", JSON.stringify(payload.roles)); // Almacena roles
-  
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        localStorage.setItem("roles", JSON.stringify(payload.roles));
         navigate("/home");
       } else {
         const errorData = await response.json();
@@ -56,12 +56,19 @@ const Login = () => {
       setOpenSnackbar(true);
     }
   };
-  
 
   return (
     <Container maxWidth="sm" style={{ display: "flex", alignItems: "center", minHeight: "100vh" }}>
-      <Paper elevation={3} style={{ padding: "30px", width: "100%" }}>
-        <Typography variant="h4" align="center" gutterBottom>
+      <Paper
+        elevation={5}
+        style={{
+          padding: "40px",
+          borderRadius: "10px",
+          width: "100%",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom style={{ color: "#1d526eff" }}>
           Iniciar Sesión
         </Typography>
         <TextField
@@ -71,28 +78,45 @@ const Login = () => {
           onChange={handleInputChange}
           fullWidth
           margin="normal"
+          variant="outlined"
         />
         <TextField
           label="Contraseña"
           name="contraseña"
-          type="password"
+          type={showPassword ? "text" : "password"}
           value={formValues.contraseña}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
+          variant="outlined"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Box marginTop={3}>
           <Button
             variant="contained"
             color="primary"
             fullWidth
+            size="large"
             onClick={handleLogin}
+            style={{ padding: "10px", fontWeight: "bold" }}
           >
             Iniciar Sesión
           </Button>
         </Box>
         <Box marginTop={2} textAlign="center">
-          <Link href="/home" color="secondary">
+          <Link href="/home" color="secondary" underline="hover">
             Volver
           </Link>
         </Box>
@@ -112,4 +136,7 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
 

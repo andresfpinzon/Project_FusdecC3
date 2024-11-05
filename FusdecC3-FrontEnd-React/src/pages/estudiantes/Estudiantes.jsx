@@ -28,7 +28,7 @@ import {
   Checkbox,
   ListItemText,
 } from "@mui/material";
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Person, Description, CreditCard, Cake, Email, School, ToggleOn, CheckCircle, Cancel, Star, ConfirmationNumber } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -602,36 +602,117 @@ const Estudiantes = () => {
       </Dialog>
 
       
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Información del Estudiante</DialogTitle>
-        <DialogContent>
-          <Typography>Nombre: {infoEstudiante?.nombreEstudiante}</Typography>
-          <Typography>Apellido: {infoEstudiante?.apellidoEstudiante}</Typography>
-          <Typography>Tipo de Docoumento: {infoEstudiante?.tipoDocumento}</Typography>
-          <Typography>Número de Documento: {infoEstudiante?.numeroDocumento}</Typography>
-          <Typography>Fecha de Nacimiento: {infoEstudiante?.fechaNacimiento}</Typography>
-          <Typography>Correo: {infoEstudiante?.correoEstudiante}</Typography>
-          <Typography>Unidad: {infoEstudiante?.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
-          <Typography>Colegio: {infoEstudiante?.colegioId?.nombreColegio || "Colegio no encontrado"}</Typography>
-          <Typography>Estado: {infoEstudiante?.estadoEstudiante ? "Activo" : "Inactivo"}</Typography>
-          <Typography>
-          Ediciones: {infoEstudiante?.ediciones?.map((ed) => ed.tituloEdicion).join(", ") || "Sin ediciones"}
-          </Typography>
-          <Typography>
-          asistencias: {infoEstudiante?.asistencias?.map((as) => as.tituloAsistencia).join(", ") || "Sin asistencias"}
-          </Typography>
-          <Typography>
-          inasistencias: {infoEstudiante?.inasistencias?.map((ina) => ina.tituloInasistencia).join(", ") || "Sin inasistencias"}
-          </Typography>
-          <Typography>
-          calificaciones: {infoEstudiante?.calificaciones?.map((ca) => ca.tituloCalificacion).join(", ") || "Sin calificaciones"}
-          </Typography>
-          <Typography>
-          certificados: {infoEstudiante?.certificados?.map((ce) => ce.codigoVerificacion).join(", ") || "Sin certificados"}
-          </Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información del Estudiante
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoEstudiante && (
+            <div>
+              {/* Nombre */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.nombreEstudiante || "Nombre no disponible"}</Typography>
+              </Box>
+
+              {/* Apellido */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Apellido:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.apellidoEstudiante || "Apellido no disponible"}</Typography>
+              </Box>
+
+              {/* Tipo de Documento */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Description color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tipo de Documento:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.tipoDocumento || "Tipo no disponible"}</Typography>
+              </Box>
+
+              {/* Número de Documento */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CreditCard color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Número de Documento:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.numeroDocumento || "Número no disponible"}</Typography>
+              </Box>
+
+              {/* Fecha de Nacimiento */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Cake color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Nacimiento:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.fechaNacimiento || "Fecha no disponible"}</Typography>
+              </Box>
+
+              {/* Correo */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Email color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Correo:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.correoEstudiante || "Correo no disponible"}</Typography>
+              </Box>
+
+              {/* Unidad */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidad:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
+              </Box>
+
+              {/* Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Colegio:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.colegioId?.nombreColegio || "Colegio no encontrado"}</Typography>
+              </Box>
+
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.estadoEstudiante ? "Activo" : "Inactivo"}</Typography>
+              </Box>
+
+              {/* Ediciones */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Edit color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ediciones:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.ediciones?.map((ed) => ed.tituloEdicion).join(", ") || "Sin ediciones"}</Typography>
+              </Box>
+
+              {/* Asistencias */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CheckCircle color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Asistencias:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.asistencias?.map((as) => as.tituloAsistencia).join(", ") || "Sin asistencias"}</Typography>
+              </Box>
+
+              {/* Inasistencias */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Cancel color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Inasistencias:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.inasistencias?.map((ina) => ina.tituloInasistencia).join(", ") || "Sin inasistencias"}</Typography>
+              </Box>
+
+              {/* Calificaciones */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Star color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Calificaciones:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.calificaciones?.map((ca) => ca.tituloCalificacion).join(", ") || "Sin calificaciones"}</Typography>
+              </Box>
+
+              {/* Certificados */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ConfirmationNumber color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Certificados:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.certificados?.map((ce) => ce.codigoVerificacion).join(", ") || "Sin certificados"}</Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 
