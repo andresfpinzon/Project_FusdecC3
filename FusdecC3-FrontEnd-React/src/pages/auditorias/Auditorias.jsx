@@ -27,8 +27,7 @@ const Auditorias = () => {
   const [auditorias, setAuditorias] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [auditoriaDetails, setAuditoriaDetails] = useState(null);
+
 
   useEffect(() => {
     fetchAuditorias();
@@ -77,7 +76,6 @@ const Auditorias = () => {
                   <TableCell>Fecha de Auditoría</TableCell>
                   <TableCell>Nombre del Emisor</TableCell>
                   <TableCell>Código de Verificación</TableCell>
-                  <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -86,11 +84,6 @@ const Auditorias = () => {
                     <TableCell>{new Date(auditoria.fechaAuditoria).toLocaleDateString("es-ES")}</TableCell>
                     <TableCell>{auditoria.nombreEmisor}</TableCell>
                     <TableCell>{auditoria.codigoVerificacion}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleOpenDetailsDialog(auditoria)} color="primary">
-                        <Info />
-                      </IconButton>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -98,30 +91,6 @@ const Auditorias = () => {
           </TableContainer>
         </Grid>
       </Grid>
-
-      {/* Diálogo de detalles de auditoría */}
-      <Dialog
-        open={openDetailsDialog}
-        onClose={handleCloseDetailsDialog}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>Detalles de la Auditoría</DialogTitle>
-        <DialogContent>
-          {auditoriaDetails && (
-            <div>
-              <Typography><strong>Fecha:</strong> {new Date(auditoriaDetails.fechaAuditoria).toLocaleDateString("es-ES")}</Typography>
-              <Typography><strong>Código de Verificación:</strong> {auditoriaDetails.codigoVerificacion}</Typography>
-              <Typography><strong>Nombre del Emisor:</strong> {auditoriaDetails.nombreEmisor}</Typography>
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDetailsDialog} color="default">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Snackbar para mensajes de error */}
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
