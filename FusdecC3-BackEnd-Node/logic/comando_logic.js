@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 
 // Función asíncrona para crear comandos
 async function crearComando(body) {
-    // Validar los datos de entrada
     const { error } = comandoSchemaValidation.validate(body);
     if (error) {
         throw new Error(error.details[0].message);
@@ -15,8 +14,8 @@ async function crearComando(body) {
         nombreComando: body.nombreComando,
         estadoComando: body.estadoComando,
         ubicacionComando: body.ubicacionComando,
-        fundacionId: body.fundacionId || null, // Permitir que fundacionId pueda estar vacío
-        brigadas: body.brigadas || [] // Asegurarse de que brigadas sea un array
+        fundacionId: body.fundacionId || null,
+        brigadas: body.brigadas || []
     });
 
     return await comando.save();
@@ -62,20 +61,14 @@ async function desactivarComando(id) {
 
 // Lógica para agregar brigada a un comando
 async function agregarBrigadaAComando(comandoId, brigadasIds) {
-    try {
-        const comando = await Comando.findOne({ comandoId });
-        if (!comando) {
-            throw new Error('Estudiante no encontrado');
-        }
-        // Filtrar las brigadas ya existentes para no duplicarlas
-        const nuevasBrigadas = brigadasIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
-        // Agregar las nuevas asistencias al array de asistencias de brigada
-        comando.brigadas = [...comando.brigadas, ...nuevasBrigadas];
-        await comando.save();
-        return comando;
-    } catch (error) {
-        throw new Error(`Error al agregar brigada : ${error.message}`);
+    const comando = await Comando.findById(comandoId);
+    if (!comando) {
+        throw new Error('Comando no encontrado');
     }
+    const nuevasBrigadas = brigadasIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
+    comando.brigadas = [...comando.brigadas, ...nuevasBrigadas];
+    await comando.save();
+    return comando;
 }
 
 module.exports = {
@@ -84,5 +77,5 @@ module.exports = {
     buscarComandoPorId,
     editarComando,
     desactivarComando,
-    agregarBrigadaAComando // Exportar la nueva función
+    agregarBrigadaAComando
 };

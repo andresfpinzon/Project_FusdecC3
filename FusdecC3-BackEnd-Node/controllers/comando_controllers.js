@@ -1,5 +1,6 @@
 const logic = require('../logic/comando_logic');
 const comandoSchemaValidation = require('../validations/comando_validations');
+const Comando = require('../models/comando_model');
 
 // Controlador para listar comandos
 const listarComandos = async (_req, res) => {
@@ -31,18 +32,31 @@ const crearComando = async (req, res) => {
 // Controlador para actualizar un comando
 const actualizarComando = async (req, res) => {
     const { id } = req.params;
-    const { error, value } = comandoSchemaValidation.validate(req.body);
-    if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-    }
+    const { nombreComando, estadoComando, ubicacionComando, fundacionId, brigadas } = req.body;
+
     try {
-        const comandoActualizado = await logic.editarComando(id, value);
-        if (!comandoActualizado) {
+        const comando = await Comando.findById(id);
+        if (!comando) {
             return res.status(404).json({ error: 'Comando no encontrado' });
         }
-        res.json(comandoActualizado);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+
+        comando.nombreComando = nombreComando;
+        comando.estadoComando = estadoComando;
+        comando.ubicacionComando = ubicacionComando;
+
+        if (fundacionId && fundacionId.trim() !== "") {
+            comando.fundacionId = fundacionId;
+        } else {
+            comando.fundacionId = null;
+        }
+
+        comando.brigadas = brigadas;
+
+        await comando.save();
+        return res.status(200).json(comando);
+    } catch (error) {
+        console.error("Error al actualizar comando:", error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
@@ -76,22 +90,21 @@ const obtenerComandoPorId = async (req, res) => {
 
 // Controlador para agregar brigadas a un comando
 const agregarBrigadas = async (req, res) => {
-    const { comandoId } = req.params; // Obtener el ID del comando de los parámetros
-    const { brigadasIds } = req.body; // Extraer brigadasIds del cuerpo de la solicitud
+    const { comandoId } = req.params;
+    const { brigadasIds } = req.body;
 
-    // Validar que brigadasIds sea un array y no esté vacío
     if (!Array.isArray(brigadasIds) || brigadasIds.length === 0) {
         return res.status(400).json({ error: 'Se requiere un array de IDs de brigadas' });
     }
 
     try {
-        const comandoActualizado = await logic.agregarBrigadaAComando(comandoId, brigadasIds); // Llamar a la lógica para agregar brigadas
+        const comandoActualizado = await logic.agregarBrigadaAComando(comandoId, brigadasIds);
         return res.status(200).json({
             message: 'Brigadas agregadas con éxito',
-            comando: comandoActualizado // Devolver el comando actualizado
+            comando: comandoActualizado
         });
     } catch (error) {
-        return res.status(500).json({ error: error.message }); // Manejo de errores
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -102,5 +115,5 @@ module.exports = {
     actualizarComando,
     desactivarComando,
     obtenerComandoPorId,
-    agregarBrigadas // Exportar la nueva función
+    agregarBrigadas
 };
