@@ -13,6 +13,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *         - fechaAuditoria
  *         - nombreEmisor
  *         - certificadoId
+ *         - codigoVerificacion
  *       properties:
  *         _id:
  *           type: string
@@ -28,27 +29,10 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *           type: string
  *           description: ID del certificado asociado (ObjectId).
  *           pattern: '^[0-9a-fA-F]{24}$'
- *     AuditoriaCreate:
- *       type: object
- *       required:
- *         - fechaAuditoria
- *         - nombreEmisor
- *         - certificadoId
- *       properties:
- *         fechaAuditoria:
+ *         codigoVerificacion:
  *           type: string
- *           format: date-time
- *           description: Fecha de la auditoría.
- *         nombreEmisor:
- *           type: string
- *           description: Nombre del emisor de la auditoría.
- *         certificadoId:
- *           type: string
- *           description: ID del certificado asociado (ObjectId).
- *           pattern: '^[0-9a-fA-F]{24}$'
- *         estadoAuditoria:
- *           type: boolean
- *           description: Estado de la auditoría (activo/inactivo).
+ *           description: Código de verificación del certificado asociado.
+ *           example: "ABC123"
  */
 
 /**
@@ -81,10 +65,12 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     fechaAuditoria: "2023-10-01T12:00:00Z"
  *                     nombreEmisor: "Carlos Martínez"
  *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                     codigoVerificacion: "ABC123"
  *                   - _id: "60d5ec49f1a2c8b1f8e4e1a2"
  *                     fechaAuditoria: "2023-10-02T12:00:00Z"
  *                     nombreEmisor: "Ana Gómez"
  *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                     codigoVerificacion: "XYZ456"
  */
 router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.listarAuditorias);
 
@@ -160,6 +146,7 @@ router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaCont
  *                   fechaAuditoria: "2023-10-01T12:00:00Z"
  *                   nombreEmisor: "Carlos Martínez"
  *                   certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                   codigoVerificacion: "ABC123"
  *       404:
  *         description: Auditoría no encontrada
  */
@@ -195,6 +182,7 @@ router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaCo
  *                   estadoAuditoria: false
  *                   fechaAuditoria: "2023-10-01T12:00:00Z"
  *                   certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                   codigoVerificacion: "XYZ456"
  *       404:
  *         description: Auditoría no encontrada
  *       500:
