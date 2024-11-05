@@ -148,25 +148,18 @@ const Comandos = () => {
         }
       );
 
-      if (response.ok) {
-        const comandoActualizado = await response.json();
-        setComandos(
-          comandos.map((comando) =>
-            comando._id === selectedComando._id ? comandoActualizado : comando
-          )
-        );
-        setFormValues({
-          nombreComando: "",
-          ubicacionComando: "",
-          estadoComando: true,
-          fundacionId: "",
-          brigadas: [],
-        })
-        clearForm();
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar comando");
       }
+
+      const comandoActualizado = await response.json();
+      setComandos(
+        comandos.map((comando) =>
+          comando._id === selectedComando._id ? comandoActualizado : comando
+        )
+      );
+      clearForm();
     } catch (error) {
       console.error("Error al actualizar comando:", error);
       setErrorMessage(error.message);
@@ -253,45 +246,6 @@ const Comandos = () => {
     <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <h1>Gestión de Comandos</h1>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={8}>
-          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Nombre</TableCell>
-                  <TableCell>Ubicación</TableCell>
-                  <TableCell>Estado</TableCell>
-                  <TableCell>Fundación</TableCell>
-                  <TableCell>Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {comandos.map((comando) => (
-                  <TableRow key={comando._id}>
-                    <TableCell>{comando.nombreComando}</TableCell>
-                    <TableCell>{comando.ubicacionComando}</TableCell>
-                    <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
-                    <TableCell>{fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleEditClick(comando)} color="primary">
-                        <Edit />
-                      </IconButton>
-                      <IconButton onClick={() => handleInfoClick(comando)} color="primary">
-                        <Info />
-                      </IconButton>
-                      <IconButton onClick={() => {
-                        setSelectedComando(comando);
-                        setOpenDeleteDialog(true);
-                      }} color="secondary">
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
         <Grid item xs={12} md={4} style={{ paddingLeft: '20px' }}>
           <form noValidate autoComplete="off">
             <TextField
@@ -344,6 +298,45 @@ const Comandos = () => {
             </Button>
           </form>
         </Grid>
+        <Grid item xs={12} md={8}>
+          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Ubicación</TableCell>
+                  <TableCell>Estado</TableCell>
+                  <TableCell>Fundación</TableCell>
+                  <TableCell>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {comandos.map((comando) => (
+                  <TableRow key={comando._id}>
+                    <TableCell>{comando.nombreComando}</TableCell>
+                    <TableCell>{comando.ubicacionComando}</TableCell>
+                    <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
+                    <TableCell>{fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEditClick(comando)} color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton onClick={() => handleInfoClick(comando)} color="primary">
+                        <Info />
+                      </IconButton>
+                      <IconButton onClick={() => {
+                        setSelectedComando(comando);
+                        setOpenDeleteDialog(true);
+                      }} color="secondary">
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
       </Grid>
 
       {/* Modal de Confirmación de Eliminación */}
@@ -394,6 +387,12 @@ const Comandos = () => {
               </Typography>
               <Typography variant="body1">Estado: {infoComando.estadoComando ? "Activo" : "Inactivo"}</Typography>
               <Typography variant="body1">Fundación: {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}</Typography>
+              <Typography variant="body1">Brigadas:</Typography>
+              <ul>
+                {infoComando.brigadas && infoComando.brigadas.map((brigada) => (
+                  <li key={brigada._id}>{brigada.nombre}</li>
+                ))}
+              </ul>
             </div>
           )}
         </DialogContent>

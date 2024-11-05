@@ -1,6 +1,6 @@
 const express = require('express');
-const comandoControllers = require('../controllers/comando_controllers'); // Importa el controlador
-const router = express.Router(); // Define el enrutador
+const comandoControllers = require('../controllers/comando_controllers');
+const router = express.Router();
 const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**

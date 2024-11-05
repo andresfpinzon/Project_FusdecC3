@@ -220,10 +220,12 @@ router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditori
  *                     fechaAuditoria: "2023-10-01T12:00:00Z"
  *                     nombreEmisor: "Carlos Martínez"
  *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                     codigoVerificacion: "ABC123"
  *                   - _id: "60d5ec49f1a2c8b1f8e4e1a2"
  *                     fechaAuditoria: "2023-10-02T12:00:00Z"
  *                     nombreEmisor: "Ana Gómez"
  *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                     codigoVerificacion: "XYZ456"
  *       404:
  *         description: Auditorías no encontradas
  */

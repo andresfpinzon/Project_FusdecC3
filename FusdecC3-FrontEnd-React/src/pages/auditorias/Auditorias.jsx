@@ -65,8 +65,8 @@ const Auditorias = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
-        Lista de Auditorías
+      <Typography variant="h4" gutterBottom style={{ fontFamily: 'Roboto', fontWeight: 'bold' }}>
+        Gestión de Auditorías
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
