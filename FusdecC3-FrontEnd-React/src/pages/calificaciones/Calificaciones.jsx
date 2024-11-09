@@ -54,41 +54,69 @@ const Calificaciones = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCalificacion, setInfoCalificacion] = useState(null);
 
-  const fetchData = async () => {
+  const fetchCalificaciones = async () => {
     try {
-      const [calificacionesData, estudiantesData, usuariosData] = await Promise.all([
-        fetch("http://localhost:3000/api/calificaciones",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-        fetch("http://localhost:3000/api/estudiantes",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-        fetch("http://localhost:3000/api/usuarios",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-      ]);
-      setCalificaciones(calificacionesData);
-      setEstudiantes(estudiantesData);
-      setUsuarios(usuariosData);
+      const response = await fetch("http://localhost:3000/api/calificaciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener calificaciones");
+      const data = await response.json();
+      setCalificaciones(data);
     } catch (error) {
-      handleError("Error al cargar los datos", error);
-    } 
+      console.error("Error al obtener calificaciones:", error);
+      setErrorMessage("Error al obtener calificaciones");
+      setOpenSnackbar(true);
+    }
   };
 
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage("Error al obtener estudiantes");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchUsuarios = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/usuarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener usuarios");
+      const data = await response.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error("Error al obtener usuarios:", error);
+      setErrorMessage("Error al obtener usuarios");
+      setOpenSnackbar(true);
+    }
+  };
+
+  
+
   useEffect(() => {
-    fetchData();
+    fetchCalificaciones();
+    fetchEstudiantes();
+    fetchUsuarios();
     // Decodificar el token y obtener el ID de usuario
     if (token) {
       const decodedToken = jwtDecode(token);
