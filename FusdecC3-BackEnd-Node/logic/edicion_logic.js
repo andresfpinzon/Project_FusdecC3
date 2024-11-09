@@ -20,7 +20,10 @@ async function crearEdicion(body) {
     cursoId: body.cursoId,
     horarios: body.horarios,
     estudiantes: body.estudiantes,
-  });
+  })
+  .populate('cursoId', 'nombreCurso')
+  .populate('horarios', 'tituloHorario')
+  .populate('estudiantes', 'nombreEstudiante');
 
   return await edicion.save();
 }
@@ -51,6 +54,7 @@ async function actualizarEdicion(id, body) {
   )
   .populate('cursoId', 'nombreCurso')
   .populate('horarios', 'tituloHorario')
+  .populate('estudiantes', 'nombreEstudiante');
 
   return edicion;
 }

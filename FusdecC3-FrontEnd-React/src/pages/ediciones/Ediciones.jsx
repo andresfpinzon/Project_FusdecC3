@@ -42,9 +42,9 @@ const Ediciones = () => {
     fechaInicioEdicion: "",
     fechaFinEdicion: "",
     estadoEdicion: true,
-    //cursoId: "",
-    //horarios: [],
-    //estudiantes: [],
+    cursoId: "",
+    horarios: [],
+    estudiantes: [],
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -54,50 +54,87 @@ const Ediciones = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoEdicion, setInfoEdicion] = useState(null);
 
-  //constante con promise.all para que se ejecuten en paralelo los fetch de ediciones, cursos, horarios y estudiantes
-  const fetchData = async () => {
+  const fetchEdiciones = async () => {
     try {
-      const [edicionesData, cursosData, horariosData, estudiantesData] = await Promise.all([
-        fetch("http://localhost:3000/api/ediciones",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-        fetch("http://localhost:3000/api/cursos",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-        fetch("http://localhost:3000/api/horarios",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-        fetch("http://localhost:3000/api/estudiantes",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-      ]);
-      setEdiciones(edicionesData);
-      setCursos(cursosData);
-      setHorarios(horariosData);
-      setEstudiantes(estudiantesData);
+      const response = await fetch("http://localhost:3000/api/ediciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener ediciones");
+      const data = await response.json();
+      setEdiciones(data);
     } catch (error) {
-      handleError("Error al cargar los datos");
-    } 
+      console.error("Error al obtener ediciones:", error);
+      setErrorMessage("Error al obtener ediciones");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchCursos = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/cursos",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener cursos");
+      const data = await response.json();
+      setCursos(data);
+    } catch (error) {
+      console.error("Error al obtener cursos:", error);
+      setErrorMessage("Error al obtener cursos");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchHorarios = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/horarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener horarios");
+      const data = await response.json();
+      setHorarios(data);
+    } catch (error) {
+      console.error("Error al obtener horarios:", error);
+      setErrorMessage("Error al obtener horarios");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage("Error al obtener estudiantes");
+      setOpenSnackbar(true);
+    }
   };
   
   useEffect(() => {
-    fetchData();
+    fetchEdiciones();
+    fetchCursos();
+    fetchHorarios();
+    fetchEstudiantes();
   }, []);
   
   const handleError = (message) => {
@@ -116,6 +153,22 @@ const Ediciones = () => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.checked,
+    });
+  };
+
+  const handleEstudianteChange = (e) => {
+    const { target: { value } } = e;
+    setFormValues({
+      ...formValues,
+      estudiantes: typeof value === "string" ? value.split(",") : value,
+    });
+  };
+
+  const handleHorarioChange = (e) => {
+    const { target: { value } } = e;
+    setFormValues({
+      ...formValues,
+      horarios: typeof value === "string" ? value.split(",") : value,
     });
   };
 
@@ -139,9 +192,9 @@ const Ediciones = () => {
               fechaInicioEdicion: "",
               fechaFinEdicion: "",
               estadoEdicion: true,
-              //cursoId: "",
-              //horarios: [],
-              //estudiantes: [],
+              cursoId: "",
+              horarios: [],
+              estudiantes: [],
             });
             console.log('Edicion creada exitosamente:', nuevaEdicion);
         } else {
@@ -182,9 +235,9 @@ const Ediciones = () => {
           fechaInicioEdicion: "",
           fechaFinEdicion: "",
           estadoEdicion: true,
-          //cursoId: "",
-          //horarios: [],
-          //estudiantes: [],
+          cursoId: "",
+          horarios: [],
+          estudiantes: [],
         });
       } else {
         const errorData = await response.json();
@@ -229,9 +282,9 @@ const Ediciones = () => {
       fechaInicioEdicion: edicion.fechaInicioEdicion,
       fechaFinEdicion: edicion.fechaFinEdicion,
       estadoEdicion: edicion.estadoEdicion,
-      //cursoId: edicion.cursoId || "",
-      //horarios: edicion.horarios || [],
-      //estudiantes: edicion.estudiantes || [],
+      cursoId: edicion.cursoId || "",
+      horarios: edicion.horarios.map((horario) => horario._id),
+      estudiantes: edicion.estudiantes.map((estudiante) => estudiante._id),
     });
   };
 
@@ -292,7 +345,6 @@ const Ediciones = () => {
           sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
         />
 
-        {/* 
         <FormControl fullWidth margin="normal">
           <InputLabel>Curso</InputLabel>
           <Select
@@ -308,7 +360,52 @@ const Ediciones = () => {
             ))}
           </Select>
         </FormControl>
-        */}
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Horarios</InputLabel>
+          <Select
+            multiple
+            value={formValues.horarios}
+            onChange={handleHorarioChange}
+            input={<OutlinedInput label="Horarios" />}
+            renderValue={(selected) =>
+              horarios
+                .filter((hor) => selected.includes(hor._id))
+                .map((hor) => ho.tituloHorario)
+                .join(", ")
+            }
+          >
+            {horarios.map((hor) => (
+              <MenuItem key={hor._id} value={hor._id}>
+                <Checkbox checked={formValues.horarios.indexOf(hor._id) > -1} />
+                <ListItemText primary={ho.tituloHorario} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Estudiantes</InputLabel>
+          <Select
+            multiple
+            value={formValues.estudiantes}
+            onChange={handleEstudianteChange}
+            input={<OutlinedInput label="Estudiantes" />}
+            renderValue={(selected) =>
+              estudiantes
+                .filter((est) => selected.includes(est._id))
+                .map((est) => est.nombreEstudiante)
+                .join(", ")
+            }
+          >
+            {estudiantes.map((est) => (
+              <MenuItem key={est._id} value={est._id}>
+                <Checkbox checked={formValues.estudiantes.indexOf(est._id) > -1} />
+                <ListItemText primary={est.nombreEstudiante} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -422,11 +519,20 @@ const Ediciones = () => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Curso:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.curso?.nombreCurso || "Curso no encontrado"}</Typography>
               </Box>
-              
-              {/* Calificaciones */}
+
+              {/* Horarios */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Grade color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Calificaciones:</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Horarios:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoEdicion.horarios?.map((horario) => horario.tituloHorario).join(", ") || "Sin horarios"}
+                </Typography>
+              </Box>
+              
+              {/* Estudiantes */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Grade color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
                   {infoEdicion.estudiantes?.map((estudiante) => estudiante.nombreEstudiante).join(", ") || "Sin estudiantes"}
                 </Typography>
