@@ -20,6 +20,13 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
 
 import { Edit, Delete, Info, School, Description, AccessTime, ToggleOn, Foundation, EventNote } from "@mui/icons-material";
@@ -36,6 +43,7 @@ const Cursos = () => {
     descripcionCurso: "",
     intensidadHorariaCurso: "",
     estadoCurso: true,
+    ediciones: [],
     //fundacionId: "",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -46,46 +54,47 @@ const Cursos = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCurso, setInfoCurso] = useState(null);
 
-  
-  
-
-  //constante con promise.all para que se ejecuten en paralelo los fetch de cursos, funaciones y ediciones
-  const fetchData = async () => {
+  const fetchCursos = async () => {
     try {
-      const [cursosData, fundacionesData, edicionesData] = await Promise.all([
-        fetch("http://localhost:3000/api/cursos",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-      /*
-        fetch("http://localhost:3000/api/fundaciones",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),*/
-        fetch("http://localhost:3000/api/ediciones", {
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-      ]);
-      setCursos(cursosData);
-      setFundaciones(fundacionesData);
-      setEdiciones(edicionesData);
+      const response = await fetch("http://localhost:3000/api/cursos",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener cursos");
+      const data = await response.json();
+      setCursos(data);
     } catch (error) {
-      handleError("Error al cargar los datos");
-    } 
+      console.error("Error al obtener cursos:", error);
+      setErrorMessage("Error al obtener cursos");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchEdiciones = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/ediciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener ediciones");
+      const data = await response.json();
+      setEdiciones(data);
+    } catch (error) {
+      console.error("Error al obtener ediciones:", error);
+      setErrorMessage("Error al obtener ediciones");
+      setOpenSnackbar(true);
+    }
   };
   
   useEffect(() => {
-    fetchData();
+    fetchCursos();
+    fetchEdiciones();
   }, []);
   
   const handleError = (message) => {
@@ -104,6 +113,16 @@ const Cursos = () => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.checked,
+    });
+  };
+
+  const handleEditionChange = (e) => {
+    const {
+      target: { value },
+    } = e;
+    setFormValues({
+      ...formValues,
+      ediciones: typeof value === "string" ? value.split(",") : value,
     });
   };
 
@@ -132,6 +151,7 @@ const Cursos = () => {
                 descripcionCurso: "",
                 intensidadHorariaCurso: "",
                 estadoCurso: true,
+                ediciones: [],
                 //fundacionId: "",
             });
             console.log('Curso creado exitosamente:', nuevoCurso);
@@ -173,6 +193,7 @@ const Cursos = () => {
           descripcionCurso: "",
           intensidadHorariaCurso: "",
           estadoCurso: true,
+          ediciones: [],
           //fundacionId: "",
         });
       } else {
@@ -214,10 +235,11 @@ const Cursos = () => {
   const handleEditClick = (curso) => {
     setSelectedCurso(curso);
     setFormValues({
-      nombreCurso: curso.nombreCurso || "",
-      descripcionCurso: curso.descripcionCurso || "",
-      intensidadHorariaCurso: curso.intensidadHorariaCurso || "",
+      nombreCurso: curso.nombreCurso,
+      descripcionCurso: curso.descripcionCurso,
+      intensidadHorariaCurso: curso.intensidadHorariaCurso,
       estadoCurso: curso.estadoCurso !== undefined ? curso.estadoCurso : true,
+      ediciones: estudiante.ediciones.map((edicion) => edicion._id),
       //fundacionId: curso.fundacionId || "",
     });
   };  
@@ -294,6 +316,29 @@ const Cursos = () => {
           </Select>
         </FormControl>
         */}
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Ediciones</InputLabel>
+          <Select
+            multiple
+            value={formValues.ediciones}
+            onChange={handleEditionChange}
+            input={<OutlinedInput label="Ediciones" />}
+            renderValue={(selected) =>
+              ediciones
+                .filter((edicion) => selected.includes(edicion._id))
+                .map((edicion) => edicion.tituloEdicion)
+                .join(", ")
+            }
+          >
+            {ediciones.map((edicion) => (
+              <MenuItem key={edicion._id} value={edicion._id}>
+                <Checkbox checked={formValues.ediciones.indexOf(edicion._id) > -1} />
+                <ListItemText primary={edicion.tituloEdicion} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -335,17 +380,14 @@ const Cursos = () => {
                 <TableCell>{curso.estadoCurso ? "Activo" : "Inactivo"}</TableCell>
                 <TableCell>
                   <IconButton
-                    onClick={() => handleEditClick(curso)}
-                    color="primary">
+                    onClick={() => handleEditClick(curso)}color="primary">
                     <Edit />
                   </IconButton>
                   <IconButton onClick={() => handleInfoClick(curso)} color="primary">
                     <Info />
                   </IconButton>
                   <IconButton
-                    onClick={() => handleDeleteClick(curso)}
-                    color="secondary"
-                  >
+                    onClick={() => handleDeleteClick(curso)}color="secondary">
                     <Delete />
                   </IconButton>
                 </TableCell>
