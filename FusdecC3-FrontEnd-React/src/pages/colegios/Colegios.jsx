@@ -44,35 +44,47 @@ const Colegios = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoColegio, setInfoColegio] = useState(null);
 
-  //constante con promise.all para que se ejecuten en paralelo los fetch de colegios y estudiantes
-  const fetchData = async () => {
+  const fetchColegios = async () => {
     try {
-      const [colegiosData, estudiantesData] = await Promise.all([
-        fetch("http://localhost:3000/api/colegios", {
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-        fetch("http://localhost:3000/api/estudiantes",{
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }).then((res) => res.json()),
-      ]);
-      
-      setColegios(colegiosData);
-      setEstudiantes(estudiantesData);
+      const response = await fetch("http://localhost:3000/api/colegios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener colegios");
+      const data = await response.json();
+      setColegios(data);
     } catch (error) {
-      handleError("Error al cargar los datos"), error;
-    } 
+      console.error("Error al obtener colegios:", error);
+      setErrorMessage("Error al obtener colegios");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage("Error al obtener estudiantes");
+      setOpenSnackbar(true);
+    }
   };
   
   useEffect(() => {
-    fetchData();
+    fetchColegios();
+    fetchEstudiantes();
   }, []);
   
   const handleError = (message) => {
