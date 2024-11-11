@@ -20,13 +20,6 @@ import {
   Typography,
   Snackbar,
   Alert,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Checkbox,
-  ListItemText,
 } from "@mui/material";
 
 import { Edit, Delete, Info, School, Description, AccessTime, ToggleOn, Foundation, EventNote } from "@mui/icons-material";
@@ -35,7 +28,6 @@ const token = localStorage.getItem("token");
 
 const Cursos = () => {
   const [fundaciones, setFundaciones] = useState([]);
-  const [ediciones, setEdiciones] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [selectedCurso, setSelectedCurso] = useState(null);
   const [formValues, setFormValues] = useState({
@@ -73,28 +65,8 @@ const Cursos = () => {
     }
   };
 
-  const fetchEdiciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/ediciones",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener ediciones");
-      const data = await response.json();
-      setEdiciones(data);
-    } catch (error) {
-      console.error("Error al obtener ediciones:", error);
-      setErrorMessage("Error al obtener ediciones");
-      setOpenSnackbar(true);
-    }
-  };
-  
   useEffect(() => {
     fetchCursos();
-    fetchEdiciones();
   }, []);
   
   const handleError = (message) => {
@@ -113,16 +85,6 @@ const Cursos = () => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.checked,
-    });
-  };
-
-  const handleEditionChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setFormValues({
-      ...formValues,
-      ediciones: typeof value === "string" ? value.split(",") : value,
     });
   };
 
@@ -160,7 +122,7 @@ const Cursos = () => {
             throw new Error(errorData.error || "Error al crear curso");
         }
     } catch (error) {
-        handleError("Error al crear cursos");
+        handleError("Error al crear cursos", error);
     }
 };
 
@@ -201,7 +163,7 @@ const Cursos = () => {
         throw new Error(errorData.error || "Error al actualizar curso");
       }
     } catch (error) {
-      handleError("Error al actualizar cursos");
+      handleError("Error al actualizar cursos", error);
     }
   };
 
@@ -228,7 +190,7 @@ const Cursos = () => {
         throw new Error(errorData.error || "Error al eliminar curso");
       }
     } catch (error) {
-      handleError("Error al eliminar curso");
+      handleError("Error al eliminar curso", error);
     }
   };
 
@@ -239,7 +201,7 @@ const Cursos = () => {
       descripcionCurso: curso.descripcionCurso,
       intensidadHorariaCurso: curso.intensidadHorariaCurso,
       estadoCurso: curso.estadoCurso !== undefined ? curso.estadoCurso : true,
-      ediciones: estudiante.ediciones.map((edicion) => edicion._id),
+      ediciones: curso.ediciones.map((edicion) => edicion._id),
       //fundacionId: curso.fundacionId || "",
     });
   };  
@@ -316,29 +278,6 @@ const Cursos = () => {
           </Select>
         </FormControl>
         */}
-
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Ediciones</InputLabel>
-          <Select
-            multiple
-            value={formValues.ediciones}
-            onChange={handleEditionChange}
-            input={<OutlinedInput label="Ediciones" />}
-            renderValue={(selected) =>
-              ediciones
-                .filter((edicion) => selected.includes(edicion._id))
-                .map((edicion) => edicion.tituloEdicion)
-                .join(", ")
-            }
-          >
-            {ediciones.map((edicion) => (
-              <MenuItem key={edicion._id} value={edicion._id}>
-                <Checkbox checked={formValues.ediciones.indexOf(edicion._id) > -1} />
-                <ListItemText primary={edicion.tituloEdicion} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
         
         <Box marginTop={2} marginBottom={2}>
           <Switch

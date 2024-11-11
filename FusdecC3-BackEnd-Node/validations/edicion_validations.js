@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi').extend(require('@joi/date'));
+const Joi = require('@hapi/joi');
 
 const edicionSchemaValidation = Joi.object({
 
@@ -16,7 +16,6 @@ const edicionSchemaValidation = Joi.object({
     }),
 
   fechaInicioEdicion: Joi.date()
-    .format("DD/MM/YYYY")
     .required()
     .messages({
       'date.base': 'La fecha de inicio de la edición debe ser una fecha válida',
@@ -24,7 +23,6 @@ const edicionSchemaValidation = Joi.object({
     }),
 
   fechaFinEdicion: Joi.date()
-    .format("DD/MM/YYYY")
     .greater(Joi.ref('fechaInicioEdicion')) // Asegura que la fecha de fin sea posterior a la de inicio
     .required()
     .messages({
@@ -40,16 +38,17 @@ const edicionSchemaValidation = Joi.object({
     }),
 
   cursoId: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .optional()
-    .allow(null, "") // Permitir null o un string vacío
+    .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
+    .required()
     .messages({
-      'string.pattern.base': 'El id del curso debe ser un id válido (24 caracteres hexadecimales)',
-    }),
+      'string.base': 'El cursoId debe ser un texto',
+      'string.empty': 'El cursoId no puede estar vacío',
+      'string.pattern.base': 'El cursoId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
+  }),
 
   horarios: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
-    .optional()
+    .required()
     .messages({
       'array.base': 'Horarios debe ser un array',
       'string.pattern.base': 'Cada horario debe ser un id válido (24 caracteres hexadecimales)',

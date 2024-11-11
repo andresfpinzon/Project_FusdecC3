@@ -63,8 +63,8 @@ async function desactivarCurso(id) {
 // Función asíncrona para listar los cursos activos
 async function listarCursosActivos() {
   let cursos = await Curso.find({ estadoCurso: true })
-  .populate('fundacionId', 'nombreFundacion')
-  .populate('ediciones', 'tituloEdicion')
+  .populate('fundacionId')
+  .populate('ediciones');
   return cursos;
 };
 
@@ -97,7 +97,9 @@ async function guardarCursos(cursos) {
 // Función asíncrona para buscar un curso por su ID
 async function buscarCursoPorId(id) {
   try {
-    const curso = await Curso.findById(id);
+    const curso = await Curso.findById(id)
+    .populate('fundacionId')
+    .populate('ediciones');
     if (!curso) {
       throw new Error(`Curso con ID ${id} no encontrado`);
     }

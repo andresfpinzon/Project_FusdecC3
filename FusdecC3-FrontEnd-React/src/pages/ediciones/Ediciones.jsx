@@ -25,6 +25,8 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  Checkbox,
+  ListItemText
 } from "@mui/material";
 
 import { Edit, Delete, Info, School, DateRange, EventAvailable, ToggleOn, Class, Grade } from "@mui/icons-material";
@@ -35,7 +37,6 @@ const Ediciones = () => {
   const [ediciones, setEdiciones] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [horarios, setHorarios] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
   const [selectedEdicion, setSelectedEdicion] = useState(null);
   const [formValues, setFormValues] = useState({
     tituloEdicion: "",
@@ -111,30 +112,10 @@ const Ediciones = () => {
     }
   };
 
-  const fetchEstudiantes = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/estudiantes",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener estudiantes");
-      const data = await response.json();
-      setEstudiantes(data);
-    } catch (error) {
-      console.error("Error al obtener estudiantes:", error);
-      setErrorMessage("Error al obtener estudiantes");
-      setOpenSnackbar(true);
-    }
-  };
-  
   useEffect(() => {
     fetchEdiciones();
     fetchCursos();
     fetchHorarios();
-    fetchEstudiantes();
   }, []);
   
   const handleError = (message) => {
@@ -153,14 +134,6 @@ const Ediciones = () => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.checked,
-    });
-  };
-
-  const handleEstudianteChange = (e) => {
-    const { target: { value } } = e;
-    setFormValues({
-      ...formValues,
-      estudiantes: typeof value === "string" ? value.split(",") : value,
     });
   };
 
@@ -202,51 +175,56 @@ const Ediciones = () => {
             throw new Error(errorData.error || "Error al crear edicion");
         }
     } catch (error) {
-        handleError("Error al crear edicion");
+        handleError("Error al crear edicion", error);
+        setErrorMessage(error.message);
+        setOpenSnackbar(true);
     }
 };
 
-  const handleUpdateEdicion = async () => {
-    if (!selectedEdicion) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
-
-      if (response.ok) {
-        const edicionActualizada = await response.json();
-        setEdiciones(
-          ediciones.map((edicion) =>
-            edicion._id === selectedEdicion._id ? edicionActualizada : edicion
-          )
-        );
-        setSelectedEdicion(null);
-        setFormValues({
-          tituloEdicion: "",
-          fechaInicioEdicion: "",
-          fechaFinEdicion: "",
-          estadoEdicion: true,
-          cursoId: "",
-          horarios: [],
-          estudiantes: [],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar edicion");
+const handleUpdateEdicion = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+        },
+        
+        body: JSON.stringify(formValues),
       }
-    } catch (error) {
-      handleError("Error al actualizar edicion");
+      
+    );
+    console.log(formValues);
+
+    if (response.ok) {
+      const updatedEdicion = await response.json();
+      const updatedEdiciones = ediciones.map((edicion) =>
+        edicion._id === updatedEdicion._id ? updatedEdicion : edicion
+      );
+      setEdiciones(updatedEdiciones);
+      setSelectedEdicion(null);
+      setFormValues({
+        tituloEdicion: "",
+        fechaInicioEdicion: "",
+        fechaFinEdicion: "",
+        estadoEdicion: true,
+        cursoId: "",
+        horarios: [],
+        estudiantes: [],
+      });
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Error al actualizar edición");
     }
-  };
+  } catch (error) {
+    console.error("Error al actualizar edición:", error);
+    setErrorMessage(error.message);
+    setOpenSnackbar(true);
+  }
+};
+
 
   const handleDeleteEdicion = async () => {
     if (!edicionToDelete) return;
@@ -271,7 +249,7 @@ const Ediciones = () => {
         throw new Error(errorData.error || "Error al eliminar edicion");
       }
     } catch (error) {
-      handleError("Error al eliminar edicion");
+      handleError("Error al eliminar edicion", error);
     }
   };
 
@@ -282,9 +260,8 @@ const Ediciones = () => {
       fechaInicioEdicion: edicion.fechaInicioEdicion,
       fechaFinEdicion: edicion.fechaFinEdicion,
       estadoEdicion: edicion.estadoEdicion,
-      cursoId: edicion.cursoId || "",
+      cursoId: edicion.cursoId?._id || "",
       horarios: edicion.horarios.map((horario) => horario._id),
-      estudiantes: edicion.estudiantes.map((estudiante) => estudiante._id),
     });
   };
 
@@ -371,37 +348,14 @@ const Ediciones = () => {
             renderValue={(selected) =>
               horarios
                 .filter((hor) => selected.includes(hor._id))
-                .map((hor) => ho.tituloHorario)
+                .map((ho) => ho.tituloHorario)
                 .join(", ")
             }
           >
             {horarios.map((hor) => (
               <MenuItem key={hor._id} value={hor._id}>
                 <Checkbox checked={formValues.horarios.indexOf(hor._id) > -1} />
-                <ListItemText primary={ho.tituloHorario} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Estudiantes</InputLabel>
-          <Select
-            multiple
-            value={formValues.estudiantes}
-            onChange={handleEstudianteChange}
-            input={<OutlinedInput label="Estudiantes" />}
-            renderValue={(selected) =>
-              estudiantes
-                .filter((est) => selected.includes(est._id))
-                .map((est) => est.nombreEstudiante)
-                .join(", ")
-            }
-          >
-            {estudiantes.map((est) => (
-              <MenuItem key={est._id} value={est._id}>
-                <Checkbox checked={formValues.estudiantes.indexOf(est._id) > -1} />
-                <ListItemText primary={est.nombreEstudiante} />
+                <ListItemText primary={hor.tituloHorario} />
               </MenuItem>
             ))}
           </Select>
@@ -517,7 +471,7 @@ const Ediciones = () => {
               <Box display="flex" alignItems="center" mb={2}>
                 <School color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Curso:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.curso?.nombreCurso || "Curso no encontrado"}</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.cursoId?.nombreCurso || "Curso no encontrado"}</Typography>
               </Box>
 
               {/* Horarios */}

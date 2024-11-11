@@ -18,26 +18,15 @@ async function crearEdicion(body) {
     fechaFinEdicion: body.fechaFinEdicion,
     estadoEdicion: body.estadoEdicion,
     cursoId: body.cursoId,
-    horarios: body.horarios,
-    estudiantes: body.estudiantes,
-  })
-  .populate('cursoId', 'nombreCurso')
-  .populate('horarios', 'tituloHorario')
-  .populate('estudiantes', 'nombreEstudiante');
+    horarios: body.horarios || [],
+    estudiantes: body.estudiantes || [],
+  });
 
   return await edicion.save();
 }
 
 // Función asíncrona para actualizar ediciones
 async function actualizarEdicion(id, body) {
-
-  // Verificar si ya existe una edicion con el mismo título
-  const edicionExistente = await Edicion.findOne({
-    tituloEdicion: body.tituloEdicion,
-  });
-  if (edicionExistente) {
-    throw new Error("La edición con este título ya existe");
-  }
 
   let edicion = await Edicion.findByIdAndUpdate(
     id,
@@ -46,15 +35,13 @@ async function actualizarEdicion(id, body) {
         tituloEdicion: body.tituloEdicion,
         fechaInicioEdicion: body.fechaInicioEdicion,
         fechaFinEdicion: body.fechaFinEdicion,
+        cursoId: body.cursoId,
         horarios: body.horarios,
         estudiantes: body.estudiantes,
       },
     },
     { new: true }
-  )
-  .populate('cursoId', 'nombreCurso')
-  .populate('horarios', 'tituloHorario')
-  .populate('estudiantes', 'nombreEstudiante');
+  );
 
   return edicion;
 }
@@ -78,15 +65,18 @@ async function desactivarEdicion(id) {
 async function listarEdicionesActivas() {
   let ediciones = await Edicion.find({ estadoEdicion: true })
   .populate('cursoId')
-  .populate('horarios');
+  .populate('horarios')
+  .populate('estudiantes');
   return ediciones;
 }
 
 // Función asíncrona para buscar una edicion por su ID
 async function buscarEdicionPorId(id) {
   try {
-    const edicion = await Edicion.findById(id).populate('cursoId')
-    .populate('horarios');
+    const edicion = await Edicion.findById(id)
+    .populate('cursoId')
+    .populate('horarios')
+    .populate('estudiantes');
     if (!edicion) {
       throw new Error(`Edición con ID ${id} no encontrado`);
     }
