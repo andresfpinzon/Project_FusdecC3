@@ -26,15 +26,15 @@ import {
   FormControl,
   OutlinedInput,
 } from "@mui/material"; 
- import { Edit, info } from "@mui/icons-material";
+ import { Edit, Info} from "@mui/icons-material";
  export default function Fundaciones() {
   const [fundaciones, setFundaciones] = useState([]);
-  const [comandos, setComandos] = useState([]);
   const [selectedFundacion, setSelectedFundacion] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreFundacion: "", 
     comandoId: "",
     estadoFundacion: true,
+    comandos: [],
   });
   
  
@@ -45,7 +45,6 @@ import {
 
   useEffect(() => {
     fetchFundaciones();
-    fetchComandos();
   }, []);
 
   const fetchFundaciones = async () => {
@@ -55,7 +54,7 @@ import {
       const data = await response.json();
       setFundaciones(data);
     } catch (error) {
-      console.error("Error al obtener fundaciones:", error);
+      console.error(error);
       setErrorMessage("Error al obtener fundaciones");
       setOpenSnackbar(true);
     }
