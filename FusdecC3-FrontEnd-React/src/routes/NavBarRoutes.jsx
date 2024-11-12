@@ -19,6 +19,7 @@ import Brigadas from "../pages/brigadas/Brigadas";
 import Unidades from "../pages/unidades/Unidades";
 import Calificaciones from "../pages/calificaciones/Calificaciones";
 import Colegios from "../pages/colegios/Colegios";
+import Fundaciones from "../pages/fundaciones/Fundaciones";
 import ProtectedRoute from "../components/protectedRoute/ProtectedRoute";
 
 
@@ -31,6 +32,7 @@ const NavbarRoutes = () => {
       <Route path="/masinformacion" element={<MasInformacion />} />
       <Route path="/login" element={<Login />} />
       {/* Rutas Protegidas */}
+      <Route path="/fundaciones" element={<ProtectedRoute element={Fundaciones} allowedRoles={["Administrador","Root"]} />} />
       <Route path="/auditorias" element={<ProtectedRoute element={Auditorias} allowedRoles={["Administrador","Root"]} />} />
       <Route path="/brigadas" element={<ProtectedRoute element={Brigadas} allowedRoles={["Administrador","Root"]} />} />
       <Route path="/certificados" element={<ProtectedRoute element={Certificados} allowedRoles={["Administrador","Root"]} />} />
