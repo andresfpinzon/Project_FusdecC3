@@ -83,7 +83,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     horarios: ["horario1", "horario2"]
  *                     estudiantes: ["estudiante1", "estudiante2"]
  */
-router.get("/", verifyJWT, verifyRole(['Secretario','Root']), edicionController.listarEdicionesActivas);
+router.get("/", verifyJWT, verifyRole(['Secretario','Root', 'Instructor']), edicionController.listarEdicionesActivas);
 
 /**
  * @swagger

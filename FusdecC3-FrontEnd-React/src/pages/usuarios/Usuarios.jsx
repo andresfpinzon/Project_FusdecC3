@@ -27,6 +27,7 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
@@ -50,6 +51,11 @@ const Usuarios = () => {
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchUsuarios();
@@ -92,6 +98,24 @@ const Usuarios = () => {
       setErrorMessage("Error al obtener roles");
       setOpenSnackbar(true);
     }
+  };
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredUsuarios = usuarios.filter((usuario) =>
+    usuario.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    usuario.apellidoUsuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    usuario.correo.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -330,7 +354,18 @@ const Usuarios = () => {
           </Button>
         </Box>
       </form>
-
+      <br></br>
+      
+       {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+       {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -344,38 +379,40 @@ const Usuarios = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {usuarios.map((usuario) => (
-              <TableRow key={usuario._id}>
-                <TableCell>{usuario.nombreUsuario}</TableCell>
-                <TableCell>{usuario.apellidoUsuario}</TableCell>
-                <TableCell>{usuario.correo}</TableCell>
-                <TableCell>
-                  {usuario.estadoUsuario ? "Activo" : "Inactivo"}
-                </TableCell>
-                <TableCell>
-                  {usuario.roles
-                    .map((rol) => rol.nombreRol) // Accede directamente al campo nombreRol
-                    .filter((nombreRol) => nombreRol !== "") // Filtra cualquier rol vacío
-                    .join(", ")} {/* Une los nombres de roles con una coma */}
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => handleEditClick(usuario)}
-                    color="primary"
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(usuario)}
-                    color="error"
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredUsuarios
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((usuario) => (
+                <TableRow key={usuario._id}>
+                  <TableCell>{usuario.nombreUsuario}</TableCell>
+                  <TableCell>{usuario.apellidoUsuario}</TableCell>
+                  <TableCell>{usuario.correo}</TableCell>
+                  <TableCell>{usuario.estadoUsuario ? "Activo" : "Inactivo"}</TableCell>
+                  <TableCell>
+                    {usuario.roles.map((rol) => rol.nombreRol).join(", ")}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleEditClick(usuario)} color="primary">
+                      <Edit />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteClick(usuario)} color="error">
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+        
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredUsuarios.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
       {/* Confirmar eliminación */}

@@ -96,7 +96,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                       { _id: "63f7d2bbf1a2b4b5c3cdb805", nombre: "Estudiante 3" }
  *                     ]
  */
-router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), unidadControllers.listarUnidades);
+router.get('/', verifyJWT, verifyRole(['Instructor','Administrador', 'Root']), unidadControllers.listarUnidades);
 
 // Obtener unidad por ID
 /**

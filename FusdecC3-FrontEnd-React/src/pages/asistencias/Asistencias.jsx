@@ -51,19 +51,26 @@ const Asistencias = () => {
   const [asistenciaToDelete, setAsistenciaToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
 
+  // Añade estado para almacenar el rol del usuario y su id
+  const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
-    fetchAsistencias();
     fetchEstudiantes();
      // Decodificar el token y obtener el ID de usuario
      if (token) {
       const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
       setFormValues((prevFormValues) => ({
         ...prevFormValues,
         usuarioId: decodedToken.id, 
       }));
+      setUserRole(decodedToken.roles);
+      setUserId(decodedToken.id)
     }
-  }, []);
+    if (userRole && userId) {
+      fetchAsistencias();
+    }
+  }, [userRole, userId]);
 
   const fetchAsistencias = async () => {
     try {
@@ -75,7 +82,11 @@ const Asistencias = () => {
         }
     });
       if (!response.ok) throw new Error("Error al obtener asistencias");
-      const data = await response.json();
+      let data = await response.json();
+
+      if (userRole.includes("Instructor")) {
+        data = data.filter((asistencia) => asistencia.usuarioId === userId);
+      }
       setAsistencias(data);
     } catch (error) {
       setErrorMessage("Error al obtener asistencias", error);

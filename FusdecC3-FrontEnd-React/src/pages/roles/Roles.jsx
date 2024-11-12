@@ -20,6 +20,7 @@ import {
   Typography,
   Snackbar,
   Alert,
+  TablePagination
 } from "@mui/material";
 
 import { Edit, Delete } from "@mui/icons-material";
@@ -36,6 +37,11 @@ const Roles = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  
+  // Paginacion y busqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchRoles();
@@ -58,6 +64,19 @@ const Roles = () => {
       setErrorMessage("Error al obtener roles");
       setOpenSnackbar(true);
     }
+  };
+  
+  const filteredRoles = roles.filter((rol) =>
+    rol.nombreRol.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -223,6 +242,17 @@ const Roles = () => {
           </Button>
         </Box>
       </form>
+      {/* Input de búsqueda */}
+      <TextField
+        label="Buscar Rol"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}   
+      />
+
+      {/* Tabla con paginación */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -233,28 +263,33 @@ const Roles = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {roles.map((rol) => (
-              <TableRow key={rol._id}>
-                <TableCell>{rol.nombreRol}</TableCell>
-                <TableCell>{rol.estadoRol ? "Activo" : "Inactivo"}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => handleEditClick(rol)}
-                    color="primary"
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(rol)}
-                    color="error"
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredRoles
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((rol) => (
+                <TableRow key={rol._id}>
+                  <TableCell>{rol.nombreRol}</TableCell>
+                  <TableCell>{rol.estadoRol ? "Activo" : "Inactivo"}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleEditClick(rol)} color="primary">
+                      <Edit />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteClick(rol)} color="error">
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+        <TablePagination
+        rowsPerPageOptions={[5, 10, 15]}
+        component="div"
+        count={filteredRoles.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       </TableContainer>
 
       {/* Modal de Confirmación de Eliminación */}

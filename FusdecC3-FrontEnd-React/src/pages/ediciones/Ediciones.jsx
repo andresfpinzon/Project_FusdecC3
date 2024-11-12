@@ -66,6 +66,7 @@ const Ediciones = () => {
     });
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
+      console.log(data);
       setEdiciones(data);
     } catch (error) {
       console.error("Error al obtener ediciones:", error);
