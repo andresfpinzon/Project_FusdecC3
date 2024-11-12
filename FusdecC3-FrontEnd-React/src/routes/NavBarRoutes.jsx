@@ -16,7 +16,7 @@ import Comandos from "../pages/comandos/Comandos";
 import Certificados from "../pages/certificados/Certificados";
 import Brigadas from "../pages/brigadas/Brigadas";
 import Unidades from "../pages/unidades/Unidades";
-
+import Fundaciones from "../pages/fundaciones/Fundaciones";
 
 
 const NavbarRoutes = () => {
@@ -26,6 +26,7 @@ const NavbarRoutes = () => {
       <Route path="/home" element={<Home />} />
       <Route path="auditorias" element={<Auditorias />} />
       <Route path="/brigadas" element={<Brigadas />} />
+      <Route path="/fundaciones" element={<Fundaciones />} />
       <Route path="/certificados" element={<Certificados />} />
       <Route path="/comandos" element={<Comandos />} />
       <Route path="/cursos" element={<Cursos />} />
