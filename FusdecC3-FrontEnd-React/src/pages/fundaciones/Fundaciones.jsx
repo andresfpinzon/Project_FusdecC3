@@ -148,12 +148,12 @@ const handleUpdateFundacion = async () => {
   
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
-    setSelectedBrigada(null);
+    setSelectedFundacion(null);
   };
 
   const handleCloseInfoDialog = () => {
     setOpenInfoDialog(false);
-    setInfoBrigada(null);
+    setInfoFundacion(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -184,22 +184,6 @@ const handleUpdateFundacion = async () => {
             fullWidth
             margin="normal"
           />
-                    <FormControl fullWidth margin="normal">
-            <InputLabel id="comando-select-label">Comando</InputLabel>
-            <Select
-              labelId="comando-select-label"
-              name="comandoId"
-              value={formValues.comandoId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Comando" />}
-            >
-              {comandos.map((comando) => (
-                <MenuItem key={comando._id} value={comando._id}>
-                  {comando.nombreComando} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <div>
             <label>Estado de Fundacion</label>
             <Switch

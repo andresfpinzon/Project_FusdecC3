@@ -7,6 +7,7 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
     ];
   
     const rutasAdministrador = [
+      { nombre: "Fundaciones", ruta: "/fundaciones", roles: ["Administrador", "Root"] },
       { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador", "Root"] },
       { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrador", "Root"] },
       { nombre: "Brigadas", ruta: "/brigadas", roles: ["Administrador", "Root"] },
