@@ -246,7 +246,7 @@ const Comandos = () => {
     <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <h1>Gestión de Comandos</h1>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4} style={{ paddingLeft: '20px' }}>
+        <Grid item xs={12} md={12} style={{ paddingLeft: '20px' }}>
           <form noValidate autoComplete="off">
             <TextField
               label="Nombre del Comando"
@@ -298,7 +298,7 @@ const Comandos = () => {
             </Button>
           </form>
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={12}>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
               <TableHead>

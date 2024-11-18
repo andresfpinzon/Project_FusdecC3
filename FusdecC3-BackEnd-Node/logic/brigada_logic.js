@@ -29,11 +29,9 @@ async function listarBrigadas() {
 
 // Función asíncrona para buscar una brigada por su ID
 async function buscarBrigadaPorId(id) {
-    const brigada = await Brigada.findById(id).populate('comandoId').populate('unidades');
-    if (!brigada) {
-        throw new Error(`Brigada con ID ${id} no encontrada`);
-    }
-    return brigada;
+    return await Brigada.findById(id)
+        .populate('comandoId')
+        .populate('unidades');
 }
 
 // Función asíncrona para editar una brigada

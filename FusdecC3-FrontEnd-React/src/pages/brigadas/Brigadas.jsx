@@ -248,7 +248,7 @@ export default function Brigadas() {
     <Container maxWidth="lg">
       <h1>Gestión de Brigadas</h1>
       <Grid container spacing={2} component="section">
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={12}>
           <h2>Información de Brigada</h2>
           <TextField
             label="Nombre de la Brigada"
@@ -299,7 +299,7 @@ export default function Brigadas() {
             {selectedBrigada ? "Actualizar Brigada" : "Crear Brigada"}
           </Button>
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={12}>
           <h2>Lista de Brigadas</h2>
           <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
             <Table>
@@ -369,65 +369,68 @@ export default function Brigadas() {
 
       {/* Modal de Información de la Brigada */}
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
-  <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-    Información de la Brigada
-  </DialogTitle>
-  <DialogContent sx={{ padding: '20px' }}>
-    {infoBrigada && (
-      <div>
-        {/* Nombre */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <Assignment color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>{infoBrigada.nombreBrigada || "N/A"}</Typography>
-        </Box>
-        
-        {/* Ubicación */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <LocationOn color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            <a href={infoBrigada.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
-              {infoBrigada.ubicacionBrigada || "N/A"}
-            </a>
-          </Typography>
-        </Box>
-        
-        {/* Comando */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <Group color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
-          </Typography>
-        </Box>
-        
-        {/* Estado */}
-        <Box display="flex" alignItems="center" mb={2}>
-          {infoBrigada.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}
-          </Typography>
-        </Box>
-        
-        {/* Unidad */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <Assignment color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidad:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {infoBrigada?.unidadId?.nombreUnidad || "Unidad no encontrada"}
-          </Typography>
-        </Box>
-      </div>
-    )}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
-      Cerrar
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información de la Brigada
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          {infoBrigada && (
+            <div>
+              {/* Nombre */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Assignment color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoBrigada.nombreBrigada || "N/A"}</Typography>
+              </Box>
+              
+              {/* Ubicación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <LocationOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  <a href={infoBrigada.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
+                    {infoBrigada.ubicacionBrigada || "N/A"}
+                  </a>
+                </Typography>
+              </Box>
+              
+              {/* Comando */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Group color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
+                </Typography>
+              </Box>
+              
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                {infoBrigada.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}
+                </Typography>
+              </Box>
+              
+              {/* Unidades Asignadas */}
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidades Asignadas:</Typography>
+              {infoBrigada.unidades && infoBrigada.unidades.length > 0 ? (
+                infoBrigada.unidades.map((unidad) => (
+                  <Typography key={unidad._id} variant="body1">
+                    {unidad.nombreUnidad} {/* Asegúrate de que 'nombreUnidad' es la propiedad correcta */}
+                  </Typography>
+                ))
+              ) : (
+                <Typography variant="body1">Sin unidades asignadas</Typography>
+              )}
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Snackbar para mensajes de error */}
       <Snackbar

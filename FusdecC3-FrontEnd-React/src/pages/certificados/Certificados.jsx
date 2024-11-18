@@ -318,7 +318,7 @@ const Certificados = () => {
     <Container maxWidth="lg">
       <h1>Gestión de Certificados</h1>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12} xl={12}>
           <TextField
             label="Fecha de Emisión"
             type="date"
@@ -377,7 +377,7 @@ const Certificados = () => {
             {selectedCertificado ? "Actualizar Certificado" : "Crear Certificado"}
           </Button>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <h2>Lista de Certificados</h2>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
@@ -453,7 +453,7 @@ const Certificados = () => {
 
       {/* Diálogo para mostrar detalles del certificado */}
       <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+        <DialogTitle sx={{ backgroundColor: '#208DC7FF', color: '#fff', textAlign: 'center' }}>
           Detalles del Certificado
         </DialogTitle>
         <DialogContent sx={{ padding: '20px' }}>
