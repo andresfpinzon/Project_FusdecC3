@@ -17,14 +17,16 @@ async function crearBrigada(body) {
         ubicacionBrigada: body.ubicacionBrigada,
         estadoBrigada: body.estadoBrigada,
         comandoId: body.comandoId,
-        unidades: body.unidades || [] // Asegurarse de que unidades sea un array
+        unidades: body.unidades || [] 
     });
     return await brigada.save();
 }
 
 // Función asíncrona para listar brigadas
 async function listarBrigadas() {
-    return await Brigada.find();
+    return await Brigada.find()
+        .populate('unidades')
+        .populate('comandoId');
 }
 
 // Función asíncrona para buscar una brigada por su ID

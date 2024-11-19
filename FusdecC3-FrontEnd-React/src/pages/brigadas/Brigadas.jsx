@@ -34,12 +34,14 @@ const token = localStorage.getItem("token");
 export default function Brigadas() {
   const [brigadas, setBrigadas] = useState([]);
   const [comandos, setComandos] = useState([]);
+  const [unidades, setUnidades] = useState([]);
   const [selectedBrigada, setSelectedBrigada] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreBrigada: "",
     ubicacionBrigada: "",
     comandoId: "",
     estadoBrigada: true,
+    unidades: [],
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
@@ -50,6 +52,7 @@ export default function Brigadas() {
   useEffect(() => {
     fetchBrigadas();
     fetchComandos();
+    fetchUnidades();
   }, []);
 
   const fetchBrigadas = async () => {
@@ -87,6 +90,25 @@ export default function Brigadas() {
     } catch (error) {
       console.error("Error al obtener comandos:", error);
       setErrorMessage("Error al obtener comandos");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchUnidades = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/unidades", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+        }
+      });
+      if (!response.ok) throw new Error("Error al obtener unidades");
+      const data = await response.json();
+      setUnidades(data);
+    } catch (error) {
+      console.error("Error al obtener unidades:", error);
+      setErrorMessage("Error al obtener unidades");
       setOpenSnackbar(true);
     }
   };
@@ -209,7 +231,7 @@ export default function Brigadas() {
     setFormValues({
       nombreBrigada: brigada.nombreBrigada || "",
       ubicacionBrigada: brigada.ubicacionBrigada || "",
-      comandoId: brigada.comandoId || "",
+      comandoId: brigada.comandoId?._id || "",
       estadoBrigada: brigada.estadoBrigada !== undefined ? brigada.estadoBrigada : true,
     });
   };
@@ -318,7 +340,7 @@ export default function Brigadas() {
                     <TableCell>{brigada.nombreBrigada}</TableCell>
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
                     <TableCell>
-                      {comandos.find(comando => comando._id === brigada.comandoId)?.nombreComando || "Sin comando"}
+                      {brigada.comandoId.nombreComando}
                     </TableCell>
                     <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
@@ -398,7 +420,7 @@ export default function Brigadas() {
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
+                  {brigadas.comandoId?.nombreComando || "comando no encontrado"}
                 </Typography>
               </Box>
               
@@ -416,7 +438,7 @@ export default function Brigadas() {
               {infoBrigada.unidades && infoBrigada.unidades.length > 0 ? (
                 infoBrigada.unidades.map((unidad) => (
                   <Typography key={unidad._id} variant="body1">
-                    {unidad.nombreUnidad} {/* Asegúrate de que 'nombreUnidad' es la propiedad correcta */}
+                    {unidad.nombreUnidad || "Unidad no encontrada"}
                   </Typography>
                 ))
               ) : (

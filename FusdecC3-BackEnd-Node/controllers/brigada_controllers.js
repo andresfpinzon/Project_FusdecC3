@@ -1,11 +1,12 @@
 const logic = require('../logic/brigada_logic');
 const brigadaSchemaValidation = require('../validations/brigada_validations');
+const Brigada = require('../models/brigada_model');
 
 // Controlador para listar brigadas
 const listarBrigadas = async (_req, res) => {
     try {
         const brigadas = await logic.listarBrigadas();
-        res.json(brigadas);
+        res.json(brigadas); // Ahora incluirá unidades
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener las brigadas' });
@@ -108,24 +109,24 @@ const buscarBrigadasPorUnidadId = async (req, res) => {
 const agregarunidades = async (req, res) => {
     const { id } = req.params;
     const { unidadIds } = req.body;
-  
+
     try {
-      // Buscar la brigada
-      const brigada = await Brigada.findById(id);
-      if (!brigada) {
-        return res.status(404).json({ message: 'Brigada no encontrada' });
-      }
-  
-      // Agregar las unidades
-      brigada.unidades.push(...unidadIds);
-      await brigada.save();
-  
-      return res.status(200).json(brigada);
+        // Busca la brigada por ID
+        const brigada = await Brigada.findById(id);
+        if (!brigada) {
+            return res.status(404).json({ error: 'Brigada no encontrada' });
+        }
+
+        // Agrega las unidades a la brigada
+        brigada.unidades.push(...unidadIds);
+        await brigada.save();
+
+        res.json(brigada);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Error interno del servidor' });
+        console.error('Error al agregar unidades:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
-  };
+};
 
 // Exportar los controladores
 module.exports = {
