@@ -32,12 +32,12 @@ import {
   const [selectedFundacion, setSelectedFundacion] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreFundacion: "", 
-    comandoId: "",
     estadoFundacion: true,
-    comandos: [],
+    comando: [],
   });
   
  
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoFundacion, setInfoFundacion] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -50,7 +50,7 @@ import {
   const fetchFundaciones = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/fundaciones");
-      if (!response.ok) throw new Error("Error al obtenerfundaciones");
+      if (!response.ok) throw new Error("Error al obtener fundaciones");
       const data = await response.json();
       setFundaciones(data);
     } catch (error) {
@@ -131,12 +131,41 @@ const handleUpdateFundacion = async () => {
       setOpenSnackbar(true);
     }
   };
+
+  const handleDeleteFundacion = async () => {
+    if (!selectedFundacion) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/fundaciones/${selectedFundacion._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+        }
+      );
+
+      if (response.ok) {
+        setFundaciones(fundaciones.filter((fundacion) => fundacion._id !== selectedFundacion._id));
+        handleCloseDeleteDialog();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al eliminar fundaacion");
+      }
+    } catch (error) {
+      console.error("Error al eliminar fundacion:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
+
   const handleEditClick = (fundacion) => {
     setSelectedFundacion(fundacion);
     setFormValues({
       nombreFundacion : fundacion.nombreFundacion || "",
-
-      comandoId: fundacion.comandoId || "",
+      comandosFundacion: fundacion.comandoId || "",
       estadoFundacion: fundacion.estadoFundacion !== undefined ? fundacion.estadoFundacion : true,
     });
   };
@@ -148,12 +177,12 @@ const handleUpdateFundacion = async () => {
   
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
-    setSelectedBrigada(null);
+    setSelectedFundacion(null);
   };
 
   const handleCloseInfoDialog = () => {
     setOpenInfoDialog(false);
-    setInfoBrigada(null);
+    setInfoFundacion(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -164,7 +193,7 @@ const handleUpdateFundacion = async () => {
   const clearForm = () => {
     setFormValues({
       nombreFundacion: "",
-      comandoId: "",
+      comandosFundacion: "",
       estado: true,
     });
     setSelectedFundacion(null);
@@ -184,22 +213,6 @@ const handleUpdateFundacion = async () => {
             fullWidth
             margin="normal"
           />
-                    <FormControl fullWidth margin="normal">
-            <InputLabel id="comando-select-label">Comando</InputLabel>
-            <Select
-              labelId="comando-select-label"
-              name="comandoId"
-              value={formValues.comandoId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Comando" />}
-            >
-              {comandos.map((comando) => (
-                <MenuItem key={comando._id} value={comando._id}>
-                  {comando.nombreComando} {/* Asegúrate de que 'nombreComando' es la propiedad correcta */}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <div>
             <label>Estado de Fundacion</label>
             <Switch
@@ -230,11 +243,10 @@ const handleUpdateFundacion = async () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {fundaciones.map((fundaciones) => (
-                  <TableRow key={fundaciones._id}>
-                    <TableCell>{fundaciones.nombreFundacion}</TableCell>
-                    <TableCell>
-                      {comandos.find(comando => comando._id === fundaciones.comandoId)?.nombreComando || "Sin comando"}
+                {fundaciones.map((fundacion) => (
+                  <TableRow key={fundacion._id}>
+                    <TableCell>{fundacion.nombreFundacion}</TableCell>
+                    <TableCell>{fundacion.comandosFundacion || "Sin comando"}
                     </TableCell>
                     <TableCell>{fundaciones.estadoFundacion ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
@@ -259,6 +271,29 @@ const handleUpdateFundacion = async () => {
         </Grid>
       </Grid>
 
+      {/* Modal de Confirmación de Eliminación */}
+      <Dialog
+        open={openDeleteDialog} onClose={handleCloseDeleteDialog}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Eliminar Fundacion</DialogTitle>
+        <DialogContent dividers>
+          <Typography>
+            ¿Estás seguro de que quieres eliminar la Fundacion?{" "}
+            <strong>{selectedFundacion?.nombreFundacion}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="default">
+            Cancelar
+          </Button>
+          <Button onClick={handleDeleteFundacion} color="secondary">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Modal de Información de la Fundacion */}
       <Dialog
         open={openInfoDialog}
@@ -272,7 +307,7 @@ const handleUpdateFundacion = async () => {
             <div>
               <Typography variant="h6">Nombre: {infoFundacion.nombreFundacion}</Typography>
               <Typography variant="body1">
-                Comando: {comandos.find(comando => comando._id === infoFundacion.comandoId)?.nombreComando || "Sin comando"}
+                Comandos: {infoFundacion.comandosFundacion || "Sin comando"}
               </Typography>
               <Typography variant="body1">Estado: {infoFundacion.estadoFundacion ? "Activo" : "Inactivo"}</Typography>
             </div>
