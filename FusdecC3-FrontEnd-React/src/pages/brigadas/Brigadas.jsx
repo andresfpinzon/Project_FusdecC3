@@ -26,8 +26,12 @@ import {
   FormControl,
   OutlinedInput,
   Box,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
-import { Edit, Delete, Info, LocationOn, Group, Assignment, CheckCircle, Cancel } from "@mui/icons-material";
+import { Edit, Delete, Info, LocationOn, Group, Assignment, CheckCircle, Cancel, Shield } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
@@ -350,10 +354,10 @@ export default function Brigadas() {
                       <IconButton onClick={() => {
                         setSelectedBrigada(brigada);
                         setOpenDeleteDialog(true);
-                      }} color="secondary">
+                      }} color="error">
                         <Delete />
                       </IconButton>
-                      <IconButton onClick={() => handleInfoClick(brigada)} color="default">
+                      <IconButton onClick={() => handleInfoClick(brigada)} color="primary">
                         <Info />
                       </IconButton>
                     </TableCell>
@@ -420,7 +424,7 @@ export default function Brigadas() {
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {brigadas.comandoId?.nombreComando || "comando no encontrado"}
+                  {infoBrigada.comandoId?.nombreComando || "comando no encontrado"}
                 </Typography>
               </Box>
               
@@ -434,15 +438,36 @@ export default function Brigadas() {
               </Box>
               
               {/* Unidades Asignadas */}
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidades Asignadas:</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
+                <Shield sx={{ mr: 1 }} color="primary" />
+                Unidades Asignadas
+              </Typography>
               {infoBrigada.unidades && infoBrigada.unidades.length > 0 ? (
-                infoBrigada.unidades.map((unidad) => (
-                  <Typography key={unidad._id} variant="body1">
-                    {unidad.nombreUnidad || "Unidad no encontrada"}
-                  </Typography>
-                ))
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                  {infoBrigada.unidades.map((unidad) => (
+                    <Chip
+                      key={unidad._id}
+                      label={unidad.nombreUnidad || "Unidad no encontrada"}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      sx={{ 
+                        borderRadius: '16px',
+                        fontSize: '1rem',
+                        maxWidth: '200px',
+                        width: '100%',
+                        color: 'black',
+                        '&:hover': {
+                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
               ) : (
-                <Typography variant="body1">Sin unidades asignadas</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                  Sin unidades asignadas
+                </Typography>
               )}
             </div>
           )}

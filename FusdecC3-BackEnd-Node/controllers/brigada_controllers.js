@@ -106,25 +106,24 @@ const buscarBrigadasPorUnidadId = async (req, res) => {
 };
 
 // Controlador para agregar unidades a una brigada
-const agregarunidades = async (req, res) => {
-    const { id } = req.params;
-    const { unidadIds } = req.body;
-
+const agregarUnidades = async (req, res) => {
     try {
-        // Busca la brigada por ID
+        const { id } = req.params;
+        const { unidadIds } = req.body;
+
         const brigada = await Brigada.findById(id);
         if (!brigada) {
-            return res.status(404).json({ error: 'Brigada no encontrada' });
+            return res.status(404).json({ mensaje: 'Brigada no encontrada' });
         }
 
-        // Agrega las unidades a la brigada
-        brigada.unidades.push(...unidadIds);
+        // Agregar las nuevas unidades al array existente
+        brigada.unidades = [...new Set([...brigada.unidades, ...unidadIds])];
+        
         await brigada.save();
 
-        res.json(brigada);
+        res.status(200).json(brigada);
     } catch (error) {
-        console.error('Error al agregar unidades:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ mensaje: 'Error al agregar unidades a la brigada', error: error.message });
     }
 };
 
@@ -137,5 +136,5 @@ module.exports = {
     obtenerBrigadaPorId,
     buscarBrigadasPorComandoId,
     buscarBrigadasPorUnidadId,
-    agregarunidades
+    agregarUnidades
 };

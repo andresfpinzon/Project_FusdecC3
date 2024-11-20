@@ -118,16 +118,18 @@ async function obtenerEstudiantePorId(id) {
 // Lógica para agregar asistencias a un estudiante
 async function agregarAsistenciaAEstudiante(estudianteId, asistenciasIds) {
     try {
-        const estudiante = await Estudiante.findOne({ estudianteId });
+        const estudiante = await Estudiante.findById(estudianteId);
         if (!estudiante) {
             throw new Error('Estudiante no encontrado');
         }
+        // Convertir los IDs a strings para comparación
+        const asistenciasActuales = estudiante.asistencias.map(id => id.toString());
         // Filtrar las asistencias ya existentes para no duplicarlas
-        const nuevasAsistencias = asistenciasIds.filter(asistenciaId => !estudiante.asistencias.includes(asistenciaId));
+        const nuevasAsistencias = asistenciasIds.filter(id => !asistenciasActuales.includes(id.toString()));
         // Agregar las nuevas asistencias al array de asistencias del estudiante
-        estudiante.asistencias = [...estudiante.asistencias, ...nuevasAsistencias];
-        await estudiante.save();
-        return estudiante;
+        estudiante.asistencias.push(...nuevasAsistencias);
+        const estudianteActualizado = await estudiante.save();
+        return estudianteActualizado;
     } catch (error) {
         throw new Error(`Error al agregar asistencias: ${error.message}`);
     }
@@ -136,16 +138,18 @@ async function agregarAsistenciaAEstudiante(estudianteId, asistenciasIds) {
 // Lógica para agregar inasistencias a un estudiante
 async function agregarInasistenciaAEstudiante(estudianteId, inasistenciasIds) {
     try {
-        const estudiante = await Estudiante.findOne({ estudianteId });
+        const estudiante = await Estudiante.findById(estudianteId);
         if (!estudiante) {
             throw new Error('Estudiante no encontrado');
         }
+        // Convertir los IDs a strings para comparación
+        const inasistenciasActuales = estudiante.inasistencias.map(id => id.toString());
         // Filtrar las inasistencias ya existentes para no duplicarlas
-        const nuevasInasistencias = inasistenciasIds.filter(inasistenciaId => !estudiante.inasistencias.includes(inasistenciaId));
+        const nuevasInasistencias = inasistenciasIds.filter(id => !inasistenciasActuales.includes(id.toString()));
         // Agregar las nuevas inasistencias al array de inasistencias del estudiante
-        estudiante.inasistencias = [...estudiante.inasistencias, ...nuevasInasistencias];
-        await estudiante.save();
-        return estudiante;
+        estudiante.inasistencias.push(...nuevasInasistencias);
+        const estudianteActualizado = await estudiante.save();
+        return estudianteActualizado;
     } catch (error) {
         throw new Error(`Error al agregar inasistencias: ${error.message}`);
     }
@@ -154,16 +158,18 @@ async function agregarInasistenciaAEstudiante(estudianteId, inasistenciasIds) {
 // Lógica para agregar certificados a un estudiante
 async function agregarCertificadoAEstudiante(estudianteId, certificadosIds) {
     try {
-        const estudiante = await Estudiante.findOne({ estudianteId });
+        const estudiante = await Estudiante.findById(estudianteId);
         if (!estudiante) {
             throw new Error('Estudiante no encontrado');
         }
+        // Convertir los IDs a strings para comparación
+        const certificadosActuales = estudiante.certificados.map(id => id.toString());
         // Filtrar los certificados ya existentes para no duplicarlos
-        const nuevosCertificados = certificadosIds.filter(certificadoId => !estudiante.certificados.includes(certificadoId));
+        const nuevosCertificados = certificadosIds.filter(id => !certificadosActuales.includes(id.toString()));
         // Agregar los nuevos certificados al array de certificados del estudiante
-        estudiante.certificados = [...estudiante.certificados, ...nuevosCertificados];
-        await estudiante.save();
-        return estudiante;
+        estudiante.certificados.push(...nuevosCertificados);
+        const estudianteActualizado = await estudiante.save();
+        return estudianteActualizado;
     } catch (error) {
         throw new Error(`Error al agregar certificados: ${error.message}`);
     }
@@ -227,4 +233,3 @@ module.exports = {
     agregarEdicionAEstudiante,
     desactivarEstudiante
 };
-

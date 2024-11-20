@@ -327,7 +327,7 @@ const Comandos = () => {
                       <IconButton onClick={() => {
                         setSelectedComando(comando);
                         setOpenDeleteDialog(true);
-                      }} color="secondary">
+                      }} color="error">
                         <Delete />
                       </IconButton>
                     </TableCell>

@@ -1,5 +1,6 @@
 const logic = require('../logic/unidad_logic');
 const unidadSchemaValidation = require('../validations/unidad_validations');
+const Brigada = require('../models/brigada_model');
 
 // Controlador para listar unidades
 const listarUnidades = async (_req, res) => {
@@ -19,6 +20,10 @@ const crearUnidad = async (req, res) => {
         if (error) return res.status(400).json({ error: error.details[0].message });
 
         const nuevaUnidad = await logic.crearUnidad(req.body);
+        
+        // Actualiza la brigada para incluir la nueva unidad
+        await Brigada.findByIdAndUpdate(req.body.brigadaId, { $push: { unidades: nuevaUnidad._id } });
+
         res.status(201).json(nuevaUnidad);
     } catch (error) {
         console.error(error);

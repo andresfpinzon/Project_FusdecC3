@@ -455,7 +455,7 @@ const Unidades = () => {
         <DialogContent>
           <Typography>Nombre: {infoUnidad?.nombreUnidad}</Typography>
           <Typography>Estado: {infoUnidad?.estadoUnidad ? "Activo" : "Inactivo"}</Typography>
-          <Typography>Brigada: {infoUnidad?.brigadaId?.nombre || "Brigada no encontrada"}</Typography>
+          <Typography>Brigada: {infoUnidad?.brigadaId?.nombreBrigada || "Brigada no encontrada"}</Typography>
           <Typography>Usuario: {infoUnidad?.usuarioId?.nombre || "Usuario no encontrado"}</Typography>
           
           {/* Aquí se muestra la información del estudiante */}
