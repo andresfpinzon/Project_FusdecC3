@@ -27,7 +27,8 @@ import {
   InputLabel,
   OutlinedInput,
   Checkbox,
-  ListItemText
+  ListItemText,
+  TablePagination
 } from "@mui/material";
 
 import { Edit, Delete, Info, Grade, CheckCircle, Person, ToggleOn, Group } from "@mui/icons-material";
@@ -53,6 +54,11 @@ const Calificaciones = () => {
   const [calificacionToDelete, setCalificacionToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCalificacion, setInfoCalificacion] = useState(null);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const fetchCalificaciones = async () => {
     try {
@@ -111,8 +117,6 @@ const Calificaciones = () => {
     }
   };
 
-  
-
   useEffect(() => {
     fetchCalificaciones();
     fetchEstudiantes();
@@ -126,6 +130,23 @@ const Calificaciones = () => {
       }));
     }
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredCalificaciones = calificaciones.filter((calificacion) =>
+    calificacion.tituloCalificacion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    calificacion.aprobado.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -358,6 +379,17 @@ const Calificaciones = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar calificaciones"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -369,7 +401,9 @@ const Calificaciones = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {calificaciones.map((calificacion) => (
+          {filteredCalificaciones
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((calificacion) => (
               <TableRow key={calificacion._id}>
                 <TableCell>{calificacion.tituloCalificacion}</TableCell>
                 <TableCell>{calificacion.aprobado  ? "Si" : "No"}</TableCell>
@@ -392,6 +426,18 @@ const Calificaciones = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredCalificaciones.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>

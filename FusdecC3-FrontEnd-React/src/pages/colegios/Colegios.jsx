@@ -20,6 +20,7 @@ import {
   Typography,
   Snackbar,
   Alert,
+  TablePagination
 } from "@mui/material";
 
 import { Edit, Delete, Info, School, Email, VerifiedUser, People } from "@mui/icons-material";
@@ -43,6 +44,11 @@ const Colegios = () => {
   const [colegioToDelete, setColegioToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoColegio, setInfoColegio] = useState(null);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const fetchColegios = async () => {
     try {
@@ -86,6 +92,23 @@ const Colegios = () => {
     fetchColegios();
     fetchEstudiantes();
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredColegios = colegios.filter((colegio) =>
+    colegio.nombreColegio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    colegio.emailColegio.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -281,6 +304,17 @@ const Colegios = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar colegios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -292,7 +326,9 @@ const Colegios = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {colegios.map((colegio) => (
+          {filteredColegios
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((colegio) => (
               <TableRow key={colegio._id}>
                 <TableCell>{colegio.nombreColegio}</TableCell>
                 <TableCell>{colegio.emailColegio}</TableCell>
@@ -315,6 +351,18 @@ const Colegios = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredColegios.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>

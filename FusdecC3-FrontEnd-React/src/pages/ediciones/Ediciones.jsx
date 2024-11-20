@@ -26,7 +26,8 @@ import {
   InputLabel,
   OutlinedInput,
   Checkbox,
-  ListItemText
+  ListItemText,
+  TablePagination
 } from "@mui/material";
 
 import { Edit, Delete, Info, School, DateRange, EventAvailable, ToggleOn, Class, Grade } from "@mui/icons-material";
@@ -54,6 +55,11 @@ const Ediciones = () => {
   const [edicionToDelete, setEdicionToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoEdicion, setInfoEdicion] = useState(null);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const fetchEdiciones = async () => {
     try {
@@ -118,6 +124,24 @@ const Ediciones = () => {
     fetchCursos();
     fetchHorarios();
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredEdiciones = ediciones.filter((edicion) =>
+    edicion.tituloEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    edicion.fechaFinEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    edicion.fechaInicioEdicion.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -382,6 +406,17 @@ const handleUpdateEdicion = async () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar ediciones"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -394,7 +429,9 @@ const handleUpdateEdicion = async () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {ediciones.map((edicion) => (
+          {filteredEdiciones
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((edicion) => (
               <TableRow key={edicion._id}>
                 <TableCell>{edicion.tituloEdicion}</TableCell>
                 <TableCell>{edicion.fechaInicioEdicion}</TableCell>
@@ -420,6 +457,18 @@ const handleUpdateEdicion = async () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredEdiciones.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>

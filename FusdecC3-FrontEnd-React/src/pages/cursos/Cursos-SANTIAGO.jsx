@@ -20,7 +20,6 @@ import {
   Typography,
   Snackbar,
   Alert,
-  TablePagination
 } from "@mui/material";
 
 import { Edit, Delete, Info, School, Description, AccessTime, ToggleOn, Foundation, EventNote } from "@mui/icons-material";
@@ -47,11 +46,6 @@ const Cursos = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCurso, setInfoCurso] = useState(null);
 
-  // Paginación y búsqueda
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const fetchCursos = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/cursos",{
@@ -74,23 +68,6 @@ const Cursos = () => {
   useEffect(() => {
     fetchCursos();
   }, []);
-
-  // Filtrar usuarios según el término de búsqueda
-  const filteredCursos = cursos.filter((curso) =>
-    curso.nombreCurso.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    curso.descripcionCurso.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Cambiar página
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  // Cambiar filas por página
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -322,17 +299,6 @@ const Cursos = () => {
           </Button>
         </Box>
       </form>
-
-      {/* Busqueda */}
-      <TextField
-        label="Buscar cursos"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -345,9 +311,7 @@ const Cursos = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {filteredCursos
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((curso) => (
+            {cursos.map((curso) => (
               <TableRow key={curso._id}>
                 <TableCell>{curso.nombreCurso}</TableCell>
                 <TableCell>{curso.descripcionCurso}</TableCell>
@@ -370,18 +334,6 @@ const Cursos = () => {
             ))}
           </TableBody>
         </Table>
-
-        {/* Paginación */}
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredCursos.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>

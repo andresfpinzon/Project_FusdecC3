@@ -20,6 +20,7 @@ import {
   Typography,
   Snackbar,
   Alert,
+  TablePagination
 } from "@mui/material";
 
 import { Edit, Delete, Info, Class,AccessTime, ToggleOn } from "@mui/icons-material";
@@ -43,6 +44,11 @@ const Horarios = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoHorario, setInfoHorario] = useState(null);
 
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const fetchHorarios = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/horarios",{
@@ -65,6 +71,24 @@ const Horarios = () => {
   useEffect(() => {
     fetchHorarios();
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredHorarios = horarios.filter((horario) =>
+    horario.tituloHorario.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    horario.horaInicio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    horario.horaFin.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleInputChange = (e) => {
     setFormValues({
@@ -264,6 +288,17 @@ const Horarios = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar horarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -276,7 +311,9 @@ const Horarios = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {horarios.map((horario) => (
+          {filteredHorarios
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((horario) => (
               <TableRow key={horario._id}>
                 <TableCell>{horario.tituloHorario}</TableCell>
                 <TableCell>{horario.horaInicio}</TableCell>
@@ -302,6 +339,18 @@ const Horarios = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredHorarios.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
       
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
