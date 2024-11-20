@@ -13,12 +13,12 @@ const fundacionSchema =new Schema ({
       type: Boolean,
       default: true,
     },
-comando:[
-    {
-         type: Schema.Types.ObjectId,
-         ref: "Comando",
-    },
-], 
+    comando:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Comando",
+        },
+    ], 
 
 }); 
  

@@ -20,13 +20,11 @@ import {
   DialogActions,
   Typography,
   Switch,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  OutlinedInput,
 } from "@mui/material"; 
- import { Edit, Info} from "@mui/icons-material";
+ import { Edit, Info, Delete} from "@mui/icons-material";
+
+ const token = localStorage.getItem("token");
+
  export default function Fundaciones() {
   const [fundaciones, setFundaciones] = useState([]);
   const [selectedFundacion, setSelectedFundacion] = useState(null);
@@ -103,7 +101,7 @@ import {
 const handleUpdateFundacion = async () => {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/fundacion/${selectedFundacion._id}`,
+      `http://localhost:3000/api/fundaciones/${selectedFundacion._id}`,
       {
         method: "PUT",
         headers: {
@@ -165,14 +163,15 @@ const handleUpdateFundacion = async () => {
     setSelectedFundacion(fundacion);
     setFormValues({
       nombreFundacion : fundacion.nombreFundacion || "",
-      comandosFundacion: fundacion.comandoId || "",
       estadoFundacion: fundacion.estadoFundacion !== undefined ? fundacion.estadoFundacion : true,
+      comando: fundacion.comando || [],
     });
   };
 
   const handleInfoClick = (fundacion) => {
     setInfoFundacion(fundacion);
     setOpenInfoDialog(true);
+    console.log("Comando Info:", fundacion.comando);
   };
   
   const handleCloseDeleteDialog = () => {
@@ -193,7 +192,6 @@ const handleUpdateFundacion = async () => {
   const clearForm = () => {
     setFormValues({
       nombreFundacion: "",
-      comandosFundacion: "",
       estado: true,
     });
     setSelectedFundacion(null);
@@ -237,7 +235,6 @@ const handleUpdateFundacion = async () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Nombre</TableCell>
-                  <TableCell>Comando</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
@@ -246,9 +243,7 @@ const handleUpdateFundacion = async () => {
                 {fundaciones.map((fundacion) => (
                   <TableRow key={fundacion._id}>
                     <TableCell>{fundacion.nombreFundacion}</TableCell>
-                    <TableCell>{fundacion.comandosFundacion || "Sin comando"}
-                    </TableCell>
-                    <TableCell>{fundaciones.estadoFundacion ? "Activo" : "Inactivo"}</TableCell>
+                    <TableCell>{fundacion.estadoFundacion ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(fundacion)} color="primary">
                         <Edit />
@@ -307,7 +302,7 @@ const handleUpdateFundacion = async () => {
             <div>
               <Typography variant="h6">Nombre: {infoFundacion.nombreFundacion}</Typography>
               <Typography variant="body1">
-                Comandos: {infoFundacion.comandosFundacion || "Sin comando"}
+                Comandos: {infoFundacion.comando?.map((co) => co.nombreComando).join(", ") || "Sin comando"}
               </Typography>
               <Typography variant="body1">Estado: {infoFundacion.estadoFundacion ? "Activo" : "Inactivo"}</Typography>
             </div>

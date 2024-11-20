@@ -22,6 +22,7 @@ async  function listarFundaciones(){
     .populate('comando');
 
 }
+
 //funcion asincrona para buscar una fundacion por su id 
 async function buscarFundacionPorId(id){
     const fundacion = await Fundacion.findById(id)
