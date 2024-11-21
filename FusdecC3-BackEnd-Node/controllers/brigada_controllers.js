@@ -127,6 +127,19 @@ const agregarUnidades = async (req, res) => {
     }
 };
 
+// Controlador para obtener todas las brigadas
+const getBrigadas = async (req, res) => {
+  try {
+    const brigadas = await Brigada.find()
+      .populate("comandoId")
+      .populate("unidades"); // Población de unidades asociadas
+
+    res.status(200).json(brigadas);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Exportar los controladores
 module.exports = {
     listarBrigadas,
@@ -136,5 +149,6 @@ module.exports = {
     obtenerBrigadaPorId,
     buscarBrigadasPorComandoId,
     buscarBrigadasPorUnidadId,
-    agregarUnidades
+    agregarUnidades,
+    getBrigadas
 };
