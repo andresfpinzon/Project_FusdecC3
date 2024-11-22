@@ -26,6 +26,7 @@ import {
   DialogActions,
   Typography,
   Box,
+  TablePagination,
 } from "@mui/material";
 import { Edit, Delete, Info, Description, CalendarToday, VerifiedUser, School, Person } from "@mui/icons-material";
 
@@ -52,6 +53,8 @@ const Certificados = () => {
   const [certificadoToDelete, setCertificadoToDelete] = useState(null);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [certificadoDetails, setCertificadoDetails] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchUsuarios();
@@ -389,7 +392,7 @@ const Certificados = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {certificados.map((certificado) => (
+                {certificados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((certificado) => (
                   <TableRow key={certificado._id}>
                     <TableCell>
                       {certificado.codigoVerificacion}
@@ -415,6 +418,18 @@ const Certificados = () => {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={certificados.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(event, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(event) => {
+                setRowsPerPage(parseInt(event.target.value, 10));
+                setPage(0);
+              }}
+            />
           </TableContainer>
         </Grid>
       </Grid>

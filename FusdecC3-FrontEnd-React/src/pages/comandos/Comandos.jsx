@@ -25,6 +25,7 @@ import {
   Select,
   MenuItem,
   Grid,
+  TablePagination,
 } from "@mui/material";
 import { Edit, Delete, Info, LocationOn, Assignment, VerifiedUser, History } from "@mui/icons-material";
 
@@ -45,6 +46,8 @@ const Comandos = () => {
   const [infoComando, setInfoComando] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchComandos();
@@ -311,7 +314,7 @@ const Comandos = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {comandos.map((comando) => (
+                {comandos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comando) => (
                   <TableRow key={comando._id}>
                     <TableCell>{comando.nombreComando}</TableCell>
                     <TableCell>{comando.ubicacionComando}</TableCell>
@@ -335,6 +338,18 @@ const Comandos = () => {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={comandos.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(event, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(event) => {
+                setRowsPerPage(parseInt(event.target.value, 10));
+                setPage(0);
+              }}
+            />
           </TableContainer>
         </Grid>
       </Grid>

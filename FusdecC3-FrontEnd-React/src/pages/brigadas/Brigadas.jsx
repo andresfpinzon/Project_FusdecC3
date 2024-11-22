@@ -30,6 +30,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  TablePagination,
 } from "@mui/material";
 import { Edit, Delete, Info, LocationOn, Group, Assignment, CheckCircle, Cancel, Shield } from "@mui/icons-material";
 
@@ -53,6 +54,9 @@ export default function Brigadas() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     fetchBrigadas();
     fetchComandos();
@@ -61,13 +65,13 @@ export default function Brigadas() {
 
   const fetchBrigadas = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/brigadas",{
+      const response = await fetch("http://localhost:3000/api/brigadas", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
       setBrigadas(data);
@@ -80,17 +84,16 @@ export default function Brigadas() {
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/comandos",{
+      const response = await fetch("http://localhost:3000/api/comandos", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
       setComandos(data);
-      console.log(data); // Verifica que los datos se están obteniendo correctamente
     } catch (error) {
       console.error("Error al obtener comandos:", error);
       setErrorMessage("Error al obtener comandos");
@@ -212,7 +215,7 @@ export default function Brigadas() {
           headers: {
             "Content-Type": "application/json",
             "Authorization": token 
-        }
+          }
         }
       );
 
@@ -339,7 +342,7 @@ export default function Brigadas() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {brigadas.map((brigada) => (
+                {brigadas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((brigada) => (
                   <TableRow key={brigada._id}>
                     <TableCell>{brigada.nombreBrigada}</TableCell>
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
@@ -366,10 +369,22 @@ export default function Brigadas() {
               </TableBody>
             </Table>
           </TableContainer>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={brigadas.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(event, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(event) => {
+              setRowsPerPage(parseInt(event.target.value, 10));
+              setPage(0);
+            }}
+          />
         </Grid>
       </Grid>
 
-      {/* Modal de Confirmación de Eliminación */}
       <Dialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}
@@ -393,7 +408,6 @@ export default function Brigadas() {
         </DialogActions>
       </Dialog>
 
-      {/* Modal de Información de la Brigada */}
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
           Información de la Brigada
@@ -401,14 +415,12 @@ export default function Brigadas() {
         <DialogContent sx={{ padding: '20px' }}>
           {infoBrigada && (
             <div>
-              {/* Nombre */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Assignment color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>{infoBrigada.nombreBrigada || "N/A"}</Typography>
               </Box>
               
-              {/* Ubicación */}
               <Box display="flex" alignItems="center" mb={2}>
                 <LocationOn color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
@@ -419,7 +431,6 @@ export default function Brigadas() {
                 </Typography>
               </Box>
               
-              {/* Comando */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
@@ -428,7 +439,6 @@ export default function Brigadas() {
                 </Typography>
               </Box>
               
-              {/* Estado */}
               <Box display="flex" alignItems="center" mb={2}>
                 {infoBrigada.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
@@ -437,7 +447,6 @@ export default function Brigadas() {
                 </Typography>
               </Box>
               
-              {/* Unidades Asignadas */}
               <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
                 <Shield sx={{ mr: 1 }} color="primary" />
                 Unidades Asignadas
@@ -479,7 +488,6 @@ export default function Brigadas() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar para mensajes de error */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

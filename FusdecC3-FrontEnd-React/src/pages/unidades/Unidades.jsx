@@ -28,6 +28,7 @@ import {
   ListItemText,
   OutlinedInput,
   Autocomplete,
+  TablePagination,
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
@@ -52,6 +53,8 @@ const Unidades = () => {
   const [unidadToDelete, setUnidadToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoUnidad, setInfoUnidad] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchUnidades();
@@ -406,7 +409,7 @@ const Unidades = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {unidades.map((unidad) => (
+            {unidades.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((unidad) => (
               <TableRow key={unidad._id}>
                 <TableCell>{unidad.nombreUnidad}</TableCell>
                 <TableCell>{unidad.estadoUnidad ? "Activo" : "Inactivo"}</TableCell>
@@ -437,6 +440,18 @@ const Unidades = () => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={unidades.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={(event, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(event) => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
+        />
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
