@@ -29,6 +29,7 @@ import {
   Chip,
 } from "@mui/material";
 import { Edit, Delete, Info, LocationOn, Assignment, VerifiedUser, History } from "@mui/icons-material";
+import MapComponent from '../../components/maps/MapComponent';
 
 const token = localStorage.getItem("token");
 
@@ -49,6 +50,8 @@ const Comandos = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [showMap, setShowMap] = useState(false);
+  const [mapLocation, setMapLocation] = useState(null);
 
   useEffect(() => {
     fetchComandos();
@@ -246,6 +249,24 @@ const Comandos = () => {
     return regex.test(link);
   };
 
+  const handleLocationClick = () => {
+    const url = infoComando.ubicacionComando;
+    const latLng = extractLatLngFromUrl(url);
+    setMapLocation(latLng);
+    setShowMap(true);
+  };
+
+  const extractLatLngFromUrl = (url) => {
+    const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (match) {
+      return {
+        lat: parseFloat(match[1]),
+        lng: parseFloat(match[2]),
+      };
+    }
+    return null;
+  };
+
   return (
     <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <h1>Gestión de Comandos</h1>
@@ -399,11 +420,12 @@ const Comandos = () => {
                 <LocationOn color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  <a 
-                    href={infoComando.ubicacionComando} 
-                    target="_blank" 
+                  <a
+                    href={infoComando.ubicacionComando}
+                    target="_blank"
                     rel="noopener noreferrer"
                     style={{ color: '#3f51b5', textDecoration: 'none' }}
+                    onClick={handleLocationClick}
                   >
                     {infoComando.ubicacionComando}
                   </a>
@@ -459,6 +481,9 @@ const Comandos = () => {
                   Sin brigadas asignadas
                 </Typography>
               )}
+
+              {/* Mostrar el mapa si showMap es true */}
+              {showMap && mapLocation && <MapComponent location={mapLocation} />}
             </div>
           )}
         </DialogContent>

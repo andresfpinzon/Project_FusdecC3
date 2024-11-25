@@ -78,7 +78,9 @@ const desactivarComando = async (req, res) => {
 const obtenerComandoPorId = async (req, res) => {
     const { id } = req.params;
     try {
-        const comando = await logic.buscarComandoPorId(id).populate('fundacionId').populate('brigadas');
+        const comando = await Comando.findById(id)
+            .populate('fundacionId')
+            .populate('brigadas');
         if (!comando) {
             return res.status(404).json({ error: `Comando con ID ${id} no encontrado` });
         }

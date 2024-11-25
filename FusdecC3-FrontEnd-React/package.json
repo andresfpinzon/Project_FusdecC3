@@ -16,6 +16,7 @@
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.1.7",
     "@mui/styles": "^6.0.2",
+    "@react-google-maps/api": "^2.20.3",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "jwt-decode": "^4.0.0",
