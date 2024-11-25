@@ -1,5 +1,6 @@
 const logic = require('../logic/unidad_logic');
 const unidadSchemaValidation = require('../validations/unidad_validations');
+const Unidad = require('../models/unidad_model');
 const Brigada = require('../models/brigada_model');
 
 // Controlador para listar unidades
@@ -16,7 +17,13 @@ const listarUnidades = async (_req, res) => {
 // Controlador para crear una unidad
 const crearUnidad = async (req, res) => {
     try {
-        const { nombreUnidad, estadoUnidad, brigadaId, usuarioId, estudiantes } = req.body;
+        // Validar los datos de entrada
+        const { error, value } = unidadSchemaValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+        }
+
+        const { nombreUnidad, estadoUnidad, brigadaId, usuarioId, estudiantes } = value; // Usar los valores validados
         const unidad = new Unidad({
             nombreUnidad,
             estadoUnidad,
@@ -39,7 +46,8 @@ const crearUnidad = async (req, res) => {
 
         res.status(201).json(savedUnidad);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error); // Registrar el error en el log
+        res.status(500).json({ message: 'Error al crear unidad', details: error.message });
     }
 };
 

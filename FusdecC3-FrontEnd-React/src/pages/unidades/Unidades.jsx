@@ -29,6 +29,7 @@ import {
   OutlinedInput,
   Autocomplete,
   TablePagination,
+  Chip,
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
 
@@ -165,13 +166,7 @@ const Unidades = () => {
   };
 
   const handleCreateUnidad = async () => {
-    console.log("Valores del formulario antes de enviar:", formValues); // Agrega esta línea
     try {
-      if (!formValues.brigadaId) {
-        setErrorMessage("El campo Brigada es obligatorio.");
-        setOpenSnackbar(true);
-        return; // Detiene la ejecución si brigadaId está vacío
-      }
       const response = await fetch("http://localhost:3000/api/unidades", {
         method: "POST",
         headers: {
@@ -181,20 +176,20 @@ const Unidades = () => {
         body: JSON.stringify(formValues),
       });
 
-      if (response.ok) {
-        const nuevaUnidad = await response.json();
-        setUnidades([...unidades, nuevaUnidad]);
-        setFormValues({
-          nombreUnidad: "",
-          estadoUnidad: true,
-          brigadaId: "", // Asegúrate de que esto se reinicie correctamente
-          usuarioId: "",
-          estudiantes: [],
-        });
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear unidad");
       }
+
+      const nuevaUnidad = await response.json();
+      setUnidades([...unidades, nuevaUnidad]);
+      setFormValues({
+        nombreUnidad: "",
+        estadoUnidad: true,
+        brigadaId: "", 
+        usuarioId: "",
+        estudiantes: [],
+      });
     } catch (error) {
       console.error("Error al crear unidad:", error);
       setErrorMessage(error.message);
@@ -345,19 +340,13 @@ const Unidades = () => {
           </Select>
         </FormControl>
         <FormControl fullWidth margin="normal">
-          <InputLabel>Usuario</InputLabel>
-          <Select
+          <TextField
+            label="ID del Usuario"
             name="usuarioId"
             value={formValues.usuarioId}
             onChange={handleInputChange}
-            input={<OutlinedInput label="Usuario" />}
-          >
-            {usuarios.map((usuario) => (
-              <MenuItem key={usuario._id} value={usuario._id}>
-                {usuario.nombreUsuario}
-              </MenuItem>
-            ))}
-          </Select>
+            placeholder="Ingresa el ID del usuario"
+          />
         </FormControl>
         <FormControl fullWidth margin="normal">
           <Autocomplete
@@ -378,11 +367,13 @@ const Unidades = () => {
                 placeholder="Selecciona estudiantes" 
               />
             )}
-            renderOption={(props, option) => (
-              <li {...props}>
-                {option.nombreEstudiante} {option.apellidoEstudiante} - {option.tipoDocumento}: {option.numeroDocumento}
-              </li>
-            )}
+            renderOption={(props, option) => {
+              return (
+                <li key={option._id} {...props}>
+                  {option.nombreEstudiante} {option.apellidoEstudiante} - {option.tipoDocumento}: {option.numeroDocumento}
+                </li>
+              );
+            }}
           />
         </FormControl>
         <Box marginTop={3}>
@@ -435,6 +426,9 @@ const Unidades = () => {
                   <IconButton onClick={() => handleDeleteClick(unidad)} color="error">
                     <Delete />
                   </IconButton>
+                  <IconButton onClick={() => handleInfoClick(unidad)} color="info">
+                    <Info />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -465,28 +459,76 @@ const Unidades = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Información de la Unidad</DialogTitle>
-        <DialogContent>
-          <Typography>Nombre: {infoUnidad?.nombreUnidad}</Typography>
-          <Typography>Estado: {infoUnidad?.estadoUnidad ? "Activo" : "Inactivo"}</Typography>
-          <Typography>Brigada: {infoUnidad?.brigadaId?.nombreBrigada || "Brigada no encontrada"}</Typography>
-          <Typography>Usuario: {infoUnidad?.usuarioId?.nombre || "Usuario no encontrado"}</Typography>
-          
-          {/* Aquí se muestra la información del estudiante */}
-          <Typography>Estudiantes:</Typography>
-          {infoUnidad?.estudiantes?.map((estudiante) => (
-            <div key={estudiante._id}>
-              <Typography>
-                Nombre: {estudiante.nombreEstudiante} {estudiante.apellidoEstudiante} {/* Mostrar nombre y apellido */}
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información de la Unidad
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          {infoUnidad && (
+            <div>
+              <Box display="flex" alignItems="center" mb={2}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoUnidad.nombreUnidad || "N/A"}</Typography>
+              </Box>
+              
+              <Box display="flex" alignItems="center" mb={2}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoUnidad.estadoUnidad ? "Activo" : "Inactivo"}
+                </Typography>
+              </Box>
+              
+              <Box display="flex" alignItems="center" mb={2}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Brigada:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoUnidad.brigadaId?.nombreBrigada || "Brigada no encontrada"}
+                </Typography>
+              </Box>
+              
+              <Box display="flex" alignItems="center" mb={2}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Usuario:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoUnidad.usuarioId?.nombreUsuario || "Usuario no encontrado"}
+                </Typography>
+              </Box>
+              
+              <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
+                Estudiantes Asignados
               </Typography>
-              <Typography>Tipo de Documento: {estudiante.tipoDocumento}</Typography> {/* Mostrar tipo de documento */}
-              <Typography>Número de Documento: {estudiante.numeroDocumento}</Typography> {/* Mostrar número de documento */}
+              {infoUnidad.estudiantes && infoUnidad.estudiantes.length > 0 ? (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                  {infoUnidad.estudiantes.map((estudiante) => (
+                    <Chip
+                      key={estudiante._id}
+                      label={`${estudiante.nombreEstudiante} ${estudiante.apellidoEstudiante}`}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      sx={{ 
+                        borderRadius: '16px',
+                        fontSize: '1rem',
+                        maxWidth: '200px',
+                        width: '100%',
+                        color: 'black',
+                        '&:hover': {
+                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                  Sin estudiantes asignados
+                </Typography>
+              )}
             </div>
-          )) || <Typography>Sin estudiantes</Typography>}
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

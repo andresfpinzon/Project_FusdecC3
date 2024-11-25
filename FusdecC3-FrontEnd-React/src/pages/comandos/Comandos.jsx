@@ -26,6 +26,7 @@ import {
   MenuItem,
   Grid,
   TablePagination,
+  Chip,
 } from "@mui/material";
 import { Edit, Delete, Info, LocationOn, Assignment, VerifiedUser, History } from "@mui/icons-material";
 
@@ -426,6 +427,38 @@ const Comandos = () => {
                   {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}
                 </Typography>
               </Box>
+
+              {/* Brigadas Asignadas */}
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+                Brigadas Asignadas
+              </Typography>
+              {infoComando.brigadas && infoComando.brigadas.length > 0 ? (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  {infoComando.brigadas.map((brigada) => (
+                    <Chip
+                      key={brigada._id}
+                      label={brigada.nombreBrigada || "Brigada no encontrada"}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      sx={{ 
+                        borderRadius: '16px',
+                        fontSize: '1rem',
+                        maxWidth: '200px',
+                        width: '100%',
+                        color: 'black',
+                        '&:hover': {
+                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                  Sin brigadas asignadas
+                </Typography>
+              )}
             </div>
           )}
         </DialogContent>

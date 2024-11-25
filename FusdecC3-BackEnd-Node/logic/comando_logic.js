@@ -2,6 +2,7 @@ const Comando = require('../models/comando_model');
 const Fundacion = require('../models/fundacion_model');
 const comandoSchemaValidation = require('../validations/comando_validations');
 const mongoose = require('mongoose');
+const Brigada = require('../models/brigada_model');
 
 // Función asíncrona para crear comandos
 async function crearComando(body) {
@@ -65,8 +66,17 @@ async function agregarBrigadaAComando(comandoId, brigadasIds) {
     if (!comando) {
         throw new Error('Comando no encontrado');
     }
+
+    // Agregar brigadas al comando
     const nuevasBrigadas = brigadasIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
-    comando.brigadas = [...comando.brigadas, ...nuevasBrigadas];
+    comando.brigadas.push(...nuevasBrigadas);
+    
+    // Actualizar cada brigada para que apunte al comando
+    await Brigada.updateMany(
+        { _id: { $in: nuevasBrigadas } },
+        { $set: { comandoId: comandoId } }
+    );
+
     await comando.save();
     return comando;
 }
