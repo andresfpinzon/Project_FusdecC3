@@ -405,7 +405,6 @@ const Comandos = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ color: '#3f51b5', textDecoration: 'none' }}
-                    onClick={handleLocationClick}
                   >
                     {infoComando.ubicacionComando}
                   </a>
@@ -461,9 +460,6 @@ const Comandos = () => {
                   Sin brigadas asignadas
                 </Typography>
               )}
-
-              {/* Mostrar el mapa si showMap es true */}
-              {showMap && mapLocation && <MapComponent location={mapLocation} />}
             </div>
           )}
         </DialogContent>
