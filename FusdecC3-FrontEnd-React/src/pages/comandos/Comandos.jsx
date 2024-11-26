@@ -29,7 +29,6 @@ import {
   Chip,
 } from "@mui/material";
 import { Edit, Delete, Info, LocationOn, Assignment, VerifiedUser, History } from "@mui/icons-material";
-import MapComponent from '../../components/maps/MapComponent';
 
 const token = localStorage.getItem("token");
 
@@ -50,8 +49,7 @@ const Comandos = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [showMap, setShowMap] = useState(false);
-  const [mapLocation, setMapLocation] = useState(null);
+
 
   useEffect(() => {
     fetchComandos();
@@ -247,24 +245,6 @@ const Comandos = () => {
   const isValidGoogleMapsLink = (link) => {
     const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)/;
     return regex.test(link);
-  };
-
-  const handleLocationClick = () => {
-    const url = infoComando.ubicacionComando;
-    const latLng = extractLatLngFromUrl(url);
-    setMapLocation(latLng);
-    setShowMap(true);
-  };
-
-  const extractLatLngFromUrl = (url) => {
-    const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (match) {
-      return {
-        lat: parseFloat(match[1]),
-        lng: parseFloat(match[2]),
-      };
-    }
-    return null;
   };
 
   return (
