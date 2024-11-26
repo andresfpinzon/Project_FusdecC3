@@ -435,7 +435,7 @@ const Comandos = () => {
               </Typography>
               {infoComando.brigadas && infoComando.brigadas.length > 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {infoComando.brigadas.map((brigada) => (
+                  {infoComando.brigadas?.map((brigada) => (
                     <Chip
                       key={brigada._id}
                       label={brigada.nombreBrigada || "Brigada no encontrada"}

@@ -67,18 +67,21 @@ async function agregarBrigadaAComando(comandoId, brigadasIds) {
         throw new Error('Comando no encontrado');
     }
 
-    // Agregar brigadas al comando
     const nuevasBrigadas = brigadasIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
+    
+    if (nuevasBrigadas.length === 0) {
+        return comando.populate('brigadas');
+    }
+
     comando.brigadas.push(...nuevasBrigadas);
     
-    // Actualizar cada brigada para que apunte al comando
     await Brigada.updateMany(
         { _id: { $in: nuevasBrigadas } },
         { $set: { comandoId: comandoId } }
     );
 
     await comando.save();
-    return comando;
+    return comando.populate('brigadas');
 }
 
 module.exports = {
@@ -87,5 +90,5 @@ module.exports = {
     buscarComandoPorId,
     editarComando,
     desactivarComando,
-    agregarBrigadaAComando
+    agregarBrigadaAComando,
 };

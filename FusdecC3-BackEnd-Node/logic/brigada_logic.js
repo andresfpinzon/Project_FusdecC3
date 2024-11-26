@@ -16,7 +16,7 @@ async function crearBrigada(body) {
         nombreBrigada: body.nombreBrigada,
         ubicacionBrigada: body.ubicacionBrigada,
         estadoBrigada: body.estadoBrigada,
-        comandoId: body.comandoId,
+        comandoId: body.comandoId, // Asegúrate de que esto esté presente
         unidades: body.unidades || [] 
     });
     return await brigada.save();
