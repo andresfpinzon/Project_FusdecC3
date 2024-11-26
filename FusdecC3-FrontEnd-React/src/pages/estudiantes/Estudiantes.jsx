@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -27,6 +28,7 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
 import { Edit, Delete, Info, Person, Description, CreditCard, Cake, Email, School, ToggleOn, CheckCircle, Cancel, Star, ConfirmationNumber } from "@mui/icons-material";
 
@@ -62,6 +64,11 @@ const Estudiantes = () => {
   const [estudianteToDelete, setEstudianteToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoEstudiante, setInfoEstudiante] = useState(null);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchEstudiantes();
@@ -224,6 +231,28 @@ const Estudiantes = () => {
       setErrorMessage("Error al obtener calificaciones");
       setOpenSnackbar(true);
     }
+  };
+  
+  // Filtrar usuarios según el término de búsqueda
+  const filteredEstudiantes = estudiantes.filter((estudiante) =>
+    estudiante.nombreEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.apellidoEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.tipoDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.numeroDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.correoEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (estudiante.unidadId?.nombreUnidad?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+    (estudiante.colegioId?.nombreColegio?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -546,7 +575,18 @@ const Estudiantes = () => {
           </Button>
         </Box>
       </form>
+      <br></br>
 
+      {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -563,7 +603,9 @@ const Estudiantes = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {estudiantes.map((estudiante) => (
+          {filteredEstudiantes
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((estudiante) => (
               <TableRow key={estudiante._id}>
                 <TableCell>{estudiante.nombreEstudiante}</TableCell>
                 <TableCell>{estudiante.apellidoEstudiante}</TableCell>
@@ -588,6 +630,16 @@ const Estudiantes = () => {
             ))}
           </TableBody>
         </Table>
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredEstudiantes.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>

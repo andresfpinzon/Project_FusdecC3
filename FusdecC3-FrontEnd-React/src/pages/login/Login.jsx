@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 import {
   Container,
   TextField,
@@ -25,6 +26,9 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  // Usar AuthContext
+  const { login } = useContext(AuthContext);
+
   const handleInputChange = (e) => {
     setFormValues({
       ...formValues,
@@ -43,9 +47,13 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         const { token } = data;
-        localStorage.setItem("token", token);
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        localStorage.setItem("roles", JSON.stringify(payload.roles));
+
+        // Decodificar payload del token
+        const payload = JSON.parse(atob(token.split(".")[1]));
+
+        // Llamar la función `login` del contexto
+        login(token, payload.roles);
+
         navigate("/home");
       } else {
         const errorData = await response.json();
@@ -136,6 +144,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 

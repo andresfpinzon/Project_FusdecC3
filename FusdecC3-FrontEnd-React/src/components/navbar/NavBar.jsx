@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -15,7 +16,7 @@ import { makeStyles } from "@mui/styles";
 import normalizeText from "../../utils/textUtils";
 import LinkBehavior from "./LinkBehavior";
 import logoFusdec from "../../assets/images/logoFu.png";
-import obtenerRutasPermitidas from "../../routes/rutasPermitidas"
+import obtenerRutasPermitidas from "../../routes/rutasPermitidas";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: { 
@@ -49,27 +50,13 @@ export default function Navbar() {
   const classes = useStyles();
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [roles, setRoles] = useState([]);
 
-  // Cargar el estado de autenticación y roles al montar el componente
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedRoles = JSON.parse(localStorage.getItem("roles"));
-
-    if (token) {
-      setIsAuthenticated(true);
-      setRoles(storedRoles || []);
-    }
-  }, []);
+  const { isAuthenticated, roles, logout } = useContext(AuthContext);
 
   const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("roles");
-    setIsAuthenticated(false);
-    setRoles([]);
+    logout();
     navigate("/home");
   };
 
@@ -124,5 +111,6 @@ export default function Navbar() {
     </>
   );
 }
+
 
 

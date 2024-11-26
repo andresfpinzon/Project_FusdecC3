@@ -28,6 +28,7 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
 import { Edit, Delete, Info, Event, Group, School } from "@mui/icons-material";
 
@@ -50,6 +51,11 @@ const Asistencias = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [asistenciaToDelete, setAsistenciaToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Añade estado para almacenar el rol del usuario y su id
   const [userRole, setUserRole] = useState(null);
@@ -112,6 +118,23 @@ const Asistencias = () => {
       setErrorMessage("Error al obtener estudiantes", error);
       setOpenSnackbar(true);
     }
+  };
+
+  // Filtrar asistencia según el término de búsqueda
+  const filteredAsistencias = asistencias.filter((asistencia) =>
+    asistencia.tituloAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    asistencia.fechaAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -310,7 +333,17 @@ const Asistencias = () => {
           </Button>
         </Box>
       </form>
-
+      <br></br>
+      {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -321,7 +354,9 @@ const Asistencias = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {asistencias.map((asistencia) => (
+          {filteredAsistencias
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((asistencia) => (
               <TableRow key={asistencia._id}>
                 <TableCell>{asistencia.tituloAsistencia}</TableCell>
                 <TableCell>{asistencia.fechaAsistencia}</TableCell>
@@ -340,6 +375,16 @@ const Asistencias = () => {
             ))}
           </TableBody>
         </Table>
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredAsistencias.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>

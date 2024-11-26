@@ -28,6 +28,7 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
 import { Edit, Delete, Info, Description, Comment, AssignmentTurnedIn, People } from "@mui/icons-material";
 
@@ -52,6 +53,11 @@ const Inasistencias = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [inasistenciaToDelete, setInasistenciaToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchAsistencias();
@@ -119,6 +125,23 @@ const Inasistencias = () => {
       setErrorMessage("Error al obtener estudiantes", error);
       setOpenSnackbar(true);
     }
+  };
+
+  // Filtrar inasistencias según el término de búsqueda
+  const filteredInasistencias = inasistencias.filter((inasistencia) =>
+    inasistencia.tituloInasistencia.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    inasistencia.asistenciaId?.tituloAsistencia?.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -334,7 +357,18 @@ const Inasistencias = () => {
           </Button>
         </Box>
       </form>
+      <br></br>
+      {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
+      {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -345,7 +379,9 @@ const Inasistencias = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inasistencias.map((inasistencia) => (
+          {filteredInasistencias
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((inasistencia) => (
               <TableRow key={inasistencia._id}>
                 <TableCell>{inasistencia.tituloInasistencia}</TableCell>
                 <TableCell>{inasistencia.asistenciaId?.tituloAsistencia || "Asistencia no encontrada"}</TableCell>
@@ -364,6 +400,16 @@ const Inasistencias = () => {
             ))}
           </TableBody>
         </Table>
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredInasistencias.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
