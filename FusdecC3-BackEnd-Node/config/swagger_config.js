@@ -11,21 +11,35 @@ const swaggerOptions = {
       description: "Documentación de las APIs para el manejo de las diferentes entidades relevantes de la fundación FusdecC3",
       contact: {
         name: "Andres Pinzon, Santiago Gonzales, Adriana Lucia, Sebastian Pinzon",
-        email: "andrespinzonxd@gmail.com, sebastian.pinzon.3954@gmail.com, adrilucia603@gmail.com, santiagorys2003@gmail.com", 
+        email: "andrespinzonxd@gmail.com, sebastian.pinzon.3954@gmail.com, adrilucia603@gmail.com, santiagorys2003@gmail.com",
       },
       license: {
-        name: "MIT", 
-        url: "https://opensource.org/licenses/MIT", 
+        name: "MIT",
+        url: "https://opensource.org/licenses/MIT",
       },
     },
     servers: [
       {
-        url: "http://localhost:3000", // Base URL 
-        description: "Servidor de desarrollo", 
+        url: "http://localhost:3000",
+        description: "Servidor de desarrollo",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "apiKey",
+          in: "header",
+          name: "Authorization", 
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [],
       },
     ],
   },
-  apis: ["./routes/*.js"], // Path hacia las APIs
+  apis: ["./routes/*.js"], // Ruta de tus archivos de API
 };
 
 // Documentación en formato JSON

@@ -13,13 +13,40 @@ export const AuthProvider = ({ children }) => {
     const storedRoles = JSON.parse(localStorage.getItem("roles"));
 
     if (token) {
-      setIsAuthenticated(true);
-      setRoles(storedRoles || []);
+      const isTokenValid = checkTokenValidity(token);
+
+      if (isTokenValid) {
+        setIsAuthenticated(true);
+        setRoles(storedRoles || []);
+      } else {
+        logout();
+      }
     }
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const token = localStorage.getItem("token");
+      if (token && !checkTokenValidity(token)) {
+        logout();
+      }
+    }, 60000); 
+
+    return () => clearInterval(interval); 
+  }, []);
+
+  const checkTokenValidity = (token) => {
+    try {
+      const decodedToken = JSON.parse(atob(token.split(".")[1])); // Decodificar el payload del token
+      const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+      return decodedToken.exp > currentTime; // Comparar con el tiempo de expiración
+    } catch (error) {
+      console.error("Error al verificar el token:", error);
+      return false;
+    }
+  };
+
   const login = (token, roles) => {
-    console.log("Guardando token y roles:", token, roles);
     localStorage.setItem("token", token);
     localStorage.setItem("roles", JSON.stringify(roles));
     setIsAuthenticated(true);

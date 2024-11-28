@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import AppBar from "@mui/material/AppBar";
