@@ -109,15 +109,14 @@ const Comandos = () => {
   };
 
   const handleCreateComando = async () => {
-    if (!formValues.nombreComando || !isValidGoogleMapsLink(formValues.ubicacionComando)) {
+    if (!formValues.nombreComando || !isValidGoogleMapsLink(formValues.ubicacionComando) || !formValues.fundacionId) {
       setErrorMessage("Por favor, completa todos los campos requeridos y asegúrate de que la ubicación sea un enlace válido de Google Maps.");
       setOpenSnackbar(true);
       return;
     }
 
     const comandoData = {
-      ...formValues,
-      fundacionId: formValues.fundacionId || null
+      ...formValues
     };
 
     try {
@@ -242,7 +241,7 @@ const Comandos = () => {
       nombreComando: "",
       ubicacionComando: "",
       estadoComando: true,
-      fundacionId: "",
+      fundacionId: ""
     });
     setSelectedComando(null);
   };
@@ -285,14 +284,14 @@ const Comandos = () => {
               Estado Activo
             </Box>
             <FormControl fullWidth margin="normal">
-              <InputLabel id="fundacion-select-label">Fundación (Opcional)</InputLabel>
+              <InputLabel id="fundacion-select-label">Fundación</InputLabel>
               <Select
                 labelId="fundacion-select-label"
                 name="fundacionId"
                 value={formValues.fundacionId}
                 onChange={handleInputChange}
+                required
               >
-                <MenuItem value="">Ninguna</MenuItem>
                 {fundaciones.map((fundacion) => (
                   <MenuItem key={fundacion._id} value={fundacion._id}>
                     {fundacion.nombreFundacion}

@@ -229,7 +229,7 @@ const handleUpdateFundacion = async () => {
             {selectedFundacion ? "Actualizar Fundacion" : "Crear Fundacion"}
           </Button>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
         <h2>Lista de Fundaciones</h2>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
