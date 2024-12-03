@@ -144,7 +144,7 @@ const Unidades = () => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
-      [name]: value, // Esto debe actualizar correctamente el estado
+      [name]: value,
     });
   };
 
@@ -327,26 +327,31 @@ const Unidades = () => {
           <InputLabel id="brigada-select-label">Brigada</InputLabel>
           <Select
             labelId="brigada-select-label"
-            name="brigadaId" // Asegúrate de que el nombre coincida
-            value={formValues.brigadaId} // Debe estar vinculado a formValues.brigadaId
+            name="brigadaId"
+            value={formValues.brigadaId}
             onChange={handleInputChange}
-            input={<OutlinedInput label="Brigada" />}
           >
             {brigadas.map((brigada) => (
               <MenuItem key={brigada._id} value={brigada._id}>
-                {brigada.nombreBrigada} {/* Asegúrate de que 'nombreBrigada' es la propiedad correcta */}
+                {brigada.nombreBrigada}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         <FormControl fullWidth margin="normal">
-          <TextField
-            label="ID del Usuario"
+          <InputLabel id="usuario-select-label">Usuario</InputLabel>
+          <Select
+            labelId="usuario-select-label"
             name="usuarioId"
             value={formValues.usuarioId}
             onChange={handleInputChange}
-            placeholder="Ingresa el ID del usuario"
-          />
+          >
+            {usuarios.map((usuario) => (
+              <MenuItem key={usuario._id} value={usuario._id}>
+                {usuario.nombreUsuario} {usuario.apellidoUsuario}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
         <FormControl fullWidth margin="normal">
           <Autocomplete
@@ -367,13 +372,6 @@ const Unidades = () => {
                 placeholder="Selecciona estudiantes" 
               />
             )}
-            renderOption={(props, option) => {
-              return (
-                <li key={option._id} {...props}>
-                  {option.nombreEstudiante} {option.apellidoEstudiante} - {option.tipoDocumento}: {option.numeroDocumento}
-                </li>
-              );
-            }}
           />
         </FormControl>
         <Box marginTop={3}>

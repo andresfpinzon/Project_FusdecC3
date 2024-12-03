@@ -2,7 +2,7 @@ const Comando = require('../models/comando_model');
 const Fundacion = require('../models/fundacion_model');
 const comandoSchemaValidation = require('../validations/comando_validations');
 const mongoose = require('mongoose');
-const Brigada = require('../models/brigada_model');
+const brigadas = require('../models/brigada_model');
 
 // Función asíncrona para crear comandos
 async function crearComando(body) {
@@ -60,6 +60,57 @@ async function desactivarComando(id) {
     return comando;
 }
 
+// Lógica para agregar unidades a una brigada
+async function agregarBrigadasAComandos(comandoId, brigadaIds) {
+    try {
+        const comando = await Comando.findById(comandoId); // Cambiado a findById
+        if (!comando) {
+            throw new Error('Comando no encontrado');
+        }
+        // Filtrar las unidades ya existentes para no duplicarlas
+        const nuevasBrigadas = brigadaIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
+        // Agregar las nuevas unidades al array de unidades de la brigada
+        comando.brigadas = [...comando.brigadas, ...nuevasBrigadas];
+        await comando.save();
+        return comando;
+    } catch (error) {
+        throw new Error(`Error al agregar brigadas: ${error.message}`);
+    }
+}
+
+
+
+module.exports = {
+    crearComando,
+    listarComandos,
+    buscarComandoPorId,
+    editarComando,
+    desactivarComando,
+    agregarBrigadasAComandos,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 // Lógica para agregar brigada a un comando
 async function agregarBrigadaAComando(comandoId, brigadasIds) {
     const comando = await Comando.findById(comandoId);
@@ -82,13 +133,4 @@ async function agregarBrigadaAComando(comandoId, brigadasIds) {
 
     await comando.save();
     return comando.populate('brigadas');
-}
-
-module.exports = {
-    crearComando,
-    listarComandos,
-    buscarComandoPorId,
-    editarComando,
-    desactivarComando,
-    agregarBrigadaAComando,
-};
+}*/
