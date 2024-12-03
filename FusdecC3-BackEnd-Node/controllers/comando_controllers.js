@@ -87,7 +87,65 @@ const obtenerComandoPorId = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor al buscar el comando', details: err.message });
     }
 };
+// Controlador para agregar unidades a una brigada
+const agregarBrigadasAComandos = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { brigadaIds } = req.body;
 
+        const comando = await Comando.findById(id);
+        if (!comando) {
+            return res.status(404).json({ mensaje: 'comando no encontrado' });
+        }
+
+        // Agregar las nuevas unidades al array existente
+        comando.brigadas = [...new Set([...comando.brigadas, ...brigadaIds])];
+        
+        await comando.save();
+
+        res.status(200).json(comando);
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al agregar brigadas a la comando', error: error.message });
+    }
+};
+
+
+
+  // Exportar los controladores
+    module.exports = {
+    listarComandos,
+    crearComando,
+    actualizarComando,
+    desactivarComando,
+    obtenerComandoPorId,
+    agregarBrigadasAComandos
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 // Controlador para agregar brigadas a un comando
 const agregarBrigadas = async (req, res) => {
     const { comandoId } = req.params;
@@ -107,13 +165,4 @@ const agregarBrigadas = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
-
-// Exportar los controladores
-module.exports = {
-    listarComandos,
-    crearComando,
-    actualizarComando,
-    desactivarComando,
-    obtenerComandoPorId,
-    agregarBrigadas
-};
+*/

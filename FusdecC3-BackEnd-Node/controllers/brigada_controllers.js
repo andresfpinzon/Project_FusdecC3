@@ -1,11 +1,12 @@
 const logic = require('../logic/brigada_logic');
 const brigadaSchemaValidation = require('../validations/brigada_validations');
+const Brigada = require('../models/brigada_model');
 
 // Controlador para listar brigadas
 const listarBrigadas = async (_req, res) => {
     try {
         const brigadas = await logic.listarBrigadas();
-        res.json(brigadas);
+        res.json(brigadas); // Ahora incluirá unidades
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener las brigadas' });
@@ -105,27 +106,39 @@ const buscarBrigadasPorUnidadId = async (req, res) => {
 };
 
 // Controlador para agregar unidades a una brigada
-const agregarunidades = async (req, res) => {
-    const { id } = req.params;
-    const { unidadIds } = req.body;
-  
+const agregarUnidades = async (req, res) => {
     try {
-      // Buscar la brigada
-      const brigada = await Brigada.findById(id);
-      if (!brigada) {
-        return res.status(404).json({ message: 'Brigada no encontrada' });
-      }
-  
-      // Agregar las unidades
-      brigada.unidades.push(...unidadIds);
-      await brigada.save();
-  
-      return res.status(200).json(brigada);
+        const { id } = req.params;
+        const { unidadIds } = req.body;
+
+        const brigada = await Brigada.findById(id);
+        if (!brigada) {
+            return res.status(404).json({ mensaje: 'Brigada no encontrada' });
+        }
+
+        // Agregar las nuevas unidades al array existente
+        brigada.unidades = [...new Set([...brigada.unidades, ...unidadIds])];
+        
+        await brigada.save();
+
+        res.status(200).json(brigada);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Error interno del servidor' });
+        res.status(500).json({ mensaje: 'Error al agregar unidades a la brigada', error: error.message });
     }
-  };
+};
+
+// Controlador para obtener todas las brigadas
+const getBrigadas = async (req, res) => {
+  try {
+    const brigadas = await Brigada.find()
+      .populate("comandoId")
+      .populate("unidades"); // Población de unidades asociadas
+
+    res.status(200).json(brigadas);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // Exportar los controladores
 module.exports = {
@@ -136,5 +149,6 @@ module.exports = {
     obtenerBrigadaPorId,
     buscarBrigadasPorComandoId,
     buscarBrigadasPorUnidadId,
-    agregarunidades
+    agregarUnidades,
+    getBrigadas
 };

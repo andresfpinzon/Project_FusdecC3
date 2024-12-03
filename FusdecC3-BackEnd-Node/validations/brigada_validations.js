@@ -32,7 +32,7 @@ const brigadaSchemaValidation = Joi.object({
     }),
 
   comandoId: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
+    .pattern(/^[0-9a-fA-F]{24}$/)
     .required()
     .messages({
       'string.base': 'El comandoId debe ser un texto',

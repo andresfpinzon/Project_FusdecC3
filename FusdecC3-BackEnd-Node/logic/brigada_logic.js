@@ -16,24 +16,24 @@ async function crearBrigada(body) {
         nombreBrigada: body.nombreBrigada,
         ubicacionBrigada: body.ubicacionBrigada,
         estadoBrigada: body.estadoBrigada,
-        comandoId: body.comandoId,
-        unidades: body.unidades || [] // Asegurarse de que unidades sea un array
+        comandoId: body.comandoId, // Asegúrate de que esto esté presente
+        unidades: body.unidades || [] 
     });
     return await brigada.save();
 }
 
 // Función asíncrona para listar brigadas
 async function listarBrigadas() {
-    return await Brigada.find();
+    return await Brigada.find()
+        .populate('unidades')
+        .populate('comandoId');
 }
 
 // Función asíncrona para buscar una brigada por su ID
 async function buscarBrigadaPorId(id) {
-    const brigada = await Brigada.findById(id).populate('comandoId').populate('unidades');
-    if (!brigada) {
-        throw new Error(`Brigada con ID ${id} no encontrada`);
-    }
-    return brigada;
+    return await Brigada.findById(id)
+        .populate('comandoId')
+        .populate('unidades');
 }
 
 // Función asíncrona para editar una brigada

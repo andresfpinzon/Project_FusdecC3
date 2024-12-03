@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const ComandoSchema = new Schema({
-    /*comandoId: {
-        type: Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(),
-    },*/
     nombreComando: {
         type: String,
         required: true,
@@ -21,13 +17,13 @@ const ComandoSchema = new Schema({
     },
     fundacionId: {
         type: Schema.Types.ObjectId,
-        ref: "Fundacion", // Referencia al modelo Fundación
-        default: null, // Permitir que fundacionId esté vacío
+        ref: "Fundacion",
+        default: null,
     },
     brigadas: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Brigada", // Referencia al modelo Brigada
+            ref: "Brigada",
         },
     ],
 });

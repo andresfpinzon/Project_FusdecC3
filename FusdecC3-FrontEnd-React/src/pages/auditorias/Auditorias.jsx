@@ -8,26 +8,21 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Snackbar,
   Alert,
   Grid,
   Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
+  TablePagination,
 } from "@mui/material";
-import { Info } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
 const Auditorias = () => {
   const [auditorias, setAuditorias] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-
 
   useEffect(() => {
     fetchAuditorias();
@@ -52,16 +47,6 @@ const Auditorias = () => {
     }
   };
 
-  const handleOpenDetailsDialog = (auditoria) => {
-    setAuditoriaDetails(auditoria);
-    setOpenDetailsDialog(true);
-  };
-
-  const handleCloseDetailsDialog = () => {
-    setOpenDetailsDialog(false);
-    setAuditoriaDetails(null);
-  };
-
   return (
     <Container>
       <Typography variant="h4" gutterBottom style={{ fontFamily: 'Roboto', fontWeight: 'bold' }}>
@@ -79,7 +64,7 @@ const Auditorias = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {auditorias.map((auditoria) => (
+                {auditorias.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((auditoria) => (
                   <TableRow key={auditoria._id}>
                     <TableCell>{new Date(auditoria.fechaAuditoria).toLocaleDateString("es-ES")}</TableCell>
                     <TableCell>{auditoria.nombreEmisor}</TableCell>
@@ -88,6 +73,18 @@ const Auditorias = () => {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={auditorias.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(event, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(event) => {
+                setRowsPerPage(parseInt(event.target.value, 10));
+                setPage(0);
+              }}
+            />
           </TableContainer>
         </Grid>
       </Grid>

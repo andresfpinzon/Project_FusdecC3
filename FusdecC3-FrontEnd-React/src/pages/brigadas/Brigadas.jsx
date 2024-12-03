@@ -26,20 +26,27 @@ import {
   FormControl,
   OutlinedInput,
   Box,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  TablePagination,
 } from "@mui/material";
-import { Edit, Delete, Info, LocationOn, Group, Assignment, CheckCircle, Cancel } from "@mui/icons-material";
+import { Edit, Delete, Info, LocationOn, Group, Assignment, CheckCircle, Cancel, Shield } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
 export default function Brigadas() {
   const [brigadas, setBrigadas] = useState([]);
   const [comandos, setComandos] = useState([]);
+  const [unidades, setUnidades] = useState([]);
   const [selectedBrigada, setSelectedBrigada] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreBrigada: "",
     ubicacionBrigada: "",
     comandoId: "",
     estadoBrigada: true,
+    unidades: [],
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
@@ -47,20 +54,24 @@ export default function Brigadas() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     fetchBrigadas();
     fetchComandos();
+    fetchUnidades();
   }, []);
 
   const fetchBrigadas = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/brigadas",{
+      const response = await fetch("http://localhost:3000/api/brigadas", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener brigadas");
       const data = await response.json();
       setBrigadas(data);
@@ -73,20 +84,38 @@ export default function Brigadas() {
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/comandos",{
+      const response = await fetch("http://localhost:3000/api/comandos", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
       setComandos(data);
-      console.log(data); // Verifica que los datos se están obteniendo correctamente
     } catch (error) {
       console.error("Error al obtener comandos:", error);
       setErrorMessage("Error al obtener comandos");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchUnidades = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/unidades", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+        }
+      });
+      if (!response.ok) throw new Error("Error al obtener unidades");
+      const data = await response.json();
+      setUnidades(data);
+    } catch (error) {
+      console.error("Error al obtener unidades:", error);
+      setErrorMessage("Error al obtener unidades");
       setOpenSnackbar(true);
     }
   };
@@ -186,7 +215,7 @@ export default function Brigadas() {
           headers: {
             "Content-Type": "application/json",
             "Authorization": token 
-        }
+          }
         }
       );
 
@@ -209,7 +238,7 @@ export default function Brigadas() {
     setFormValues({
       nombreBrigada: brigada.nombreBrigada || "",
       ubicacionBrigada: brigada.ubicacionBrigada || "",
-      comandoId: brigada.comandoId || "",
+      comandoId: brigada.comandoId?._id || "",
       estadoBrigada: brigada.estadoBrigada !== undefined ? brigada.estadoBrigada : true,
     });
   };
@@ -248,7 +277,7 @@ export default function Brigadas() {
     <Container maxWidth="lg">
       <h1>Gestión de Brigadas</h1>
       <Grid container spacing={2} component="section">
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={12}>
           <h2>Información de Brigada</h2>
           <TextField
             label="Nombre de la Brigada"
@@ -299,7 +328,7 @@ export default function Brigadas() {
             {selectedBrigada ? "Actualizar Brigada" : "Crear Brigada"}
           </Button>
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={12}>
           <h2>Lista de Brigadas</h2>
           <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
             <Table>
@@ -313,12 +342,12 @@ export default function Brigadas() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {brigadas.map((brigada) => (
+                {brigadas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((brigada) => (
                   <TableRow key={brigada._id}>
                     <TableCell>{brigada.nombreBrigada}</TableCell>
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
                     <TableCell>
-                      {comandos.find(comando => comando._id === brigada.comandoId)?.nombreComando || "Sin comando"}
+                      {brigada.comandoId.nombreComando}
                     </TableCell>
                     <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
@@ -328,10 +357,10 @@ export default function Brigadas() {
                       <IconButton onClick={() => {
                         setSelectedBrigada(brigada);
                         setOpenDeleteDialog(true);
-                      }} color="secondary">
+                      }} color="error">
                         <Delete />
                       </IconButton>
-                      <IconButton onClick={() => handleInfoClick(brigada)} color="default">
+                      <IconButton onClick={() => handleInfoClick(brigada)} color="primary">
                         <Info />
                       </IconButton>
                     </TableCell>
@@ -340,10 +369,22 @@ export default function Brigadas() {
               </TableBody>
             </Table>
           </TableContainer>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={brigadas.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(event, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(event) => {
+              setRowsPerPage(parseInt(event.target.value, 10));
+              setPage(0);
+            }}
+          />
         </Grid>
       </Grid>
 
-      {/* Modal de Confirmación de Eliminación */}
       <Dialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}
@@ -367,69 +408,86 @@ export default function Brigadas() {
         </DialogActions>
       </Dialog>
 
-      {/* Modal de Información de la Brigada */}
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
-  <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-    Información de la Brigada
-  </DialogTitle>
-  <DialogContent sx={{ padding: '20px' }}>
-    {infoBrigada && (
-      <div>
-        {/* Nombre */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <Assignment color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>{infoBrigada.nombreBrigada || "N/A"}</Typography>
-        </Box>
-        
-        {/* Ubicación */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <LocationOn color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            <a href={infoBrigada.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
-              {infoBrigada.ubicacionBrigada || "N/A"}
-            </a>
-          </Typography>
-        </Box>
-        
-        {/* Comando */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <Group color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {comandos.find(comando => comando._id === infoBrigada.comandoId)?.nombreComando || "Sin comando"}
-          </Typography>
-        </Box>
-        
-        {/* Estado */}
-        <Box display="flex" alignItems="center" mb={2}>
-          {infoBrigada.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}
-          </Typography>
-        </Box>
-        
-        {/* Unidad */}
-        <Box display="flex" alignItems="center" mb={2}>
-          <Assignment color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidad:</Typography>
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {infoBrigada?.unidadId?.nombreUnidad || "Unidad no encontrada"}
-          </Typography>
-        </Box>
-      </div>
-    )}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
-      Cerrar
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información de la Brigada
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          {infoBrigada && (
+            <div>
+              <Box display="flex" alignItems="center" mb={2}>
+                <Assignment color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoBrigada.nombreBrigada || "N/A"}</Typography>
+              </Box>
+              
+              <Box display="flex" alignItems="center" mb={2}>
+                <LocationOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  <a href={infoBrigada.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
+                    {infoBrigada.ubicacionBrigada || "N/A"}
+                  </a>
+                </Typography>
+              </Box>
+              
+              <Box display="flex" alignItems="center" mb={2}>
+                <Group color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoBrigada.comandoId?.nombreComando || "comando no encontrado"}
+                </Typography>
+              </Box>
+              
+              <Box display="flex" alignItems="center" mb={2}>
+                {infoBrigada.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}
+                </Typography>
+              </Box>
+              
+              <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
+                <Shield sx={{ mr: 1 }} color="primary" />
+                Unidades Asignadas
+              </Typography>
+              {infoBrigada.unidades && infoBrigada.unidades.length > 0 ? (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                  {infoBrigada.unidades.map((unidad) => (
+                    <Chip
+                      key={unidad._id}
+                      label={unidad.nombreUnidad || "Unidad no encontrada"}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      sx={{ 
+                        borderRadius: '16px',
+                        fontSize: '1rem',
+                        maxWidth: '200px',
+                        width: '100%',
+                        color: 'black',
+                        '&:hover': {
+                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                  Sin unidades asignadas
+                </Typography>
+              )}
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {/* Snackbar para mensajes de error */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

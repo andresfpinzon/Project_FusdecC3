@@ -25,6 +25,8 @@ import {
   Select,
   MenuItem,
   Grid,
+  TablePagination,
+  Chip,
 } from "@mui/material";
 import { Edit, Delete, Info, LocationOn, Assignment, VerifiedUser, History } from "@mui/icons-material";
 
@@ -45,6 +47,9 @@ const Comandos = () => {
   const [infoComando, setInfoComando] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
 
   useEffect(() => {
     fetchComandos();
@@ -246,7 +251,7 @@ const Comandos = () => {
     <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <h1>Gestión de Comandos</h1>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4} style={{ paddingLeft: '20px' }}>
+        <Grid item xs={12} md={12} style={{ paddingLeft: '20px' }}>
           <form noValidate autoComplete="off">
             <TextField
               label="Nombre del Comando"
@@ -298,7 +303,7 @@ const Comandos = () => {
             </Button>
           </form>
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={12}>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
               <TableHead>
@@ -311,7 +316,7 @@ const Comandos = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {comandos.map((comando) => (
+                {comandos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comando) => (
                   <TableRow key={comando._id}>
                     <TableCell>{comando.nombreComando}</TableCell>
                     <TableCell>{comando.ubicacionComando}</TableCell>
@@ -327,7 +332,7 @@ const Comandos = () => {
                       <IconButton onClick={() => {
                         setSelectedComando(comando);
                         setOpenDeleteDialog(true);
-                      }} color="secondary">
+                      }} color="error">
                         <Delete />
                       </IconButton>
                     </TableCell>
@@ -335,6 +340,18 @@ const Comandos = () => {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={comandos.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(event, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(event) => {
+                setRowsPerPage(parseInt(event.target.value, 10));
+                setPage(0);
+              }}
+            />
           </TableContainer>
         </Grid>
       </Grid>
@@ -383,9 +400,9 @@ const Comandos = () => {
                 <LocationOn color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  <a 
-                    href={infoComando.ubicacionComando} 
-                    target="_blank" 
+                  <a
+                    href={infoComando.ubicacionComando}
+                    target="_blank"
                     rel="noopener noreferrer"
                     style={{ color: '#3f51b5', textDecoration: 'none' }}
                   >
@@ -411,6 +428,38 @@ const Comandos = () => {
                   {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}
                 </Typography>
               </Box>
+
+              {/* Brigadas Asignadas */}
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+                Brigadas Asignadas
+              </Typography>
+              {infoComando.brigadas && infoComando.brigadas.length > 0 ? (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  {infoComando.brigadas?.map((brigada) => (
+                    <Chip
+                      key={brigada._id}
+                      label={brigada.nombreBrigada || "Brigada no encontrada"}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      sx={{ 
+                        borderRadius: '16px',
+                        fontSize: '1rem',
+                        maxWidth: '200px',
+                        width: '100%',
+                        color: 'black',
+                        '&:hover': {
+                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                  Sin brigadas asignadas
+                </Typography>
+              )}
             </div>
           )}
         </DialogContent>

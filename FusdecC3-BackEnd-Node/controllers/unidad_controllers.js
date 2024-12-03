@@ -1,5 +1,7 @@
 const logic = require('../logic/unidad_logic');
 const unidadSchemaValidation = require('../validations/unidad_validations');
+const Unidad = require('../models/unidad_model');
+const Brigada = require('../models/brigada_model');
 
 // Controlador para listar unidades
 const listarUnidades = async (_req, res) => {
@@ -15,14 +17,37 @@ const listarUnidades = async (_req, res) => {
 // Controlador para crear una unidad
 const crearUnidad = async (req, res) => {
     try {
-        const { error } = unidadSchemaValidation.validate(req.body);
-        if (error) return res.status(400).json({ error: error.details[0].message });
+        // Validar los datos de entrada
+        const { error, value } = unidadSchemaValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+        }
 
-        const nuevaUnidad = await logic.crearUnidad(req.body);
-        res.status(201).json(nuevaUnidad);
+        const { nombreUnidad, estadoUnidad, brigadaId, usuarioId, estudiantes } = value; // Usar los valores validados
+        const unidad = new Unidad({
+            nombreUnidad,
+            estadoUnidad,
+            brigadaId,
+            usuarioId,
+            estudiantes,
+        });
+        
+        // Guardar la unidad
+        const savedUnidad = await unidad.save();
+        
+        // Si hay una brigada asignada, actualizar la brigada también
+        if (brigadaId) {
+            await Brigada.findByIdAndUpdate(
+                brigadaId,
+                { $push: { unidades: savedUnidad._id } },
+                { new: true }
+            );
+        }
+
+        res.status(201).json(savedUnidad);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al crear la unidad' });
+        console.error(error); // Registrar el error en el log
+        res.status(500).json({ message: 'Error al crear unidad', details: error.message });
     }
 };
 
