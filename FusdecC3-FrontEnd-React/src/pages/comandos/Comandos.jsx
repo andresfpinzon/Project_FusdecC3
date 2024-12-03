@@ -53,7 +53,7 @@ const Comandos = () => {
 
   useEffect(() => {
     fetchComandos();
-    //fetchFundaciones();
+    fetchFundaciones();
   }, []);
 
   const fetchComandos = async () => {
@@ -77,7 +77,13 @@ const Comandos = () => {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/fundaciones");
+      const response = await fetch("http://localhost:3000/api/fundaciones", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener fundaciones");
       const data = await response.json();
       setFundaciones(data);
@@ -103,25 +109,25 @@ const Comandos = () => {
   };
 
   const handleCreateComando = async () => {
-    // Validar que los campos requeridos no estén vacíos
     if (!formValues.nombreComando || !isValidGoogleMapsLink(formValues.ubicacionComando)) {
-        setErrorMessage("Por favor, ingresa un enlace válido de Google Maps en la ubicación.");
-        setOpenSnackbar(true);
-        return;
+      setErrorMessage("Por favor, completa todos los campos requeridos y asegúrate de que la ubicación sea un enlace válido de Google Maps.");
+      setOpenSnackbar(true);
+      return;
     }
 
-    if (!formValues.fundacionId) {
-        delete formValues.fundacionId; // Eliminar el campo si está vacío
-    }
+    const comandoData = {
+      ...formValues,
+      fundacionId: formValues.fundacionId || null
+    };
 
     try {
       const response = await fetch("http://localhost:3000/api/comandos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Authorization": token
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(comandoData),
       });
 
       if (response.ok) {
@@ -321,7 +327,9 @@ const Comandos = () => {
                     <TableCell>{comando.nombreComando}</TableCell>
                     <TableCell>{comando.ubicacionComando}</TableCell>
                     <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
-                    <TableCell>{fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}</TableCell>
+                    <TableCell>
+                      {comando.fundacionId ? comando.fundacionId.nombreFundacion : "No asignada"}
+                    </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(comando)} color="primary">
                         <Edit />
