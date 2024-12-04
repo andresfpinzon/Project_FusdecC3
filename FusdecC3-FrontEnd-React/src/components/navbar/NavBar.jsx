@@ -21,6 +21,9 @@ import obtenerRutasPermitidas from "../../routes/rutasPermitidas";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import LogoutIcon from '@mui/icons-material/Logout';
+import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
+import Typography from '@mui/material/Typography';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -142,15 +145,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    margin: '0 4px',
-    borderRadius: '20px',
-    textTransform: 'none',
-    padding: '6px 16px',
+    minWidth: '40px',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    padding: '8px',
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.2)',
     },
   },
   logoutButton: {
+    minWidth: '40px',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    padding: '8px',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -191,7 +200,7 @@ export default function Navbar() {
     <Box>
       <List>
         {rutasPermitidas
-          .filter(ruta => !['Home', 'Más Información', 'Login'].includes(ruta.nombre))
+          .filter(ruta => !['Home', 'Login'].includes(ruta.nombre))
           .map((ruta, index) => (
           <React.Fragment key={ruta.nombre}>
             <ListItem 
@@ -207,39 +216,10 @@ export default function Navbar() {
                 primaryTypographyProps={{ 
                   style: { 
                     color: '#1976d2',
-                    fontWeight: 500,
-                    fontSize: '0.95rem'
                   }
                 }}
               />
-              {ruta.subrutas && (
-                <ExpandMoreIcon 
-                  className={`${classes.expandIcon} ${expandedItems[index] ? classes.expandIconOpen : ''}`}
-                  style={{ color: '#1976d2' }}
-                />
-              )}
             </ListItem>
-            {ruta.subrutas && (
-              <Collapse in={expandedItems[index]} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {ruta.subrutas.map((subruta) => (
-                    <ListItem
-                      key={subruta.nombre}
-                      button
-                      onClick={() => handleItemClick(null, subruta.ruta)}
-                      className={`${classes.listItem} ${classes.nestedItem}`}
-                    >
-                      <ListItemText 
-                        primary={subruta.nombre}
-                        primaryTypographyProps={{ 
-                          style: { color: '#666' }
-                        }}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Collapse>
-            )}
           </React.Fragment>
         ))}
       </List>
@@ -270,22 +250,27 @@ export default function Navbar() {
           />
           <Box sx={{ flexGrow: 1 }} />
           <Box>
+            <Button 
+              color="inherit"
+              onClick={() => navigate("/home")}
+              startIcon={<HomeIcon />}
+            >
+              Home
+            </Button>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <IconButton onClick={() => navigate("/masinformacion")} size="small">
+              <InfoIcon />
+            </IconButton>
+            <Typography variant="caption" color="inherit">
+              Más Información
+            </Typography>
+          </Box>
+          <Box>
             {!isAuthenticated ? (
               <>
                 <Button 
-                  color="inherit" 
-                  onClick={() => navigate("/home")}
-                >
-                  Home
-                </Button>
-                <Button 
-                  color="inherit" 
-                  onClick={() => navigate("/masinformacion")}
-                >
-                  Más Información
-                </Button>
-                <Button 
-                  color="inherit" 
+                  color="inherit"
                   onClick={() => navigate("/login")}
                 >
                   Login
@@ -294,24 +279,10 @@ export default function Navbar() {
             ) : (
               <>
                 <Button 
-                  color="inherit" 
-                  onClick={() => navigate("/home")}
-                >
-                  Home
-                </Button>
-                <Button 
-                  color="inherit" 
-                  onClick={() => navigate("/masinformacion")}
-                >
-                  Más Información
-                </Button>
-                <Button 
                   color="inherit"
-                  className={`${classes.button} ${classes.logoutButton}`}
-                  startIcon={<LogoutIcon />}
                   onClick={handleLogout}
                 >
-                  Cerrar Sesión
+                  <LogoutIcon />
                 </Button>
               </>
             )}
@@ -323,9 +294,6 @@ export default function Navbar() {
           anchor="left"
           open={drawerOpen}
           onClose={handleDrawerToggle}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
         >
           {drawer}
         </Drawer>
