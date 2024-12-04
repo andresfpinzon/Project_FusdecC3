@@ -93,19 +93,24 @@ const agregarBrigadasAComandos = async (req, res) => {
         const { id } = req.params;
         const { brigadaIds } = req.body;
 
-        const comando = await Comando.findById(id);
-        if (!comando) {
-            return res.status(404).json({ mensaje: 'comando no encontrado' });
+        if (!Array.isArray(brigadaIds)) {
+            return res.status(400).json({ 
+                mensaje: 'brigadaIds debe ser un array de IDs' 
+            });
         }
 
-        // Agregar las nuevas unidades al array existente
-        comando.brigadas = [...new Set([...comando.brigadas, ...brigadaIds])];
+        const comandoActualizado = await logic.agregarBrigadasAComandos(id, brigadaIds);
         
-        await comando.save();
-
-        res.status(200).json(comando);
+        res.status(200).json({
+            mensaje: 'Brigadas agregadas exitosamente',
+            comando: comandoActualizado
+        });
     } catch (error) {
-        res.status(500).json({ mensaje: 'Error al agregar brigadas a la comando', error: error.message });
+        console.error('Error completo:', error);
+        res.status(500).json({ 
+            mensaje: 'Error al agregar brigadas al comando', 
+            error: error.message 
+        });
     }
 };
 

@@ -229,7 +229,7 @@ const handleUpdateFundacion = async () => {
             {selectedFundacion ? "Actualizar Fundacion" : "Crear Fundacion"}
           </Button>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
         <h2>Lista de Fundaciones</h2>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
@@ -252,10 +252,10 @@ const handleUpdateFundacion = async () => {
                       <IconButton onClick={() => {
                         setSelectedFundacion(fundacion);
                         setOpenDeleteDialog(true);
-                      }} color="secondary">
+                      }} color="error">
                         <Delete />
                       </IconButton>
-                      <IconButton onClick={() => handleInfoClick(fundacion)} color="default">
+                      <IconButton onClick={() => handleInfoClick(fundacion)} color="primary">
                         <Info />
                       </IconButton>
                     </TableCell>
@@ -284,7 +284,7 @@ const handleUpdateFundacion = async () => {
           <Button onClick={handleCloseDeleteDialog} color="default">
             Cancelar
           </Button>
-          <Button onClick={handleDeleteFundacion} color="secondary">
+          <Button onClick={handleDeleteFundacion} color="error">
             Eliminar
           </Button>
         </DialogActions>

@@ -359,7 +359,7 @@ const Unidades = () => {
             options={estudiantes}
             getOptionLabel={(option) => `${option.nombreEstudiante} ${option.apellidoEstudiante}`}
             value={formValues.estudiantes.map((id) => estudiantes.find(est => est._id === id))}
-            onChange={(event, newValue) => {
+            onChange={(_, newValue) => {
               setFormValues({
                 ...formValues,
                 estudiantes: newValue.map((est) => est._id),
@@ -424,7 +424,7 @@ const Unidades = () => {
                   <IconButton onClick={() => handleDeleteClick(unidad)} color="error">
                     <Delete />
                   </IconButton>
-                  <IconButton onClick={() => handleInfoClick(unidad)} color="info">
+                  <IconButton onClick={() => handleInfoClick(unidad)} color="primary">
                     <Info />
                   </IconButton>
                 </TableCell>

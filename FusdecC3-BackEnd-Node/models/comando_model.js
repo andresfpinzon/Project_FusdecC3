@@ -18,7 +18,7 @@ const ComandoSchema = new Schema({
     fundacionId: {
         type: Schema.Types.ObjectId,
         ref: "Fundacion",
-        default: null,
+        required: true
     },
     brigadas: [
         {

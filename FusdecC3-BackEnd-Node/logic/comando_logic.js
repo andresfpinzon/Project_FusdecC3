@@ -62,19 +62,46 @@ async function desactivarComando(id) {
 
 // Lógica para agregar unidades a una brigada
 async function agregarBrigadasAComandos(comandoId, brigadaIds) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
-        const comando = await Comando.findById(comandoId); // Cambiado a findById
+        const comando = await Comando.findById(comandoId);
         if (!comando) {
             throw new Error('Comando no encontrado');
         }
-        // Filtrar las unidades ya existentes para no duplicarlas
-        const nuevasBrigadas = brigadaIds.filter(brigadaId => !comando.brigadas.includes(brigadaId));
-        // Agregar las nuevas unidades al array de unidades de la brigada
-        comando.brigadas = [...comando.brigadas, ...nuevasBrigadas];
-        await comando.save();
-        return comando;
+
+        // Convertir los IDs a ObjectId si no lo están
+        const brigadasObjectIds = brigadaIds.map(id => 
+            mongoose.Types.ObjectId.isValid(id) ? new mongoose.Types.ObjectId(id) : id
+        );
+
+        // Actualizar el comando con las nuevas brigadas
+        comando.brigadas = [...new Set([...comando.brigadas, ...brigadasObjectIds])];
+
+        // Actualizar las brigadas para que tengan referencia al comando
+        await brigadas.updateMany(
+            { _id: { $in: brigadasObjectIds } },
+            { $set: { comandoId: comandoId } },
+            { session }
+        );
+
+        await comando.save({ session });
+        await session.commitTransaction();
+
+        // Retornar el comando actualizado con las relaciones pobladas
+        return await Comando.findById(comandoId)
+            .populate({
+                path: 'brigadas',
+                model: 'Brigada',
+                select: 'nombreBrigada estadoBrigada ubicacionBrigada'
+            })
+            .populate('fundacionId');
     } catch (error) {
+        await session.abortTransaction();
         throw new Error(`Error al agregar brigadas: ${error.message}`);
+    } finally {
+        session.endSession();
     }
 }
 
