@@ -39,6 +39,7 @@ const Colegios = () => {
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [colegioToDelete, setColegioToDelete] = useState(null);
@@ -150,7 +151,8 @@ const Colegios = () => {
               estadoColegio: true,
               estudiantes: [],
             });
-            console.log('Colegio creado exitosamente:', nuevoColegio);
+            setSuccessMessage("Colegio creado exitosamente");
+            setOpenSnackbar(true);
         } else {
             const errorData = await response.json();
             throw new Error(errorData.error || "Error al crear colegio");
@@ -190,6 +192,8 @@ const Colegios = () => {
           estadoColegio: true,
           estudiantes: [],
         });
+        setSuccessMessage("Colegio actualizado exitosamente");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar el colegio");
@@ -216,6 +220,8 @@ const Colegios = () => {
 
       if (response.ok) {
         setColegios(colegios.filter((colegio) => colegio._id !== colegioToDelete._id));
+        setSuccessMessage("Colegio eliminado exitosamente");
+        setOpenSnackbar(true);
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
       } else {
         const errorData = await response.json();
@@ -425,8 +431,8 @@ const Colegios = () => {
       </Dialog>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert onClose={() => setOpenSnackbar(false)} severity={errorMessage ? "error" : "success"}>
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </Container>
