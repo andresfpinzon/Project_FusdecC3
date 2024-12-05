@@ -55,6 +55,8 @@ const Certificados = () => {
   const [certificadoDetails, setCertificadoDetails] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("success"); // "success" o "error"
 
   useEffect(() => {
     fetchUsuarios();
@@ -199,6 +201,9 @@ const Certificados = () => {
         });
         setAuditorias([...auditorias, nuevoCertificado.nuevaAuditoria]);
         clearForm();
+        setMessage("Certificado guardado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear certificado");
@@ -235,6 +240,9 @@ const Certificados = () => {
           certificado._id === updatedCertificado._id ? updatedCertificado : certificado
         ));
         clearForm();
+        setMessage("Certificado actualizado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar certificado");
@@ -315,6 +323,10 @@ const Certificados = () => {
   const handleDetailsClick = (certificado) => {
     setCertificadoDetails(certificado);
     setOpenDetailsDialog(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -438,10 +450,10 @@ const Certificados = () => {
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
+        onClose={handleCloseSnackbar}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: "100%" }}>
+          {message}
         </Alert>
       </Snackbar>
 

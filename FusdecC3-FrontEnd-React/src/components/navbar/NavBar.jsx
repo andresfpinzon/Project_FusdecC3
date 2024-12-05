@@ -200,28 +200,28 @@ export default function Navbar() {
     <Box>
       <List>
         {rutasPermitidas
-          .filter(ruta => !['Home', 'Login'].includes(ruta.nombre))
+          .filter(ruta => ruta.nombre !== 'Más Información' && ruta.nombre !== 'Home')
           .map((ruta, index) => (
-          <React.Fragment key={ruta.nombre}>
-            <ListItem 
-              button 
-              className={`${classes.listItem} ${expandedItems[index] ? classes.listItemActive : ''}`}
-              onClick={() => handleItemClick(index, ruta.subrutas ? null : ruta.ruta)}
-            >
-              <ListItemIcon className={classes.listItemIcon}>
-                {ruta.icon}
-              </ListItemIcon>
-              <ListItemText 
-                primary={ruta.nombre}
-                primaryTypographyProps={{ 
-                  style: { 
-                    color: '#1976d2',
-                  }
-                }}
-              />
-            </ListItem>
-          </React.Fragment>
-        ))}
+            <React.Fragment key={ruta.nombre}>
+              <ListItem 
+                button 
+                className={`${classes.listItem} ${expandedItems[index] ? classes.listItemActive : ''}`}
+                onClick={() => handleItemClick(index, ruta.subrutas ? null : ruta.ruta)}
+              >
+                <ListItemIcon className={classes.listItemIcon}>
+                  {ruta.icon}
+                </ListItemIcon>
+                <ListItemText 
+                  primary={ruta.nombre}
+                  primaryTypographyProps={{ 
+                    style: { 
+                      color: '#1976d2',
+                    }
+                  }}
+                />
+              </ListItem>
+            </React.Fragment>
+          ))}
       </List>
     </Box>
   );
@@ -251,20 +251,25 @@ export default function Navbar() {
           <Box sx={{ flexGrow: 1 }} />
           <Box>
             <Button 
-              color="inherit"
-              onClick={() => navigate("/home")}
-              startIcon={<HomeIcon />}
+              color="inherit" 
+              onClick={() => navigate("/home")} 
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             >
+              <HomeIcon />
               Home
             </Button>
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <IconButton onClick={() => navigate("/masinformacion")} size="small">
-              <InfoIcon />
-            </IconButton>
-            <Typography variant="caption" color="inherit">
-              Más Información
-            </Typography>
+          <Box>
+            <Box>
+              <Button 
+                color="inherit" 
+                onClick={() => navigate("/masinformacion")} 
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                <InfoIcon />
+                Más Información
+              </Button>
+            </Box>
           </Box>
           <Box>
             {!isAuthenticated ? (
@@ -298,7 +303,6 @@ export default function Navbar() {
           {drawer}
         </Drawer>
       )}
-      <Toolbar /> {/* Espaciador para el contenido debajo del AppBar */}
     </>
   );
 }

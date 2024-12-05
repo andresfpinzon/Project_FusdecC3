@@ -56,6 +56,7 @@ const Unidades = () => {
   const [infoUnidad, setInfoUnidad] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     fetchUnidades();
@@ -190,6 +191,8 @@ const Unidades = () => {
         usuarioId: "",
         estudiantes: [],
       });
+      setSuccessMessage("Unidad guardada exitosamente!");
+      setOpenSnackbar(true);
     } catch (error) {
       console.error("Error al crear unidad:", error);
       setErrorMessage(error.message);
@@ -225,6 +228,8 @@ const Unidades = () => {
           usuarioId: "",
           estudiantes: [],
         });
+        setSuccessMessage("Unidad actualizada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar unidad");
@@ -252,6 +257,8 @@ const Unidades = () => {
       if (response.ok) {
         setUnidades(unidades.filter((unidad) => unidad._id !== unidadToDelete._id));
         handleCloseDeleteDialog();
+        setSuccessMessage("Unidad eliminada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar unidad");
@@ -300,6 +307,10 @@ const Unidades = () => {
   const handleCloseInfoDialog = () => {
     setOpenInfoDialog(false);
     setInfoUnidad(null);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -530,9 +541,18 @@ const Unidades = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="error">
           {errorMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
+          {successMessage}
         </Alert>
       </Snackbar>
     </Container>

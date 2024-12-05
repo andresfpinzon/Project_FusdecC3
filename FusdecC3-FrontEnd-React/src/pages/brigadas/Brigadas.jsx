@@ -53,6 +53,7 @@ export default function Brigadas() {
   const [infoBrigada, setInfoBrigada] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -160,6 +161,8 @@ export default function Brigadas() {
         const nuevaBrigada = await response.json();
         setBrigadas([...brigadas, nuevaBrigada]);
         clearForm();
+        setSuccessMessage("Brigada guardada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear brigada");
@@ -193,6 +196,8 @@ export default function Brigadas() {
           )
         );
         clearForm();
+        setSuccessMessage("Brigada actualizada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar brigada");
@@ -222,6 +227,8 @@ export default function Brigadas() {
       if (response.ok) {
         setBrigadas(brigadas.filter((brigada) => brigada._id !== selectedBrigada._id));
         handleCloseDeleteDialog();
+        setSuccessMessage("Brigada eliminada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar brigada");
@@ -499,6 +506,16 @@ export default function Brigadas() {
           sx={{ width: "100%" }}
         >
           {errorMessage}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
+          {successMessage}
         </Alert>
       </Snackbar>
     </Container>

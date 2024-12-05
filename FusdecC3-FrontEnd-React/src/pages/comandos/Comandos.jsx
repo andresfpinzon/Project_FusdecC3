@@ -49,6 +49,7 @@ const Comandos = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [successMessage, setSuccessMessage] = useState("");
 
 
   useEffect(() => {
@@ -133,6 +134,8 @@ const Comandos = () => {
         const nuevoComando = await response.json();
         setComandos([...comandos, nuevoComando]);
         clearForm();
+        setSuccessMessage("Comando guardado exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear comando");
@@ -170,6 +173,8 @@ const Comandos = () => {
         )
       );
       clearForm();
+      setSuccessMessage("Comando actualizado exitosamente!");
+      setOpenSnackbar(true);
     } catch (error) {
       console.error("Error al actualizar comando:", error);
       setErrorMessage(error.message);
@@ -195,6 +200,8 @@ const Comandos = () => {
       if (response.ok) {
         setComandos(comandos.filter((comando) => comando._id !== selectedComando._id));
         handleCloseDeleteDialog();
+        setSuccessMessage("Comando eliminado exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar comando");
@@ -327,7 +334,7 @@ const Comandos = () => {
                     <TableCell>{comando.ubicacionComando}</TableCell>
                     <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
-                      {comando.fundacionId ? comando.fundacionId.nombreFundacion : "No asignada"}
+                      {fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(comando)} color="primary">
@@ -485,10 +492,10 @@ const Comandos = () => {
       >
         <Alert
           onClose={handleCloseSnackbar}
-          severity="error"
+          severity={errorMessage ? "error" : "success"}
           sx={{ width: "100%" }}
         >
-          {errorMessage}
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </Container>

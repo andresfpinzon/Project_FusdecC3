@@ -58,6 +58,9 @@ const Usuarios = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("success"); // "success" o "error"
+
   useEffect(() => {
     fetchUsuarios();
     fetchRoles();
@@ -103,9 +106,9 @@ const Usuarios = () => {
 
   // Filtrar usuarios según el término de búsqueda
   const filteredUsuarios = usuarios.filter((usuario) =>
-    usuario.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    usuario.apellidoUsuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    usuario.correo.toLowerCase().includes(searchTerm.toLowerCase())
+    (usuario.nombreUsuario && usuario.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (usuario.apellidoUsuario && usuario.apellidoUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (usuario.correo && usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Cambiar página
@@ -166,6 +169,9 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
+        setMessage("Usuario guardado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear usuario");
@@ -173,6 +179,8 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al crear usuario:", error);
       setErrorMessage(error.message);
+      setMessage("Error al crear usuario: " + error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
@@ -207,6 +215,9 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
+        setMessage("Usuario actualizado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar usuario");
@@ -214,6 +225,8 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
       setErrorMessage(error.message);
+      setMessage("Error al actualizar usuario: " + error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
@@ -234,6 +247,9 @@ const Usuarios = () => {
       if (response.ok) {
         setUsuarios(usuarios.filter((user) => user._id !== userToDelete._id));
         handleCloseDeleteDialog();
+        setMessage("Usuario eliminado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar Usuario");
@@ -241,6 +257,8 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al eliminar usuario:", error);
       setErrorMessage(error.message);
+      setMessage("Error al eliminar usuario: " + error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
@@ -266,6 +284,10 @@ const Usuarios = () => {
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setUserToDelete(null);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -439,10 +461,10 @@ const Usuarios = () => {
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
+        onClose={handleCloseSnackbar}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: "100%" }}>
+          {message}
         </Alert>
       </Snackbar>
     </Container>
