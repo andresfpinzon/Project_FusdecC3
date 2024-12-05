@@ -256,7 +256,7 @@ export default function Navbar() {
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             >
               <HomeIcon />
-              Home
+          
             </Button>
           </Box>
           <Box>
@@ -267,7 +267,7 @@ export default function Navbar() {
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               >
                 <InfoIcon />
-                Más Información
+              
               </Button>
             </Box>
           </Box>

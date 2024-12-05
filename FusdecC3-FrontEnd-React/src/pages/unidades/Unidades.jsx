@@ -313,6 +313,18 @@ const Unidades = () => {
     setOpenSnackbar(false);
   };
 
+  const renderEstudiantes = (estudiantes) => {
+    if (estudiantes.length === 0) {
+      return "Sin estudiantes";
+    }
+
+    return estudiantes.map(est => (
+      <div key={est._id}>
+        {est.nombreEstudiante} {est.apellidoEstudiante} - {est.tipoDocumento}: {est.numeroDocumento}
+      </div>
+    ));
+  };
+
   return (
     <Container>
       <h1>Gestión de Unidades:</h1>
@@ -420,13 +432,7 @@ const Unidades = () => {
                   {unidad.usuarioId?.nombreUsuario || "Usuario no encontrado"}
                 </TableCell>
                 <TableCell>
-                  {unidad.estudiantes.length > 0
-                    ? unidad.estudiantes.map(est => (
-                        <div key={est._id}>
-                          {est.nombreEstudiante} {est.apellidoEstudiante} - {est.tipoDocumento}: {est.numeroDocumento}
-                        </div>
-                      )).reduce((prev, curr) => [prev, ', ', curr])
-                    : "Sin estudiantes"}
+                  {renderEstudiantes(unidad.estudiantes)}
                 </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEditClick(unidad)} color="primary">

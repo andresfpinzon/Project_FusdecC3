@@ -259,6 +259,20 @@ const Comandos = () => {
     return regex.test(link);
   };
 
+  const obtenerFundacionesAsignadas = () => {
+    const fundacionesAsignadas = comandos.map(comando => {
+      const fundacion = fundaciones.find(fundacion => fundacion._id === comando.fundacionId);
+      return fundacion ? fundacion.nombreFundacion : null;
+    }).filter((nombre) => nombre !== null);
+
+    return [...new Set(fundacionesAsignadas)]; // Elimina duplicados
+  };
+
+  // Uso de la función
+  const fundacionesUnicas = obtenerFundacionesAsignadas();
+  console.log(fundacionesUnicas);
+
+
   return (
     <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <h1>Gestión de Comandos</h1>
@@ -388,7 +402,7 @@ const Comandos = () => {
           <Button onClick={handleCloseDeleteDialog} color="default">
             Cancelar
           </Button>
-          <Button onClick={handleDeleteComando} color="secondary">
+          <Button onClick={handleDeleteComando} color="error">
             Eliminar
           </Button>
         </DialogActions>

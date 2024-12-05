@@ -8,24 +8,24 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
   
     const rutasAdministrador = [
       { nombre: "Fundaciones", ruta: "/fundaciones", roles: ["Administrador", "Root"] },
-      { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador", "Root"] },
-      { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrador", "Root"] },
-      { nombre: "Brigadas", ruta: "/brigadas", roles: ["Administrador", "Root"] },
-      { nombre: "Certificados", ruta: "/certificados", roles: ["Administrador", "Root"] },
-      { nombre: "Colegios", ruta: "/colegios", roles: ["Administrador", "Root"] },
       { nombre: "Comandos", ruta: "/comandos", roles: ["Administrador", "Root"] },
+      { nombre: "Brigadas", ruta: "/brigadas", roles: ["Administrador", "Root"] },
       { nombre: "Unidades", ruta: "/unidades", roles: ["Administrador", "Root"] },
+      { nombre: "Colegios", ruta: "/colegios", roles: ["Administrador", "Root"] },
+      { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador", "Root"] },
+      { nombre: "Inasistencias", ruta: "/inasistencias", roles: ["Administrador", "Root"] },
+      { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrador", "Root"] },
+      { nombre: "Certificados", ruta: "/certificados", roles: ["Administrador", "Root"] },
       { nombre: "Usuarios", ruta: "/usuarios", roles: ["Administrador", "Root"] },
       { nombre: "Roles", ruta: "/roles", roles: ["Administrador", "Root"] },
-      { nombre: "Inasistencias", ruta: "/inasistencias", roles: ["Administrador", "Root"] },
       { nombre: "Calificaciones", ruta: "/calificaciones", roles: ["Administrador", "Root"] },
     ];
   
     const rutasSecretario = [
-      { nombre: "Cursos", ruta: "/cursos", roles: ["Secretario", "Root"] },
-      { nombre: "Ediciones", ruta: "/ediciones", roles: ["Secretario", "Root"] },
-      { nombre: "Horarios", ruta: "/horarios", roles: ["Secretario", "Root"] },
       { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Secretario", "Root"] },
+      { nombre: "Cursos", ruta: "/cursos", roles: ["Secretario", "Root"] },
+      { nombre: "Horarios", ruta: "/horarios", roles: ["Secretario", "Root"] },
+      { nombre: "Ediciones", ruta: "/ediciones", roles: ["Secretario", "Root"] },
     ];
   
     const rutasInstructor = [
