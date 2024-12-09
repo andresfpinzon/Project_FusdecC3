@@ -334,7 +334,7 @@ const Colegios = () => {
                 <TableCell>{colegio.emailColegio}</TableCell>
                 <TableCell>{colegio.estadoColegio ? "Activo" : "Inactivo"}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditClick(colegio)}>
+                  <IconButton onClick={() => handleEditClick(colegio)} color="primary">
                     <Edit />
                   </IconButton>
                   <IconButton onClick={() => handleInfoClick(colegio)} color="primary">
@@ -342,7 +342,7 @@ const Colegios = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteClick(colegio)}
-                    color="secondary"
+                    color="error"
                   >
                     <Delete />
                   </IconButton>

@@ -362,7 +362,7 @@ const Cursos = () => {
                     <Info />
                   </IconButton>
                   <IconButton
-                    onClick={() => handleDeleteClick(curso)}color="secondary">
+                    onClick={() => handleDeleteClick(curso)}color="error">
                     <Delete />
                   </IconButton>
                 </TableCell>
