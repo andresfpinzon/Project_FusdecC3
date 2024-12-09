@@ -1,18 +1,24 @@
 import { createTheme } from "@mui/material/styles";
 
-const theme = createTheme({
+const getTheme = (darkMode) => createTheme({
   palette: {
+    mode: darkMode ? "dark" : "light",
     primary: {
-      main: "#1d526eff", 
+      main: "#1d526eff",
     },
     secondary: {
-      main: "#1d526eff", 
+      main: "#1d526eff",
     },
     error: {
-      main: "#f44336", // Color de error
+      main: "#f44336",
     },
     background: {
-      default: "#ffffff", // Color de fondo por defecto
+      default: darkMode ? "#121212" : "#ffffff", // Color de fondo
+      paper: darkMode ? "#1e1e1e" : "#ffffff", // Color de papel
+    },
+    text: {
+      primary: darkMode ? "#ffffff" : "#000000", // Color del texto
+      secondary: darkMode ? "#b0b0b0" : "#555555", // Color del texto secundario
     },
   },
   typography: {
@@ -27,9 +33,9 @@ const theme = createTheme({
       fontSize: "1rem",
     },
   },
-  spacing: 8, // Define la unidad de espaciado (8px es el valor predeterminado)
+  spacing: 8,
   shape: {
-    borderRadius: 8, // Define el radio de las esquinas de los elementos
+    borderRadius: 8,
   },
   breakpoints: {
     values: {
@@ -44,11 +50,11 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: "none", // Desactiva la capitalización automática de los botones
+          textTransform: "none",
         },
       },
     },
   },
 });
 
-export default theme;
+export default getTheme;
