@@ -49,7 +49,8 @@ const Comandos = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [successMessage, setSuccessMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchComandos();
@@ -133,6 +134,8 @@ const Comandos = () => {
         const nuevoComando = await response.json();
         setComandos([...comandos, nuevoComando]);
         clearForm();
+        setSuccessMessage("Comando guardado exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear comando");
@@ -170,6 +173,8 @@ const Comandos = () => {
         )
       );
       clearForm();
+      setSuccessMessage("Comando actualizado exitosamente!");
+      setOpenSnackbar(true);
     } catch (error) {
       console.error("Error al actualizar comando:", error);
       setErrorMessage(error.message);
@@ -195,6 +200,8 @@ const Comandos = () => {
       if (response.ok) {
         setComandos(comandos.filter((comando) => comando._id !== selectedComando._id));
         handleCloseDeleteDialog();
+        setSuccessMessage("Comando eliminado exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar comando");
@@ -251,6 +258,25 @@ const Comandos = () => {
     const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)/;
     return regex.test(link);
   };
+
+  const obtenerFundacionesAsignadas = () => {
+    const fundacionesAsignadas = comandos.map(comando => {
+      const fundacion = fundaciones.find(fundacion => fundacion._id === comando.fundacionId);
+      return fundacion ? fundacion.nombreFundacion : null;
+    }).filter((nombre) => nombre !== null);
+
+    return [...new Set(fundacionesAsignadas)]; // Elimina duplicados
+  };
+
+  // Uso de la función
+  const fundacionesUnicas = obtenerFundacionesAsignadas();
+  console.log(fundacionesUnicas);
+
+  const filteredComandos = comandos.filter((comando) =>
+    comando.nombreComando.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    comando.ubicacionComando.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (comando.estadoComando ? "Activo" : "Inactivo").toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -309,6 +335,14 @@ const Comandos = () => {
           </form>
         </Grid>
         <Grid item xs={12} md={12}>
+          <TextField
+            label="Buscar comandos"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
               <TableHead>
@@ -321,13 +355,13 @@ const Comandos = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {comandos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comando) => (
+                {filteredComandos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comando) => (
                   <TableRow key={comando._id}>
                     <TableCell>{comando.nombreComando}</TableCell>
                     <TableCell>{comando.ubicacionComando}</TableCell>
                     <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
-                      {comando.fundacionId ? comando.fundacionId.nombreFundacion : "No asignada"}
+                      {fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(comando)} color="primary">
@@ -350,7 +384,7 @@ const Comandos = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={comandos.length}
+              count={filteredComandos.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={(event, newPage) => setPage(newPage)}
@@ -381,7 +415,7 @@ const Comandos = () => {
           <Button onClick={handleCloseDeleteDialog} color="default">
             Cancelar
           </Button>
-          <Button onClick={handleDeleteComando} color="secondary">
+          <Button onClick={handleDeleteComando} color="error">
             Eliminar
           </Button>
         </DialogActions>
@@ -485,10 +519,10 @@ const Comandos = () => {
       >
         <Alert
           onClose={handleCloseSnackbar}
-          severity="error"
+          severity={errorMessage ? "error" : "success"}
           sx={{ width: "100%" }}
         >
-          {errorMessage}
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </Container>

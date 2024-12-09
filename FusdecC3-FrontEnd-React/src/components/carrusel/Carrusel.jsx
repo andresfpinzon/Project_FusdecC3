@@ -7,7 +7,6 @@ import carrusel4 from "../../assets/images/carrusel4.png";
 
 const images = [carrusel1, carrusel2, carrusel3, carrusel4];
 
-
 export default function Carrusel() {
   const [currentIndex, setCurrentIndex] = useState(0);
 

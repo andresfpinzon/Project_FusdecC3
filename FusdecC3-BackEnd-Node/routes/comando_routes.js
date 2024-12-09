@@ -106,7 +106,7 @@ router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrado
  *                   id: "63f7d2bbf1a2b4b5c3cdb900"
  *                   nombreComando: "Comando de Rescate"
  *                   estadoComando: true
- *                   ubicacionComando: "Sector 5, Zona Norte"
+ *                   ubicacionComando: "https://maps.app.goo.gl/ZtQUhaMdhQyDVc9r5"
  *                   fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
  *                   brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
  *       404:
@@ -130,9 +130,9 @@ router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), comandoCont
  *           examples:
  *             ejemplo1:
  *               value:
- *                 nombreComando: "Comando de Emergencia"
+ *                 nombreComando: "Comando 3"
  *                 estadoComando: true
- *                 ubicacionComando: "Sector 5, Zona Norte"
+ *                 ubicacionComando: "https://maps.app.goo.gl/ZtQUhaMdhQyDVc9r5"
  *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
  *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
  *     responses:
@@ -168,7 +168,7 @@ router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), comandoContro
  *               value:
  *                 nombreComando: "Comando de Rescate Actualizado"
  *                 estadoComando: false
- *                 ubicacionComando: "Sector 5, Zona Norte"
+ *                 ubicacionComando: "https://maps.app.goo.gl/ZtQUhaMdhQyDVc9r5"
  *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
  *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
  *     responses:

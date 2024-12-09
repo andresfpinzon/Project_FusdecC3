@@ -54,7 +54,9 @@ export default function Brigadas() {
   const [infoBrigada, setInfoBrigada] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -142,7 +144,7 @@ export default function Brigadas() {
 
   const handleCreateBrigada = async () => {
     if (!formValues.nombreBrigada || !isValidGoogleMapsLink(formValues.ubicacionBrigada)) {
-      setErrorMessage("Por favor, ingresa un enlace válido de Google Maps en la ubicación.");
+      setErrorMessage("Por favor, completa todos los campos requeridos y asegúrate de que la ubicación sea un enlace válido de Google Maps.🌎");
       setOpenSnackbar(true);
       return;
     }
@@ -162,13 +164,16 @@ export default function Brigadas() {
         const nuevaBrigada = await response.json();
         setBrigadas([...brigadas, nuevaBrigada]);
         clearForm();
+        setSuccessMessage("¡Brigada creada exitosamente! 🎉");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear brigada");
+        setErrorMessage(errorData.error || "Ocurrió un error al crear la brigada. Intenta nuevamente.👍");
+        setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("Error al crear brigada:", error);
-      setErrorMessage(error.message);
+      setErrorMessage("Error al crear brigada. Por favor, intenta más tarde.���");
       setOpenSnackbar(true);
     }
   };
@@ -196,13 +201,16 @@ export default function Brigadas() {
           )
         );
         clearForm();
+        setSuccessMessage("Brigada actualizada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar brigada");
+        setErrorMessage(errorData.error || "Error al actualizar brigada");
+        setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("Error al actualizar brigada:", error);
-      setErrorMessage(error.message);
+      setErrorMessage("Error al actualizar brigada");
       setOpenSnackbar(true);
     }
   };
@@ -225,13 +233,16 @@ export default function Brigadas() {
       if (response.ok) {
         setBrigadas(brigadas.filter((brigada) => brigada._id !== selectedBrigada._id));
         handleCloseDeleteDialog();
+        setSuccessMessage("Brigada eliminada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar brigada");
+        setErrorMessage(errorData.error || "Error al eliminar brigada");
+        setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("Error al eliminar brigada:", error);
-      setErrorMessage(error.message);
+      setErrorMessage("Error al eliminar brigada");
       setOpenSnackbar(true);
     }
   };
@@ -275,6 +286,10 @@ export default function Brigadas() {
     });
     setSelectedBrigada(null);
   };
+
+  const filteredBrigadas = brigadas.filter((brigada) =>
+    brigada.nombreBrigada.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Container maxWidth="lg">
@@ -333,6 +348,14 @@ export default function Brigadas() {
         </Grid>
         <Grid item xs={12} md={12}>
           <h2>Lista de Brigadas</h2>
+          <TextField
+            label="Buscar brigadas"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
             <Table>
               <TableHead>
@@ -345,12 +368,12 @@ export default function Brigadas() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {brigadas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((brigada) => (
+                {filteredBrigadas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((brigada) => (
                   <TableRow key={brigada._id}>
                     <TableCell>{brigada.nombreBrigada}</TableCell>
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
                     <TableCell>
-                      {brigada.comandoId.nombreComando}
+                      {brigada.comandoId ? brigada.comandoId.nombreComando : "Comando no disponible"}
                     </TableCell>
                     <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
@@ -376,7 +399,7 @@ export default function Brigadas() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={brigadas.length}
+            count={filteredBrigadas.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={(event, newPage) => setPage(newPage)}
@@ -496,13 +519,15 @@ export default function Brigadas() {
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {errorMessage}
-        </Alert>
+        {errorMessage ? (
+          <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
+            {errorMessage}
+          </Alert>
+        ) : (
+          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
+            {successMessage}
+          </Alert>
+        )}
       </Snackbar>
     </Container>
   );

@@ -56,6 +56,8 @@ const Unidades = () => {
   const [infoUnidad, setInfoUnidad] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchUnidades();
@@ -190,6 +192,8 @@ const Unidades = () => {
         usuarioId: "",
         estudiantes: [],
       });
+      setSuccessMessage("Unidad guardada exitosamente!");
+      setOpenSnackbar(true);
     } catch (error) {
       console.error("Error al crear unidad:", error);
       setErrorMessage(error.message);
@@ -225,6 +229,8 @@ const Unidades = () => {
           usuarioId: "",
           estudiantes: [],
         });
+        setSuccessMessage("Unidad actualizada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar unidad");
@@ -252,6 +258,8 @@ const Unidades = () => {
       if (response.ok) {
         setUnidades(unidades.filter((unidad) => unidad._id !== unidadToDelete._id));
         handleCloseDeleteDialog();
+        setSuccessMessage("Unidad eliminada exitosamente!");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar unidad");
@@ -301,6 +309,26 @@ const Unidades = () => {
     setOpenInfoDialog(false);
     setInfoUnidad(null);
   };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  const renderEstudiantes = (estudiantes) => {
+    if (estudiantes.length === 0) {
+      return "Sin estudiantes";
+    }
+
+    return estudiantes.map(est => (
+      <div key={est._id}>
+        {est.nombreEstudiante} {est.apellidoEstudiante} - {est.tipoDocumento}: {est.numeroDocumento}
+      </div>
+    ));
+  };
+
+  const filteredUnidades = unidades.filter((unidad) =>
+    unidad.nombreUnidad.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Container>
@@ -385,6 +413,14 @@ const Unidades = () => {
         </Box>
       </form>
 
+      <TextField
+        label="Buscar unidades"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -398,7 +434,7 @@ const Unidades = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {unidades.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((unidad) => (
+            {filteredUnidades.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((unidad) => (
               <TableRow key={unidad._id}>
                 <TableCell>{unidad.nombreUnidad}</TableCell>
                 <TableCell>{unidad.estadoUnidad ? "Activo" : "Inactivo"}</TableCell>
@@ -409,13 +445,7 @@ const Unidades = () => {
                   {unidad.usuarioId?.nombreUsuario || "Usuario no encontrado"}
                 </TableCell>
                 <TableCell>
-                  {unidad.estudiantes.length > 0
-                    ? unidad.estudiantes.map(est => (
-                        <div key={est._id}>
-                          {est.nombreEstudiante} {est.apellidoEstudiante} - {est.tipoDocumento}: {est.numeroDocumento}
-                        </div>
-                      )).reduce((prev, curr) => [prev, ', ', curr])
-                    : "Sin estudiantes"}
+                  {renderEstudiantes(unidad.estudiantes)}
                 </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEditClick(unidad)} color="primary">
@@ -435,7 +465,7 @@ const Unidades = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={unidades.length}
+          count={filteredUnidades.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={(event, newPage) => setPage(newPage)}
@@ -530,9 +560,18 @@ const Unidades = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="error">
           {errorMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
+          {successMessage}
         </Alert>
       </Snackbar>
     </Container>

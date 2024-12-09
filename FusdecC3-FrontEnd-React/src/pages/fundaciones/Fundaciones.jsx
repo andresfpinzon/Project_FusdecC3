@@ -21,6 +21,7 @@ import {
   DialogActions,
   Typography,
   Switch,
+  TablePagination,
 } from "@mui/material"; 
  import { Edit, Info, Delete} from "@mui/icons-material";
 
@@ -40,7 +41,12 @@ import {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoFundacion, setInfoFundacion] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  
+  // Paginación
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchFundaciones();
@@ -48,14 +54,25 @@ import {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/fundaciones");
-      if (!response.ok) throw new Error("Error al obtener fundaciones");
-      const data = await response.json();
-      setFundaciones(data);
+        const response = await fetch("http://localhost:3000/api/fundaciones");
+        
+        // Verifica si la respuesta es OK
+        if (!response.ok) {
+            throw new Error(`Error al obtener fundaciones: ${response.statusText}`);
+        }
+
+        // Verifica si la respuesta tiene contenido
+        const text = await response.text();
+        if (!text) {
+            throw new Error("La respuesta está vacía");
+        }
+
+        const data = JSON.parse(text); // Intenta convertir el texto a JSON
+        setFundaciones(data);
     } catch (error) {
-      console.error(error);
-      setErrorMessage("Error al obtener fundaciones");
-      setOpenSnackbar(true);
+        console.error("Error al obtener fundaciones:", error);
+        setErrorMessage(error.message);
+        setOpenSnackbar(true);
     }
   };
 
@@ -80,39 +97,46 @@ import {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formValues),
-     });
+        body: JSON.stringify({
+          nombreFundacion: formValues.nombreFundacion,
+          estadoFundacion: formValues.estadoFundacion,
+          comando: formValues.comando,
+        }),
+      });
 
-
-     if (response.ok) {
-      const nuevaFundacion = await response.json();
-      setFundaciones([...fundaciones, nuevaFundacion]);
-      clearForm();
-    } else {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Error al crear fundacion");
-    }
-  } catch (error) {
-    console.error("Error al crear fundacion:", error);
-    setErrorMessage(error.message);
-    setOpenSnackbar(true);
-  }
-};
-
-const handleUpdateFundacion = async () => {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/fundaciones/${selectedFundacion._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formValues),
+      if (response.ok) {
+        const nuevaFundacion = await response.json();
+        setFundaciones([...fundaciones, nuevaFundacion]);
+        clearForm();
+        setSuccessMessage("Fundación guardada exitosamente!");
+        setErrorMessage(null);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al crear fundacion");
       }
-    );
+    } catch (error) {
+      console.error("Error al crear fundacion:", error);
+      setErrorMessage(error.message);
+      setSuccessMessage(null);
+    } finally {
+      setOpenSnackbar(true);
+    }
+  };
 
-    if (response.ok) {
+  const handleUpdateFundacion = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/fundaciones/${selectedFundacion._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formValues),
+        }
+      );
+
+      if (response.ok) {
         const fundacionActualizada = await response.json();
         setFundaciones(
           fundaciones.map((fundacion) =>
@@ -120,6 +144,8 @@ const handleUpdateFundacion = async () => {
           )
         );
         clearForm();
+        setSuccessMessage("Fundación actualizada exitosamente!");
+        setErrorMessage(null);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar fundacion");
@@ -127,6 +153,8 @@ const handleUpdateFundacion = async () => {
     } catch (error) {
       console.error("Error al actualizar fundacion:", error);
       setErrorMessage(error.message);
+      setSuccessMessage(null);
+    } finally {
       setOpenSnackbar(true);
     }
   };
@@ -142,20 +170,24 @@ const handleUpdateFundacion = async () => {
           headers: {
             "Content-Type": "application/json",
             "Authorization": token 
-        }
+          }
         }
       );
 
       if (response.ok) {
         setFundaciones(fundaciones.filter((fundacion) => fundacion._id !== selectedFundacion._id));
         handleCloseDeleteDialog();
+        setSuccessMessage("Fundación eliminada exitosamente!");
+        setErrorMessage(null);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar fundaacion");
+        throw new Error(errorData.error || "Error al eliminar fundacion");
       }
     } catch (error) {
       console.error("Error al eliminar fundacion:", error);
       setErrorMessage(error.message);
+      setSuccessMessage(null);
+    } finally {
       setOpenSnackbar(true);
     }
   };
@@ -163,8 +195,8 @@ const handleUpdateFundacion = async () => {
   const handleEditClick = (fundacion) => {
     setSelectedFundacion(fundacion);
     setFormValues({
-      nombreFundacion : fundacion.nombreFundacion || "",
-      estadoFundacion: fundacion.estadoFundacion !== undefined ? fundacion.estadoFundacion : true,
+      nombreFundacion: fundacion.nombreFundacion || "",
+      estadoFundacion: fundacion.estadoFundacion,
       comando: fundacion.comando || [],
     });
   };
@@ -172,9 +204,8 @@ const handleUpdateFundacion = async () => {
   const handleInfoClick = (fundacion) => {
     setInfoFundacion(fundacion);
     setOpenInfoDialog(true);
-    console.log("Comando Info:", fundacion.comando);
   };
-  
+
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setSelectedFundacion(null);
@@ -188,12 +219,13 @@ const handleUpdateFundacion = async () => {
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
     setErrorMessage(null);
+    setSuccessMessage(null);
   };
 
   const clearForm = () => {
     setFormValues({
       nombreFundacion: "",
-      estado: true,
+      estadoFundacion: true,
     });
     setSelectedFundacion(null);
   };
@@ -230,7 +262,7 @@ const handleUpdateFundacion = async () => {
           </Button>
         </Grid>
         <Grid item xs={12} md={12}>
-        <h2>Lista de Fundaciones</h2>
+          <h2>Lista de Fundaciones</h2>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
               <TableHead>
@@ -241,14 +273,14 @@ const handleUpdateFundacion = async () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {fundaciones.map((fundacion) => (
+                {fundaciones.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((fundacion) => (
                   <TableRow key={fundacion._id}>
                     <TableCell>{fundacion.nombreFundacion}</TableCell>
                     <TableCell>{fundacion.estadoFundacion ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(fundacion)} color="primary">
                         <Edit />
-                        </IconButton>
+                      </IconButton>
                       <IconButton onClick={() => {
                         setSelectedFundacion(fundacion);
                         setOpenDeleteDialog(true);
@@ -264,8 +296,37 @@ const handleUpdateFundacion = async () => {
               </TableBody>
             </Table>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={fundaciones.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(event, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(event) => {
+              setRowsPerPage(parseInt(event.target.value, 10));
+              setPage(0);
+            }}
+          />
         </Grid>
       </Grid>
+
+      {/* Snackbar para mensajes de éxito y error */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        {successMessage ? (
+          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
+            {successMessage}
+          </Alert>
+        ) : (
+          <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
+            {errorMessage}
+          </Alert>
+        )}
+      </Snackbar>
 
       {/* Modal de Confirmación de Eliminación */}
       <Dialog
@@ -313,21 +374,6 @@ const handleUpdateFundacion = async () => {
           <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
         </DialogActions>
       </Dialog>
-
-      {/* Snackbar para mensajes de error */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {errorMessage}
-        </Alert>
-      </Snackbar>
     </Container>
   );
 }
