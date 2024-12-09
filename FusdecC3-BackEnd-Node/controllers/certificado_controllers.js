@@ -67,18 +67,16 @@ const listarCertificados = async (_req, res) => {
     }
 };
 
-// Controlador para actualizar un certificado
 const actualizarCertificado = async (req, res) => {
     const { id } = req.params;
     const { error, value } = certificadoSchemaValidation.validate(req.body);
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
     }
+
     try {
-        // Convertir la fecha a un objeto Date
-        value.fechaEmision = new Date(value.fechaEmision);
-        
-        const certificadoActualizado = await Certificado.findByIdAndUpdate(id, value, { new: true });
+        // Usa la lógica centralizada para editar el certificado
+        const certificadoActualizado = await logic.editarCertificado(id, value);
         if (!certificadoActualizado) {
             return res.status(404).json({ error: 'Certificado no encontrado' });
         }
