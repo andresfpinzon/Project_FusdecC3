@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -36,7 +37,6 @@ const Cursos = () => {
     descripcionCurso: "",
     intensidadHorariaCurso: "",
     estadoCurso: true,
-    ediciones: [],
     //fundacionId: "",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -136,7 +136,6 @@ const Cursos = () => {
                 descripcionCurso: "",
                 intensidadHorariaCurso: "",
                 estadoCurso: true,
-                ediciones: [],
                 //fundacionId: "",
             });
             console.log('Curso creado exitosamente:', nuevoCurso);
@@ -178,7 +177,6 @@ const Cursos = () => {
           descripcionCurso: "",
           intensidadHorariaCurso: "",
           estadoCurso: true,
-          ediciones: [],
           //fundacionId: "",
         });
       } else {
@@ -224,7 +222,6 @@ const Cursos = () => {
       descripcionCurso: curso.descripcionCurso,
       intensidadHorariaCurso: curso.intensidadHorariaCurso,
       estadoCurso: curso.estadoCurso !== undefined ? curso.estadoCurso : true,
-      ediciones: curso.ediciones.map((edicion) => edicion._id),
       //fundacionId: curso.fundacionId || "",
     });
   };  
