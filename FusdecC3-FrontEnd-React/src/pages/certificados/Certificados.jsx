@@ -57,6 +57,7 @@ const Certificados = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("success"); // "success" o "error"
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchUsuarios();
@@ -329,11 +330,23 @@ const Certificados = () => {
     setOpenSnackbar(false);
   };
 
+  const filteredCertificados = certificados.filter((certificado) =>
+    certificado.codigoVerificacion.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container maxWidth="lg">
       <h1>Gestión de Certificados</h1>
       <Grid container spacing={2}>
         <Grid item xs={12} md={12} xl={12}>
+          <TextField
+            label="Buscar certificados"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <TextField
             label="Fecha de Emisión"
             type="date"
@@ -404,7 +417,7 @@ const Certificados = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {certificados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((certificado) => (
+                {filteredCertificados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((certificado) => (
                   <TableRow key={certificado._id}>
                     <TableCell>
                       {certificado.codigoVerificacion}
@@ -433,7 +446,7 @@ const Certificados = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={certificados.length}
+              count={filteredCertificados.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={(event, newPage) => setPage(newPage)}

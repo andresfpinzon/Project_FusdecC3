@@ -50,7 +50,7 @@ const Comandos = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [successMessage, setSuccessMessage] = useState("");
-
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchComandos();
@@ -272,6 +272,11 @@ const Comandos = () => {
   const fundacionesUnicas = obtenerFundacionesAsignadas();
   console.log(fundacionesUnicas);
 
+  const filteredComandos = comandos.filter((comando) =>
+    comando.nombreComando.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    comando.ubicacionComando.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (comando.estadoComando ? "Activo" : "Inactivo").toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Container style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -330,6 +335,14 @@ const Comandos = () => {
           </form>
         </Grid>
         <Grid item xs={12} md={12}>
+          <TextField
+            label="Buscar comandos"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
               <TableHead>
@@ -342,7 +355,7 @@ const Comandos = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {comandos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comando) => (
+                {filteredComandos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comando) => (
                   <TableRow key={comando._id}>
                     <TableCell>{comando.nombreComando}</TableCell>
                     <TableCell>{comando.ubicacionComando}</TableCell>
@@ -371,7 +384,7 @@ const Comandos = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={comandos.length}
+              count={filteredComandos.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={(event, newPage) => setPage(newPage)}

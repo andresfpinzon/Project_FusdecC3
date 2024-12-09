@@ -57,6 +57,7 @@ const Unidades = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [successMessage, setSuccessMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchUnidades();
@@ -325,6 +326,10 @@ const Unidades = () => {
     ));
   };
 
+  const filteredUnidades = unidades.filter((unidad) =>
+    unidad.nombreUnidad.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container>
       <h1>Gestión de Unidades:</h1>
@@ -408,6 +413,14 @@ const Unidades = () => {
         </Box>
       </form>
 
+      <TextField
+        label="Buscar unidades"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -421,7 +434,7 @@ const Unidades = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {unidades.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((unidad) => (
+            {filteredUnidades.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((unidad) => (
               <TableRow key={unidad._id}>
                 <TableCell>{unidad.nombreUnidad}</TableCell>
                 <TableCell>{unidad.estadoUnidad ? "Activo" : "Inactivo"}</TableCell>
@@ -452,7 +465,7 @@ const Unidades = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={unidades.length}
+          count={filteredUnidades.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={(event, newPage) => setPage(newPage)}

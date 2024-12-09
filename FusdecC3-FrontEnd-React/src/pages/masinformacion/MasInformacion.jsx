@@ -49,7 +49,7 @@ export default function MasInformacion() {
       </Card>
 
       <Card variant="outlined">
-        <CardHeader title="Objetivos" sx={{ backgroundColor: '#1d526eff', color: '#fff' }} />
+        <CardHeader title="Objetivos" sx={{ backgroundColor: '#1D526EFF', color: '#fff' }} />
         <CardContent>
           <Typography variant="body1">
             El enfoque de Fusdec está en:

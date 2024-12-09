@@ -55,6 +55,7 @@ export default function Brigadas() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -170,7 +171,7 @@ export default function Brigadas() {
       }
     } catch (error) {
       console.error("Error al crear brigada:", error);
-      setErrorMessage("Error al crear brigada. Por favor, intenta más tarde.🥱");
+      setErrorMessage("Error al crear brigada. Por favor, intenta más tarde.���");
       setOpenSnackbar(true);
     }
   };
@@ -283,6 +284,10 @@ export default function Brigadas() {
     setSelectedBrigada(null);
   };
 
+  const filteredBrigadas = brigadas.filter((brigada) =>
+    brigada.nombreBrigada.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container maxWidth="lg">
       <h1>Gestión de Brigadas</h1>
@@ -340,6 +345,14 @@ export default function Brigadas() {
         </Grid>
         <Grid item xs={12} md={12}>
           <h2>Lista de Brigadas</h2>
+          <TextField
+            label="Buscar brigadas"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
             <Table>
               <TableHead>
@@ -352,7 +365,7 @@ export default function Brigadas() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {brigadas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((brigada) => (
+                {filteredBrigadas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((brigada) => (
                   <TableRow key={brigada._id}>
                     <TableCell>{brigada.nombreBrigada}</TableCell>
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
@@ -383,7 +396,7 @@ export default function Brigadas() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={brigadas.length}
+            count={filteredBrigadas.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={(event, newPage) => setPage(newPage)}
