@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -157,6 +158,7 @@ export default function Brigadas() {
       });
 
       if (response.ok) {
+        await fetchBrigadas();
         const nuevaBrigada = await response.json();
         setBrigadas([...brigadas, nuevaBrigada]);
         clearForm();
@@ -186,6 +188,7 @@ export default function Brigadas() {
       );
 
       if (response.ok) {
+        await fetchBrigadas();
         const brigadaActualizada = await response.json();
         setBrigadas(
           brigadas.map((brigada) =>

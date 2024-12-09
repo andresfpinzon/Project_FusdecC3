@@ -67,6 +67,7 @@ const listarCertificados = async (_req, res) => {
     }
 };
 
+/*
 // Controlador para actualizar un certificado
 const actualizarCertificado = async (req, res) => {
     const { id } = req.params;
@@ -79,6 +80,25 @@ const actualizarCertificado = async (req, res) => {
         value.fechaEmision = new Date(value.fechaEmision);
         
         const certificadoActualizado = await Certificado.findByIdAndUpdate(id, value, { new: true });
+        if (!certificadoActualizado) {
+            return res.status(404).json({ error: 'Certificado no encontrado' });
+        }
+        res.json(certificadoActualizado);
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};*/
+
+const actualizarCertificado = async (req, res) => {
+    const { id } = req.params;
+    const { error, value } = certificadoSchemaValidation.validate(req.body);
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+    }
+
+    try {
+        // Usa la lógica centralizada para editar el certificado
+        const certificadoActualizado = await logic.editarCertificado(id, value);
         if (!certificadoActualizado) {
             return res.status(404).json({ error: 'Certificado no encontrado' });
         }

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -170,8 +171,7 @@ const Asistencias = () => {
       });
 
       if (response.ok) {
-        const nuevaAsistencia = await response.json();
-        setAsistencias([...asistencias, nuevaAsistencia]);
+        await fetchAsistencias();
         setFormValues({
           tituloAsistencia: "",
           fechaAsistencia: "",
@@ -200,6 +200,7 @@ const Asistencias = () => {
       });
 
       if (response.ok) {
+        await fetchAsistencias();
         const updatedAsistencia = await response.json();
         const updatedAsistencias = asistencias.map((asistencia) =>
           asistencia._id === updatedAsistencia._id ? updatedAsistencia : asistencia
@@ -314,15 +315,6 @@ const Asistencias = () => {
             ))}
           </Select>
         </FormControl>
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estadoAsistencia}
-            onChange={handleSwitchChange}
-            name="estadoAsistencia"
-            color="primary"
-          />
-          Estado Activo
-        </Box>
         <Box marginTop={3}>
           <Button
             variant="contained"

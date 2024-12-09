@@ -24,6 +24,15 @@ async function crearCertificado(body) {
     // Guardar el certificado
     const nuevoCertificado = await certificado.save();
 
+    // Asociar el certificado al estudiante correspondiente
+    if (body.estudianteId) {
+        await Estudiante.findByIdAndUpdate(
+            body.estudianteId,
+            { $push: { certificados: nuevoCertificado._id } }, // Agregar el certificado al array de certificados del estudiante
+            { new: true }
+        );
+    }
+
     // Crear auditoría automáticamente
     const nuevaAuditoria = new Auditoria({
         fechaAuditoria: new Date(),
@@ -54,11 +63,37 @@ async function buscarCertificadoPorId(id) {
 
 // Función asíncrona para editar un certificado
 async function editarCertificado(id, body) {
-    const certificado = await Certificado.findByIdAndUpdate(id, body, { new: true });
+    // Buscar el certificado existente
+    const certificado = await Certificado.findById(id);
     if (!certificado) {
         throw new Error(`Certificado con ID ${id} no encontrado`);
     }
-    return certificado;
+
+    // Si el estudiante cambia, actualizar la referencia
+    if (body.estudianteId && body.estudianteId !== certificado.estudianteId.toString()) {
+        // Remover el certificado del estudiante anterior
+        await Estudiante.findByIdAndUpdate(
+            certificado.estudianteId,
+            { $pull: { certificados: certificado._id } }
+        );
+
+        // Agregar el certificado al nuevo estudiante
+        await Estudiante.findByIdAndUpdate(
+            body.estudianteId,
+            { $push: { certificados: certificado._id } }
+        );
+    }
+
+    // Actualizar el certificado
+    certificado.codigoVerificacion = body.codigoVerificacion || certificado.codigoVerificacion;
+    certificado.nombreEmisorCertificado = body.nombreEmisorCertificado || certificado.nombreEmisorCertificado;
+    certificado.estadoCertificado = body.estadoCertificado !== undefined ? body.estadoCertificado : certificado.estadoCertificado;
+    certificado.cursoId = body.cursoId || certificado.cursoId;
+    certificado.usuarioId = body.usuarioId || certificado.usuarioId;
+    certificado.fechaEmision = body.fechaEmision || certificado.fechaEmision;
+    certificado.estudianteId = body.estudianteId || certificado.estudianteId;
+
+    return await certificado.save();
 }
 
 // Función asíncrona para desactivar un certificado

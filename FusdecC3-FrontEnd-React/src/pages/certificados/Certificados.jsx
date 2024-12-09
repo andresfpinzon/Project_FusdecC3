@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -187,8 +188,7 @@ const Certificados = () => {
       });
 
       if (response.ok) {
-        const nuevoCertificado = await response.json();
-        setCertificados([...certificados, nuevoCertificado]);
+        await fetchCertificados();
         setFormValues({
           fechaEmision: "",
           usuarioId: formValues.usuarioId,
@@ -197,7 +197,6 @@ const Certificados = () => {
           nombreEmisorCertificado: formValues.nombreEmisorCertificado,
           codigoVerificacion: "",
         });
-        setAuditorias([...auditorias, nuevoCertificado.nuevaAuditoria]);
         clearForm();
       } else {
         const errorData = await response.json();
@@ -230,10 +229,7 @@ const Certificados = () => {
       });
 
       if (response.ok) {
-        const updatedCertificado = await response.json();
-        setCertificados(certificados.map(certificado => 
-          certificado._id === updatedCertificado._id ? updatedCertificado : certificado
-        ));
+        await fetchCertificados();
         clearForm();
       } else {
         const errorData = await response.json();
@@ -251,8 +247,8 @@ const Certificados = () => {
     setFormValues({
       fechaEmision: certificado.fechaEmision,
       usuarioId: certificado.usuarioId,
-      cursoId: certificado.cursoId,
-      estudianteId: certificado.estudianteId,
+      cursoId: certificado.cursoId?._id || "",
+      estudianteId: certificado.estudianteId?._id || "",
       nombreEmisorCertificado: certificado.nombreEmisorCertificado, 
       codigoVerificacion: certificado.codigoVerificacion,
     });

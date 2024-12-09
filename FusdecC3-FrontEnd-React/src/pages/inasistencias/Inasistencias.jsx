@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -129,10 +130,10 @@ const Inasistencias = () => {
 
   // Filtrar inasistencias según el término de búsqueda
   const filteredInasistencias = inasistencias.filter((inasistencia) =>
-    inasistencia.tituloInasistencia.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    inasistencia.asistenciaId?.tituloAsistencia?.toLowerCase().includes(searchTerm.toLowerCase()) 
+    (inasistencia.tituloInasistencia?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (inasistencia.asistenciaId?.tituloAsistencia?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
-
+  
   // Cambiar página
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -177,8 +178,7 @@ const Inasistencias = () => {
       });
 
       if (response.ok) {
-        const nuevaInasistencia = await response.json();
-        setInasistencias([...asistencias, nuevaInasistencia]);
+        await fetchInasistencias();
         setFormValues({
           tituloInasistencia: "",
           observacion: "",
@@ -208,6 +208,7 @@ const Inasistencias = () => {
       });
 
       if (response.ok) {
+        await fetchInasistencias();
         const updatedInasistencia = await response.json();
         const updatedInasistencias = inasistencias.map((inasistencia) =>
           inasistencia._id === updatedInasistencia._id ? updatedInasistencia : inasistencia
