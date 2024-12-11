@@ -50,23 +50,31 @@ const Auditorias = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom style={{ fontFamily: 'Roboto', fontWeight: 'bold' }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        style={{
+          fontFamily: 'Times New Roman, serif',
+          fontWeight: 'bold',
+          color: '#000',
+        }}
+      >
         Gestión de Auditorías
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
+          <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%", borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
             <Table>
-              <TableHead>
+              <TableHead style={{ backgroundColor: '#f5f5f5' }}>
                 <TableRow>
-                  <TableCell>Fecha de Auditoría</TableCell>
-                  <TableCell>Nombre del Emisor</TableCell>
-                  <TableCell>Código de Verificación</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Fecha de Auditoría</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Nombre del Emisor</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Código de Verificación</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {auditorias.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((auditoria) => (
-                  <TableRow key={auditoria._id}>
+                  <TableRow key={auditoria._id} style={{ '&:hover': { backgroundColor: '#f1f1f1' } }}>
                     <TableCell>{new Date(auditoria.fechaAuditoria).toLocaleDateString("es-ES")}</TableCell>
                     <TableCell>{auditoria.nombreEmisor}</TableCell>
                     <TableCell>{auditoria.codigoVerificacion}</TableCell>

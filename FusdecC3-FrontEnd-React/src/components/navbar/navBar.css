@@ -14,7 +14,7 @@
   
   .drawerPaper {
     width: 280px;
-    background-color: #234DB8FF;
+    background-color: rgb(0, 2, 7);
     border-right: 1px solid rgba(25, 118, 210, 0.12);
     box-shadow: 4px 0 8px rgba(0, 0, 0, 0.05);
   }

@@ -21,9 +21,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
 import LoginIcon from '@mui/icons-material/Login';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
 
-export default function Navbar({ darkMode, toggleDarkMode }) {
+export default function Navbar() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { isAuthenticated, roles, logout } = useContext(AuthContext);
@@ -107,23 +106,6 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             >
               <InfoIcon />
-            </Button>
-          </Box>
-          <Box>
-            <Button 
-              color="inherit" 
-              onClick={toggleDarkMode}
-              style={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                backgroundColor: '#1976d2',
-                color: '#fff',
-                borderRadius: '5px',
-                padding: '8px',
-              }}
-            >
-              <Brightness4Icon />
             </Button>
           </Box>
           <Box>
