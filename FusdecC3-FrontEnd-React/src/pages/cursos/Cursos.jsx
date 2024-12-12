@@ -21,6 +21,11 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
   TablePagination
 } from "@mui/material";
 
@@ -37,7 +42,7 @@ const Cursos = () => {
     descripcionCurso: "",
     intensidadHorariaCurso: "",
     estadoCurso: true,
-    //fundacionId: "",
+    fundacionId: "",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -71,7 +76,27 @@ const Cursos = () => {
     }
   };
 
+  const fetchFundaciones = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/fundaciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener fundaciones");
+      const data = await response.json();
+      setFundaciones(data);
+    } catch (error) {
+      console.error("Error al obtener fundaciones:", error);
+      setErrorMessage("Error al obtener fundaciones");
+      setOpenSnackbar(true);
+    }
+  };
+
   useEffect(() => {
+    fetchFundaciones();
     fetchCursos();
   }, []);
 
@@ -136,7 +161,7 @@ const Cursos = () => {
                 descripcionCurso: "",
                 intensidadHorariaCurso: "",
                 estadoCurso: true,
-                //fundacionId: "",
+                fundacionId: "",
             });
             console.log('Curso creado exitosamente:', nuevoCurso);
         } else {
@@ -165,6 +190,7 @@ const Cursos = () => {
       );
 
       if (response.ok) {
+        await fetchCursos();
         const cursoActualizado = await response.json();
         setCursos(
           cursos.map((curso) =>
@@ -177,7 +203,7 @@ const Cursos = () => {
           descripcionCurso: "",
           intensidadHorariaCurso: "",
           estadoCurso: true,
-          //fundacionId: "",
+          fundacionId: "",
         });
       } else {
         const errorData = await response.json();
@@ -222,7 +248,7 @@ const Cursos = () => {
       descripcionCurso: curso.descripcionCurso,
       intensidadHorariaCurso: curso.intensidadHorariaCurso,
       estadoCurso: curso.estadoCurso !== undefined ? curso.estadoCurso : true,
-      //fundacionId: curso.fundacionId || "",
+      fundacionId: curso.fundacionId?._id || "",
     });
   };  
 
@@ -281,7 +307,7 @@ const Cursos = () => {
           fullWidth
           margin="normal"
         />
-       {/*
+       
         <FormControl fullWidth margin="normal">
           <InputLabel>Fundacion</InputLabel>
           <Select
@@ -297,7 +323,7 @@ const Cursos = () => {
             ))}
           </Select>
         </FormControl>
-        */}
+        
         
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -431,8 +457,7 @@ const Cursos = () => {
               <Box display="flex" alignItems="center" mb={2}>
                 <Foundation color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fundación:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoCurso.fundacionId?.nombreFundacion || "Fundación no encontrada"}
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.fundacionId?.nombreFundacion || "Fundación no encontrada"}
                 </Typography>
               </Box>
               

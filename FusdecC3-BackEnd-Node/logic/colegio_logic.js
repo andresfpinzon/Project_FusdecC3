@@ -26,7 +26,8 @@ async function actualizarColegio(id, body) {
 
   // Verificar si ya existe un colegio con el mismo nombre
   const colegioExistente = await Colegio.findOne({
-    nombreColegio: body.nombreColegio,
+    nombreColegio: body.nombreColegio, 
+    _id: { $ne: id } // Excluir el colegio actual
   });
 
   let colegios = await Colegio.findByIdAndUpdate(

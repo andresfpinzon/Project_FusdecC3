@@ -1,3 +1,4 @@
+const Curso = require("../models/curso_model");
 const Edicion = require("../models/edicion_model");
 
 const Estudiante = require('../models/estudiante_model');
@@ -22,6 +23,15 @@ async function crearEdicion(body) {
     estudiantes: body.estudiantes || [],
   });
 
+  // Asociar la edicion al curso correspondiente
+  if (body.cursoId) {
+    await Curso.findByIdAndUpdate(
+        body.cursoId,
+        { $push: { ediciones: edicion._id } }, // Agregar el certificado al array de certificados del estudiante
+        { new: true }
+    );
+}
+
   return await edicion.save();
 }
 
@@ -30,7 +40,8 @@ async function actualizarEdicion(id, body) {
 
   // Verificar si ya existe una edicion con el mismo título
   const edicionExistente = await Edicion.findOne({
-    tituloEdicion: body.tituloEdicion,
+    tituloEdicion: body.tituloEdicion, 
+    _id: { $ne: id } // Excluir la edicion actual
   });
   if (edicionExistente) {
     throw new Error("La edición con este título ya existe");

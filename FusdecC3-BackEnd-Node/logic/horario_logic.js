@@ -25,7 +25,8 @@ async function actualizarHorario(id, body) {
 
   // Verificar si ya existe un horario con el mismo titulo
   const horarioExistente = await Horario.findOne({
-    tituloHorario: body.tituloHorario,
+    tituloHorario: body.tituloHorario, 
+    _id: { $ne: id } // Excluir el horario actual
   });
 
   let horario = await Horario.findByIdAndUpdate(
