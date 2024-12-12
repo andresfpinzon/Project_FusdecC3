@@ -55,7 +55,7 @@ const Login = () => {
         // Llamar la función `login` del contexto
         login(token, payload.roles);
 
-        navigate("/home");
+        navigate("/home", { replace: true });
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al iniciar sesión");
