@@ -26,18 +26,22 @@ async function crearCalificacion(body) {
   return calificacion;
 }
 
-module.exports = {
-  crearCalificacion,
-};
-
-
 // Función asíncrona para actualizar calificación
 async function actualizarCalificacion(id, body) {
+
   // Buscar la calificación por ID
   let calificacion = await Calificacion.findById(id);
   if (!calificacion) {
       throw new Error('Calificación no encontrada');
   }
+
+  // Verificar si ya existe una calificación con el mismo título, excluyendo el curso actual
+  const calificacionExistente = await Curso.findOne({
+    tituloCalificacion: body.tituloCalificacion,
+    _id: { $ne: id }, // Excluir el curso actual
+  });
+
+  
 
   // Obtener la lista de estudiantes originales
   const estudiantesOriginales = calificacion.estudiantes;
