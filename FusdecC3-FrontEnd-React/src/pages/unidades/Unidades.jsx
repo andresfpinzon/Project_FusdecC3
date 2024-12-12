@@ -4,7 +4,8 @@ import { Chart } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import './Unidades.css';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Chip } from '@mui/material';
-import { Assignment, Group, CheckCircle, Cancel, Shield } from '@mui/icons-material';
+import { Assignment, LocationOn, Group, CheckCircle, Cancel, Shield, Person } from '@mui/icons-material';
+import { Snackbar, Alert } from '@mui/material';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -15,6 +16,7 @@ const Unidades = () => {
   const [formValues, setFormValues] = useState({
     nombreUnidad: '',
     brigadaId: '',
+    usuarioId: '',
     estadoUnidad: true,
   });
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,40 +25,30 @@ const Unidades = () => {
   const [showForm, setShowForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  const [usuarios, setUsuarios] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info' // 'error', 'warning', 'info', 'success'
+  });
 
   useEffect(() => {
     fetchUnidades();
     fetchBrigadas();
+    fetchUsuarios();
   }, []);
 
   const fetchUnidades = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No hay sesión activa');
-      }
-
-      const response = await fetch('http://localhost:3000/api/unidades', {
-        method: 'GET',
+      const response = await fetch('http://localhost:3000/api/unidades?populate=estudiantes', {
         headers: {
-          'Authorization': token || '',
-        }
+          'Authorization': localStorage.getItem('token') || '',
+        },
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al obtener unidades');
-      }
+      if (!response.ok) throw new Error('Error al obtener unidades');
       const data = await response.json();
-      const validatedUnidades = data.map(unidad => ({
-        ...unidad,
-        _id: unidad._id.toString(),
-        brigadaId: unidad.brigadaId || { nombreBrigada: 'Sin brigada asignada' },
-        estudiantes: unidad.estudiantes || []
-      }));
-      setUnidades(validatedUnidades);
+      setUnidades(data);
     } catch (error) {
-      console.error('Error completo:', error);
       setError('Error al obtener unidades');
     } finally {
       setIsLoading(false);
@@ -65,27 +57,32 @@ const Unidades = () => {
 
   const fetchBrigadas = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No hay sesión activa');
-      }
-
       const response = await fetch('http://localhost:3000/api/brigadas', {
-        method: 'GET',
         headers: {
-          'Authorization': token || '',
-        }
+          'Authorization': localStorage.getItem('token') || '',
+        },
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al obtener brigadas');
-      }
+      if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
       setBrigadas(data);
     } catch (error) {
-      console.error('Error completo:', error);
-      setError('Error al obtener brigadas');
+      console.error('Error:', error);
+    }
+  };
+
+  const fetchUsuarios = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/usuarios', {
+        headers: {
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUsuarios(data);
+      }
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
     }
   };
 
@@ -100,9 +97,13 @@ const Unidades = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No hay sesión activa');
+      if (!formValues.nombreUnidad || !formValues.brigadaId) {
+        setSnackbar({
+          open: true,
+          message: 'El nombre de la unidad y la brigada son obligatorios',
+          severity: 'error'
+        });
+        return;
       }
 
       const url = selectedUnidad
@@ -110,52 +111,69 @@ const Unidades = () => {
         : 'http://localhost:3000/api/unidades';
       
       const method = selectedUnidad ? 'PUT' : 'POST';
+      
+      const dataToSend = {
+        nombreUnidad: formValues.nombreUnidad,
+        brigadaId: formValues.brigadaId,
+        estadoUnidad: formValues.estadoUnidad,
+        ...(formValues.usuarioId && { usuarioId: formValues.usuarioId }),
+      };
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token || '',
+          'Authorization': localStorage.getItem('token') || '',
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al guardar unidad');
+        throw new Error(errorData.error || 'Error al guardar la unidad');
       }
 
       await fetchUnidades();
-      setFormValues({ 
-        nombreUnidad: '', 
-        brigadaId: '', 
-        estadoUnidad: true 
-      });
+      setFormValues({ nombreUnidad: '', brigadaId: '', estadoUnidad: true });
       setSelectedUnidad(null);
       setShowForm(false);
+      setSnackbar({
+        open: true,
+        message: selectedUnidad ? 'Unidad actualizada con éxito' : 'Unidad creada con éxito',
+        severity: 'success'
+      });
     } catch (error) {
-      console.error('Error completo:', error);
-      setError('Error al guardar unidad');
+      console.error('Error detallado:', error);
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: 'error'
+      });
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de que quieres eliminar esta unidad?')) return;
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No hay sesión activa');
-      }
-
       const response = await fetch(`http://localhost:3000/api/unidades/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': localStorage.getItem('token') || '',
         },
       });
       if (!response.ok) throw new Error('Error al eliminar unidad');
       await fetchUnidades();
+      setSnackbar({
+        open: true,
+        message: 'Unidad eliminada con éxito',
+        severity: 'success'
+      });
     } catch (error) {
-      setError('Error al eliminar unidad');
+      setSnackbar({
+        open: true,
+        message: 'Error al eliminar la unidad',
+        severity: 'error'
+      });
     }
   };
 
@@ -165,6 +183,7 @@ const Unidades = () => {
       nombreUnidad: unidad.nombreUnidad,
       brigadaId: unidad.brigadaId._id,
       estadoUnidad: unidad.estadoUnidad,
+      usuarioId: unidad.usuarioId?._id || ''
     });
     setShowForm(true);
   };
@@ -181,7 +200,11 @@ const Unidades = () => {
 
   const handleAddUnidad = () => {
     setSelectedUnidad(null);
-    setFormValues({ nombreUnidad: '', brigadaId: '', estadoUnidad: true });
+    setFormValues({ 
+      nombreUnidad: '', 
+      brigadaId: '', 
+      estadoUnidad: true 
+    });
     setShowForm(true);
   };
 
@@ -248,47 +271,87 @@ const Unidades = () => {
       </div>
 
       {showForm && (
-        <div className="modal">
+        <div className="modal-overlay">
           <div className="modal-content">
-            <h2>{selectedUnidad ? 'Editar' : 'Agregar'} Unidad</h2>
-            <form onSubmit={handleSubmit} className="unit-form">
-              <input
-                type="text"
-                name="nombreUnidad"
-                value={formValues.nombreUnidad}
-                onChange={handleInputChange}
-                placeholder="Nombre de la Unidad"
-                required
-              />
-              <select
-                name="brigadaId"
-                value={formValues.brigadaId}
-                onChange={handleInputChange}
-                required
+            <div className="modal-header">
+              <h2>{selectedUnidad ? 'Editar Unidad' : 'Nueva Unidad'}</h2>
+              <button 
+                className="close-button" 
+                onClick={() => setShowForm(false)}
               >
-                <option value="">Seleccionar Brigada</option>
-                {brigadas.map(brigada => (
-                  <option key={brigada._id} value={brigada._id}>
-                    {brigada.nombreBrigada}
-                  </option>
-                ))}
-              </select>
-              <label className="switch">
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="modal-form">
+              <div className="form-group">
+                <label>Nombre de la Unidad</label>
                 <input
-                  type="checkbox"
-                  name="estadoUnidad"
-                  checked={formValues.estadoUnidad}
-                  onChange={handleInputChange}
+                  type="text"
+                  value={formValues.nombreUnidad}
+                  onChange={(e) => setFormValues({...formValues, nombreUnidad: e.target.value})}
+                  className="form-input"
+                  placeholder="Ingrese el nombre de la unidad"
                 />
-                <span className="slider round"></span>
-                <span className="switch-label">Activo</span>
-              </label>
-              <div className="form-actions">
-                <button type="submit" className="submit-button">
-                  {selectedUnidad ? 'Actualizar' : 'Crear'} Unidad
-                </button>
-                <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
+              </div>
+
+              <div className="form-group">
+                <label>Brigada</label>
+                <select
+                  value={formValues.brigadaId}
+                  onChange={(e) => setFormValues({...formValues, brigadaId: e.target.value})}
+                  className="form-select"
+                >
+                  <option value="">Seleccione una brigada</option>
+                  {brigadas.map((brigada) => (
+                    <option key={brigada._id} value={brigada._id}>
+                      {brigada.nombreBrigada}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Usuario Responsable</label>
+                <select
+                  value={formValues.usuarioId}
+                  onChange={(e) => setFormValues({...formValues, usuarioId: e.target.value})}
+                  className="form-select"
+                >
+                  <option value="">Seleccione un usuario</option>
+                  {usuarios.map((usuario) => (
+                    <option key={usuario._id} value={usuario._id}>
+                      {usuario.nombreUsuario} {usuario.apellidoUsuario}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group-inline">
+                <label>Estado de la Unidad</label>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={formValues.estadoUnidad}
+                    onChange={(e) => setFormValues({...formValues, estadoUnidad: e.target.checked})}
+                  />
+                  <span className="slider round"></span>
+                </label>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="button-secondary"
+                >
                   Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="button-primary"
+                >
+                  {selectedUnidad ? 'Actualizar' : 'Crear'}
                 </button>
               </div>
             </form>
@@ -297,16 +360,12 @@ const Unidades = () => {
       )}
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="unidades">
+        <Droppable droppableId="units">
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef} className="unit-list">
               {filteredUnidades.map((unidad, index) => (
                 unidad && unidad._id ? (
-                  <Draggable 
-                    key={unidad._id.toString()} 
-                    draggableId={unidad._id.toString()} 
-                    index={index}
-                  >
+                  <Draggable key={unidad._id} draggableId={unidad._id} index={index}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
@@ -326,7 +385,7 @@ const Unidades = () => {
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
                           </button>
-                          <button onClick={() => handleDelete(unidad._id)} className="delete-button">
+                          <button onClick={(e) => { e.stopPropagation(); handleDelete(unidad._id); }} className="delete-button">
                             <i className="fas fa-trash-alt"></i> Eliminar
                           </button>
                         </div>
@@ -367,12 +426,28 @@ const Unidades = () => {
                   {selectedUnidad.estadoUnidad ? "Activo" : "Inactivo"}
                 </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
-                <Shield sx={{ mr: 1 }} color="primary" />
+              
+              <Typography variant="h6" sx={{ 
+                fontWeight: 'bold', 
+                display: 'flex', 
+                alignItems: 'center', 
+                mt: 2, 
+                mb: 1 
+              }}>
+                <Person sx={{ mr: 1 }} color="primary" />
                 Estudiantes Asignados
               </Typography>
               {selectedUnidad.estudiantes && selectedUnidad.estudiantes.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: 1, 
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                  padding: '10px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '8px'
+                }}>
                   {selectedUnidad.estudiantes.map((estudiante) => (
                     <Chip
                       key={estudiante._id}
@@ -380,11 +455,11 @@ const Unidades = () => {
                       color="primary"
                       variant="outlined"
                       size="small"
+                      icon={<Person />}
                       sx={{ 
                         borderRadius: '16px',
-                        fontSize: '1rem',
-                        maxWidth: '200px',
-                        width: '100%',
+                        fontSize: '0.9rem',
+                        maxWidth: '100%',
                         color: 'black',
                         '&:hover': {
                           backgroundColor: 'rgba(25, 118, 210, 0.04)',
@@ -407,8 +482,24 @@ const Unidades = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={4000} 
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={() => setSnackbar({ ...snackbar, open: false })} 
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
 export default Unidades;
+

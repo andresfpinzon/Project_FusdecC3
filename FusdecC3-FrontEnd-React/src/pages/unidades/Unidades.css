@@ -1,0 +1,664 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+:root {
+  --primary-color: #083c5f;
+  --secondary-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --text-color: #333;
+  --background-color: #f4f4f4;
+  --card-background: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+}
+
+.unit-management {
+  font-family: 'Times New Roman', serif;
+  background-color: var(--background-color);
+  color: #000;
+  line-height: 1.6;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.unit-management h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.unit-management .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.unit-management .header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.unit-management .add-button,
+.unit-management .stats-button {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.unit-management .add-button:hover,
+.unit-management .stats-button:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+}
+
+.unit-management .search-container {
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.unit-management .search-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  transition: box-shadow var(--transition-speed) ease;
+}
+
+.unit-management .search-input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.unit-management .unit-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.unit-management .unit-card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--box-shadow);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.unit-management .unit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.unit-management .unit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.unit-management .unit-card h3 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.unit-management .status-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.unit-management .status-badge.active {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.unit-management .status-badge.inactive {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.unit-management .unit-card p {
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+
+.unit-management .unit-card i {
+  margin-right: 5px;
+  color: var(--primary-color);
+}
+
+.unit-management .unit-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.unit-management .edit-button,
+.unit-management .delete-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.unit-management .edit-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.unit-management .edit-button:hover {
+  background-color: #02121d;
+  transform: translateY(-2px);
+}
+
+.unit-management .delete-button {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.unit-management .delete-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.unit-management .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.unit-management .modal-content {
+  background-color: var(--card-background);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 500px;
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.unit-management .unit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.unit-management .unit-form input[type="text"],
+.unit-management .unit-form select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: border-color var(--transition-speed) ease;
+}
+
+.unit-management .unit-form input[type="text"]:focus,
+.unit-management .unit-form select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.unit-management .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.unit-management .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.unit-management .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.unit-management .slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+.unit-management input:checked + .slider {
+  background-color: var(--secondary-color);
+}
+
+.unit-management input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.unit-management .slider.round {
+  border-radius: 34px;
+}
+
+.unit-management .slider.round:before {
+  border-radius: 50%;
+}
+
+.unit-management .switch.switch {
+  display: flex;
+  align-items: center;
+}
+
+.unit-management .switch-label {
+  margin-left: 10px;
+}
+
+.unit-management .form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.unit-management .submit-button,
+.unit-management .cancel-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.unit-management .submit-button {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.unit-management .submit-button:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+}
+
+.unit-management .cancel-button {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.unit-management .cancel-button:hover {
+  background-color: #7f8c8d;
+  transform: translateY(-2px);
+}
+
+.unit-management .loading,
+.unit-management .error {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 50px;
+}
+
+.unit-management .error {
+  color: var(--danger-color);
+}
+
+.unit-management .dragging {
+  opacity: 0.5;
+  transform: scale(1.05);
+}
+
+.unit-management .stats-container {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--box-shadow);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.unit-management .chart-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .unit-management .unit-list {
+    grid-template-columns: 1fr;
+  }
+
+  .unit-management .modal-content {
+    width: 95%;
+  }
+
+  .unit-management .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .unit-management .header-actions {
+    margin-top: 10px;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.unit-management .unit-card:hover .status-badge {
+  animation: pulse 1s infinite;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+}
+
+.modal-header {
+  padding: 20px;
+  background-color: #1d526e;
+  color: white;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.modal-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: #1d526e;
+  outline: none;
+}
+
+.form-group-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #1d526e;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button-primary, .button-secondary {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.button-primary {
+  background-color: #1d526e;
+  color: white;
+  border: none;
+}
+
+.button-primary:hover {
+  background-color: #16405a;
+}
+
+.button-secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.button-secondary:hover {
+  background-color: #e5e5e5;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #10B981;
+}
+
+.toggle-label {
+  width: 48px;
+  background-color: #ddd;
+  transition: background-color .2s;
+}
+
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #10B981;
+}
+
+.estudiantes-container {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 8px;
+}
+
+.estudiante-checkbox {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.estudiante-checkbox:last-child {
+  border-bottom: none;
+}
+
+.estudiante-checkbox input[type="checkbox"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.estudiante-checkbox label {
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.estudiante-checkbox:hover {
+  background-color: #f5f5f5;
+}
+
+/* Estilo para el scrollbar */
+.estudiantes-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.estudiantes-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.estudiantes-container::-webkit-scrollbar-thumb {
+  background: #1d526e;
+  border-radius: 4px;
+}
+
+.estudiantes-container::-webkit-scrollbar-thumb:hover {
+  background: #16405a;
+}
