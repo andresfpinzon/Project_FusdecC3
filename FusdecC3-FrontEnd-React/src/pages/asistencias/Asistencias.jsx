@@ -201,11 +201,6 @@ const Asistencias = () => {
 
       if (response.ok) {
         await fetchAsistencias();
-        const updatedAsistencia = await response.json();
-        const updatedAsistencias = asistencias.map((asistencia) =>
-          asistencia._id === updatedAsistencia._id ? updatedAsistencia : asistencia
-        );
-        setAsistencias(updatedAsistencias);
         setSelectedAsistencia(null);
         setFormValues({
           tituloAsistencia: "",

@@ -1,33 +1,45 @@
 const Brigada = require('../models/brigada_model');
+const Comando = require('../models/comando_model');
 
 // Función asíncrona para crear brigadas
 async function crearBrigada(body) {
     // Verificar si ya existe una brigada con el mismo nombre y comando
     const brigadaExistente = await Brigada.findOne({
-        nombreBrigada: body.nombreBrigada,
-        comandoId: body.comandoId
+        nombreBrigada: body.nombreBrigada
     });
 
     if (brigadaExistente) {
         throw new Error(`Ya existe una brigada con el nombre "${body.nombreBrigada}" para el comando con ID ${body.comandoId}`);
     }
 
+    // Crear la nueva brigada
     const brigada = new Brigada({
         nombreBrigada: body.nombreBrigada,
         ubicacionBrigada: body.ubicacionBrigada,
         estadoBrigada: body.estadoBrigada,
         comandoId: body.comandoId, // Asegúrate de que esto esté presente
-        unidades: body.unidades || [] 
+        unidades: body.unidades || []
     });
-    return await brigada.save();
+
+    // Guardar la brigada
+    const nuevaBrigada = await brigada.save();
+
+    // Agregar la brigada al comando correspondiente
+    await Comando.findByIdAndUpdate(
+        body.comandoId,
+        { $push: { brigadas: nuevaBrigada._id } }
+    );
+
+    return nuevaBrigada;
 }
 
-// Función asíncrona para listar brigadas
+// Función asíncrona para listar brigadas activas
 async function listarBrigadas() {
-    return await Brigada.find()
+    return await Brigada.find({ estadoBrigada: true }) 
         .populate('unidades')
         .populate('comandoId');
 }
+
 
 // Función asíncrona para buscar una brigada por su ID
 async function buscarBrigadaPorId(id) {
@@ -38,12 +50,43 @@ async function buscarBrigadaPorId(id) {
 
 // Función asíncrona para editar una brigada
 async function editarBrigada(id, body) {
-    const brigada = await Brigada.findByIdAndUpdate(id, body, { new: true }).populate('comandoId').populate('unidades');
+    // Buscar la brigada existente
+    const brigada = await Brigada.findById(id);
     if (!brigada) {
         throw new Error(`Brigada con ID ${id} no encontrada`);
     }
-    return brigada;
+
+    // Guardar el comando original
+    const comandoOriginalId = brigada.comandoId;
+
+    // Actualizar la brigada
+    brigada.nombreBrigada = body.nombreBrigada || brigada.nombreBrigada;
+    brigada.ubicacionBrigada = body.ubicacionBrigada || brigada.ubicacionBrigada;
+    brigada.estadoBrigada = body.estadoBrigada !== undefined ? body.estadoBrigada : brigada.estadoBrigada;
+    brigada.comandoId = body.comandoId || brigada.comandoId;
+    brigada.unidades = body.unidades || brigada.unidades;
+
+    // Guardar los cambios
+    const brigadaActualizada = await brigada.save();
+
+    // Actualizar el comando si cambió
+    if (comandoOriginalId.toString() !== body.comandoId) {
+        // Remover del comando anterior
+        await Comando.findByIdAndUpdate(
+            comandoOriginalId,
+            { $pull: { brigadas: id } }
+        );
+
+        // Agregar al nuevo comando
+        await Comando.findByIdAndUpdate(
+            body.comandoId,
+            { $push: { brigadas: id } }
+        );
+    }
+
+    return brigadaActualizada;
 }
+
 
 // Función asíncrona para desactivar una brigada
 async function desactivarBrigada(id) {

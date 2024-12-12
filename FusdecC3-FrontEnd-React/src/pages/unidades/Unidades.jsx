@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -37,7 +38,6 @@ const token = localStorage.getItem("token");
 
 const Unidades = () => {
   const [unidades, setUnidades] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
   const [brigadas, setBrigadas] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [formValues, setFormValues] = useState({
@@ -45,7 +45,6 @@ const Unidades = () => {
     estadoUnidad: true,
     brigadaId: "",
     usuarioId: "",
-    estudiantes: [],
   });
   const [selectedUnidad, setSelectedUnidad] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -61,7 +60,6 @@ const Unidades = () => {
 
   useEffect(() => {
     fetchUnidades();
-    fetchEstudiantes();
     fetchBrigadas();
     fetchUsuarios();
   }, []);
@@ -81,25 +79,6 @@ const Unidades = () => {
     } catch (error) {
       console.error("Error al obtener unidades:", error);
       setErrorMessage("Error al obtener unidades");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchEstudiantes = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/estudiantes",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener estudiantes");
-      const data = await response.json();
-      setEstudiantes(data);
-    } catch (error) {
-      console.error("Error al obtener estudiantes:", error);
-      setErrorMessage("Error al obtener estudiantes");
       setOpenSnackbar(true);
     }
   };
@@ -182,15 +161,12 @@ const Unidades = () => {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear unidad");
       }
-
-      const nuevaUnidad = await response.json();
-      setUnidades([...unidades, nuevaUnidad]);
+      await fetchUnidades();
       setFormValues({
         nombreUnidad: "",
         estadoUnidad: true,
         brigadaId: "", 
         usuarioId: "",
-        estudiantes: [],
       });
       setSuccessMessage("Unidad guardada exitosamente!");
       setOpenSnackbar(true);
@@ -216,18 +192,13 @@ const Unidades = () => {
       );
 
       if (response.ok) {
-        const unidadActualizada = await response.json();
-        const updatedUnidades = unidades.map((unidad) =>
-          unidad._id === unidadActualizada._id ? unidadActualizada : unidad
-        );
-        setUnidades(updatedUnidades);
+        await fetchUnidades();
         setSelectedUnidad(null);
         setFormValues({
           nombreUnidad: "",
           estadoUnidad: true,
           brigadaId: "",
           usuarioId: "",
-          estudiantes: [],
         });
         setSuccessMessage("Unidad actualizada exitosamente!");
         setOpenSnackbar(true);
@@ -381,27 +352,6 @@ const Unidades = () => {
             ))}
           </Select>
         </FormControl>
-        <FormControl fullWidth margin="normal">
-          <Autocomplete
-            multiple
-            options={estudiantes}
-            getOptionLabel={(option) => `${option.nombreEstudiante} ${option.apellidoEstudiante}`}
-            value={formValues.estudiantes.map((id) => estudiantes.find(est => est._id === id))}
-            onChange={(_, newValue) => {
-              setFormValues({
-                ...formValues,
-                estudiantes: newValue.map((est) => est._id),
-              });
-            }}
-            renderInput={(params) => (
-              <TextField 
-                {...params} 
-                label="Estudiantes" 
-                placeholder="Selecciona estudiantes" 
-              />
-            )}
-          />
-        </FormControl>
         <Box marginTop={3}>
           <Button
             variant="contained"
@@ -429,7 +379,6 @@ const Unidades = () => {
               <TableCell>Estado</TableCell>
               <TableCell>Brigada</TableCell>
               <TableCell>Usuario</TableCell>
-              <TableCell>Estudiantes</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -443,9 +392,6 @@ const Unidades = () => {
                 </TableCell>
                 <TableCell>
                   {unidad.usuarioId?.nombreUsuario || "Usuario no encontrado"}
-                </TableCell>
-                <TableCell>
-                  {renderEstudiantes(unidad.estudiantes)}
                 </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEditClick(unidad)} color="primary">

@@ -193,7 +193,6 @@ export default function Brigadas() {
       );
 
       if (response.ok) {
-        await fetchBrigadas();
         const brigadaActualizada = await response.json();
         setBrigadas(
           brigadas.map((brigada) =>
@@ -373,7 +372,7 @@ export default function Brigadas() {
                     <TableCell>{brigada.nombreBrigada}</TableCell>
                     <TableCell>{brigada.ubicacionBrigada}</TableCell>
                     <TableCell>
-                      {brigada.comandoId ? brigada.comandoId.nombreComando : "Comando no disponible"}
+                      {brigada.comandoId.nombreComando || "Comando no disponible"}
                     </TableCell>
                     <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>

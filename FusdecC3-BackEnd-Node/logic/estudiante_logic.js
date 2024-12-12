@@ -3,6 +3,9 @@ const Inasistencia = require("../models/inasistencia_model");
 const Asistencia = require("../models/asistencia_model");
 const Certificado = require("../models/certificado_model");
 const Calificacion = require("../models/calificacion_model");
+const Colegio = require("../models/colegio_model");
+const Unidad = require('../models/unidad_model');
+const Edicion = require('../models/edicion_model');
 
 // Función para crear un nuevo estudiante
 async function crearEstudiante(body) {
@@ -44,19 +47,39 @@ async function crearEstudiante(body) {
 
     // Guardar el estudiante en la base de datos
     await nuevoEstudiante.save();
+
+    // Actualizar Unidad con el nuevo estudiante
+    if (body.unidadId) {
+        await Unidad.findByIdAndUpdate(
+            body.unidadId,
+            { $push: { estudiantes: nuevoEstudiante._id } },
+            { new: true } // Retorna el documento actualizado
+        );
+    }
+
+    // Actualizar Colegio con el nuevo estudiante
+    if (body.colegioId) {
+        await Colegio.findByIdAndUpdate(
+            body.colegioId,
+            { $push: { estudiantes: nuevoEstudiante._id } },
+            { new: true }
+        );
+    }
+
+    // Actualizar Ediciones con el nuevo estudiante
+    if (body.ediciones && body.ediciones.length > 0) {
+        await Edicion.updateMany(
+            { _id: { $in: body.ediciones } },
+            { $push: { estudiantes: nuevoEstudiante._id } }
+        );
+    }
+
     return nuevoEstudiante;
 }
 
-// Función para actualizar un estudiante
 async function actualizarEstudiante(id, body) {
     // Buscar el estudiante por ID
-    let estudiante = await Estudiante.findById(id).populate('unidadId')
-    .populate('colegioId')
-    .populate('ediciones')
-    .populate('calificaciones')
-    .populate('inasistencias') 
-    .populate('asistencias')
-    .populate('certificados');
+    let estudiante = await Estudiante.findById(id);
     if (!estudiante) {
         throw new Error("Estudiante no encontrado");
     }
@@ -73,6 +96,12 @@ async function actualizarEstudiante(id, body) {
         throw new Error("El correo o número de documento ya están registrados");
     }
 
+    // Guardar las referencias originales
+    const unidadOriginalId = estudiante.unidadId;
+    const colegioOriginalId = estudiante.colegioId;
+    const edicionesOriginales = estudiante.ediciones || [];
+
+    // Actualizar los campos del estudiante
     estudiante.nombreEstudiante = body.nombreEstudiante || estudiante.nombreEstudiante;
     estudiante.apellidoEstudiante = body.apellidoEstudiante || estudiante.apellidoEstudiante;
     estudiante.tipoDocumento = body.tipoDocumento || estudiante.tipoDocumento;
@@ -81,11 +110,67 @@ async function actualizarEstudiante(id, body) {
     estudiante.generoEstudiante = body.generoEstudiante || estudiante.generoEstudiante;
     estudiante.unidadId = body.unidadId || estudiante.unidadId;
     estudiante.colegioId = body.colegioId || estudiante.colegioId;
-    estudiante.estadoEstudiante = body.estadoEstudiante || estudiante.estadoEstudiante;
     estudiante.ediciones = body.ediciones || estudiante.ediciones;
-    await estudiante.save();
-    return estudiante; 
+
+    // Guardar los cambios en el estudiante
+    estudiante = await estudiante.save();
+
+    // Actualizar relaciones: Unidad
+    if (unidadOriginalId && unidadOriginalId.toString() !== body.unidadId) {
+        // Eliminar el estudiante de la unidad anterior
+        await Unidad.findByIdAndUpdate(
+            unidadOriginalId,
+            { $pull: { estudiantes: estudiante._id } }
+        );
+    }
+    if (body.unidadId && unidadOriginalId !== body.unidadId) {
+        // Agregar el estudiante a la nueva unidad
+        await Unidad.findByIdAndUpdate(
+            body.unidadId,
+            { $push: { estudiantes: estudiante._id } }
+        );
+    }
+
+    // Actualizar relaciones: Colegio
+    if (colegioOriginalId && colegioOriginalId.toString() !== body.colegioId) {
+        // Eliminar el estudiante del colegio anterior
+        await Colegio.findByIdAndUpdate(
+            colegioOriginalId,
+            { $pull: { estudiantes: estudiante._id } }
+        );
+    }
+    if (body.colegioId && colegioOriginalId !== body.colegioId) {
+        // Agregar el estudiante al nuevo colegio
+        await Colegio.findByIdAndUpdate(
+            body.colegioId,
+            { $push: { estudiantes: estudiante._id } }
+        );
+    }
+
+    // Actualizar relaciones: Ediciones
+    const edicionesNuevas = body.ediciones || [];
+    const edicionesAEliminar = edicionesOriginales.filter(id => !edicionesNuevas.includes(id.toString()));
+    const edicionesAAgregar = edicionesNuevas.filter(id => !edicionesOriginales.includes(id.toString()));
+
+    // Eliminar el estudiante de las ediciones que ya no están asociadas
+    if (edicionesAEliminar.length > 0) {
+        await Edicion.updateMany(
+            { _id: { $in: edicionesAEliminar } },
+            { $pull: { estudiantes: estudiante._id } }
+        );
+    }
+
+    // Agregar el estudiante a las nuevas ediciones
+    if (edicionesAAgregar.length > 0) {
+        await Edicion.updateMany(
+            { _id: { $in: edicionesAAgregar } },
+            { $push: { estudiantes: estudiante._id } }
+        );
+    }
+
+    return estudiante;
 }
+
 
 // Función para listar todos los estudiantes
 async function listarEstudiantes() {
