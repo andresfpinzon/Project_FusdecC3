@@ -35,6 +35,7 @@ const actualizarCurso = async (req, res) => {
     descripcionCurso: body.descripcionCurso,
     intensidadHorariaCurso: body.intensidadHorariaCurso,
     ediciones: body.ediciones,
+    
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -27,8 +28,11 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Person, Description, CreditCard, Cake, Email, School, ToggleOn, CheckCircle, Cancel, Star, ConfirmationNumber } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Estudiantes = () => {
   const [estudiantes, setEstudiantes] = useState([]);
@@ -61,6 +65,11 @@ const Estudiantes = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoEstudiante, setInfoEstudiante] = useState(null);
 
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     fetchEstudiantes();
     fetchUnidades();
@@ -74,7 +83,13 @@ const Estudiantes = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -87,7 +102,13 @@ const Estudiantes = () => {
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/unidades");
+      const response = await fetch("http://localhost:3000/api/unidades",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
       setUnidades(data);
@@ -100,7 +121,13 @@ const Estudiantes = () => {
 
   const fetchColegios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/colegios");
+      const response = await fetch("http://localhost:3000/api/colegios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener colegios");
       const data = await response.json();
       setColegios(data);
@@ -113,7 +140,13 @@ const Estudiantes = () => {
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones");
+      const response = await fetch("http://localhost:3000/api/ediciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
       setEdiciones(data);
@@ -126,7 +159,13 @@ const Estudiantes = () => {
 
   const fetchCertificados = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/certificados");
+      const response = await fetch("http://localhost:3000/api/certificados",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener certificados");
       const data = await response.json();
       setCertificados(data);
@@ -139,7 +178,13 @@ const Estudiantes = () => {
 
   const fetchAsistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias");
+      const response = await fetch("http://localhost:3000/api/asistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener asistencias");
       const data = await response.json();
       setAsistencias(data);
@@ -152,7 +197,13 @@ const Estudiantes = () => {
 
   const fetchInasistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/inasistencias");
+      const response = await fetch("http://localhost:3000/api/inasistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener inasistencias");
       const data = await response.json();
       setInasistencias(data);
@@ -165,7 +216,13 @@ const Estudiantes = () => {
 
   const fetchCalificaciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/calificaciones");
+      const response = await fetch("http://localhost:3000/api/calificaciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener calificaciones");
       const data = await response.json();
       setCalificaciones(data);
@@ -174,6 +231,28 @@ const Estudiantes = () => {
       setErrorMessage("Error al obtener calificaciones");
       setOpenSnackbar(true);
     }
+  };
+  
+  // Filtrar usuarios según el término de búsqueda
+  const filteredEstudiantes = estudiantes.filter((estudiante) =>
+    estudiante.nombreEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.apellidoEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.tipoDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.numeroDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.correoEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (estudiante.unidadId?.nombreUnidad?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+    (estudiante.colegioId?.nombreColegio?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -206,13 +285,13 @@ const Estudiantes = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
 
       if (response.ok) {
-        const nuevoEstudiante = await response.json();
-        setEstudiantes([...estudiantes, nuevoEstudiante]);
+        await fetchEstudiantes();
         setFormValues({
           nombreEstudiante: "",
           apellidoEstudiante: "",
@@ -245,17 +324,14 @@ const Estudiantes = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
       );
 
       if (response.ok) {
-        const updatedEstudiante = await response.json();
-        const updatedEstudiantes = estudiantes.map((estudiante) =>
-          estudiante._id === updatedEstudiante._id ? updatedEstudiante : estudiante
-        );
-        setEstudiantes(updatedEstudiantes);
+        await fetchEstudiantes()
         setSelectedEstudiante(null);
         setFormValues({
           nombreEstudiante: "",
@@ -288,6 +364,10 @@ const Estudiantes = () => {
         `http://localhost:3000/api/estudiantes/${estudianteToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
       if (response.ok) {
@@ -332,7 +412,13 @@ const Estudiantes = () => {
   };
 
   const handleInfoClick = async (estudiante) => {
-    const response = await fetch(`http://localhost:3000/api/estudiantes/${estudiante._id}`);
+    const response = await fetch(`http://localhost:3000/api/estudiantes/${estudiante._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoEstudiante(data);
     setOpenInfoDialog(true);
@@ -484,7 +570,18 @@ const Estudiantes = () => {
           </Button>
         </Box>
       </form>
+      <br></br>
 
+      {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -501,7 +598,9 @@ const Estudiantes = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {estudiantes.map((estudiante) => (
+          {filteredEstudiantes
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((estudiante) => (
               <TableRow key={estudiante._id}>
                 <TableCell>{estudiante.nombreEstudiante}</TableCell>
                 <TableCell>{estudiante.apellidoEstudiante}</TableCell>
@@ -526,6 +625,16 @@ const Estudiantes = () => {
             ))}
           </TableBody>
         </Table>
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredEstudiantes.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
@@ -540,36 +649,117 @@ const Estudiantes = () => {
       </Dialog>
 
       
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Información del Estudiante</DialogTitle>
-        <DialogContent>
-          <Typography>Nombre: {infoEstudiante?.nombreEstudiante}</Typography>
-          <Typography>Apellido: {infoEstudiante?.apellidoEstudiante}</Typography>
-          <Typography>Tipo de Docoumento: {infoEstudiante?.tipoDocumento}</Typography>
-          <Typography>Número de Documento: {infoEstudiante?.numeroDocumento}</Typography>
-          <Typography>Fecha de Nacimiento: {infoEstudiante?.fechaNacimiento}</Typography>
-          <Typography>Correo: {infoEstudiante?.correoEstudiante}</Typography>
-          <Typography>Unidad: {infoEstudiante?.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
-          <Typography>Colegio: {infoEstudiante?.colegioId?.nombreColegio || "Colegio no encontrado"}</Typography>
-          <Typography>Estado: {infoEstudiante?.estadoEstudiante ? "Activo" : "Inactivo"}</Typography>
-          <Typography>
-          Ediciones: {infoEstudiante?.ediciones?.map((ed) => ed.tituloEdicion).join(", ") || "Sin ediciones"}
-          </Typography>
-          <Typography>
-          asistencias: {infoEstudiante?.asistencias?.map((as) => as.tituloAsistencia).join(", ") || "Sin asistencias"}
-          </Typography>
-          <Typography>
-          inasistencias: {infoEstudiante?.inasistencias?.map((ina) => ina.tituloInasistencia).join(", ") || "Sin inasistencias"}
-          </Typography>
-          <Typography>
-          calificaciones: {infoEstudiante?.calificaciones?.map((ca) => ca.tituloCalificacion).join(", ") || "Sin calificaciones"}
-          </Typography>
-          <Typography>
-          certificados: {infoEstudiante?.certificados?.map((ce) => ce.codigoVerificacion).join(", ") || "Sin certificados"}
-          </Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información del Estudiante
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoEstudiante && (
+            <div>
+              {/* Nombre */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.nombreEstudiante || "Nombre no disponible"}</Typography>
+              </Box>
+
+              {/* Apellido */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Apellido:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.apellidoEstudiante || "Apellido no disponible"}</Typography>
+              </Box>
+
+              {/* Tipo de Documento */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Description color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tipo de Documento:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.tipoDocumento || "Tipo no disponible"}</Typography>
+              </Box>
+
+              {/* Número de Documento */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CreditCard color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Número de Documento:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.numeroDocumento || "Número no disponible"}</Typography>
+              </Box>
+
+              {/* Fecha de Nacimiento */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Cake color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Nacimiento:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.fechaNacimiento || "Fecha no disponible"}</Typography>
+              </Box>
+
+              {/* Correo */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Email color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Correo:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.correoEstudiante || "Correo no disponible"}</Typography>
+              </Box>
+
+              {/* Unidad */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidad:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
+              </Box>
+
+              {/* Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Colegio:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.colegioId?.nombreColegio || "Colegio no encontrado"}</Typography>
+              </Box>
+
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.estadoEstudiante ? "Activo" : "Inactivo"}</Typography>
+              </Box>
+
+              {/* Ediciones */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Edit color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ediciones:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.ediciones?.map((ed) => ed.tituloEdicion).join(", ") || "Sin ediciones"}</Typography>
+              </Box>
+
+              {/* Asistencias */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CheckCircle color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Asistencias:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.asistencias?.map((as) => as.tituloAsistencia).join(", ") || "Sin asistencias"}</Typography>
+              </Box>
+
+              {/* Inasistencias */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Cancel color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Inasistencias:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.inasistencias?.map((ina) => ina.tituloInasistencia).join(", ") || "Sin inasistencias"}</Typography>
+              </Box>
+
+              {/* Calificaciones */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Star color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Calificaciones:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.calificaciones?.map((ca) => ca.tituloCalificacion).join(", ") || "Sin calificaciones"}</Typography>
+              </Box>
+
+              {/* Certificados */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ConfirmationNumber color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Certificados:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.certificados?.map((ce) => ce.codigoVerificacion).join(", ") || "Sin certificados"}</Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

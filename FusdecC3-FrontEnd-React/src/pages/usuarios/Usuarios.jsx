@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -27,8 +28,11 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -49,6 +53,14 @@ const Usuarios = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("success"); // "success" o "error"
+
   useEffect(() => {
     fetchUsuarios();
     fetchRoles();
@@ -56,7 +68,13 @@ const Usuarios = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios");
+      const response = await fetch("http://localhost:3000/api/usuarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
       setUsuarios(data);
@@ -69,7 +87,13 @@ const Usuarios = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/roles");
+      const response = await fetch("http://localhost:3000/api/roles",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener roles");
       const data = await response.json();
       setRoles(data);
@@ -78,6 +102,24 @@ const Usuarios = () => {
       setErrorMessage("Error al obtener roles");
       setOpenSnackbar(true);
     }
+  };
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredUsuarios = usuarios.filter((usuario) =>
+    (usuario.nombreUsuario && usuario.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (usuario.apellidoUsuario && usuario.apellidoUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (usuario.correo && usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -110,6 +152,7 @@ const Usuarios = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -126,6 +169,9 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
+        setMessage("Usuario guardado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear usuario");
@@ -133,6 +179,8 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al crear usuario:", error);
       setErrorMessage(error.message);
+      setMessage("Error al crear usuario: " + error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
@@ -145,6 +193,7 @@ const Usuarios = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -166,6 +215,9 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
+        setMessage("Usuario actualizado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar usuario");
@@ -173,6 +225,8 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
       setErrorMessage(error.message);
+      setMessage("Error al actualizar usuario: " + error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
@@ -184,11 +238,18 @@ const Usuarios = () => {
         `http://localhost:3000/api/usuarios/${userToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
       if (response.ok) {
         setUsuarios(usuarios.filter((user) => user._id !== userToDelete._id));
         handleCloseDeleteDialog();
+        setMessage("Usuario eliminado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar Usuario");
@@ -196,6 +257,8 @@ const Usuarios = () => {
     } catch (error) {
       console.error("Error al eliminar usuario:", error);
       setErrorMessage(error.message);
+      setMessage("Error al eliminar usuario: " + error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
@@ -221,6 +284,10 @@ const Usuarios = () => {
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setUserToDelete(null);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -310,7 +377,18 @@ const Usuarios = () => {
           </Button>
         </Box>
       </form>
-
+      <br></br>
+      
+       {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+       {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -324,38 +402,40 @@ const Usuarios = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {usuarios.map((usuario) => (
-              <TableRow key={usuario._id}>
-                <TableCell>{usuario.nombreUsuario}</TableCell>
-                <TableCell>{usuario.apellidoUsuario}</TableCell>
-                <TableCell>{usuario.correo}</TableCell>
-                <TableCell>
-                  {usuario.estadoUsuario ? "Activo" : "Inactivo"}
-                </TableCell>
-                <TableCell>
-                  {usuario.roles
-                    .map((rol) => rol.nombreRol) // Accede directamente al campo nombreRol
-                    .filter((nombreRol) => nombreRol !== "") // Filtra cualquier rol vacío
-                    .join(", ")} {/* Une los nombres de roles con una coma */}
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => handleEditClick(usuario)}
-                    color="primary"
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(usuario)}
-                    color="error"
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredUsuarios
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((usuario) => (
+                <TableRow key={usuario._id}>
+                  <TableCell>{usuario.nombreUsuario}</TableCell>
+                  <TableCell>{usuario.apellidoUsuario}</TableCell>
+                  <TableCell>{usuario.correo}</TableCell>
+                  <TableCell>{usuario.estadoUsuario ? "Activo" : "Inactivo"}</TableCell>
+                  <TableCell>
+                    {usuario.roles.map((rol) => rol.nombreRol).join(", ")}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleEditClick(usuario)} color="primary">
+                      <Edit />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteClick(usuario)} color="error">
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+        
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredUsuarios.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
       {/* Confirmar eliminación */}
@@ -381,10 +461,10 @@ const Usuarios = () => {
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
+        onClose={handleCloseSnackbar}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: "100%" }}>
+          {message}
         </Alert>
       </Snackbar>
     </Container>

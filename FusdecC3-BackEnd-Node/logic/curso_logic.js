@@ -22,28 +22,32 @@ async function crearCurso(body) {
 
 // Función asíncrona para actualizar cursos
 async function actualizarCurso(id, body) {
+  // Verificar si ya existe un curso con el mismo título, excluyendo el curso actual
+  const cursoExistente = await Curso.findOne({
+    nombreCurso: body.nombreCurso,
+    _id: { $ne: id }, // Excluir el curso actual
+  });
 
-  // Verificar si ya existe un curso con el mismo título
-  const cursoExistente = await Curso.findOne({ nombreCurso: body.nombreCurso });
   if (cursoExistente) {
     throw new Error("El curso con este título ya existe");
   }
-  
-  let curso = await Curso.findByIdAndUpdate(
+
+  // Actualizar el curso
+  const curso = await Curso.findByIdAndUpdate(
     id,
     {
       $set: {
         nombreCurso: body.nombreCurso,
         descripcionCurso: body.descripcionCurso,
         intensidadHorariaCurso: body.intensidadHorariaCurso,
-        ediciones: body.ediciones,
       },
     },
     { new: true }
   );
 
   return curso;
-};
+}
+
 
 // Función asíncrona para inactivar cursos
 async function desactivarCurso(id) {
@@ -63,8 +67,8 @@ async function desactivarCurso(id) {
 // Función asíncrona para listar los cursos activos
 async function listarCursosActivos() {
   let cursos = await Curso.find({ estadoCurso: true })
-  .populate('fundacionId', 'nombreFundacion')
-  .populate('ediciones', 'tituloEdicion')
+  .populate('fundacionId')
+  .populate('ediciones');
   return cursos;
 };
 
@@ -97,7 +101,9 @@ async function guardarCursos(cursos) {
 // Función asíncrona para buscar un curso por su ID
 async function buscarCursoPorId(id) {
   try {
-    const curso = await Curso.findById(id);
+    const curso = await Curso.findById(id)
+    .populate('fundacionId')
+    .populate('ediciones');
     if (!curso) {
       throw new Error(`Curso con ID ${id} no encontrado`);
     }

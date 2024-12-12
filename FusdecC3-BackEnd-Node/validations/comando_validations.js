@@ -22,7 +22,7 @@ const comandoSchemaValidation = Joi.object({
 
   ubicacionComando: Joi.string()
     .min(3)
-    .max(200)
+    .max(1000)
     .required()
     .messages({
       'string.base': 'La ubicación del comando debe ser un texto',
@@ -33,15 +33,15 @@ const comandoSchemaValidation = Joi.object({
     }),
 
   fundacionId: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
-    .allow(null, '') // Permitir que fundacionId esté vacío o sea null
+    .pattern(/^[0-9a-fA-F]{24}$/)
+    .allow(null, '')
     .messages({
       'string.base': 'El fundacionId debe ser un texto',
       'string.pattern.base': 'El fundacionId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
     }),
 
   brigadas: Joi.array()
-    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/)) // Validación para ObjectId
+    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
     .optional()
     .messages({
       'array.base': 'Brigadas debe ser un array',

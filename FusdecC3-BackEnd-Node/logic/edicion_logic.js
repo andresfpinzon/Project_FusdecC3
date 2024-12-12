@@ -1,3 +1,4 @@
+const Curso = require("../models/curso_model");
 const Edicion = require("../models/edicion_model");
 
 const Estudiante = require('../models/estudiante_model');
@@ -18,9 +19,18 @@ async function crearEdicion(body) {
     fechaFinEdicion: body.fechaFinEdicion,
     estadoEdicion: body.estadoEdicion,
     cursoId: body.cursoId,
-    horarios: body.horarios,
-    estudiantes: body.estudiantes,
+    horarios: body.horarios || [],
+    estudiantes: body.estudiantes || [],
   });
+
+  // Asociar la edicion al curso correspondiente
+  if (body.cursoId) {
+    await Curso.findByIdAndUpdate(
+        body.cursoId,
+        { $push: { ediciones: edicion._id } }, // Agregar el certificado al array de certificados del estudiante
+        { new: true }
+    );
+}
 
   return await edicion.save();
 }
@@ -30,7 +40,8 @@ async function actualizarEdicion(id, body) {
 
   // Verificar si ya existe una edicion con el mismo título
   const edicionExistente = await Edicion.findOne({
-    tituloEdicion: body.tituloEdicion,
+    tituloEdicion: body.tituloEdicion, 
+    _id: { $ne: id } // Excluir la edicion actual
   });
   if (edicionExistente) {
     throw new Error("La edición con este título ya existe");
@@ -43,14 +54,13 @@ async function actualizarEdicion(id, body) {
         tituloEdicion: body.tituloEdicion,
         fechaInicioEdicion: body.fechaInicioEdicion,
         fechaFinEdicion: body.fechaFinEdicion,
+        cursoId: body.cursoId,
         horarios: body.horarios,
         estudiantes: body.estudiantes,
       },
     },
     { new: true }
-  )
-  .populate('cursoId', 'nombreCurso')
-  .populate('horarios', 'tituloHorario')
+  );
 
   return edicion;
 }
@@ -74,15 +84,18 @@ async function desactivarEdicion(id) {
 async function listarEdicionesActivas() {
   let ediciones = await Edicion.find({ estadoEdicion: true })
   .populate('cursoId')
-  .populate('horarios');
+  .populate('horarios')
+  .populate('estudiantes');
   return ediciones;
 }
 
 // Función asíncrona para buscar una edicion por su ID
 async function buscarEdicionPorId(id) {
   try {
-    const edicion = await Edicion.findById(id).populate('cursoId')
-    .populate('horarios');
+    const edicion = await Edicion.findById(id)
+    .populate('cursoId')
+    .populate('horarios')
+    .populate('estudiantes');
     if (!edicion) {
       throw new Error(`Edición con ID ${id} no encontrado`);
     }

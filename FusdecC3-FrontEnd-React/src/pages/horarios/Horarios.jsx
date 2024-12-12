@@ -20,9 +20,12 @@ import {
   Typography,
   Snackbar,
   Alert,
+  TablePagination
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Class,AccessTime, ToggleOn } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Horarios = () => {
   const [horarios, setHorarios] = useState([]);
@@ -41,9 +44,20 @@ const Horarios = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoHorario, setInfoHorario] = useState(null);
 
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const fetchHorarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/horarios");
+      const response = await fetch("http://localhost:3000/api/horarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener horarios");
       const data = await response.json();
       setHorarios(data);
@@ -57,6 +71,24 @@ const Horarios = () => {
   useEffect(() => {
     fetchHorarios();
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredHorarios = horarios.filter((horario) =>
+    horario.tituloHorario.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    horario.horaInicio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    horario.horaFin.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleInputChange = (e) => {
     setFormValues({
@@ -78,6 +110,7 @@ const Horarios = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify(formValues),
       });
@@ -111,6 +144,7 @@ const Horarios = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -149,6 +183,10 @@ const Horarios = () => {
         `http://localhost:3000/api/horarios/${horarioToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -177,7 +215,13 @@ const Horarios = () => {
   };
 
   const handleInfoClick = async (horario) => {
-    const response = await fetch(`http://localhost:3000/api/horarios/${horario._id}`,);
+    const response = await fetch(`http://localhost:3000/api/horarios/${horario._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoHorario(data);
     setOpenInfoDialog(true);
@@ -244,6 +288,17 @@ const Horarios = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar horarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -256,7 +311,9 @@ const Horarios = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {horarios.map((horario) => (
+          {filteredHorarios
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((horario) => (
               <TableRow key={horario._id}>
                 <TableCell>{horario.tituloHorario}</TableCell>
                 <TableCell>{horario.horaInicio}</TableCell>
@@ -282,6 +339,18 @@ const Horarios = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredHorarios.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
       
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
@@ -295,19 +364,49 @@ const Horarios = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información del horario</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {infoHorario?.tituloHorario || "Título no disponible"}</Typography>
-          <Typography>hora de Inicio: {infoHorario?.horaInicio || "hora no disponible"}</Typography>
-          <Typography>hora de Finalización: {infoHorario?.horaFin || "hora no disponible"}</Typography>
-          <Typography>Estado: {infoHorario?.estadoHorario ? "Activa" : "Inactiva"}</Typography>
-        </DialogContent>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+  <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+    Información del Horario
+  </DialogTitle>
+  <DialogContent dividers sx={{ padding: '20px' }}>
+    {infoHorario && (
+      <div>
+        {/* Título */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <Class color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.tituloHorario || "Título no disponible"}</Typography>
+        </Box>
 
-        <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
-        </DialogActions>
-      </Dialog>
+        {/* Hora de Inicio */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <AccessTime color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Hora de Inicio:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.horaInicio || "Hora no disponible"}</Typography>
+        </Box>
+
+        {/* Hora de Finalización */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <AccessTime color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Hora de Finalización:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.horaFin || "Hora no disponible"}</Typography>
+        </Box>
+
+        {/* Estado */}
+        <Box display="flex" alignItems="center" mb={2}>
+          <ToggleOn color="primary" sx={{ mr: 1 }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+          <Typography variant="body1" sx={{ ml: 1 }}>{infoHorario.estadoHorario ? "Activa" : "Inactiva"}</Typography>
+        </Box>
+      </div>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+      Cerrar
+    </Button>
+  </DialogActions>
+</Dialog>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
         <Alert onClose={() => setOpenSnackbar(false)} severity="error">

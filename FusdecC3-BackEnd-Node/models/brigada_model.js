@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const BrigadaSchema = new Schema({
-    /*brigadaId: {
-        type: Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(),
-    },*/
     nombreBrigada: {
         type: String,
         required: true,
@@ -21,15 +17,13 @@ const BrigadaSchema = new Schema({
     },
     comandoId: {
         type: Schema.Types.ObjectId,
+        ref: 'Comando',
         required: true,
-        ref: "Comando", // Referencia al modelo Comando
     },
-    unidades: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Unidad", // Referencia al modelo Unidad
-        },
-    ],
+    unidades: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Unidad',
+    }],
 });
 
 const Brigada = mongoose.model("Brigada", BrigadaSchema);

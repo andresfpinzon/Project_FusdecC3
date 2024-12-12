@@ -1,4 +1,5 @@
 const Asistencia = require('../models/asistencia_model');
+const Estudiante = require("../models/estudiante_model");
 
 // Función asíncrona para crear una asistencia
 async function crearAsistencia(body) {
@@ -11,7 +12,16 @@ async function crearAsistencia(body) {
         estudiantes: body.estudiantes || [], // Se puede pasar un array de estudiantes
     });
 
-    return await asistencia.save();
+     // Guardar la asistencia en la base de datos
+    asistencia = await asistencia.save();
+
+    // Actualizar los estudiantes seleccionados para agregar esta asistencia
+    if (body.estudiantes && body.estudiantes.length > 0) {
+        await Estudiante.updateMany(
+        { _id: { $in: body.estudiantes } }, // Filtrar solo los estudiantes seleccionados
+        { $push: { asistencias: asistencia._id } } // Agregar el ID de la asistencia al array
+        );
+    }
 }
 
 // Función asíncrona para actualizar una asistencia
@@ -21,17 +31,33 @@ async function actualizarAsistencia(id, body) {
         throw new Error('Asistencia no encontrada');
     }
 
+    // Obtener la lista de estudiantes originales
+    const estudiantesOriginales = asistencia.estudiantes;
+
+    // Actualizar los campos de la asistencia
     asistencia.tituloAsistencia = body.tituloAsistencia || asistencia.tituloAsistencia;
     asistencia.fechaAsistencia = body.fechaAsistencia || asistencia.fechaAsistencia;
     asistencia.usuarioId = body.usuarioId || asistencia.usuarioId;
     asistencia.estadoAsistencia = body.estadoAsistencia || asistencia.estadoAsistencia;
+    asistencia.estudiantes = body.estudiantes || asistencia.estudiantes;
 
-    // Reemplaza completamente el array de estudiantes si se pasan estudiantes en el cuerpo
+    // Guardar los cambios de la asistencia
+    asistencia = await asistencia.save();
+
+    // Remover el ID de la asistencia de los estudiantes originales
+    await Estudiante.updateMany(
+        { _id: { $in: estudiantesOriginales } },
+        { $pull: { asistencias: asistencia._id } }
+    );
+
+    // Agregar el ID de la asistencia a los nuevos estudiantes
     if (body.estudiantes && body.estudiantes.length > 0) {
-        asistencia.estudiantes = body.estudiantes;
+        await Estudiante.updateMany(
+        { _id: { $in: body.estudiantes } },
+        { $push: { asistencias: asistencia._id } }
+        );
     }
 
-    await asistencia.save();
     return asistencia;
 }
 
@@ -39,7 +65,7 @@ async function actualizarAsistencia(id, body) {
 // Función asíncrona para listar las asistencias activas
 async function listarAsistenciasActivas() {
     let asistencias = await Asistencia.find({ estadoAsistencia: true })
-    .populate('estudiantes');;
+    .populate('estudiantes');
     return asistencias;
 }
 

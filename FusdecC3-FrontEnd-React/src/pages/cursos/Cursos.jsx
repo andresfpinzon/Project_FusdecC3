@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -20,13 +21,20 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  TablePagination
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, School, Description, AccessTime, ToggleOn, Foundation, EventNote } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Cursos = () => {
   const [fundaciones, setFundaciones] = useState([]);
-  const [ediciones, setEdiciones] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [selectedCurso, setSelectedCurso] = useState(null);
   const [formValues, setFormValues] = useState({
@@ -34,7 +42,7 @@ const Cursos = () => {
     descripcionCurso: "",
     intensidadHorariaCurso: "",
     estadoCurso: true,
-    //fundacionId: "",
+    fundacionId: "",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -44,28 +52,70 @@ const Cursos = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCurso, setInfoCurso] = useState(null);
 
-  
-  
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  //constante con promise.all para que se ejecuten en paralelo los fetch de cursos, funaciones y ediciones
-  const fetchData = async () => {
+  const fetchCursos = async () => {
     try {
-      const [cursosData, fundacionesData, edicionesData] = await Promise.all([
-        fetch("http://localhost:3000/api/cursos").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/fundaciones").then((res) => res.json()),
-        fetch("http://localhost:3000/api/ediciones").then((res) => res.json()),
-      ]);
-      setCursos(cursosData);
-      setFundaciones(fundacionesData);
-      setEdiciones(edicionesData);
+      const response = await fetch("http://localhost:3000/api/cursos",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener cursos");
+      const data = await response.json();
+      setCursos(data);
     } catch (error) {
-      handleError("Error al cargar los datos");
-    } 
+      console.error("Error al obtener cursos:", error);
+      setErrorMessage("Error al obtener cursos");
+      setOpenSnackbar(true);
+    }
   };
-  
+
+  const fetchFundaciones = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/fundaciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener fundaciones");
+      const data = await response.json();
+      setFundaciones(data);
+    } catch (error) {
+      console.error("Error al obtener fundaciones:", error);
+      setErrorMessage("Error al obtener fundaciones");
+      setOpenSnackbar(true);
+    }
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchFundaciones();
+    fetchCursos();
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredCursos = cursos.filter((curso) =>
+    curso.nombreCurso.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    curso.descripcionCurso.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -97,6 +147,7 @@ const Cursos = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token 
             },
             body: JSON.stringify(formValues),
         });
@@ -110,7 +161,7 @@ const Cursos = () => {
                 descripcionCurso: "",
                 intensidadHorariaCurso: "",
                 estadoCurso: true,
-                //fundacionId: "",
+                fundacionId: "",
             });
             console.log('Curso creado exitosamente:', nuevoCurso);
         } else {
@@ -118,7 +169,7 @@ const Cursos = () => {
             throw new Error(errorData.error || "Error al crear curso");
         }
     } catch (error) {
-        handleError("Error al crear cursos");
+        handleError("Error al crear cursos", error);
     }
 };
 
@@ -132,12 +183,14 @@ const Cursos = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
       );
 
       if (response.ok) {
+        await fetchCursos();
         const cursoActualizado = await response.json();
         setCursos(
           cursos.map((curso) =>
@@ -150,14 +203,14 @@ const Cursos = () => {
           descripcionCurso: "",
           intensidadHorariaCurso: "",
           estadoCurso: true,
-          //fundacionId: "",
+          fundacionId: "",
         });
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar curso");
       }
     } catch (error) {
-      handleError("Error al actualizar cursos");
+      handleError("Error al actualizar cursos", error);
     }
   };
 
@@ -169,6 +222,10 @@ const Cursos = () => {
         `http://localhost:3000/api/cursos/${cursoToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -180,18 +237,18 @@ const Cursos = () => {
         throw new Error(errorData.error || "Error al eliminar curso");
       }
     } catch (error) {
-      handleError("Error al eliminar curso");
+      handleError("Error al eliminar curso", error);
     }
   };
 
   const handleEditClick = (curso) => {
     setSelectedCurso(curso);
     setFormValues({
-      nombreCurso: curso.nombreCurso || "",
-      descripcionCurso: curso.descripcionCurso || "",
-      intensidadHorariaCurso: curso.intensidadHorariaCurso || "",
+      nombreCurso: curso.nombreCurso,
+      descripcionCurso: curso.descripcionCurso,
+      intensidadHorariaCurso: curso.intensidadHorariaCurso,
       estadoCurso: curso.estadoCurso !== undefined ? curso.estadoCurso : true,
-      //fundacionId: curso.fundacionId || "",
+      fundacionId: curso.fundacionId?._id || "",
     });
   };  
 
@@ -201,7 +258,13 @@ const Cursos = () => {
   };
 
   const handleInfoClick = async (curso) => {
-    const response = await fetch(`http://localhost:3000/api/cursos/${curso._id}`,);
+    const response = await fetch(`http://localhost:3000/api/cursos/${curso._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoCurso(data);
     setOpenInfoDialog(true);
@@ -244,7 +307,7 @@ const Cursos = () => {
           fullWidth
           margin="normal"
         />
-       {/*
+       
         <FormControl fullWidth margin="normal">
           <InputLabel>Fundacion</InputLabel>
           <Select
@@ -260,7 +323,7 @@ const Cursos = () => {
             ))}
           </Select>
         </FormControl>
-        */}
+        
         
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -282,6 +345,17 @@ const Cursos = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar cursos"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -294,7 +368,9 @@ const Cursos = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {cursos.map((curso) => (
+          {filteredCursos
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((curso) => (
               <TableRow key={curso._id}>
                 <TableCell>{curso.nombreCurso}</TableCell>
                 <TableCell>{curso.descripcionCurso}</TableCell>
@@ -302,17 +378,14 @@ const Cursos = () => {
                 <TableCell>{curso.estadoCurso ? "Activo" : "Inactivo"}</TableCell>
                 <TableCell>
                   <IconButton
-                    onClick={() => handleEditClick(curso)}
-                    color="primary">
+                    onClick={() => handleEditClick(curso)}color="primary">
                     <Edit />
                   </IconButton>
                   <IconButton onClick={() => handleInfoClick(curso)} color="primary">
                     <Info />
                   </IconButton>
                   <IconButton
-                    onClick={() => handleDeleteClick(curso)}
-                    color="secondary"
-                  >
+                    onClick={() => handleDeleteClick(curso)}color="error">
                     <Delete />
                   </IconButton>
                 </TableCell>
@@ -320,6 +393,18 @@ const Cursos = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredCursos.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
@@ -333,20 +418,64 @@ const Cursos = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Información del Curso</DialogTitle>
-        <DialogContent>
-          <Typography>Nombre: {infoCurso?.nombreCurso}</Typography>
-          <Typography>Descripcion: {infoCurso?.descripcionCurso}</Typography>
-          <Typography>Intensidad horaria: {infoCurso?.intensidadHorariaCurso}</Typography>
-          <Typography>Estado: {infoCurso?.estadoCurso ? "Activo" : "Inactivo"}</Typography>
-          <Typography>Fundacion: {infoCurso?.fundacionId?.nombreFundacion || "Fundacion no encontrada"}</Typography>
-          <Typography>Ediciones: {infoCurso?.ediciones?.length > 0? infoCurso.ediciones.map((edicion) => 
-            edicion.tituloEdicion).join(", "): "Ediciones no encontradas"}</Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información del Curso
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoCurso && (
+            <div>
+              {/* Nombre del Curso */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.nombreCurso || "No disponible"}</Typography>
+              </Box>
+              
+              {/* Descripción */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Description color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Descripción:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.descripcionCurso || "No disponible"}</Typography>
+              </Box>
+              
+              {/* Intensidad Horaria */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <AccessTime color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Intensidad horaria:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.intensidadHorariaCurso || "No disponible"}</Typography>
+              </Box>
+              
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.estadoCurso ? "Activo" : "Inactivo"}</Typography>
+              </Box>
+              
+              {/* Fundación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Foundation color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fundación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.fundacionId?.nombreFundacion || "Fundación no encontrada"}
+                </Typography>
+              </Box>
+              
+              {/* Ediciones */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <EventNote color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ediciones:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCurso.ediciones?.length > 0 ? infoCurso.ediciones.map((edicion) => edicion.tituloEdicion).join(", ") : "Ediciones no encontradas"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

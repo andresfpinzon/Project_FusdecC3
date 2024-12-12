@@ -3,10 +3,10 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#1d526eff", // Verde institucional
+      main: "#1d526eff", 
     },
     secondary: {
-      main: "#1d526eff", // Color secundario
+      main: "#1d526eff", 
     },
     error: {
       main: "#f44336", // Color de error

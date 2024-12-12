@@ -26,7 +26,8 @@ async function actualizarColegio(id, body) {
 
   // Verificar si ya existe un colegio con el mismo nombre
   const colegioExistente = await Colegio.findOne({
-    nombreColegio: body.nombreColegio,
+    nombreColegio: body.nombreColegio, 
+    _id: { $ne: id } // Excluir el colegio actual
   });
 
   let colegios = await Colegio.findByIdAndUpdate(
@@ -47,14 +48,16 @@ async function actualizarColegio(id, body) {
 
 // Función asíncrona para listar los colegio activos
 async function listarColegios() {
-  let colegios = await Colegio.find({ estadoColegio: true });
+  let colegios = await Colegio.find({ estadoColegio: true })
+  .populate('estudiantes');
   return colegios;
 }
 
 // Función asíncrona para buscar un colegios por su ID
 async function buscarColegiosPorId(id) {
   try {
-    const colegio = await Colegio.findById(id);
+    const colegio = await Colegio.findById(id)
+    .populate('estudiantes');
     if (!colegio) {
       throw new Error(`Colegio con ID ${id} no encontrado`);
     }

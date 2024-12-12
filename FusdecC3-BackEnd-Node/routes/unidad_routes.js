@@ -1,7 +1,7 @@
 const express = require('express');
 const unidadControllers = require('../controllers/unidad_controllers'); // Importa el controlador
 const router = express.Router(); // Define el enrutador
-// const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -96,7 +96,7 @@ const router = express.Router(); // Define el enrutador
  *                       { _id: "63f7d2bbf1a2b4b5c3cdb805", nombre: "Estudiante 3" }
  *                     ]
  */
-router.get('/', unidadControllers.listarUnidades);
+router.get('/', verifyJWT, verifyRole(['Instructor','Administrador', 'Root']), unidadControllers.listarUnidades);
 
 // Obtener unidad por ID
 /**
@@ -131,7 +131,7 @@ router.get('/', unidadControllers.listarUnidades);
  *       404:
  *         description: Unidad no encontrada
  */
-router.get('/:id', unidadControllers.obtenerUnidadPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), unidadControllers.obtenerUnidadPorId);
 
 // Crear una unidad
 /**
@@ -173,7 +173,7 @@ router.get('/:id', unidadControllers.obtenerUnidadPorId);
  *       400:
  *         description: Datos inválidos en la solicitud
  */
-router.post('/', unidadControllers.crearUnidad);
+router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), unidadControllers.crearUnidad);
 
 // Actualizar unidad
 /**
@@ -217,7 +217,7 @@ router.post('/', unidadControllers.crearUnidad);
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', unidadControllers.actualizarUnidad);
+router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), unidadControllers.actualizarUnidad);
 
 // Desactivar unidad
 /**
@@ -239,6 +239,6 @@ router.put('/:id', unidadControllers.actualizarUnidad);
  *       404:
  *         description: Unidad no encontrada
  */
-router.delete('/:id', unidadControllers.desactivarUnidad);
+router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), unidadControllers.desactivarUnidad);
 
 module.exports = router;

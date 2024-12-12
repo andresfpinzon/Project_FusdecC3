@@ -6,7 +6,18 @@ const unidadSchemaValidation = require('../validations/unidad_validations');
 // Función asíncrona para crear unidades
 async function crearUnidad(data) {
     const nuevaUnidad = new Unidad(data);
-    return await nuevaUnidad.save();
+    await nuevaUnidad.save();
+
+    // Actualizar brigada con la nueva unidad
+    if (body.brigadaId) {
+        await Brigada.findByIdAndUpdate(
+            body.brigadaId,
+            { $push: { unidades: nuevaUnidad._id } },
+            { new: true } // Retorna el documento actualizado
+        );
+    }
+
+    return nuevaUnidad;
 }
 
 // Función asíncrona para listar unidades
@@ -17,17 +28,54 @@ async function listarUnidades() {
         .populate('estudiantes'); // Asegúrate de que esto esté poblado
 }
 
-// Función asíncrona para editar una unidad
 async function editarUnidad(id, body) {
-    const unidad = await Unidad.findByIdAndUpdate(id, body, { new: true })
-        .populate('brigadaId')
-        .populate('usuarioId')
-        .populate('estudiantes');
+    // Buscar la unidad por ID
+    let unidad = await Unidad.findById(id);
     if (!unidad) {
         throw new Error(`Unidad con ID ${id} no encontrada`);
     }
+
+    // Verificar que el brigadaId no esté en uso por otra unidad
+    const unidadExistente = await Unidad.findOne({
+        nombreUnidad: body.nombreUnidad,
+        _id: { $ne: id }
+    });
+    if (unidadExistente) {
+        throw new Error("La brigada ya tiene una unidad registrada con ese ID");
+    }
+
+    // Guardar el brigada original
+    const brigadaOriginalId = unidad.brigadaId;
+
+    // Actualizar los campos de la unidad
+    unidad.nombreUnidad = body.nombreUnidad || unidad.nombreUnidad;
+    unidad.estadoUnidad = body.estadoUnidad !== undefined ? body.estadoUnidad : unidad.estadoUnidad;
+    unidad.brigadaId = body.brigadaId || unidad.brigadaId;
+    unidad.usuarioId = body.usuarioId || unidad.usuarioId;
+
+    // Guardar los cambios en la unidad
+    await unidad.save();
+
+    // Actualizar relaciones: Brigada
+    if (brigadaOriginalId && brigadaOriginalId.toString() !== body.brigadaId) {
+        // Eliminar la unidad de la brigada anterior
+        await Brigada.findByIdAndUpdate(
+            brigadaOriginalId,
+            { $pull: { unidades: unidad._id } }
+        );
+    }
+    
+    if (body.brigadaId && brigadaOriginalId.toString() !== body.brigadaId) {
+        // Agregar la unidad a la nueva brigada
+        await Brigada.findByIdAndUpdate(
+            body.brigadaId,
+            { $push: { unidades: unidad._id } }
+        );
+    }
+
     return unidad;
 }
+
 
 // Función asíncrona para desactivar una unidad
 async function desactivarUnidad(id) {

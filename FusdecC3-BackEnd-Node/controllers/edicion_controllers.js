@@ -45,6 +45,7 @@ const actualizarEdicion = async (req, res) => {
     tituloEdicion: body.tituloEdicion,
     fechaInicioEdicion: body.fechaInicioEdicion,
     fechaFinEdicion: body.fechaFinEdicion,
+    cursoId: body.cursoId,
     horarios: body.horarios,
     estudiantes: body.estudiantes,
   });

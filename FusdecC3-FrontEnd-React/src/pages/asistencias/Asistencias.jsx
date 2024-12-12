@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -27,8 +29,11 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Event, Group, School } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Asistencias = () => {
   const [asistencias, setAsistencias] = useState([]);
@@ -48,16 +53,47 @@ const Asistencias = () => {
   const [asistenciaToDelete, setAsistenciaToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
 
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // Añade estado para almacenar el rol del usuario y su id
+  const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
-    fetchAsistencias();
     fetchEstudiantes();
-  }, []);
+     // Decodificar el token y obtener el ID de usuario
+     if (token) {
+      const decodedToken = jwtDecode(token);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id, 
+      }));
+      setUserRole(decodedToken.roles);
+      setUserId(decodedToken.id)
+    }
+    if (userRole && userId) {
+      fetchAsistencias();
+    }
+  }, [userRole, userId]);
 
   const fetchAsistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias");
+      const response = await fetch("http://localhost:3000/api/asistencias", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener asistencias");
-      const data = await response.json();
+      let data = await response.json();
+
+      if (userRole.includes("Instructor")) {
+        data = data.filter((asistencia) => asistencia.usuarioId === userId);
+      }
       setAsistencias(data);
     } catch (error) {
       setErrorMessage("Error al obtener asistencias", error);
@@ -67,7 +103,15 @@ const Asistencias = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",
+        {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": token 
+          }
+      }
+      );
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -75,6 +119,23 @@ const Asistencias = () => {
       setErrorMessage("Error al obtener estudiantes", error);
       setOpenSnackbar(true);
     }
+  };
+
+  // Filtrar asistencia según el término de búsqueda
+  const filteredAsistencias = asistencias.filter((asistencia) =>
+    asistencia.tituloAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    asistencia.fechaAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -103,17 +164,18 @@ const Asistencias = () => {
     try {
       const response = await fetch("http://localhost:3000/api/asistencias", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
       if (response.ok) {
-        const nuevaAsistencia = await response.json();
-        setAsistencias([...asistencias, nuevaAsistencia]);
+        await fetchAsistencias();
         setFormValues({
           tituloAsistencia: "",
           fechaAsistencia: "",
-          usuarioId: "",
+          usuarioId: formValues.usuarioId,
           estadoAsistencia: true,
           estudiantes: [],
         });
@@ -131,16 +193,14 @@ const Asistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/asistencias/${selectedAsistencia._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
       if (response.ok) {
-        const updatedAsistencia = await response.json();
-        const updatedAsistencias = asistencias.map((asistencia) =>
-          asistencia._id === updatedAsistencia._id ? updatedAsistencia : asistencia
-        );
-        setAsistencias(updatedAsistencias);
+        await fetchAsistencias();
         setSelectedAsistencia(null);
         setFormValues({
           tituloAsistencia: "",
@@ -164,6 +224,9 @@ const Asistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/asistencias/${asistenciaToDelete._id}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
       });
       if (response.ok) {
         setAsistencias(asistencias.filter((asistencia) => asistencia._id !== asistenciaToDelete._id));
@@ -225,15 +288,6 @@ const Asistencias = () => {
           margin="normal"
           InputLabelProps={{ shrink: true }}
         />
-        <TextField
-          label="Id de usuario"
-          name="usuarioId"
-          value={formValues.usuarioId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
         <FormControl fullWidth margin="normal">
           <InputLabel>Estudiantes</InputLabel>
           <Select
@@ -256,15 +310,6 @@ const Asistencias = () => {
             ))}
           </Select>
         </FormControl>
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estadoAsistencia}
-            onChange={handleSwitchChange}
-            name="estadoAsistencia"
-            color="primary"
-          />
-          Estado Activo
-        </Box>
         <Box marginTop={3}>
           <Button
             variant="contained"
@@ -275,7 +320,17 @@ const Asistencias = () => {
           </Button>
         </Box>
       </form>
-
+      <br></br>
+      {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -286,7 +341,9 @@ const Asistencias = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {asistencias.map((asistencia) => (
+          {filteredAsistencias
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((asistencia) => (
               <TableRow key={asistencia._id}>
                 <TableCell>{asistencia.tituloAsistencia}</TableCell>
                 <TableCell>{asistencia.fechaAsistencia}</TableCell>
@@ -305,17 +362,57 @@ const Asistencias = () => {
             ))}
           </TableBody>
         </Table>
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredAsistencias.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Detalles de la Asistencia</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {selectedAsistencia?.tituloAsistencia}</Typography>
-          <Typography>Fecha: {selectedAsistencia?.fechaAsistencia}</Typography>
-          <Typography>Estudiantes: {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ")|| "Sin estudiantes"}</Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Detalles de la Asistencia
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          <Box display="flex" alignItems="center" mb={2}>
+            <School color="primary" sx={{ mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Título:
+            </Typography>
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {selectedAsistencia?.tituloAsistencia || "N/A"}
+            </Typography>
+          </Box>
+          
+          <Box display="flex" alignItems="center" mb={2}>
+            <Event color="primary" sx={{ mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Fecha:
+            </Typography>
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {selectedAsistencia?.fechaAsistencia || "N/A"}
+            </Typography>
+          </Box>
+          
+          <Box display="flex" alignItems="center" mb={2}>
+            <Group color="primary" sx={{ mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Estudiantes:
+            </Typography>
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ") || "Sin estudiantes"}
+            </Typography>
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -344,3 +441,4 @@ const Asistencias = () => {
 };
 
 export default Asistencias;
+

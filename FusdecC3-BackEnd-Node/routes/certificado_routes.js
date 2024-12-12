@@ -1,7 +1,7 @@
 const express = require('express');
 const certificadoController = require('../controllers/certificado_controllers');
 const router = express.Router();
-//const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
@@ -82,7 +82,7 @@ const router = express.Router();
  *       400:
  *         description: Datos inválidos
  */
-router.get('/', certificadoController.listarCertificados);
+router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), certificadoController.listarCertificados);
 
 /**
  * @swagger
@@ -91,6 +91,7 @@ router.get('/', certificadoController.listarCertificados);
  *     tags: 
  *       - Certificado
  *     summary: Crear un nuevo certificado
+ *     description: Crea un nuevo certificado y genera una auditoría automáticamente.
  *     requestBody:
  *       required: true
  *       content:
@@ -130,25 +131,33 @@ router.get('/', certificadoController.listarCertificados);
  *                 description: Código de verificación del certificado.
  *     responses:
  *       201:
- *         description: Certificado creado exitosamente, se genera una auditoría automáticamente.
+ *         description: Certificado creado exitosamente; también se genera una auditoría automáticamente.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Certificado'
+ *               type: object
+ *               properties:
+ *                 certificado:
+ *                   $ref: '#/components/schemas/Certificado'
+ *                 auditoria:
+ *                   $ref: '#/components/schemas/Auditoria'
  *             examples:
  *               ejemplo1:
  *                 value:
- *                   nombre: "Certificado de Excelencia"
- *                   fechaEmision: "2024-11-04"
- *                   usuarioId: "671c400195609058229a7de8"
- *                   cursoId: "671a5dc57d6f233e78553c17"
- *                   estudianteId: "671a624e7d6f233e78553c98"
- *                   nombreEmisorCertificado: "sebas"
- *                   codigoVerificacion: "54854548845"
+ *                   certificado:
+ *                     _id: "60d5ec49f1a2c8b1f8e4e1a5"
+ *                     nombre: "Certificado de servicio social"
+ *                     fechaEmision: "2023-10-20"
+ *                     usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
+ *                     cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
+ *                     estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
+ *                     nombreEmisorCertificado: "Instituto XYZ"
+ *                     codigoVerificacion: "XYZ45610W9383717AETD"
  *       400:
  *         description: Datos inválidos
  */
-router.post('/', certificadoController.crearCertificado);
+router.post('/', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.crearCertificado);
+
 
 /**
  * @swagger
@@ -185,7 +194,7 @@ router.post('/', certificadoController.crearCertificado);
  *       404:
  *         description: Certificado no encontrado
  */
-router.get('/:id', certificadoController.obtenerCertificadoPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.obtenerCertificadoPorId);
 
 /**
  * @swagger
@@ -244,7 +253,7 @@ router.get('/:id', certificadoController.obtenerCertificadoPorId);
  *       404:
  *         description: Certificado no encontrado
  */
-router.put('/:id', certificadoController.actualizarCertificado);
+router.put('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.actualizarCertificado);
 
 /**
  * @swagger
@@ -266,6 +275,6 @@ router.put('/:id', certificadoController.actualizarCertificado);
  *       404:
  *         description: Certificado no encontrado
  */
-router.delete('/:id', certificadoController.desactivarCertificado);
+router.delete('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.desactivarCertificado);
 
 module.exports = router;

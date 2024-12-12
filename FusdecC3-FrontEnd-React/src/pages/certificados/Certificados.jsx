@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -24,10 +26,15 @@ import {
   DialogContent,
   DialogActions,
   Typography,
+  Box,
+  TablePagination,
 } from "@mui/material";
-import { Edit, Delete, Description, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, CalendarToday, VerifiedUser, School, Person } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Certificados = () => {
+  // Estado para almacenar los valores del formulario
   const [formValues, setFormValues] = useState({
     fechaEmision: "",
     usuarioId: "",
@@ -36,30 +43,58 @@ const Certificados = () => {
     nombreEmisorCertificado: "", 
     codigoVerificacion: "",
   });
+  
+  // Estados para almacenar datos de usuarios, cursos, estudiantes y certificados
   const [usuarios, setUsuarios] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
   const [certificados, setCertificados] = useState([]);
   const [auditorias, setAuditorias] = useState([]);
+  
+  // Estados para manejar la selección y visualización de certificados
   const [selectedCertificado, setSelectedCertificado] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [certificadoToDelete, setCertificadoToDelete] = useState(null);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [selectedCertificadoDetails, setSelectedCertificadoDetails] = useState(null);
+  const [certificadoDetails, setCertificadoDetails] = useState(null);
+  
+  // Estados para paginación y mensajes
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("success"); // "success" o "error"
 
   useEffect(() => {
+    // Llamadas a las funciones para obtener datos al cargar el componente
     fetchUsuarios();
     fetchCursos();
     fetchEstudiantes();
     fetchCertificados();
     fetchAuditorias();
+    
+    // Decodificar el token y obtener el ID de usuario
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id,
+        nombreEmisorCertificado: decodedToken.nombre + " " + decodedToken.apellido, 
+      }));
+    }
   }, []);
 
+  // Función para obtener usuarios
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios");
+      const response = await fetch("http://localhost:3000/api/usuarios", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
       setUsuarios(data);
@@ -70,9 +105,16 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener cursos
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/cursos");
+      const response = await fetch("http://localhost:3000/api/cursos", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
       setCursos(data);
@@ -83,9 +125,16 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener estudiantes
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -96,9 +145,16 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener certificados
   const fetchCertificados = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/certificados");
+      const response = await fetch("http://localhost:3000/api/certificados", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener certificados");
       const data = await response.json();
       setCertificados(data);
@@ -109,9 +165,16 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener auditorías
   const fetchAuditorias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auditorias");
+      const response = await fetch("http://localhost:3000/api/auditorias", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+      });
       if (!response.ok) throw new Error("Error al obtener auditorías");
       const data = await response.json();
       setAuditorias(data);
@@ -122,17 +185,20 @@ const Certificados = () => {
     }
   };
 
+  // Manejar cambios en los campos del formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
+  // Función para crear un nuevo certificado
   const handleCreateCertificado = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/certificados", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify({
           ...formValues,
@@ -143,8 +209,19 @@ const Certificados = () => {
       if (response.ok) {
         const nuevoCertificado = await response.json();
         setCertificados([...certificados, nuevoCertificado]);
+        setFormValues({
+          fechaEmision: "",
+          usuarioId: formValues.usuarioId,
+          cursoId: "",
+          estudianteId: "",
+          nombreEmisorCertificado: formValues.nombreEmisorCertificado,
+          codigoVerificacion: "",
+        });
         setAuditorias([...auditorias, nuevoCertificado.nuevaAuditoria]);
         clearForm();
+        setMessage("Certificado guardado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear certificado");
@@ -156,6 +233,7 @@ const Certificados = () => {
     }
   };
 
+  // Función para actualizar un certificado existente
   const handleUpdateCertificado = async () => {
     if (!selectedCertificado) return;
     try {
@@ -163,6 +241,7 @@ const Certificados = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token 
         },
         body: JSON.stringify({
           fechaEmision: formValues.fechaEmision,
@@ -180,6 +259,9 @@ const Certificados = () => {
           certificado._id === updatedCertificado._id ? updatedCertificado : certificado
         ));
         clearForm();
+        setMessage("Certificado actualizado exitosamente!");
+        setSeverity("success");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar certificado");
@@ -191,6 +273,7 @@ const Certificados = () => {
     }
   };
 
+  // Manejar clic en el botón de editar
   const handleEditClick = (certificado) => {
     setSelectedCertificado(certificado);
     setFormValues({
@@ -198,17 +281,18 @@ const Certificados = () => {
       usuarioId: certificado.usuarioId,
       cursoId: certificado.cursoId,
       estudianteId: certificado.estudianteId,
-      nombreEmisorCertificado: certificado.nombreEmisor, 
+      nombreEmisorCertificado: certificado.nombreEmisorCertificado, 
       codigoVerificacion: certificado.codigoVerificacion,
     });
   };
 
-
+  // Manejar el cierre del diálogo de eliminación
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setCertificadoToDelete(null);
   };
 
+  // Función para eliminar un certificado
   const handleDeleteCertificado = async () => {
     if (!certificadoToDelete) return;
     try {
@@ -216,6 +300,10 @@ const Certificados = () => {
         `http://localhost:3000/api/certificados/${certificadoToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+          }
         }
       );
       if (response.ok) {
@@ -232,6 +320,7 @@ const Certificados = () => {
     }
   };
 
+  // Limpiar el formulario
   const clearForm = () => {
     setFormValues({
       fechaEmision: "",
@@ -244,6 +333,7 @@ const Certificados = () => {
     setSelectedCertificado(null);
   };
 
+  // Manejar auditoría
   const handleAuditoria = (id) => {
     const auditoria = auditorias.find(aud => aud.certificadoId === id);
     if (auditoria) {
@@ -253,16 +343,22 @@ const Certificados = () => {
     }
   };
 
+  // Manejar clic en detalles del certificado
   const handleDetailsClick = (certificado) => {
-    setSelectedCertificadoDetails(certificado);
+    setCertificadoDetails(certificado);
     setOpenDetailsDialog(true);
+  };
+
+  // Cerrar el Snackbar
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
     <Container maxWidth="lg">
       <h1>Gestión de Certificados</h1>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12} xl={12}>
           <TextField
             label="Fecha de Emisión"
             type="date"
@@ -273,22 +369,6 @@ const Certificados = () => {
             margin="normal"
             InputLabelProps={{ shrink: true }}
           />
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="usuario-select-label">Usuario</InputLabel>
-            <Select
-              labelId="usuario-select-label"
-              name="usuarioId"
-              value={formValues.usuarioId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Usuario" />}
-            >
-              {usuarios.map((usuario) => (
-                <MenuItem key={usuario._id} value={usuario._id}>
-                  {usuario.nombreUsuario}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel id="curso-select-label">Curso</InputLabel>
             <Select
@@ -322,14 +402,6 @@ const Certificados = () => {
             </Select>
           </FormControl>
           <TextField
-            label="Nombre del Emisor"
-            name="nombreEmisorCertificado"
-            value={formValues.nombreEmisorCertificado}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
             label="Código de Verificación"
             name="codigoVerificacion"
             value={formValues.codigoVerificacion}
@@ -345,7 +417,7 @@ const Certificados = () => {
             {selectedCertificado ? "Actualizar Certificado" : "Crear Certificado"}
           </Button>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
           <h2>Lista de Certificados</h2>
           <TableContainer component={Paper} style={{ marginTop: "20px" }}>
             <Table>
@@ -357,7 +429,7 @@ const Certificados = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {certificados.map((certificado) => (
+                {certificados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((certificado) => (
                   <TableRow key={certificado._id}>
                     <TableCell>
                       {certificado.codigoVerificacion}
@@ -375,7 +447,7 @@ const Certificados = () => {
                       }} color="error">
                         <Delete />
                       </IconButton>
-                      <IconButton onClick={() => handleDetailsClick(certificado)} color="success">
+                      <IconButton onClick={() => handleDetailsClick(certificado)} color="primary">
                         <Info />
                       </IconButton>
                     </TableCell>
@@ -383,6 +455,18 @@ const Certificados = () => {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={certificados.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(event, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(event) => {
+                setRowsPerPage(parseInt(event.target.value, 10));
+                setPage(0);
+              }}
+            />
           </TableContainer>
         </Grid>
       </Grid>
@@ -391,10 +475,10 @@ const Certificados = () => {
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
+        onClose={handleCloseSnackbar}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: "100%" }}>
+          {message}
         </Alert>
       </Snackbar>
 
@@ -420,32 +504,60 @@ const Certificados = () => {
       </Dialog>
 
       {/* Diálogo para mostrar detalles del certificado */}
-      <Dialog
-        open={openDetailsDialog}
-        onClose={() => setOpenDetailsDialog(false)}
-      >
-        <DialogTitle>Detalles del Certificado</DialogTitle>
-        <DialogContent>
-          {selectedCertificadoDetails && (
+      <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#208DC7FF', color: '#fff', textAlign: 'center' }}>
+          Detalles del Certificado
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          {certificadoDetails && (
             <div>
-              <Typography variant="body1">
-                <strong>Nombre:</strong> {selectedCertificadoDetails.nombre}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Fecha de Emisión:</strong> {selectedCertificadoDetails.fechaEmision}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Código de Verificación:</strong> {selectedCertificadoDetails.codigoVerificacion}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Nombre del Emisor:</strong> {selectedCertificadoDetails.nombreEmisorCertificado}
-              </Typography>
-              {/* Agrega más campos según sea necesario */}
+              {/* Código de Verificación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <VerifiedUser color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Código de Verificación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.codigoVerificacion || "N/A"}</Typography>
+              </Box>
+              
+              {/* Fecha de Emisión */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CalendarToday color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Emisión:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {certificadoDetails.fechaEmision ? new Date(certificadoDetails.fechaEmision).toLocaleDateString() : "N/A"}
+                </Typography>
+              </Box>
+              
+              {/* Nombre del Emisor */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Emisor:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.nombreEmisorCertificado || "N/A"}</Typography>
+              </Box>
+              
+              {/* Nombre del Curso */}
+              {certificadoDetails.cursoId && (
+                <Box display="flex" alignItems="center" mb={2}>
+                  <School color="primary" sx={{ mr: 1 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Curso:</Typography>
+                  <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.cursoId.nombreCurso || "N/A"}</Typography>
+                </Box>
+              )}
+              
+              {/* Nombre del Estudiante */}
+              {certificadoDetails.estudianteId && (
+                <Box display="flex" alignItems="center" mb={2}>
+                  <Person color="primary" sx={{ mr: 1 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Estudiante:</Typography>
+                  <Typography variant="body1" sx={{ ml: 1 }}>
+                    {`${certificadoDetails.estudianteId.nombreEstudiante} ${certificadoDetails.estudianteId.apellidoEstudiante}`}
+                  </Typography>
+                </Box>
+              )}
             </div>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDetailsDialog(false)} color="primary">
+          <Button onClick={() => setOpenDetailsDialog(false)} variant="contained" color="primary">
             Cerrar
           </Button>
         </DialogActions>

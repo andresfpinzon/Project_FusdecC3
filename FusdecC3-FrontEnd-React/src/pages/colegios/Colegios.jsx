@@ -20,14 +20,12 @@ import {
   Typography,
   Snackbar,
   Alert,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
+  TablePagination
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, School, Email, VerifiedUser, People } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Colegios = () => {
   const [colegios, setColegios] = useState([]);
@@ -37,36 +35,81 @@ const Colegios = () => {
     nombreColegio: "",
     emailColegio: "",
     estadoColegio: true,
-    //estudiantes: [],
+    estudiantes: [],
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [colegioToDelete, setColegioToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoColegio, setInfoColegio] = useState(null);
 
-  
-  
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  //constante con promise.all para que se ejecuten en paralelo los fetch de colegios y estudiantes
-  const fetchData = async () => {
+  const fetchColegios = async () => {
     try {
-      const [colegiosData, estudiantesData] = await Promise.all([
-        fetch("http://localhost:3000/api/colegios").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
-      ]);
-      setColegios(colegiosData);
-      setEstudiantes(estudiantesData);
+      const response = await fetch("http://localhost:3000/api/colegios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener colegios");
+      const data = await response.json();
+      setColegios(data);
     } catch (error) {
-      handleError("Error al cargar los datos");
-    } 
+      console.error("Error al obtener colegios:", error);
+      setErrorMessage("Error al obtener colegios");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage("Error al obtener estudiantes");
+      setOpenSnackbar(true);
+    }
   };
   
   useEffect(() => {
-    fetchData();
+    fetchColegios();
+    fetchEstudiantes();
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredColegios = colegios.filter((colegio) =>
+    colegio.nombreColegio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    colegio.emailColegio.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -88,18 +131,12 @@ const Colegios = () => {
   };
 
   const handleCreateColegio = async () => {
-    /*
-    if (!formValues.tituloEdicion || !formValues.fechaInicioEdicion || !formValues.fechaFinEdicion || !formValues.cursoId) {
-      setErrorMessage("Todos los campos son obligatorios");
-      setOpenSnackbar(true);
-      return;
-      }
-    */
     try {
         const response = await fetch("http://localhost:3000/api/colegios", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token 
             },
             body: JSON.stringify(formValues),
         });
@@ -112,15 +149,16 @@ const Colegios = () => {
               nombreColegio: "",
               emailColegio: "",
               estadoColegio: true,
-              //estudiantes: [],
+              estudiantes: [],
             });
-            console.log('Colegio creado exitosamente:', nuevoColegio);
+            setSuccessMessage("Colegio creado exitosamente");
+            setOpenSnackbar(true);
         } else {
             const errorData = await response.json();
             throw new Error(errorData.error || "Error al crear colegio");
         }
     } catch (error) {
-        handleError("Error al crear el colegio");
+        handleError("Error al crear el colegio", error);
     }
 };
 
@@ -134,6 +172,7 @@ const Colegios = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -151,14 +190,16 @@ const Colegios = () => {
           nombreColegio: "",
           emailColegio: "",
           estadoColegio: true,
-          //estudiantes: [],
+          estudiantes: [],
         });
+        setSuccessMessage("Colegio actualizado exitosamente");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar el colegio");
       }
     } catch (error) {
-      handleError("Error al actualizar el colegio");
+      handleError("Error al actualizar el colegio", error);
     }
   };
 
@@ -170,18 +211,24 @@ const Colegios = () => {
         `http://localhost:3000/api/colegios/${colegioToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
       if (response.ok) {
         setColegios(colegios.filter((colegio) => colegio._id !== colegioToDelete._id));
+        setSuccessMessage("Colegio eliminado exitosamente");
+        setOpenSnackbar(true);
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar el colegio");
       }
     } catch (error) {
-      handleError("Error al eliminar el colegio");
+      handleError("Error al eliminar el colegio", error);
     }
   };
 
@@ -191,7 +238,7 @@ const Colegios = () => {
       nombreColegio: colegio.nombreColegio,
       emailColegio: colegio.emailColegio,
       estadoColegio: colegio.estadoColegio,
-      //estudiantes: edicion.estudiantes || [],
+      estudiantes: colegio.estudiantes || [],
     });
   };
 
@@ -201,7 +248,13 @@ const Colegios = () => {
   };
 
   const handleInfoClick = async (colegio) => {
-    const response = await fetch(`http://localhost:3000/api/colegios/${colegio._id}`,);
+    const response = await fetch(`http://localhost:3000/api/colegios/${colegio._id}`, {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoColegio(data);
     setOpenInfoDialog(true);
@@ -237,32 +290,6 @@ const Colegios = () => {
           margin="normal"
         />
 
-        {/*
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Estudiantes</InputLabel>
-          <Select
-            multiple
-            value={formValues.estudiantes}
-            onChange={handleEditionChange}
-            input={<OutlinedInput label="Estudiantes" />}
-            renderValue={(selected) =>
-              estudiantes
-                .filter((estudiante) => selected.includes(estudiante._id))
-                .map((estudiante) => estudiante.nombreEstudiante)
-                .join(", ")
-            }
-          >
-            
-            {estudiantes.map((estudiante) => (
-              <MenuItem key={estudiante._id} value={estudiante._id}>
-                <Checkbox checked={formValues.estudiantes.indexOf(estudiante._id) > -1} />
-                <ListItemText primary={estudiante.nombreEstudiante} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        */}
-
         <Box marginTop={2} marginBottom={2}>
           <Switch
             checked={formValues.estadoColegio}
@@ -283,6 +310,17 @@ const Colegios = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar colegios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -294,13 +332,15 @@ const Colegios = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {colegios.map((colegio) => (
+          {filteredColegios
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((colegio) => (
               <TableRow key={colegio._id}>
                 <TableCell>{colegio.nombreColegio}</TableCell>
                 <TableCell>{colegio.emailColegio}</TableCell>
                 <TableCell>{colegio.estadoColegio ? "Activo" : "Inactivo"}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditClick(colegio)}>
+                  <IconButton onClick={() => handleEditClick(colegio)}color="primary">
                     <Edit />
                   </IconButton>
                   <IconButton onClick={() => handleInfoClick(colegio)} color="primary">
@@ -308,7 +348,7 @@ const Colegios = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteClick(colegio)}
-                    color="secondary"
+                    color="error"
                   >
                     <Delete />
                   </IconButton>
@@ -317,6 +357,18 @@ const Colegios = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredColegios.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
@@ -326,30 +378,61 @@ const Colegios = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteColegio} color="secondary">Eliminar</Button>
+          <Button onClick={handleDeleteColegio} color="error">Eliminar</Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información de la Colegio</DialogTitle>
-        <DialogContent>
-          <Typography>Nombre: {infoColegio?.nombreColegio || "Nombre no disponible"}</Typography>
-          <Typography>Email: {infoColegio?.emailColegio || "Email no disponible"}</Typography>
-          <Typography>Estado: {infoColegio?.estadoColegio ? "Activo" : "Inactivo"}</Typography>
-          <Typography> 
-            estudiantes: {infoColegio?.estudiantes?.map((ca) => es.estudiantes).join(", ") || "Sin estudiantes"} 
-          </Typography>
-           
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información del Colegio
+        </DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          {infoColegio && (
+            <div>
+              {/* Nombre del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoColegio.nombreColegio || "Nombre no disponible"}</Typography>
+              </Box>
+              
+              {/* Email del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Email color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Email:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoColegio.emailColegio || "Email no disponible"}</Typography>
+              </Box>
+              
+              {/* Estado del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <VerifiedUser color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoColegio.estadoColegio ? "Activo" : "Inactivo"}
+                </Typography>
+              </Box>
+              
+              {/* Estudiantes del Colegio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <People color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoColegio.estudiantes?.map((es) => es.nombreEstudiante).join(", ") || "Sin estudiantes"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert onClose={() => setOpenSnackbar(false)} severity={errorMessage ? "error" : "success"}>
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </Container>

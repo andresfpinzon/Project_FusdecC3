@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -25,24 +26,28 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  Checkbox,
+  ListItemText,
+  TablePagination
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, School, DateRange, EventAvailable, ToggleOn, Class, Grade } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Ediciones = () => {
   const [ediciones, setEdiciones] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [horarios, setHorarios] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
   const [selectedEdicion, setSelectedEdicion] = useState(null);
   const [formValues, setFormValues] = useState({
     tituloEdicion: "",
     fechaInicioEdicion: "",
     fechaFinEdicion: "",
     estadoEdicion: true,
-    //cursoId: "",
-    //horarios: [],
-    //estudiantes: [],
+    cursoId: "",
+    horarios: [],
+    estudiantes: [],
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -52,30 +57,92 @@ const Ediciones = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoEdicion, setInfoEdicion] = useState(null);
 
-  
-  
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  //constante con promise.all para que se ejecuten en paralelo los fetch de ediciones, cursos, horarios y estudiantes
-  const fetchData = async () => {
+  const fetchEdiciones = async () => {
     try {
-      const [edicionesData, cursosData, horariosData, estudiantesData] = await Promise.all([
-        fetch("http://localhost:3000/api/ediciones").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/cursos").then((res) => res.json()),
-        fetch("http://localhost:3000/api/horarios").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
-      ]);
-      setEdiciones(edicionesData);
-      setCursos(cursosData);
-      setHorarios(horariosData);
-      setEstudiantes(estudiantesData);
+      const response = await fetch("http://localhost:3000/api/ediciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener ediciones");
+      const data = await response.json();
+      console.log(data);
+      setEdiciones(data);
     } catch (error) {
-      handleError("Error al cargar los datos");
-    } 
+      console.error("Error al obtener ediciones:", error);
+      setErrorMessage("Error al obtener ediciones");
+      setOpenSnackbar(true);
+    }
   };
-  
+
+  const fetchCursos = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/cursos",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener cursos");
+      const data = await response.json();
+      setCursos(data);
+    } catch (error) {
+      console.error("Error al obtener cursos:", error);
+      setErrorMessage("Error al obtener cursos");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const fetchHorarios = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/horarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener horarios");
+      const data = await response.json();
+      setHorarios(data);
+    } catch (error) {
+      console.error("Error al obtener horarios:", error);
+      setErrorMessage("Error al obtener horarios");
+      setOpenSnackbar(true);
+    }
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchEdiciones();
+    fetchCursos();
+    fetchHorarios();
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredEdiciones = ediciones.filter((edicion) =>
+    edicion.tituloEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    edicion.fechaFinEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    edicion.fechaInicioEdicion.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -96,19 +163,21 @@ const Ediciones = () => {
     });
   };
 
+  const handleHorarioChange = (e) => {
+    const { target: { value } } = e;
+    setFormValues({
+      ...formValues,
+      horarios: typeof value === "string" ? value.split(",") : value,
+    });
+  };
+
   const handleCreateEdicion = async () => {
-    /*
-    if (!formValues.tituloEdicion || !formValues.fechaInicioEdicion || !formValues.fechaFinEdicion || !formValues.cursoId) {
-      setErrorMessage("Todos los campos son obligatorios");
-      setOpenSnackbar(true);
-      return;
-      }
-    */
     try {
         const response = await fetch("http://localhost:3000/api/ediciones", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token 
             },
             body: JSON.stringify(formValues),
         });
@@ -122,9 +191,9 @@ const Ediciones = () => {
               fechaInicioEdicion: "",
               fechaFinEdicion: "",
               estadoEdicion: true,
-              //cursoId: "",
-              //horarios: [],
-              //estudiantes: [],
+              cursoId: "",
+              horarios: [],
+              estudiantes: [],
             });
             console.log('Edicion creada exitosamente:', nuevaEdicion);
         } else {
@@ -132,50 +201,56 @@ const Ediciones = () => {
             throw new Error(errorData.error || "Error al crear edicion");
         }
     } catch (error) {
-        handleError("Error al crear edicion");
+        handleError("Error al crear edicion", error);
+        setErrorMessage(error.message);
+        setOpenSnackbar(true);
     }
 };
 
-  const handleUpdateEdicion = async () => {
-    if (!selectedEdicion) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
-
-      if (response.ok) {
-        const edicionActualizada = await response.json();
-        setEdiciones(
-          ediciones.map((edicion) =>
-            edicion._id === selectedEdicion._id ? edicionActualizada : edicion
-          )
-        );
-        setSelectedEdicion(null);
-        setFormValues({
-          tituloEdicion: "",
-          fechaInicioEdicion: "",
-          fechaFinEdicion: "",
-          estadoEdicion: true,
-          //cursoId: "",
-          //horarios: [],
-          //estudiantes: [],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar edicion");
+const handleUpdateEdicion = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+        },
+        
+        body: JSON.stringify(formValues),
       }
-    } catch (error) {
-      handleError("Error al actualizar edicion");
+      
+    );
+    console.log(formValues);
+
+    if (response.ok) {
+      const updatedEdicion = await response.json();
+      const updatedEdiciones = ediciones.map((edicion) =>
+        edicion._id === updatedEdicion._id ? updatedEdicion : edicion
+      );
+      setEdiciones(updatedEdiciones);
+      setSelectedEdicion(null);
+      setFormValues({
+        tituloEdicion: "",
+        fechaInicioEdicion: "",
+        fechaFinEdicion: "",
+        estadoEdicion: true,
+        cursoId: "",
+        horarios: [],
+        estudiantes: [],
+      });
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Error al actualizar edición");
     }
-  };
+  } catch (error) {
+    console.error("Error al actualizar edición:", error);
+    setErrorMessage(error.message);
+    setOpenSnackbar(true);
+  }
+};
+
 
   const handleDeleteEdicion = async () => {
     if (!edicionToDelete) return;
@@ -185,6 +260,10 @@ const Ediciones = () => {
         `http://localhost:3000/api/ediciones/${edicionToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -196,7 +275,7 @@ const Ediciones = () => {
         throw new Error(errorData.error || "Error al eliminar edicion");
       }
     } catch (error) {
-      handleError("Error al eliminar edicion");
+      handleError("Error al eliminar edicion", error);
     }
   };
 
@@ -207,9 +286,8 @@ const Ediciones = () => {
       fechaInicioEdicion: edicion.fechaInicioEdicion,
       fechaFinEdicion: edicion.fechaFinEdicion,
       estadoEdicion: edicion.estadoEdicion,
-      //cursoId: edicion.cursoId || "",
-      //horarios: edicion.horarios || [],
-      //estudiantes: edicion.estudiantes || [],
+      cursoId: edicion.cursoId?._id || "",
+      horarios: edicion.horarios.map((horario) => horario._id),
     });
   };
 
@@ -219,7 +297,13 @@ const Ediciones = () => {
   };
 
   const handleInfoClick = async (edicion) => {
-    const response = await fetch(`http://localhost:3000/api/ediciones/${edicion._id}`,);
+    const response = await fetch(`http://localhost:3000/api/ediciones/${edicion._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoEdicion(data);
     setOpenInfoDialog(true);
@@ -264,7 +348,6 @@ const Ediciones = () => {
           sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
         />
 
-        {/* 
         <FormControl fullWidth margin="normal">
           <InputLabel>Curso</InputLabel>
           <Select
@@ -280,7 +363,29 @@ const Ediciones = () => {
             ))}
           </Select>
         </FormControl>
-        */}
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Horarios</InputLabel>
+          <Select
+            multiple
+            value={formValues.horarios}
+            onChange={handleHorarioChange}
+            input={<OutlinedInput label="Horarios" />}
+            renderValue={(selected) =>
+              horarios
+                .filter((hor) => selected.includes(hor._id))
+                .map((ho) => ho.tituloHorario)
+                .join(", ")
+            }
+          >
+            {horarios.map((hor) => (
+              <MenuItem key={hor._id} value={hor._id}>
+                <Checkbox checked={formValues.horarios.indexOf(hor._id) > -1} />
+                <ListItemText primary={hor.tituloHorario} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -302,6 +407,17 @@ const Ediciones = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar ediciones"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -314,7 +430,9 @@ const Ediciones = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {ediciones.map((edicion) => (
+          {filteredEdiciones
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((edicion) => (
               <TableRow key={edicion._id}>
                 <TableCell>{edicion.tituloEdicion}</TableCell>
                 <TableCell>{edicion.fechaInicioEdicion}</TableCell>
@@ -340,6 +458,18 @@ const Ediciones = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredEdiciones.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
@@ -353,21 +483,72 @@ const Ediciones = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información de la Edición</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {infoEdicion?.tituloEdicion || "Título no disponible"}</Typography>
-          <Typography>Fecha de Inicio: {infoEdicion?.fechaInicioEdicion || "Fecha no disponible"}</Typography>
-          <Typography>Fecha de Finalización: {infoEdicion?.fechaFinEdicion || "Fecha no disponible"}</Typography>
-          <Typography>Estado: {infoEdicion?.estadoEdicion ? "Activa" : "Inactiva"}</Typography>
-          <Typography>Curso: {infoEdicion?.curso?.nombreCurso || "Curso no encontrado"}</Typography>
-          <Typography> 
-            calificaciones: {infoEdicion?.estudiantes?.map((ca) => es.estudiantes).join(", ") || "Sin estudiantes"} 
-          </Typography>
-        </DialogContent>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información de la Edición
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoEdicion && (
+            <div>
+              {/* Título */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Class color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.tituloEdicion || "Título no disponible"}</Typography>
+              </Box>
+              
+              {/* Fecha de Inicio */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <DateRange color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Inicio:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaInicioEdicion || "Fecha no disponible"}</Typography>
+              </Box>
+              
+              {/* Fecha de Finalización */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <EventAvailable color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Finalización:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaFinEdicion || "Fecha no disponible"}</Typography>
+              </Box>
+              
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.estadoEdicion ? "Activa" : "Inactiva"}</Typography>
+              </Box>
+              
+              {/* Curso */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <School color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Curso:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.cursoId?.nombreCurso || "Curso no encontrado"}</Typography>
+              </Box>
 
+              {/* Horarios */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Grade color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Horarios:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoEdicion.horarios?.map((horario) => horario.tituloHorario).join(", ") || "Sin horarios"}
+                </Typography>
+              </Box>
+              
+              {/* Estudiantes */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Grade color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoEdicion.estudiantes?.map((estudiante) => estudiante.nombreEstudiante).join(", ") || "Sin estudiantes"}
+                </Typography>
+              </Box>
+            </div>
+          )}
+        </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

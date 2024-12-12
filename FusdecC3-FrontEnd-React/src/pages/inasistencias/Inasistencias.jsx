@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -27,8 +29,11 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
+  TablePagination
 } from "@mui/material";
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Description, Comment, AssignmentTurnedIn, People } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Inasistencias = () => {
   const [asistencias, setAsistencias] = useState([]);
@@ -50,15 +55,34 @@ const Inasistencias = () => {
   const [inasistenciaToDelete, setInasistenciaToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
 
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     fetchAsistencias();
     fetchEstudiantes();
     fetchInasistencias();
+
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id, 
+      }));
+    }
   }, []);
 
   const fetchAsistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias");
+      const response = await fetch("http://localhost:3000/api/asistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener asistencias");
       const data = await response.json();
       setAsistencias(data);
@@ -70,7 +94,13 @@ const Inasistencias = () => {
 
   const fetchInasistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/inasistencias");
+      const response = await fetch("http://localhost:3000/api/inasistencias",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener inasistencias");
       const data = await response.json();
       setInasistencias(data);
@@ -82,7 +112,13 @@ const Inasistencias = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -90,6 +126,23 @@ const Inasistencias = () => {
       setErrorMessage("Error al obtener estudiantes", error);
       setOpenSnackbar(true);
     }
+  };
+
+  // Filtrar inasistencias según el término de búsqueda
+  const filteredInasistencias = inasistencias.filter((inasistencia) =>
+    (inasistencia.tituloInasistencia?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (inasistencia.asistenciaId?.tituloAsistencia?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+  );
+  
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleInputChange = (e) => {
@@ -118,17 +171,18 @@ const Inasistencias = () => {
     try {
       const response = await fetch("http://localhost:3000/api/inasistencias", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
       if (response.ok) {
-        const nuevaInasistencia = await response.json();
-        setInasistencias([...asistencias, nuevaInasistencia]);
+        await fetchInasistencias();
         setFormValues({
           tituloInasistencia: "",
           observacion: "",
-          usuarioId: "",
+          usuarioId: formValues.usuarioId,
           asistenciaId: "",
           estadoInasistencia: true,
           estudiantes: [],
@@ -147,11 +201,14 @@ const Inasistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/inasistencias/${selectedInasistencia._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "Authorization": token 
+         },
         body: JSON.stringify(formValues),
       });
 
       if (response.ok) {
+        await fetchInasistencias();
         const updatedInasistencia = await response.json();
         const updatedInasistencias = inasistencias.map((inasistencia) =>
           inasistencia._id === updatedInasistencia._id ? updatedInasistencia : inasistencia
@@ -181,6 +238,10 @@ const Inasistencias = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/inasistencias/${inasistenciaToDelete._id}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
       });
       if (response.ok) {
         setAsistencias(asistencias.filter((inasistencia) => inasistencia._id !== inasistenciaToDelete._id));
@@ -241,15 +302,6 @@ const Inasistencias = () => {
           fullWidth
           margin="normal"
         />
-        <TextField
-          label="Id de usuario"
-          name="usuarioId"
-          value={formValues.usuarioId}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
         <FormControl fullWidth margin="normal">
           <InputLabel>Asistencia</InputLabel>
           <Select
@@ -306,7 +358,18 @@ const Inasistencias = () => {
           </Button>
         </Box>
       </form>
+      <br></br>
+      {/* Busqueda */}
+      <TextField
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
+      {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -317,7 +380,9 @@ const Inasistencias = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inasistencias.map((inasistencia) => (
+          {filteredInasistencias
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((inasistencia) => (
               <TableRow key={inasistencia._id}>
                 <TableCell>{inasistencia.tituloInasistencia}</TableCell>
                 <TableCell>{inasistencia.asistenciaId?.tituloAsistencia || "Asistencia no encontrada"}</TableCell>
@@ -336,18 +401,63 @@ const Inasistencias = () => {
             ))}
           </TableBody>
         </Table>
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredInasistencias.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-        <DialogTitle>Detalles de la Inasistencia</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {selectedInasistencia?.tituloInasistencia}</Typography>
-          <Typography>Observacion: {selectedInasistencia?.observacion}</Typography>
-          <Typography>Asistencia: {selectedInasistencia?.asistenciaId?.tituloAsistencia || "Asistencia no encontrada"}</Typography>
-          <Typography>Estudiantes: {selectedInasistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ")|| "Sin estudiantes"}</Typography>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Detalles de la Inasistencia
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {selectedInasistencia && (
+            <div>
+              {/* Título de la Inasistencia */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Description color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{selectedInasistencia.tituloInasistencia || "Título no disponible"}</Typography>
+              </Box>
+              
+              {/* Observación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Comment color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Observación:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{selectedInasistencia.observacion || "Sin observaciones"}</Typography>
+              </Box>
+              
+              {/* Asistencia */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <AssignmentTurnedIn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Asistencia:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {selectedInasistencia.asistenciaId?.tituloAsistencia || "Asistencia no encontrada"}
+                </Typography>
+              </Box>
+              
+              {/* Estudiantes */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <People color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {selectedInasistencia.estudiantes?.map((est) => est.nombreEstudiante).join(", ") || "Sin estudiantes"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

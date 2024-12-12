@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
@@ -25,9 +27,14 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  Checkbox,
+  ListItemText,
+  TablePagination
 } from "@mui/material";
 
-import { Edit, Delete, Info } from "@mui/icons-material";
+import { Edit, Delete, Info, Grade, CheckCircle, Person, ToggleOn, Group } from "@mui/icons-material";
+
+const token = localStorage.getItem("token");
 
 const Calificaciones = () => {
   const [calificaciones, setCalificaciones] = useState([]);
@@ -37,8 +44,8 @@ const Calificaciones = () => {
   const [formValues, setFormValues] = useState({
     tituloCalificacion: "",
     aprobado: true,
-    //usuarioId: "",
-    //estudiantes: [],
+    usuarioId: "",
+    estudiantes: [],
     estadoCalificacion: true,
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -49,66 +56,98 @@ const Calificaciones = () => {
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoCalificacion, setInfoCalificacion] = useState(null);
 
-  
-  
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  //constante con promise.all para que se ejecuten en paralelo los fetch de calificaciones, estudiantes y usuarios
-  const fetchData = async () => {
+  const fetchCalificaciones = async () => {
     try {
-      const [calificacionesData, estudiantesData, usuariosData] = await Promise.all([
-        fetch("http://localhost:3000/api/calificaciones").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/estudiantes").then((res) => res.json()),
-        //fetch("http://localhost:3000/api/usuarios").then((res) => res.json()),
-      ]);
-      setCalificaciones(calificacionesData);
-      setEstudiantes(estudiantesData);
-      setUsuarios(usuariosData);
+      const response = await fetch("http://localhost:3000/api/calificaciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener calificaciones");
+      const data = await response.json();
+      setCalificaciones(data);
     } catch (error) {
-      handleError("Error al cargar los datos");
-    } 
+      console.error("Error al obtener calificaciones:", error);
+      setErrorMessage("Error al obtener calificaciones");
+      setOpenSnackbar(true);
+    }
   };
 
-  /*const fetchData = async () => {
+  const fetchEstudiantes = async () => {
     try {
-      const results = await Promise.allSettled([
-        fetch("http://localhost:3000/api/calificaciones"),
-        fetch("http://localhost:3000/api/estudiantes"),
-        fetch("http://localhost:3000/api/usuarios"),
-      ]);
-  
-      // Función auxiliar para procesar las respuestas json
-      const processResponse = async (result) => {
-        if (result.status === "fulfilled" && result.value.ok) {
-          try {
-            return await result.value.json();
-          } catch {
-            console.warn("La respuesta no contiene un JSON válido.");
-            return null; // Si no hay JSON válido, devolvemos null
-          }
+      const response = await fetch("http://localhost:3000/api/estudiantes",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
         }
-        return null; // Si la solicitud falló o no es ok, devolvemos null
-      };
-  
-      // Procesamos cada resultado
-      const calificaciones = await processResponse(results[0]);
-      const estudiantes = await processResponse(results[1]);
-      const usuarios = await processResponse(results[2]);
-  
-      // Actualizamos los estados solo si los datos fueron obtenidos
-      if (calificaciones) setCalificaciones(calificaciones);
-      if (estudiantes) setEstudiantes(estudiantes);
-      if (usuarios) setUsuarios(usuarios);
-  
+    });
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      setEstudiantes(data);
     } catch (error) {
-      console.error("Error inesperado:", error);
-      handleError("Error al cargar los datos");
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage("Error al obtener estudiantes");
+      setOpenSnackbar(true);
     }
-  };  
-  */
-  
+  };
+
+  const fetchUsuarios = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/usuarios",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+    });
+      if (!response.ok) throw new Error("Error al obtener usuarios");
+      const data = await response.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error("Error al obtener usuarios:", error);
+      setErrorMessage("Error al obtener usuarios");
+      setOpenSnackbar(true);
+    }
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchCalificaciones();
+    fetchEstudiantes();
+    fetchUsuarios();
+    // Decodificar el token y obtener el ID de usuario
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        usuarioId: decodedToken.id, 
+      }));
+    }
   }, []);
+
+  // Filtrar usuarios según el término de búsqueda
+  const filteredCalificaciones = calificaciones.filter((calificacion) =>
+    calificacion.tituloCalificacion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    calificacion.aprobado.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const handleError = (message) => {
     setErrorMessage(message);
@@ -130,18 +169,12 @@ const Calificaciones = () => {
   };
 
   const handleCreateCalificacion = async () => {
-    /*
-    if (!formValues.tituloEdicion || !formValues.fechaInicioEdicion || !formValues.fechaFinEdicion || !formValues.cursoId) {
-      setErrorMessage("Todos los campos son obligatorios");
-      setOpenSnackbar(true);
-      return;
-      }
-    */
     try {
         const response = await fetch("http://localhost:3000/api/calificaciones", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token 
             },
             body: JSON.stringify(formValues),
         });
@@ -153,8 +186,8 @@ const Calificaciones = () => {
             setFormValues({
               tituloCalificacion: "",
               aprobado: true,
-              //usuarioId: "",
-              //estudiantes: [],
+              usuarioId: formValues.usuarioId,
+              estudiantes: [],
               estadoCalificacion: true,
             });
             console.log('Calificación creada exitosamente:', nuevaCalificacion);
@@ -163,7 +196,7 @@ const Calificaciones = () => {
             throw new Error(errorData.error || "Error al crear calificación");
         }
     } catch (error) {
-        handleError("Error al crear calificación");
+        handleError("Error al crear calificación", error);
     }
 };
 
@@ -177,6 +210,7 @@ const Calificaciones = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
           },
           body: JSON.stringify(formValues),
         }
@@ -193,8 +227,8 @@ const Calificaciones = () => {
         setFormValues({
           tituloCalificacion: "",
           aprobado: true,
-          //usuarioId: "",
-          //estudiantes: [],
+          usuarioId: "",
+          estudiantes: [],
           estadoCalificacion: true,
         });
       } else {
@@ -202,7 +236,7 @@ const Calificaciones = () => {
         throw new Error(errorData.error || "Error al actualizar calificación");
       }
     } catch (error) {
-      handleError("Error al actualizar calificación");
+      handleError("Error al actualizar calificación", error);
     }
   };
 
@@ -214,6 +248,10 @@ const Calificaciones = () => {
         `http://localhost:3000/api/calificaciones/${calificacionToDelete._id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
         }
       );
 
@@ -225,7 +263,7 @@ const Calificaciones = () => {
         throw new Error(errorData.error || "Error al eliminar calificación");
       }
     } catch (error) {
-      handleError("Error al eliminar calificación");
+      handleError("Error al eliminar calificación", error);
     }
   };
 
@@ -234,9 +272,17 @@ const Calificaciones = () => {
     setFormValues({
       tituloCalificacion: calificacion.tituloCalificacion,
       aprobado: calificacion.aprobado,
-      //usuarioId: calificacion.usuarioId,
-      //estudiantes: edicion.estudiantes || [],
+      usuarioId: calificacion.usuarioId,
+      estudiantes: calificacion.estudiantes || [],
       estadoCalificacion: calificacion.estadoCalificacion,
+    });
+  };
+  
+  const handleEstudianteChange = (e) => {
+    const { target: { value } } = e;
+    setFormValues({
+      ...formValues,
+      estudiantes: typeof value === "string" ? value.split(",") : value,
     });
   };
 
@@ -246,7 +292,13 @@ const Calificaciones = () => {
   };
 
   const handleInfoClick = async (calificacion) => {
-    const response = await fetch(`http://localhost:3000/api/calificaciones/${calificacion._id}`,);
+    const response = await fetch(`http://localhost:3000/api/calificaciones/${calificacion._id}`,{
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+      }
+  });
     const data = await response.json();
     setInfoCalificacion(data);
     setOpenInfoDialog(true);
@@ -283,31 +335,12 @@ const Calificaciones = () => {
           Aprobaron
         </Box>
 
-        {/* 
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Usuario</InputLabel>
-          <Select
-            name="usuarioId"
-            value={formValues.usuarioId}
-            onChange={handleInputChange}
-            input={<OutlinedInput label="Usuario" />}
-          >
-            {usuarios.map((usuario) => (
-              <MenuItem key={usuario._id} value={usuario._id}>
-                {usuario.nombreUsuario}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        */}
-
-        {/*
         <FormControl fullWidth margin="normal">
           <InputLabel>Estudiantes</InputLabel>
           <Select
             multiple
             value={formValues.estudiantes}
-            onChange={handleEditionChange}
+            onChange={handleEstudianteChange}
             input={<OutlinedInput label="Estudiantes" />}
             renderValue={(selected) =>
               estudiantes
@@ -325,7 +358,7 @@ const Calificaciones = () => {
             ))}
           </Select>
         </FormControl>
-        */}
+        
 
         <Box marginTop={2} marginBottom={2}>
           <Switch
@@ -347,6 +380,17 @@ const Calificaciones = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Busqueda */}
+      <TextField
+        label="Buscar calificaciones"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -358,7 +402,9 @@ const Calificaciones = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {calificaciones.map((calificacion) => (
+          {filteredCalificaciones
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((calificacion) => (
               <TableRow key={calificacion._id}>
                 <TableCell>{calificacion.tituloCalificacion}</TableCell>
                 <TableCell>{calificacion.aprobado  ? "Si" : "No"}</TableCell>
@@ -381,6 +427,18 @@ const Calificaciones = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredCalificaciones.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
@@ -394,21 +452,58 @@ const Calificaciones = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog}>
-      <DialogTitle>Información de la Calificación</DialogTitle>
-        <DialogContent>
-          <Typography>Título: {infoCalificacion?.tituloCalificacion || "Título no disponible"}</Typography>
-          <Typography>Aprobado: {infoCalificacion?.aprobado  ? "Si" : "No"}</Typography>
-          <Typography>Usuario: {infoCalificacion?.usuario?.nombreUsuario || "Usuario no encontrado"}</Typography>
-          <Typography>Estado: {infoCalificacion?.estadoCalificacion ? "Activa" : "Inactiva"}</Typography>
-          <Typography> 
-            estudiantes: {infoCalificacion?.estudiantes?.map((ca) => es.estudiantes).join(", ") || "Sin estudiantes"} 
-          </Typography>
-           
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Información de la Calificación
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {infoCalificacion && (
+            <div>
+              {/* Título de la Calificación */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Grade color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCalificacion.tituloCalificacion || "Título no disponible"}</Typography>
+              </Box>
+              
+              {/* Aprobado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <CheckCircle color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Aprobado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCalificacion.aprobado ? "Sí" : "No"}</Typography>
+              </Box>
+              
+              {/* Usuario */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Person color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Usuario:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCalificacion.usuario?.nombreUsuario || "Usuario no encontrado"}
+                </Typography>
+              </Box>
+              
+              {/* Estado */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <ToggleOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{infoCalificacion.estadoCalificacion ? "Activa" : "Inactiva"}</Typography>
+              </Box>
+              
+              {/* Estudiantes */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Group color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCalificacion.estudiantes?.map((es) => es.nombreEstudiante).join(", ") || "Sin estudiantes"}
+                </Typography>
+              </Box>
+            </div>
+          )}
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} color="primary">Cerrar</Button>
+          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

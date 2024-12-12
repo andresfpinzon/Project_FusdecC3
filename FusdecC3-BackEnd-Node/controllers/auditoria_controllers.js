@@ -3,11 +3,14 @@ const auditoriaSchemaValidation = require('../validations/auditoria_validations'
 const Auditoria = require('../models/auditoria_model');
 const Certificado = require('../models/certificado_model');
 
-// Controlador para listar auditorías
 const listarAuditorias = async (req, res) => {
     try {
-        const auditorias = await Auditoria.find().populate('certificadoId', 'nombreEmisorCertificado');
-        res.json(auditorias);
+        const auditorias = await Auditoria.find().populate('certificadoId', 'codigoVerificacion');
+        const auditoriasConCodigo = auditorias.map(auditoria => ({
+            ...auditoria.toObject(),
+            codigoVerificacion: auditoria.certificadoId ? auditoria.certificadoId.codigoVerificacion : "No disponible"
+        }));
+        res.json(auditoriasConCodigo);
     } catch (error) {
         console.error("Error al listar auditorías:", error);
         res.status(500).json({ error: 'Error interno del servidor' });

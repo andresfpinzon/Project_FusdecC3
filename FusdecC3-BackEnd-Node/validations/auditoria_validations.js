@@ -1,12 +1,12 @@
-const Joi = require('@hapi/joi');
+const Joi = require('@hapi/joi').extend(require('@joi/date'));;
 
 const auditoriaSchemaValidation = Joi.object({
+
   fechaAuditoria: Joi.date()
-    .iso() // Asegura que la fecha esté en formato ISO 8601
+    .format("DD/MM/YYYY")
     .required()
     .messages({
       'date.base': 'La fecha de auditoría debe ser una fecha válida',
-      'date.iso': 'La fecha de auditoría debe estar en formato ISO 8601',
       'any.required': 'La fecha de auditoría es un campo requerido',
     }),
 
@@ -23,14 +23,11 @@ const auditoriaSchemaValidation = Joi.object({
     }),
 
   certificadoId: Joi.string()
-    .length(24) // Asegura que el certificadoId tenga exactamente 24 caracteres
-    .hex() // Asegura que solo contenga caracteres hexadecimales
+    .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
     .required()
     .messages({
       'string.base': 'El certificadoId debe ser un texto',
       'string.empty': 'El certificadoId no puede estar vacío',
-      'string.length': 'El certificadoId debe tener exactamente 24 caracteres',
-      'string.hex': 'El certificadoId debe contener solo caracteres hexadecimales',
       'any.required': 'El certificadoId es un campo requerido',
     }),
   
