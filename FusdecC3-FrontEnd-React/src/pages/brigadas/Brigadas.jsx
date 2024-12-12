@@ -39,7 +39,12 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
-      setBrigades(data);
+      const validatedBrigades = data.map(brigade => ({
+        ...brigade,
+        comandoId: brigade.comandoId || { nombreComando: 'Sin comando asignado' },
+        unidades: brigade.unidades || []
+      }));
+      setBrigades(validatedBrigades);
     } catch (error) {
       setError('Error al obtener brigadas');
     } finally {
@@ -147,7 +152,7 @@ const Brigadas = () => {
   };
 
   const filteredBrigades = brigades.filter(brigade =>
-    brigade.nombreBrigada.toLowerCase().includes(searchTerm.toLowerCase())
+    brigade?.nombreBrigada?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const chartData = {
@@ -262,34 +267,36 @@ const Brigadas = () => {
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef} className="brigade-list">
               {filteredBrigades.map((brigade, index) => (
-                <Draggable key={brigade._id} draggableId={brigade._id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={`brigade-card ${snapshot.isDragging ? 'dragging' : ''}`}
-                      onClick={() => handleInfoClick(brigade)}
-                    >
-                      <div className="brigade-header">
-                        <h3>{brigade.nombreBrigada}</h3>
-                        <span className={`status-badge ${brigade.estadoBrigada ? 'active' : 'inactive'}`}>
-                          {brigade.estadoBrigada ? 'Activo' : 'Inactivo'}
-                        </span>
+                brigade && brigade._id ? (
+                  <Draggable key={brigade._id} draggableId={brigade._id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={`brigade-card ${snapshot.isDragging ? 'dragging' : ''}`}
+                        onClick={() => handleInfoClick(brigade)}
+                      >
+                        <div className="brigade-header">
+                          <h3>{brigade.nombreBrigada}</h3>
+                          <span className={`status-badge ${brigade.estadoBrigada ? 'active' : 'inactive'}`}>
+                            {brigade.estadoBrigada ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </div>
+                        <p><i className="fas fa-map-marker-alt"></i> {brigade.ubicacionBrigada}</p>
+                        <p><i className="fas fa-flag"></i> {brigade.comandoId?.nombreComando || 'Sin comando asignado'}</p>
+                        <div className="brigade-actions">
+                          <button onClick={(e) => { e.stopPropagation(); handleEdit(brigade); }} className="edit-button">
+                            <i className="fas fa-edit"></i> Editar
+                          </button>
+                          <button onClick={() => handleDelete(brigade._id)} className="delete-button">
+                            <i className="fas fa-trash-alt"></i> Eliminar
+                          </button>
+                        </div>
                       </div>
-                      <p><i className="fas fa-map-marker-alt"></i> {brigade.ubicacionBrigada}</p>
-                      <p><i className="fas fa-flag"></i> {brigade.comandoId.nombreComando}</p>
-                      <div className="brigade-actions">
-                        <button onClick={(e) => { e.stopPropagation(); handleEdit(brigade); }} className="edit-button">
-                          <i className="fas fa-edit"></i> Editar
-                        </button>
-                        <button onClick={() => handleDelete(brigade._id)} className="delete-button">
-                          <i className="fas fa-trash-alt"></i> Eliminar
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </Draggable>
+                    )}
+                  </Draggable>
+                ) : null
               ))}
               {provided.placeholder}
             </div>
@@ -322,7 +329,7 @@ const Brigadas = () => {
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedBrigade.comandoId?.nombreComando || "comando no encontrado"}
+                  {selectedBrigade.comandoId?.nombreComando || "Sin comando asignado"}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
