@@ -1,484 +1,352 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import {
-  Container,
-  TextField,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Snackbar,
-  Alert,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  Switch,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  OutlinedInput,
-  Box,
-  Chip,
-  List,
-  ListItem,
-  ListItemText,
-  TablePagination,
-} from "@mui/material";
-import { Edit, Delete, Info, LocationOn, Group, Assignment, CheckCircle, Cancel, Shield } from "@mui/icons-material";
+import React, { useState, useEffect } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Chart } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import './Brigadas.css';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Chip } from '@mui/material';
+import { Assignment, LocationOn, Group, CheckCircle, Cancel, Shield } from '@mui/icons-material';
 
-const token = localStorage.getItem("token");
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function Brigadas() {
-  const [brigadas, setBrigadas] = useState([]);
-  const [comandos, setComandos] = useState([]);
-  const [unidades, setUnidades] = useState([]);
-  const [selectedBrigada, setSelectedBrigada] = useState(null);
+const Brigadas = () => {
+  const [brigades, setBrigades] = useState([]);
+  const [commands, setCommands] = useState([]);
+  const [selectedBrigade, setSelectedBrigade] = useState(null);
   const [formValues, setFormValues] = useState({
-    nombreBrigada: "",
-    ubicacionBrigada: "",
-    comandoId: "",
+    nombreBrigada: '',
+    ubicacionBrigada: '',
+    comandoId: '',
     estadoBrigada: true,
-    unidades: [],
   });
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
-  const [infoBrigada, setInfoBrigada] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    fetchBrigadas();
-    fetchComandos();
-    fetchUnidades();
+    fetchBrigades();
+    fetchCommands();
   }, []);
 
-  const fetchBrigadas = async () => {
+  const fetchBrigades = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/brigadas", {
-        method: "GET",
+      const response = await fetch('http://localhost:3000/api/brigadas', {
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-        }
+          'Authorization': localStorage.getItem('token') || '',
+        },
       });
-      if (!response.ok) throw new Error("Error al obtener brigadas");
+      if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
-      setBrigadas(data);
+      const validatedBrigades = data.map(brigade => ({
+        ...brigade,
+        comandoId: brigade.comandoId || { nombreComando: 'Sin comando asignado' },
+        unidades: brigade.unidades || []
+      }));
+      setBrigades(validatedBrigades);
     } catch (error) {
-      console.error("Error al obtener brigadas:", error);
-      setErrorMessage("Error al obtener brigadas");
-      setOpenSnackbar(true);
+      setError('Error al obtener brigadas');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const fetchComandos = async () => {
+  const fetchCommands = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/comandos", {
-        method: "GET",
+      const response = await fetch('http://localhost:3000/api/comandos', {
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-        }
+          'Authorization': localStorage.getItem('token') || '',
+        },
       });
-      if (!response.ok) throw new Error("Error al obtener comandos");
+      if (!response.ok) throw new Error('Error al obtener comandos');
       const data = await response.json();
-      setComandos(data);
+      setCommands(data);
     } catch (error) {
-      console.error("Error al obtener comandos:", error);
-      setErrorMessage("Error al obtener comandos");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchUnidades = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/unidades", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-        }
-      });
-      if (!response.ok) throw new Error("Error al obtener unidades");
-      const data = await response.json();
-      setUnidades(data);
-    } catch (error) {
-      console.error("Error al obtener unidades:", error);
-      setErrorMessage("Error al obtener unidades");
-      setOpenSnackbar(true);
+      setError('Error al obtener comandos');
     }
   };
 
   const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, type, checked } = e.target;
+    setFormValues(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
-  const handleSwitchChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.checked,
-    });
-  };
-
-  const isValidGoogleMapsLink = (link) => {
-    const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)/;
-    return regex.test(link);
-  };
-
-  const handleCreateBrigada = async () => {
-    if (!formValues.nombreBrigada || !isValidGoogleMapsLink(formValues.ubicacionBrigada)) {
-      setErrorMessage("Por favor, completa todos los campos requeridos y asegúrate de que la ubicación sea un enlace válido de Google Maps.🌎");
-      setOpenSnackbar(true);
-      return;
-    }
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/api/brigadas", {
-        method: "POST",
+      const url = selectedBrigade
+        ? `http://localhost:3000/api/brigadas/${selectedBrigade._id}`
+        : 'http://localhost:3000/api/brigadas';
+      const method = selectedBrigade ? 'PUT' : 'POST';
+      const response = await fetch(url, {
+        method,
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token') || '',
         },
         body: JSON.stringify(formValues),
       });
-
-      if (response.ok) {
-        await fetchBrigadas();
-        const nuevaBrigada = await response.json();
-        setBrigadas([...brigadas, nuevaBrigada]);
-        clearForm();
-        setSuccessMessage("¡Brigada creada exitosamente! 🎉");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.error || "Ocurrió un error al crear la brigada. Intenta nuevamente.👍");
-        setOpenSnackbar(true);
-      }
+      if (!response.ok) throw new Error('Error al guardar brigada');
+      await fetchBrigades();
+      setFormValues({ nombreBrigada: '', ubicacionBrigada: '', comandoId: '', estadoBrigada: true });
+      setSelectedBrigade(null);
+      setShowForm(false);
     } catch (error) {
-      console.error("Error al crear brigada:", error);
-      setErrorMessage("Error al crear brigada. Por favor, intenta más tarde.���");
-      setOpenSnackbar(true);
+      setError('Error al guardar brigada');
     }
   };
 
-  const handleUpdateBrigada = async () => {
+  const handleDelete = async (id) => {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar esta brigada?')) return;
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/brigadas/${selectedBrigada._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
-
-      if (response.ok) {
-        const brigadaActualizada = await response.json();
-        setBrigadas(
-          brigadas.map((brigada) =>
-            brigada._id === selectedBrigada._id ? brigadaActualizada : brigada
-          )
-        );
-        clearForm();
-        setSuccessMessage("Brigada actualizada exitosamente!");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.error || "Error al actualizar brigada");
-        setOpenSnackbar(true);
-      }
+      const response = await fetch(`http://localhost:3000/api/brigadas/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': localStorage.getItem('token') || '',
+        },
+      });
+      if (!response.ok) throw new Error('Error al eliminar brigada');
+      await fetchBrigades();
     } catch (error) {
-      console.error("Error al actualizar brigada:", error);
-      setErrorMessage("Error al actualizar brigada");
-      setOpenSnackbar(true);
+      setError('Error al eliminar brigada');
     }
   };
 
-  const handleDeleteBrigada = async () => {
-    if (!selectedBrigada) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/brigadas/${selectedBrigada._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-          }
-        }
-      );
-
-      if (response.ok) {
-        setBrigadas(brigadas.filter((brigada) => brigada._id !== selectedBrigada._id));
-        handleCloseDeleteDialog();
-        setSuccessMessage("Brigada eliminada exitosamente!");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.error || "Error al eliminar brigada");
-        setOpenSnackbar(true);
-      }
-    } catch (error) {
-      console.error("Error al eliminar brigada:", error);
-      setErrorMessage("Error al eliminar brigada");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const handleEditClick = (brigada) => {
-    setSelectedBrigada(brigada);
+  const handleEdit = (brigade) => {
+    setSelectedBrigade(brigade);
     setFormValues({
-      nombreBrigada: brigada.nombreBrigada || "",
-      ubicacionBrigada: brigada.ubicacionBrigada || "",
-      comandoId: brigada.comandoId?._id || "",
-      estadoBrigada: brigada.estadoBrigada !== undefined ? brigada.estadoBrigada : true,
+      nombreBrigada: brigade.nombreBrigada,
+      ubicacionBrigada: brigade.ubicacionBrigada,
+      comandoId: brigade.comandoId._id,
+      estadoBrigada: brigade.estadoBrigada,
     });
+    setShowForm(true);
   };
 
-  const handleInfoClick = (brigada) => {
-    setInfoBrigada(brigada);
+  const handleInfoClick = (brigade) => {
+    setSelectedBrigade(brigade);
     setOpenInfoDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setSelectedBrigada(null);
   };
 
   const handleCloseInfoDialog = () => {
     setOpenInfoDialog(false);
-    setInfoBrigada(null);
+    setSelectedBrigade(null);
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-    setErrorMessage(null);
+  const handleAddBrigade = () => {
+    setSelectedBrigade(null);
+    setFormValues({ nombreBrigada: '', ubicacionBrigada: '', comandoId: '', estadoBrigada: true });
+    setShowForm(true);
   };
 
-  const clearForm = () => {
-    setFormValues({
-      nombreBrigada: "",
-      ubicacionBrigada: "",
-      comandoId: "",
-      estadoBrigada: true,
-    });
-    setSelectedBrigada(null);
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(brigades);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setBrigades(items);
   };
 
-  const filteredBrigadas = brigadas.filter((brigada) =>
-    brigada.nombreBrigada.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredBrigades = brigades.filter(brigade =>
+    brigade?.nombreBrigada?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const chartData = {
+    labels: ['Activas', 'Inactivas'],
+    datasets: [
+      {
+        data: [
+          brigades.filter(b => b.estadoBrigada).length,
+          brigades.filter(b => !b.estadoBrigada).length
+        ],
+        backgroundColor: ['#2ecc71', '#e74c3c'],
+        hoverBackgroundColor: ['#27ae60', '#c0392b']
+      }
+    ]
+  };
+
+  if (isLoading) return <div className="loading">Cargando...</div>;
+  if (error) return <div className="error">{error}</div>;
+
   return (
-    <Container maxWidth="lg">
-      <h1>Gestión de Brigadas</h1>
-      <Grid container spacing={2} component="section">
-        <Grid item xs={12} md={12}>
-          <h2>Información de Brigada</h2>
-          <TextField
-            label="Nombre de la Brigada"
-            name="nombreBrigada"
-            value={formValues.nombreBrigada}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Ubicación de la Brigada"
-            name="ubicacionBrigada"
-            value={formValues.ubicacionBrigada}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="comando-select-label">Comando</InputLabel>
-            <Select
-              labelId="comando-select-label"
-              name="comandoId"
-              value={formValues.comandoId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Comando" />}
-            >
-              {comandos.map((comando) => (
-                <MenuItem key={comando._id} value={comando._id}>
-                  {comando.nombreComando}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <div>
-            <label>Estado de Brigada</label>
-            <Switch
-              name="estadoBrigada"
-              checked={formValues.estadoBrigada}
-              onChange={handleSwitchChange}
-              color="primary"
-            />
+    <div className="brigade-management">
+      <header className="header">
+        <h1>Gestión de Brigadas</h1>
+        <div className="header-actions">
+          <button className="add-button" onClick={handleAddBrigade}>
+            <i className="fas fa-plus"></i> Agregar Brigada
+          </button>
+          <button className="stats-button" onClick={() => setShowStats(!showStats)}>
+            <i className="fas fa-chart-pie"></i> {showStats ? 'Ocultar Estadísticas' : 'Mostrar Estadísticas'}
+          </button>
+        </div>
+      </header>
+
+      {showStats && (
+        <div className="stats-container">
+          <h2>Estadísticas de Brigadas</h2>
+          <div className="chart-container">
+            <Chart type="doughnut" data={chartData} />
           </div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={selectedBrigada ? handleUpdateBrigada : handleCreateBrigada}
-          >
-            {selectedBrigada ? "Actualizar Brigada" : "Crear Brigada"}
-          </Button>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <h2>Lista de Brigadas</h2>
-          <TextField
-            label="Buscar brigadas"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <TableContainer component={Paper} style={{ marginTop: "20px", width: "100%" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Nombre</TableCell>
-                  <TableCell>Ubicación</TableCell>
-                  <TableCell>Comando</TableCell>
-                  <TableCell>Estado</TableCell>
-                  <TableCell>Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredBrigadas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((brigada) => (
-                  <TableRow key={brigada._id}>
-                    <TableCell>{brigada.nombreBrigada}</TableCell>
-                    <TableCell>{brigada.ubicacionBrigada}</TableCell>
-                    <TableCell>
-                      {brigada.comandoId.nombreComando || "Comando no disponible"}
-                    </TableCell>
-                    <TableCell>{brigada.estadoBrigada ? "Activo" : "Inactivo"}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleEditClick(brigada)} color="primary">
-                        <Edit />
-                      </IconButton>
-                      <IconButton onClick={() => {
-                        setSelectedBrigada(brigada);
-                        setOpenDeleteDialog(true);
-                      }} color="error">
-                        <Delete />
-                      </IconButton>
-                      <IconButton onClick={() => handleInfoClick(brigada)} color="primary">
-                        <Info />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+        </div>
+      )}
+
+      <div className="search-container">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Buscar brigadas..."
+          className="search-input"
+        />
+      </div>
+
+      {showForm && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>{selectedBrigade ? 'Editar' : 'Agregar'} Brigada</h2>
+            <form onSubmit={handleSubmit} className="brigade-form">
+              <input
+                type="text"
+                name="nombreBrigada"
+                value={formValues.nombreBrigada}
+                onChange={handleInputChange}
+                placeholder="Nombre de la Brigada"
+                required
+              />
+              <input
+                type="text"
+                name="ubicacionBrigada"
+                value={formValues.ubicacionBrigada}
+                onChange={handleInputChange}
+                placeholder="Ubicación de la Brigada"
+                required
+              />
+              <select
+                name="comandoId"
+                value={formValues.comandoId}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Seleccionar Comando</option>
+                {commands.map(command => (
+                  <option key={command._id} value={command._id}>
+                    {command.nombreComando}
+                  </option>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </select>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  name="estadoBrigada"
+                  checked={formValues.estadoBrigada}
+                  onChange={handleInputChange}
+                />
+                <span className="slider round"></span>
+                <span className="switch-label">Activo</span>
+              </label>
+              <div className="form-actions">
+                <button type="submit" className="submit-button">
+                  {selectedBrigade ? 'Actualizar' : 'Crear'} Brigada
+                </button>
+                <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredBrigadas.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={(event, newPage) => setPage(newPage)}
-            onRowsPerPageChange={(event) => {
-              setRowsPerPage(parseInt(event.target.value, 10));
-              setPage(0);
-            }}
-          />
-        </Grid>
-      </Grid>
-
-      <Dialog
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>Confirmar Eliminación</DialogTitle>
-        <DialogContent dividers>
-          <Typography>
-            ¿Estás seguro de que quieres eliminar la brigada{" "}
-            <strong>{selectedBrigada?.nombreBrigada}</strong>?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="default">
-            Cancelar
-          </Button>
-          <Button onClick={handleDeleteBrigada} color="secondary">
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="brigades">
+          {(provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef} className="brigade-list">
+              {filteredBrigades.map((brigade, index) => (
+                brigade && brigade._id ? (
+                  <Draggable key={brigade._id} draggableId={brigade._id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={`brigade-card ${snapshot.isDragging ? 'dragging' : ''}`}
+                        onClick={() => handleInfoClick(brigade)}
+                      >
+                        <div className="brigade-header">
+                          <h3>{brigade.nombreBrigada}</h3>
+                          <span className={`status-badge ${brigade.estadoBrigada ? 'active' : 'inactive'}`}>
+                            {brigade.estadoBrigada ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </div>
+                        <p><i className="fas fa-map-marker-alt"></i> {brigade.ubicacionBrigada}</p>
+                        <p><i className="fas fa-flag"></i> {brigade.comandoId?.nombreComando || 'Sin comando asignado'}</p>
+                        <div className="brigade-actions">
+                          <button onClick={(e) => { e.stopPropagation(); handleEdit(brigade); }} className="edit-button">
+                            <i className="fas fa-edit"></i> Editar
+                          </button>
+                          <button onClick={() => handleDelete(brigade._id)} className="delete-button">
+                            <i className="fas fa-trash-alt"></i> Eliminar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ) : null
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
           Información de la Brigada
         </DialogTitle>
         <DialogContent sx={{ padding: '20px' }}>
-          {infoBrigada && (
+          {selectedBrigade && (
             <div>
               <Box display="flex" alignItems="center" mb={2}>
                 <Assignment color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoBrigada.nombreBrigada || "N/A"}</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{selectedBrigade.nombreBrigada || "N/A"}</Typography>
               </Box>
-              
               <Box display="flex" alignItems="center" mb={2}>
                 <LocationOn color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  <a href={infoBrigada.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
-                    {infoBrigada.ubicacionBrigada || "N/A"}
+                  <a href={selectedBrigade.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
+                    {selectedBrigade.ubicacionBrigada || "N/A"}
                   </a>
                 </Typography>
               </Box>
-              
               <Box display="flex" alignItems="center" mb={2}>
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoBrigada.comandoId?.nombreComando || "comando no encontrado"}
+                  {selectedBrigade.comandoId?.nombreComando || "Sin comando asignado"}
                 </Typography>
               </Box>
-              
               <Box display="flex" alignItems="center" mb={2}>
-                {infoBrigada.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
+                {selectedBrigade.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoBrigada.estadoBrigada ? "Activo" : "Inactivo"}
+                  {selectedBrigade.estadoBrigada ? "Activo" : "Inactivo"}
                 </Typography>
               </Box>
-              
               <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
                 <Shield sx={{ mr: 1 }} color="primary" />
                 Unidades Asignadas
               </Typography>
-              {infoBrigada.unidades && infoBrigada.unidades.length > 0 ? (
+              {selectedBrigade.unidades && selectedBrigade.unidades.length > 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
-                  {infoBrigada.unidades.map((unidad) => (
+                  {selectedBrigade.unidades.map((unidad) => (
                     <Chip
                       key={unidad._id}
                       label={unidad.nombreUnidad || "Unidad no encontrada"}
@@ -512,22 +380,9 @@ export default function Brigadas() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        {errorMessage ? (
-          <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
-            {errorMessage}
-          </Alert>
-        ) : (
-          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
-            {successMessage}
-          </Alert>
-        )}
-      </Snackbar>
-    </Container>
+    </div>
   );
-}
+};
+
+export default Brigadas;
+

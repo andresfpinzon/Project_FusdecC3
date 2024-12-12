@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -219,7 +220,7 @@ const Comandos = () => {
       nombreComando: comando.nombreComando || "",
       ubicacionComando: comando.ubicacionComando || "",
       estadoComando: comando.estadoComando !== undefined ? comando.estadoComando : true,
-      fundacionId: comando.fundacionId || "",
+      fundacionId: comando.fundacionId?._id || "",
     });
   };
 

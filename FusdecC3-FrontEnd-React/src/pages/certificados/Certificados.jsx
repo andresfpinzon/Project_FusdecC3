@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -29,11 +28,12 @@ import {
   Box,
   TablePagination,
 } from "@mui/material";
-import { Edit, Delete, Info, Description, CalendarToday, VerifiedUser, School, Person } from "@mui/icons-material";
+import { Edit, Delete, Info, CalendarToday, VerifiedUser, School, Person } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
 const Certificados = () => {
+  // Estado para almacenar los valores del formulario
   const [formValues, setFormValues] = useState({
     fechaEmision: "",
     usuarioId: "",
@@ -42,11 +42,15 @@ const Certificados = () => {
     nombreEmisorCertificado: "", 
     codigoVerificacion: "",
   });
+  
+  // Estados para almacenar datos de usuarios, cursos, estudiantes y certificados
   const [usuarios, setUsuarios] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
   const [certificados, setCertificados] = useState([]);
   const [auditorias, setAuditorias] = useState([]);
+  
+  // Estados para manejar la selección y visualización de certificados
   const [selectedCertificado, setSelectedCertificado] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -54,18 +58,21 @@ const Certificados = () => {
   const [certificadoToDelete, setCertificadoToDelete] = useState(null);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [certificadoDetails, setCertificadoDetails] = useState(null);
+  
+  // Estados para paginación y mensajes
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("success"); // "success" o "error"
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
+    // Llamadas a las funciones para obtener datos al cargar el componente
     fetchUsuarios();
     fetchCursos();
     fetchEstudiantes();
     fetchCertificados();
     fetchAuditorias();
+    
     // Decodificar el token y obtener el ID de usuario
     if (token) {
       const decodedToken = jwtDecode(token);
@@ -77,15 +84,16 @@ const Certificados = () => {
     }
   }, []);
 
+  // Función para obtener usuarios
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios",{
+      const response = await fetch("http://localhost:3000/api/usuarios", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
       setUsuarios(data);
@@ -96,6 +104,7 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener cursos
   const fetchCursos = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/cursos", {
@@ -104,7 +113,7 @@ const Certificados = () => {
             "Content-Type": "application/json",
             "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
       setCursos(data);
@@ -115,15 +124,16 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener estudiantes
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes",{
+      const response = await fetch("http://localhost:3000/api/estudiantes", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       setEstudiantes(data);
@@ -134,15 +144,16 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener certificados
   const fetchCertificados = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/certificados",{
+      const response = await fetch("http://localhost:3000/api/certificados", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener certificados");
       const data = await response.json();
       setCertificados(data);
@@ -153,15 +164,16 @@ const Certificados = () => {
     }
   };
 
+  // Función para obtener auditorías
   const fetchAuditorias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auditorias",{
+      const response = await fetch("http://localhost:3000/api/auditorias", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": token 
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener auditorías");
       const data = await response.json();
       setAuditorias(data);
@@ -172,11 +184,13 @@ const Certificados = () => {
     }
   };
 
+  // Manejar cambios en los campos del formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
+  // Función para crear un nuevo certificado
   const handleCreateCertificado = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/certificados", {
@@ -191,7 +205,8 @@ const Certificados = () => {
       });
 
       if (response.ok) {
-        await fetchCertificados();
+        const nuevoCertificado = await response.json();
+        setCertificados([...certificados, nuevoCertificado]);
         setFormValues({
           fechaEmision: "",
           usuarioId: formValues.usuarioId,
@@ -200,6 +215,7 @@ const Certificados = () => {
           nombreEmisorCertificado: formValues.nombreEmisorCertificado,
           codigoVerificacion: "",
         });
+        setAuditorias([...auditorias, nuevoCertificado.nuevaAuditoria]);
         clearForm();
         setMessage("Certificado guardado exitosamente!");
         setSeverity("success");
@@ -215,6 +231,7 @@ const Certificados = () => {
     }
   };
 
+  // Función para actualizar un certificado existente
   const handleUpdateCertificado = async () => {
     if (!selectedCertificado) return;
     try {
@@ -235,7 +252,10 @@ const Certificados = () => {
       });
 
       if (response.ok) {
-        await fetchCertificados();
+        const updatedCertificado = await response.json();
+        setCertificados(certificados.map(certificado => 
+          certificado._id === updatedCertificado._id ? updatedCertificado : certificado
+        ));
         clearForm();
         setMessage("Certificado actualizado exitosamente!");
         setSeverity("success");
@@ -251,24 +271,26 @@ const Certificados = () => {
     }
   };
 
+  // Manejar clic en el botón de editar
   const handleEditClick = (certificado) => {
     setSelectedCertificado(certificado);
     setFormValues({
       fechaEmision: certificado.fechaEmision,
       usuarioId: certificado.usuarioId,
-      cursoId: certificado.cursoId?._id || "",
-      estudianteId: certificado.estudianteId?._id || "",
+      cursoId: certificado.cursoId,
+      estudianteId: certificado.estudianteId,
       nombreEmisorCertificado: certificado.nombreEmisorCertificado, 
       codigoVerificacion: certificado.codigoVerificacion,
     });
   };
 
-
+  // Manejar el cierre del diálogo de eliminación
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
     setCertificadoToDelete(null);
   };
 
+  // Función para eliminar un certificado
   const handleDeleteCertificado = async () => {
     if (!certificadoToDelete) return;
     try {
@@ -279,7 +301,7 @@ const Certificados = () => {
           headers: {
             "Content-Type": "application/json",
             "Authorization": token 
-        }
+          }
         }
       );
       if (response.ok) {
@@ -296,6 +318,7 @@ const Certificados = () => {
     }
   };
 
+  // Limpiar el formulario
   const clearForm = () => {
     setFormValues({
       fechaEmision: "",
@@ -308,6 +331,7 @@ const Certificados = () => {
     setSelectedCertificado(null);
   };
 
+  // Manejar auditoría
   const handleAuditoria = (id) => {
     const auditoria = auditorias.find(aud => aud.certificadoId === id);
     if (auditoria) {
@@ -317,32 +341,22 @@ const Certificados = () => {
     }
   };
 
+  // Manejar clic en detalles del certificado
   const handleDetailsClick = (certificado) => {
     setCertificadoDetails(certificado);
     setOpenDetailsDialog(true);
   };
 
+  // Cerrar el Snackbar
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
-
-  const filteredCertificados = certificados.filter((certificado) =>
-    certificado.codigoVerificacion.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <Container maxWidth="lg">
       <h1>Gestión de Certificados</h1>
       <Grid container spacing={2}>
         <Grid item xs={12} md={12} xl={12}>
-          <TextField
-            label="Buscar certificados"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
           <TextField
             label="Fecha de Emisión"
             type="date"
@@ -413,7 +427,7 @@ const Certificados = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredCertificados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((certificado) => (
+                {certificados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((certificado) => (
                   <TableRow key={certificado._id}>
                     <TableCell>
                       {certificado.codigoVerificacion}
@@ -442,7 +456,7 @@ const Certificados = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={filteredCertificados.length}
+              count={certificados.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={(event, newPage) => setPage(newPage)}
