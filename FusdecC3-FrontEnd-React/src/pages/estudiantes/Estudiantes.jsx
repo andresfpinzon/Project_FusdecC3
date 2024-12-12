@@ -291,8 +291,7 @@ const Estudiantes = () => {
       });
 
       if (response.ok) {
-        const nuevoEstudiante = await response.json();
-        setEstudiantes([...estudiantes, nuevoEstudiante]);
+        await fetchEstudiantes();
         setFormValues({
           nombreEstudiante: "",
           apellidoEstudiante: "",
@@ -332,11 +331,7 @@ const Estudiantes = () => {
       );
 
       if (response.ok) {
-        const updatedEstudiante = await response.json();
-        const updatedEstudiantes = estudiantes.map((estudiante) =>
-          estudiante._id === updatedEstudiante._id ? updatedEstudiante : estudiante
-        );
-        setEstudiantes(updatedEstudiantes);
+        await fetchEstudiantes();
         setSelectedEstudiante(null);
         setFormValues({
           nombreEstudiante: "",

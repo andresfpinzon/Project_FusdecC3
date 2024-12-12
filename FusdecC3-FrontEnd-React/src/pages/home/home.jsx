@@ -82,7 +82,7 @@ export default function Home() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          transform: 'translateX(-120px)'
+          transform: 'translateX(-200px)'
         }}>
           <h1 style={{ 
             fontSize: "3.5rem", 
