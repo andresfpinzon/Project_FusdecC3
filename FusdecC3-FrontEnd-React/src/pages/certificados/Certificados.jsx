@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -201,12 +202,12 @@ const Certificados = () => {
         },
         body: JSON.stringify({
           ...formValues,
+          fechaEmision: formValues.fechaEmision,
         }),
       });
 
       if (response.ok) {
-        const nuevoCertificado = await response.json();
-        setCertificados([...certificados, nuevoCertificado]);
+        await fetchCertificados();
         setFormValues({
           fechaEmision: "",
           usuarioId: formValues.usuarioId,
@@ -215,7 +216,6 @@ const Certificados = () => {
           nombreEmisorCertificado: formValues.nombreEmisorCertificado,
           codigoVerificacion: "",
         });
-        setAuditorias([...auditorias, nuevoCertificado.nuevaAuditoria]);
         clearForm();
         setMessage("Certificado guardado exitosamente!");
         setSeverity("success");
@@ -252,10 +252,7 @@ const Certificados = () => {
       });
 
       if (response.ok) {
-        const updatedCertificado = await response.json();
-        setCertificados(certificados.map(certificado => 
-          certificado._id === updatedCertificado._id ? updatedCertificado : certificado
-        ));
+        await fetchCertificados();
         clearForm();
         setMessage("Certificado actualizado exitosamente!");
         setSeverity("success");
@@ -277,8 +274,8 @@ const Certificados = () => {
     setFormValues({
       fechaEmision: certificado.fechaEmision,
       usuarioId: certificado.usuarioId,
-      cursoId: certificado.cursoId,
-      estudianteId: certificado.estudianteId,
+      cursoId: certificado.cursoId._id,
+      estudianteId: certificado.estudianteId._id,
       nombreEmisorCertificado: certificado.nombreEmisorCertificado, 
       codigoVerificacion: certificado.codigoVerificacion,
     });
@@ -433,7 +430,7 @@ const Certificados = () => {
                       {certificado.codigoVerificacion}
                     </TableCell>
                     <TableCell>
-                      {new Date(certificado.fechaEmision).toLocaleDateString()}
+                      {certificado.fechaEmision}
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(certificado)} color="primary">
