@@ -1,0 +1,168 @@
+.attendance-manager {
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .new-tab-btn {
+    background-color: #1d526e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    padding: 5px 10px;
+    width: 200px;
+  }
+  
+  .filter-select {
+    margin-right: 10px;
+  }
+  
+  .download-btn {
+    background-color: #1d526e;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .date-header {
+    background-color: #e6e6e6;
+  }
+  
+  .status-select {
+    padding: 5px;
+    border-radius: 15px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .status-select.present {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .status-select.absent {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  .star-rating {
+    display: flex;
+    gap: 2px;
+  }
+  
+  .star {
+    color: #ddd;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  .star.active {
+    color: #ffd700;
+  }
+  
+  .observation-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pagination select,
+  .pagination button {
+    padding: 5px;
+    margin: 0 5px;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+  }
+  
+  .modal-content input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .modal-content button {
+    margin-right: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .controls {
+      flex-direction: column;
+    }
+  
+    .search-input,
+    .filter-select,
+    .download-btn {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+  
+  

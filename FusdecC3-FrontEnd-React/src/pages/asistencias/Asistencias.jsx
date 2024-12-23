@@ -1,449 +1,373 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
-import {
-  Container,
-  TextField,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Switch,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  Snackbar,
-  Alert,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Checkbox,
-  ListItemText,
-  TablePagination
-} from "@mui/material";
-import { Edit, Delete, Info, Event, Group, School } from "@mui/icons-material";
+import './Asistencias.css';
 
 const token = localStorage.getItem("token");
 
 const Asistencias = () => {
-  const [asistencias, setAsistencias] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
-  const [selectedAsistencia, setSelectedAsistencia] = useState(null);
-  const [formValues, setFormValues] = useState({
-    tituloAsistencia: "",
-    fechaAsistencia: "",
-    usuarioId: "", 
-    estadoAsistencia: true,
-    estudiantes: [],
-  });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [asistenciaToDelete, setAsistenciaToDelete] = useState(null);
-  const [openInfoDialog, setOpenInfoDialog] = useState(false);
-
-  // Paginación y búsqueda
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  // Añade estado para almacenar el rol del usuario y su id
-  const [userRole, setUserRole] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [newTabData, setNewTabData] = useState({ title: '', date: '' });
+  const [showNewTabModal, setShowNewTabModal] = useState(false);
 
   useEffect(() => {
-    fetchEstudiantes();
-     // Decodificar el token y obtener el ID de usuario
-     if (token) {
+    fetchStudents();
+    if (token) {
       const decodedToken = jwtDecode(token);
-      setFormValues((prevFormValues) => ({
-        ...prevFormValues,
-        usuarioId: decodedToken.id, 
-      }));
-      setUserRole(decodedToken.roles);
-      setUserId(decodedToken.id)
+      fetchAttendanceData(decodedToken.id);
     }
-    if (userRole && userId) {
-      fetchAsistencias();
-    }
-  }, [userRole, userId]);
+  }, []);
 
-  const fetchAsistencias = async () => {
+  const fetchStudents = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener asistencias");
-      let data = await response.json();
-
-      if (userRole.includes("Instructor")) {
-        data = data.filter((asistencia) => asistencia.usuarioId === userId);
-      }
-      setAsistencias(data);
-    } catch (error) {
-      setErrorMessage("Error al obtener asistencias", error);
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchEstudiantes = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/estudiantes",
-        {
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }
-      );
-      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const response = await fetch("http://localhost:3000/api/estudiantes", {
+        headers: { "Authorization": token }
+      });
+      if (!response.ok) throw new Error("Error fetching students");
       const data = await response.json();
-      setEstudiantes(data);
+      setStudents(data);
     } catch (error) {
-      setErrorMessage("Error al obtener estudiantes", error);
-      setOpenSnackbar(true);
+      console.error("Error:", error);
     }
   };
 
-  // Filtrar asistencia según el término de búsqueda
-  const filteredAsistencias = asistencias.filter((asistencia) =>
-    asistencia.tituloAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    asistencia.fechaAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) 
-  );
+  const fetchAttendanceData = async (userId) => {
+    try {
+      const [attendanceResponse, absenceResponse] = await Promise.all([
+        fetch("http://localhost:3000/api/asistencias", {
+          headers: { "Authorization": token }
+        }),
+        fetch("http://localhost:3000/api/inasistencias", {
+          headers: { "Authorization": token }
+        })
+      ]);
 
-  // Cambiar página
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+      if (!attendanceResponse.ok || !absenceResponse.ok) 
+        throw new Error("Error fetching attendance data");
+
+      const attendanceData = await attendanceResponse.json();
+      const absenceData = await absenceResponse.json();
+
+      // Combine and process the data
+      const combinedData = processAttendanceData(attendanceData, absenceData, userId);
+      setAttendanceData(combinedData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
-  // Cambiar filas por página
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const processAttendanceData = (attendanceData, absenceData, userId) => {
+    // Combine attendance and absence data, format it for the table
+    // This is a placeholder implementation - adjust according to your data structure
+    return attendanceData.map(attendance => ({
+      id: attendance._id,
+      date: new Date(attendance.fechaAsistencia),
+      students: attendance.estudiantes.map(student => ({
+        id: student._id,
+        name: student.nombreEstudiante,
+        status: absenceData.some(absence => 
+          absence.asistenciaId === attendance._id && 
+          absence.estudiantes.includes(student._id)
+        ) ? 'absent' : 'present',
+        participation: Math.floor(Math.random() * 5) + 1, // Placeholder - replace with actual data
+        observation: ''
+      }))
+    }));
   };
 
-  const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSwitchChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.checked,
-    });
-  };
-
-  const handleEstudianteChange = (e) => {
-    const { target: { value } } = e;
-    setFormValues({
-      ...formValues,
-      estudiantes: typeof value === "string" ? value.split(",") : value,
-    });
-  };
-
-  const handleCreateAsistencia = async () => {
+  const handleCreateNewTab = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/asistencias", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-          "Authorization": token 
-         },
-        body: JSON.stringify(formValues),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token
+        },
+        body: JSON.stringify({
+          tituloAsistencia: newTabData.title,
+          fechaAsistencia: newTabData.date,
+          usuarioId: jwtDecode(token).id,
+          estadoAsistencia: true,
+          estudiantes: students.map(student => student._id)
+        })
       });
 
-      if (response.ok) {
-        await fetchAsistencias();
-        setFormValues({
-          tituloAsistencia: "",
-          fechaAsistencia: "",
-          usuarioId: formValues.usuarioId,
-          estadoAsistencia: true,
-          estudiantes: [],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear asistencia");
-      }
+      if (!response.ok) throw new Error("Error creating new attendance tab");
+
+      setShowNewTabModal(false);
+      setNewTabData({ title: '', date: '' });
+      fetchAttendanceData(jwtDecode(token).id);
     } catch (error) {
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+      console.error("Error:", error);
     }
   };
 
-  const handleUpdateAsistencia = async () => {
+  const handleAttendanceChange = async (attendanceId, studentId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/asistencias/${selectedAsistencia._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json",
-          "Authorization": token 
-         },
-        body: JSON.stringify(formValues),
-      });
+      if (newStatus === 'absent') {
+        // Create inasistencia
+        await fetch("http://localhost:3000/api/inasistencias", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token
+          },
+          body: JSON.stringify({
+            tituloInasistencia: `Inasistencia ${new Date().toISOString()}`,
+            asistenciaId: attendanceId,
+            usuarioId: jwtDecode(token).id,
+            estadoInasistencia: true,
+            estudiantes: [studentId]
+          })
+        });
+      } else {
+        // Remove inasistencia if exists
+        const inasistencias = await fetch("http://localhost:3000/api/inasistencias", {
+          headers: { "Authorization": token }
+        }).then(res => res.json());
 
-      if (response.ok) {
-        await fetchAsistencias();
-        const updatedAsistencia = await response.json();
-        const updatedAsistencias = asistencias.map((asistencia) =>
-          asistencia._id === updatedAsistencia._id ? updatedAsistencia : asistencia
+        const inasistenciaToDelete = inasistencias.find(
+          i => i.asistenciaId === attendanceId && i.estudiantes.includes(studentId)
         );
-        setAsistencias(updatedAsistencias);
-        setSelectedAsistencia(null);
-        setFormValues({
-          tituloAsistencia: "",
-          fechaAsistencia: "",
-          usuarioId: "",
-          estadoAsistencia: true,
-          estudiantes: [],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar asistencia");
+
+        if (inasistenciaToDelete) {
+          await fetch(`http://localhost:3000/api/inasistencias/${inasistenciaToDelete._id}`, {
+            method: "DELETE",
+            headers: { "Authorization": token }
+          });
+        }
       }
+
+      // Update local state
+      setAttendanceData(prevData => 
+        prevData.map(attendance => 
+          attendance.id === attendanceId
+            ? {
+                ...attendance,
+                students: attendance.students.map(student => 
+                  student.id === studentId
+                    ? { ...student, status: newStatus }
+                    : student
+                )
+              }
+            : attendance
+        )
+      );
     } catch (error) {
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+      console.error("Error updating attendance:", error);
     }
   };
 
-  const handleDeleteAsistencia = async () => {
-    if (!asistenciaToDelete) return;
-    try {
-      const response = await fetch(`http://localhost:3000/api/asistencias/${asistenciaToDelete._id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json",
-          "Authorization": token 
-         },
-      });
-      if (response.ok) {
-        setAsistencias(asistencias.filter((asistencia) => asistencia._id !== asistenciaToDelete._id));
-        handleCloseDeleteDialog();
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar asistencia");
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
-    }
+  const handleParticipationChange = (attendanceId, studentId, newParticipation) => {
+    setAttendanceData(prevData => 
+      prevData.map(attendance => 
+        attendance.id === attendanceId
+          ? {
+              ...attendance,
+              students: attendance.students.map(student => 
+                student.id === studentId
+                  ? { ...student, participation: newParticipation }
+                  : student
+              )
+            }
+          : attendance
+      )
+    );
+    // Here you would typically also update this in your backend
   };
 
-  const handleEditClick = (asistencia) => {
-    setSelectedAsistencia(asistencia);
-    setFormValues({
-      tituloAsistencia: asistencia.tituloAsistencia,
-      fechaAsistencia: asistencia.fechaAsistencia,
-      usuarioId: asistencia.usuarioId,
-      estadoAsistencia: asistencia.estadoAsistencia,
-      estudiantes: asistencia.estudiantes.map((estudiante) => estudiante._id),
-    });
+  const handleObservationChange = (attendanceId, studentId, newObservation) => {
+    setAttendanceData(prevData => 
+      prevData.map(attendance => 
+        attendance.id === attendanceId
+          ? {
+              ...attendance,
+              students: attendance.students.map(student => 
+                student.id === studentId
+                  ? { ...student, observation: newObservation }
+                  : student
+              )
+            }
+          : attendance
+      )
+    );
+    // Here you would typically also update this in your backend
   };
 
-  const handleInfoClick = (asistencia) => {
-    setSelectedAsistencia(asistencia);
-    setOpenInfoDialog(true);
-  };
+  const filteredAttendanceData = attendanceData.filter(attendance =>
+    attendance.students.some(student => 
+      student.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
 
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setAsistenciaToDelete(null);
-  };
+  const paginatedAttendanceData = filteredAttendanceData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
-  const handleCloseInfoDialog = () => {
-    setOpenInfoDialog(false);
+  const pageCount = Math.ceil(filteredAttendanceData.length / rowsPerPage);
+
+  const renderStarRating = (value, onChange) => {
+    return (
+      <div className="star-rating">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={`star ${star <= value ? 'active' : ''}`}
+            onClick={() => onChange(star)}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    );
   };
 
   return (
-    <Container>
-      <h1>Gestión de Asistencias</h1>
-      <form noValidate autoComplete="off">
-        <TextField
-          label="Título de Asistencia"
-          name="tituloAsistencia"
-          value={formValues.tituloAsistencia}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
+    <div className="attendance-manager">
+      <div className="header">
+        <h1>Asistencia de Estudiantes</h1>
+        <button className="new-tab-btn" onClick={() => setShowNewTabModal(true)}>+ New Tab</button>
+      </div>
+
+      <div className="controls">
+        <input
+          type="text"
+          placeholder="Buscar"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
         />
-        <TextField
-          label="Fecha de Asistencia"
-          name="fechaAsistencia"
-          type="date"
-          value={formValues.fechaAsistencia}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Estudiantes</InputLabel>
-          <Select
-            multiple
-            value={formValues.estudiantes}
-            onChange={handleEstudianteChange}
-            input={<OutlinedInput label="Estudiantes" />}
-            renderValue={(selected) =>
-              estudiantes
-                .filter((est) => selected.includes(est._id))
-                .map((est) => est.nombreEstudiante)
-                .join(", ")
-            }
-          >
-            {estudiantes.map((est) => (
-              <MenuItem key={est._id} value={est._id}>
-                <Checkbox checked={formValues.estudiantes.indexOf(est._id) > -1} />
-                <ListItemText primary={est.nombreEstudiante} />
-              </MenuItem>
+        <div>
+          <select className="filter-select">
+            <option value="">Filtro</option>
+          </select>
+          <button className="download-btn">↓ Descargar Todo</button>
+        </div>
+      </div>
+
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              {paginatedAttendanceData.map(attendance => (
+                <th key={attendance.id} className="date-header">
+                  {new Date(attendance.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric' }).toUpperCase()}
+                </th>
+              ))}
+            </tr>
+            <tr>
+              <th></th>
+              {paginatedAttendanceData.map(attendance => (
+                <React.Fragment key={attendance.id}>
+                  <th>Estado</th>
+                  <th>Participación</th>
+                  <th>Observaciones</th>
+                </React.Fragment>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {students.map(student => (
+              <tr key={student._id}>
+                <td>{student.nombreEstudiante}</td>
+                {paginatedAttendanceData.map(attendance => {
+                  const studentAttendance = attendance.students.find(s => s.id === student._id);
+                  return (
+                    <React.Fragment key={attendance.id}>
+                      <td>
+                        <select
+                          value={studentAttendance?.status || 'present'}
+                          onChange={(e) => handleAttendanceChange(attendance.id, student._id, e.target.value)}
+                          className={`status-select ${studentAttendance?.status || 'present'}`}
+                        >
+                          <option value="present">Asistió</option>
+                          <option value="absent">Faltó</option>
+                        </select>
+                      </td>
+                      <td>
+                        {renderStarRating(
+                          studentAttendance?.participation || 0,
+                          (newValue) => handleParticipationChange(attendance.id, student._id, newValue)
+                        )}
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={studentAttendance?.observation || ''}
+                          onChange={(e) => handleObservationChange(attendance.id, student._id, e.target.value)}
+                          placeholder="Observaciones..."
+                          className="observation-input"
+                        />
+                      </td>
+                    </React.Fragment>
+                  );
+                })}
+              </tr>
             ))}
-          </Select>
-        </FormControl>
-        <Box marginTop={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={selectedAsistencia ? handleUpdateAsistencia : handleCreateAsistencia}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="pagination">
+        <div>
+          Rows per page: 
+          <select 
+            value={rowsPerPage} 
+            onChange={(e) => setRowsPerPage(Number(e.target.value))}
           >
-            {selectedAsistencia ? "Actualizar Asistencia" : "Crear Asistencia"}
-          </Button>
-        </Box>
-      </form>
-      <br></br>
-      {/* Busqueda */}
-      <TextField
-        label="Buscar usuarios"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      {/* cuerpo */}
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Título</TableCell>
-              <TableCell>Fecha</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {filteredAsistencias
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((asistencia) => (
-              <TableRow key={asistencia._id}>
-                <TableCell>{asistencia.tituloAsistencia}</TableCell>
-                <TableCell>{asistencia.fechaAsistencia}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(asistencia)} color="primary">
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleInfoClick(asistencia)} color="primary">
-                    <Info />
-                  </IconButton>
-                  <IconButton onClick={() => setOpenDeleteDialog(true) & setAsistenciaToDelete(asistencia)} color="error">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {/* Paginación */}
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredAsistencias.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </TableContainer>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+          </select>
+        </div>
+        <div>
+          {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredAttendanceData.length)} of {filteredAttendanceData.length}
+        </div>
+        <div>
+          <button 
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            &lt;
+          </button>
+          <button 
+            onClick={() => setCurrentPage(prev => Math.min(pageCount, prev + 1))}
+            disabled={currentPage === pageCount}
+          >
+            &gt;
+          </button>
+        </div>
+      </div>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-          Detalles de la Asistencia
-        </DialogTitle>
-        <DialogContent sx={{ padding: '20px' }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <School color="primary" sx={{ mr: 1 }} />
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Título:
-            </Typography>
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {selectedAsistencia?.tituloAsistencia || "N/A"}
-            </Typography>
-          </Box>
-          
-          <Box display="flex" alignItems="center" mb={2}>
-            <Event color="primary" sx={{ mr: 1 }} />
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Fecha:
-            </Typography>
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {selectedAsistencia?.fechaAsistencia || "N/A"}
-            </Typography>
-          </Box>
-          
-          <Box display="flex" alignItems="center" mb={2}>
-            <Group color="primary" sx={{ mr: 1 }} />
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Estudiantes:
-            </Typography>
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ") || "Sin estudiantes"}
-            </Typography>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Asistencia</DialogTitle>
-        <DialogContent>
-          ¿Estás seguro de que quieres eliminar esta asistencia?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteAsistencia} color="error">Eliminar</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity="error" onClose={() => setOpenSnackbar(false)}>
-          {errorMessage}
-        </Alert>
-      </Snackbar>
-    </Container>
+      {showNewTabModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Nueva Pestaña de Asistencia</h2>
+            <input
+              type="text"
+              placeholder="Título"
+              value={newTabData.title}
+              onChange={(e) => setNewTabData({...newTabData, title: e.target.value})}
+            />
+            <input
+              type="date"
+              value={newTabData.date}
+              onChange={(e) => setNewTabData({...newTabData, date: e.target.value})}
+            />
+            <div>
+              <button onClick={handleCreateNewTab}>Crear</button>
+              <button onClick={() => setShowNewTabModal(false)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
 export default Asistencias;
-
