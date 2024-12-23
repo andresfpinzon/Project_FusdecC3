@@ -410,7 +410,7 @@ const Calificaciones = () => {
                 <TableCell>{calificacion.aprobado  ? "Si" : "No"}</TableCell>
                 <TableCell>{calificacion.estadoCalificacion ? "Activa" : "Inactiva"}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditClick(calificacion)}>
+                  <IconButton onClick={() => handleEditClick(calificacion)} color="primary">
                     <Edit />
                   </IconButton>
                   <IconButton onClick={() => handleInfoClick(calificacion)} color="primary">
@@ -418,7 +418,7 @@ const Calificaciones = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteClick(calificacion)}
-                    color="secondary"
+                    color="error"
                   >
                     <Delete />
                   </IconButton>
@@ -448,7 +448,7 @@ const Calificaciones = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteCalificacion} color="secondary">Eliminar</Button>
+          <Button onClick={handleDeleteCalificacion} color="error">Eliminar</Button>
         </DialogActions>
       </Dialog>
 
