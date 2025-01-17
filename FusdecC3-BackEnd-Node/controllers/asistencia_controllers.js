@@ -6,32 +6,36 @@ const listarAsistencias = async (req, res) => {
   try {
     const asistencias = await logic.listarAsistenciasActivas();
     if (asistencias.length === 0) {
-      return res.status(204).send(); // 204 No Content
+      return res.status(204).json({ message: 'No hay asistencias disponibles' });
     }
     res.json(asistencias);
   } catch (err) {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({ error: 'Error interno del servidor', details: err.message });
   }
 };
 
 // Controlador para crear una asistencia
 const crearAsistencia = async (req, res) => {
-  const body = req.body;
-  const { error, value } = asistenciaSchemaValidation.validate({
-    tituloAsistencia: body.tituloAsistencia,
-    fechaAsistencia: body.fechaAsistencia,
-    usuarioId: body.usuarioId,
-    estadoAsistencia: body.estadoAsistencia,
-    estudiantes: body.estudiantes
-  });
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message });
-  }
+  const { estudianteId, fecha, estado } = req.body; // estado puede ser 'asistio' o 'falto'
+
+  console.log("Datos recibidos:", req.body); // Agrega esta línea para depuración
+
   try {
-    const nuevaAsistencia = await logic.crearAsistencia(value);
-    res.status(201).json(nuevaAsistencia);
-  } catch (err) {
-    res.status(500).json({ error: 'Error interno del servidor' });
+    if (estado === 'asistio') {
+      // Lógica para guardar asistencia
+      const nuevaAsistencia = new Asistencia({ estudianteId, fecha });
+      await nuevaAsistencia.save();
+      return res.status(201).json(nuevaAsistencia);
+    } else if (estado === 'falto') {
+      // Lógica para guardar inasistencia
+      const nuevaInasistencia = new Inasistencia({ estudianteId, fecha });
+      await nuevaInasistencia.save();
+      return res.status(201).json(nuevaInasistencia);
+    } else {
+      return res.status(400).json({ error: 'Estado no válido' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor', details: error.message });
   }
 };
 

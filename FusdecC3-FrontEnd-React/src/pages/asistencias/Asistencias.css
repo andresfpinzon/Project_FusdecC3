@@ -1,168 +1,196 @@
-.attendance-manager {
-    font-family: Arial, sans-serif;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 20px;
+.attendance-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.date-selector {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.date-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.date-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.attendance-grid {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.attendance-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #374151;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.student-info {
+  min-width: 200px;
+}
+
+.student-name {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.college-info {
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.attendance-status {
+  width: 120px;
+  text-align: center;
+}
+
+.status-present,
+.status-absent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  justify-content: center;
+}
+
+.status-present {
+  color: #059669;
+  background-color: #d1fae5;
+}
+
+.status-absent {
+  color: #dc2626;
+  background-color: #fee2e2;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.mark-present-btn,
+.mark-absent-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.mark-present-btn {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.mark-present-btn:hover {
+  background-color: #a7f3d0;
+}
+
+.mark-absent-btn {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.mark-absent-btn:hover {
+  background-color: #fecaca;
+}
+
+.actions-column {
+  width: 150px;
+  text-align: center;
+}
+
+tr.present {
+  background-color: #f0fdf4;
+}
+
+.error-message {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+  z-index: 50;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
   }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
-  
-  .new-tab-btn {
-    background-color: #1d526e;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .date-selector {
+    padding: 1rem;
   }
-  
-  .controls {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+
+  .attendance-table th,
+  .attendance-table td {
+    padding: 0.75rem 0.5rem;
   }
-  
-  .search-input {
-    padding: 5px 10px;
-    width: 200px;
+
+  .student-info {
+    min-width: 150px;
   }
-  
-  .filter-select {
-    margin-right: 10px;
-  }
-  
-  .download-btn {
-    background-color: #1d526e;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .table-container {
-    overflow-x: auto;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-  }
-  
-  .date-header {
-    background-color: #e6e6e6;
-  }
-  
-  .status-select {
-    padding: 5px;
-    border-radius: 15px;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  
-  .status-select.present {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-  }
-  
-  .status-select.absent {
-    background-color: #ffebee;
-    color: #c62828;
-  }
-  
-  .star-rating {
-    display: flex;
-    gap: 2px;
-  }
-  
-  .star {
-    color: #ddd;
-    cursor: pointer;
-    font-size: 18px;
-  }
-  
-  .star.active {
-    color: #ffd700;
-  }
-  
-  .observation-input {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  .pagination select,
-  .pagination button {
-    padding: 5px;
-    margin: 0 5px;
-  }
-  
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 300px;
-  }
-  
-  .modal-content input {
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .modal-content button {
-    margin-right: 10px;
-  }
-  
-  @media (max-width: 768px) {
-    .controls {
-      flex-direction: column;
-    }
-  
-    .search-input,
-    .filter-select,
-    .download-btn {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-  }
-  
-  
+}
+

@@ -3,6 +3,10 @@ const Estudiante = require("../models/estudiante_model");
 
 // Función asíncrona para crear una asistencia
 async function crearAsistencia(body) {
+    // Validar que el cuerpo tenga los campos necesarios
+    if (!body.tituloAsistencia || !body.fechaAsistencia) {
+        throw new Error('Faltan campos requeridos: tituloAsistencia o fechaAsistencia');
+    }
     // Crear una nueva asistencia
     let asistencia = new Asistencia({
         tituloAsistencia: body.tituloAsistencia,
@@ -26,6 +30,9 @@ async function crearAsistencia(body) {
 
 // Función asíncrona para actualizar una asistencia
 async function actualizarAsistencia(id, body) {
+    if (!id) {
+        throw new Error('ID de asistencia es requerido');
+    }
     let asistencia = await Asistencia.findById(id).populate('estudiantes');
     if (!asistencia) {
         throw new Error('Asistencia no encontrada');

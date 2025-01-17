@@ -1,373 +1,386 @@
 import React, { useState, useEffect } from 'react';
-import { jwtDecode } from "jwt-decode";
+import { Search, Plus, Edit2, Trash2, Info, Calendar, Users, CheckCircle, XCircle, School } from 'lucide-react';
+import { jwtDecode } from 'jwt-decode';
 import './Asistencias.css';
+import axios from 'axios';
 
-const token = localStorage.getItem("token");
+const Asistencia = () => {
+  // Estados principales
+  const [asistencias, setAsistencias] = useState([]);
+  const [estudiantes, setEstudiantes] = useState([]);
+  const [selectedAsistencia, setSelectedAsistencia] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showError, setShowError] = useState(false);
+  
+  // Estados para la fecha y selección de días
+  const [weekendDates, setWeekendDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
 
-const Asistencias = () => {
-  const [attendanceData, setAttendanceData] = useState([]);
-  const [students, setStudents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [newTabData, setNewTabData] = useState({ title: '', date: '' });
-  const [showNewTabModal, setShowNewTabModal] = useState(false);
+  // Estados de autenticación
+  const token = localStorage.getItem('token');
+  const [userId, setUserId] = useState(null);
+  const [userRole, setUserRole] = useState(null);
 
+  // Formularios para asistencia e inasistencia
+  const [formData, setFormData] = useState({
+    tituloAsistencia: '',
+    fechaAsistencia: '',
+    usuarioId: '',
+    estadoAsistencia: true,
+    estudiantes: [],
+  });
+
+  const [inasistenciaForm, setInasistenciaForm] = useState({
+    tituloInasistencia: '',
+    observacion: '',
+    usuarioId: '',
+    asistenciaId: '',
+    estadoInasistencia: true,
+    estudiantes: [],
+  });
+
+  const [unidades, setUnidades] = useState([]);
+  const [selectedUnidad, setSelectedUnidad] = useState('');
+
+  // Función para obtener los próximos fines de semana
+  const getUpcomingWeekends = (startDate) => {
+    const dates = [];
+    let currentDate = new Date(startDate);
+    
+    // Obtener los próximos 12 fines de semana
+    while (dates.length < 24) { // 12 semanas * 2 días
+      if (currentDate.getDay() === 6 || currentDate.getDay() === 0) { // 6 = Sábado, 0 = Domingo
+        dates.push(new Date(currentDate));
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+  };
+
+  // Efecto para inicializar fechas
   useEffect(() => {
-    fetchStudents();
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      fetchAttendanceData(decodedToken.id);
+    const startDate = new Date('2025-01-16'); // Fecha inicial proporcionada
+    const weekends = getUpcomingWeekends(startDate);
+    setWeekendDates(weekends);
+    if (weekends.length > 0) {
+      setSelectedDate(weekends[0].toISOString().split('T')[0]);
     }
   }, []);
 
-  const fetchStudents = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/estudiantes", {
-        headers: { "Authorization": token }
-      });
-      if (!response.ok) throw new Error("Error fetching students");
-      const data = await response.json();
-      setStudents(data);
-    } catch (error) {
-      console.error("Error:", error);
+  // Efecto para manejar la autenticación
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.id);
+      setUserRole(decodedToken.roles);
+      setFormData(prev => ({
+        ...prev,
+        usuarioId: decodedToken.id
+      }));
+      setInasistenciaForm(prev => ({
+        ...prev,
+        usuarioId: decodedToken.id
+      }));
     }
-  };
+  }, [token]);
 
-  const fetchAttendanceData = async (userId) => {
-    try {
-      const [attendanceResponse, absenceResponse] = await Promise.all([
-        fetch("http://localhost:3000/api/asistencias", {
-          headers: { "Authorization": token }
-        }),
-        fetch("http://localhost:3000/api/inasistencias", {
-          headers: { "Authorization": token }
-        })
-      ]);
-
-      if (!attendanceResponse.ok || !absenceResponse.ok) 
-        throw new Error("Error fetching attendance data");
-
-      const attendanceData = await attendanceResponse.json();
-      const absenceData = await absenceResponse.json();
-
-      // Combine and process the data
-      const combinedData = processAttendanceData(attendanceData, absenceData, userId);
-      setAttendanceData(combinedData);
-    } catch (error) {
-      console.error("Error:", error);
+  // Efecto para cargar datos
+  useEffect(() => {
+    if (userRole && userId) {
+      fetchAsistencias();
+      fetchEstudiantes();
     }
-  };
+  }, [userRole, userId, selectedDate]);
 
-  const processAttendanceData = (attendanceData, absenceData, userId) => {
-    // Combine attendance and absence data, format it for the table
-    // This is a placeholder implementation - adjust according to your data structure
-    return attendanceData.map(attendance => ({
-      id: attendance._id,
-      date: new Date(attendance.fechaAsistencia),
-      students: attendance.estudiantes.map(student => ({
-        id: student._id,
-        name: student.nombreEstudiante,
-        status: absenceData.some(absence => 
-          absence.asistenciaId === attendance._id && 
-          absence.estudiantes.includes(student._id)
-        ) ? 'absent' : 'present',
-        participation: Math.floor(Math.random() * 5) + 1, // Placeholder - replace with actual data
-        observation: ''
-      }))
-    }));
-  };
-
-  const handleCreateNewTab = async () => {
+  // Función para obtener asistencias
+  const fetchAsistencias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/api/asistencias', {
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
+          'Authorization': token,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) throw new Error('Error al obtener asistencias');
+      let data = await response.json();
+      
+      if (userRole.includes('Instructor')) {
+        data = data.filter(asistencia => asistencia.usuarioId === userId);
+      }
+      
+      setAsistencias(data);
+    } catch (error) {
+      setErrorMessage('Error al cargar las asistencias');
+      setShowError(true);
+    }
+  };
+
+  // Función para obtener estudiantes
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/estudiantes', {
+        headers: {
+          'Authorization': token,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) throw new Error('Error al obtener estudiantes');
+      const data = await response.json();
+      setEstudiantes(data);
+    } catch (error) {
+      setErrorMessage('Error al cargar los estudiantes');
+      setShowError(true);
+    }
+  };
+
+  // Función para manejar la creación/actualización de asistencia
+  const handleSubmit = async (e, estudiante) => {
+    e.preventDefault();
+    try {
+      const date = new Date(selectedDate);
+      const weekNumber = Math.ceil((date.getDate() - date.getDay()) / 7);
+      const dayName = date.getDay() === 0 ? 'Domingo' : 'Sábado';
+      
+      const attendanceData = {
+        tituloAsistencia: `Semana ${weekNumber} - ${dayName}`,
+        fechaAsistencia: selectedDate,
+        usuarioId: userId,
+        estadoAsistencia: true,
+        estudiantes: [estudiante._id]
+      };
+
+      const response = await fetch('http://localhost:3000/api/asistencias', {
+        method: 'POST',
+        headers: {
+          'Authorization': token,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          tituloAsistencia: newTabData.title,
-          fechaAsistencia: newTabData.date,
-          usuarioId: jwtDecode(token).id,
-          estadoAsistencia: true,
-          estudiantes: students.map(student => student._id)
-        })
+        body: JSON.stringify(attendanceData)
       });
 
-      if (!response.ok) throw new Error("Error creating new attendance tab");
-
-      setShowNewTabModal(false);
-      setNewTabData({ title: '', date: '' });
-      fetchAttendanceData(jwtDecode(token).id);
+      if (!response.ok) throw new Error('Error al registrar asistencia');
+      await fetchAsistencias();
     } catch (error) {
-      console.error("Error:", error);
+      setErrorMessage(error.message);
+      setShowError(true);
     }
   };
 
-  const handleAttendanceChange = async (attendanceId, studentId, newStatus) => {
+  // Función para marcar inasistencia
+  const handleMarkAbsent = async (estudiante) => {
     try {
-      if (newStatus === 'absent') {
-        // Create inasistencia
-        await fetch("http://localhost:3000/api/inasistencias", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token
-          },
-          body: JSON.stringify({
-            tituloInasistencia: `Inasistencia ${new Date().toISOString()}`,
-            asistenciaId: attendanceId,
-            usuarioId: jwtDecode(token).id,
-            estadoInasistencia: true,
-            estudiantes: [studentId]
-          })
-        });
-      } else {
-        // Remove inasistencia if exists
-        const inasistencias = await fetch("http://localhost:3000/api/inasistencias", {
-          headers: { "Authorization": token }
-        }).then(res => res.json());
+      const date = new Date(selectedDate);
+      const weekNumber = Math.ceil((date.getDate() - date.getDay()) / 7);
+      const dayName = date.getDay() === 0 ? 'Domingo' : 'Sábado';
 
-        const inasistenciaToDelete = inasistencias.find(
-          i => i.asistenciaId === attendanceId && i.estudiantes.includes(studentId)
-        );
+      const inasistenciaData = {
+        tituloInasistencia: `Inasistencia - Semana ${weekNumber} - ${dayName}`,
+        observacion: 'Falta no justificada',
+        usuarioId: userId,
+        fechaInasistencia: selectedDate,
+        estudiantes: [estudiante._id]
+      };
 
-        if (inasistenciaToDelete) {
-          await fetch(`http://localhost:3000/api/inasistencias/${inasistenciaToDelete._id}`, {
-            method: "DELETE",
-            headers: { "Authorization": token }
-          });
-        }
-      }
+      const response = await fetch('http://localhost:3000/api/inasistencias', {
+        method: 'POST',
+        headers: {
+          'Authorization': token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(inasistenciaData)
+      });
 
-      // Update local state
-      setAttendanceData(prevData => 
-        prevData.map(attendance => 
-          attendance.id === attendanceId
-            ? {
-                ...attendance,
-                students: attendance.students.map(student => 
-                  student.id === studentId
-                    ? { ...student, status: newStatus }
-                    : student
-                )
-              }
-            : attendance
-        )
-      );
+      if (!response.ok) throw new Error('Error al registrar inasistencia');
+      await fetchAsistencias();
     } catch (error) {
-      console.error("Error updating attendance:", error);
+      setErrorMessage('Error al registrar inasistencia');
+      setShowError(true);
     }
   };
 
-  const handleParticipationChange = (attendanceId, studentId, newParticipation) => {
-    setAttendanceData(prevData => 
-      prevData.map(attendance => 
-        attendance.id === attendanceId
-          ? {
-              ...attendance,
-              students: attendance.students.map(student => 
-                student.id === studentId
-                  ? { ...student, participation: newParticipation }
-                  : student
-              )
-            }
-          : attendance
-      )
-    );
-    // Here you would typically also update this in your backend
+  // Formatear fecha para mostrar
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
   };
 
-  const handleObservationChange = (attendanceId, studentId, newObservation) => {
-    setAttendanceData(prevData => 
-      prevData.map(attendance => 
-        attendance.id === attendanceId
-          ? {
-              ...attendance,
-              students: attendance.students.map(student => 
-                student.id === studentId
-                  ? { ...student, observation: newObservation }
-                  : student
-              )
+  // Efecto para cargar unidades
+  useEffect(() => {
+    const fetchUnidades = async () => {
+        try {
+            const response = await axios.get('/api/unidades', {
+                headers: {
+                    'Authorization': token,
+                },
+            });
+            if (Array.isArray(response.data)) {
+                setUnidades(response.data);
+            } else {
+                console.error('La respuesta no es un array:', response.data);
+                setUnidades([]);
             }
-          : attendance
-      )
-    );
-    // Here you would typically also update this in your backend
-  };
+        } catch (error) {
+            console.error('Error al obtener unidades:', error);
+            setUnidades([]);
+        }
+    };
+    fetchUnidades();
+  }, [token]);
 
-  const filteredAttendanceData = attendanceData.filter(attendance =>
-    attendance.students.some(student => 
-      student.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  // Efecto para cargar estudiantes al seleccionar una unidad
+  useEffect(() => {
+    const fetchEstudiantes = async () => {
+        if (selectedUnidad) {
+            try {
+                const response = await axios.get(`/api/unidades/${selectedUnidad}/estudiantes`, {
+                    headers: {
+                        'Authorization': token,
+                    },
+                });
+                setEstudiantes(response.data);
+            } catch (error) {
+                console.error('Error al obtener estudiantes:', error);
+                setEstudiantes([]);
+            }
+        }
+    };
+    fetchEstudiantes();
+  }, [selectedUnidad, token]);
 
-  const paginatedAttendanceData = filteredAttendanceData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
-  const pageCount = Math.ceil(filteredAttendanceData.length / rowsPerPage);
-
-  const renderStarRating = (value, onChange) => {
-    return (
-      <div className="star-rating">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <span
-            key={star}
-            className={`star ${star <= value ? 'active' : ''}`}
-            onClick={() => onChange(star)}
-          >
-            ★
-          </span>
-        ))}
-      </div>
-    );
+  // Función para manejar la selección de unidad
+  const handleUnidadChange = (e) => {
+    setSelectedUnidad(e.target.value);
   };
 
   return (
-    <div className="attendance-manager">
-      <div className="header">
-        <h1>Asistencia de Estudiantes</h1>
-        <button className="new-tab-btn" onClick={() => setShowNewTabModal(true)}>+ New Tab</button>
-      </div>
-
-      <div className="controls">
-        <input
-          type="text"
-          placeholder="Buscar"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        <div>
-          <select className="filter-select">
-            <option value="">Filtro</option>
+    <div className="attendance-container">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">Control de Asistencia - Fines de Semana</h1>
+      
+      {/* Selector de fecha y unidad */}
+      <div className="date-selector">
+        <div className="form-group">
+          <label htmlFor="dateSelect">Fecha:</label>
+          <select
+            id="dateSelect"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="date-select"
+          >
+            {weekendDates.map((date) => (
+              <option key={date.toISOString()} value={date.toISOString().split('T')[0]}>
+                {formatDate(date)}
+              </option>
+            ))}
           </select>
-          <button className="download-btn">↓ Descargar Todo</button>
+        </div>
+        <div className="form-group">
+          <label htmlFor="unidadSelect">Unidad:</label>
+          <select
+            id="unidadSelect"
+            onChange={handleUnidadChange}
+            value={selectedUnidad}
+            className="unidad-select"
+          >
+            <option value="">Selecciona una unidad</option>
+            {unidades.map((unidad) => (
+              <option key={unidad._id} value={unidad._id}>
+                {unidad.nombre}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      <div className="table-container">
-        <table>
+      {/* Tabla de asistencia */}
+      <div className="attendance-grid">
+        <table className="attendance-table">
           <thead>
             <tr>
-              <th></th>
-              {paginatedAttendanceData.map(attendance => (
-                <th key={attendance.id} className="date-header">
-                  {new Date(attendance.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric' }).toUpperCase()}
-                </th>
-              ))}
-            </tr>
-            <tr>
-              <th></th>
-              {paginatedAttendanceData.map(attendance => (
-                <React.Fragment key={attendance.id}>
-                  <th>Estado</th>
-                  <th>Participación</th>
-                  <th>Observaciones</th>
-                </React.Fragment>
-              ))}
+              <th className="student-info">Estudiante</th>
+              <th>Documento</th>
+              <th>Colegio</th>
+              <th>Correo</th>
+              <th className="attendance-status">Estado</th>
+              <th className="actions-column">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {students.map(student => (
-              <tr key={student._id}>
-                <td>{student.nombreEstudiante}</td>
-                {paginatedAttendanceData.map(attendance => {
-                  const studentAttendance = attendance.students.find(s => s.id === student._id);
-                  return (
-                    <React.Fragment key={attendance.id}>
-                      <td>
-                        <select
-                          value={studentAttendance?.status || 'present'}
-                          onChange={(e) => handleAttendanceChange(attendance.id, student._id, e.target.value)}
-                          className={`status-select ${studentAttendance?.status || 'present'}`}
-                        >
-                          <option value="present">Asistió</option>
-                          <option value="absent">Faltó</option>
-                        </select>
-                      </td>
-                      <td>
-                        {renderStarRating(
-                          studentAttendance?.participation || 0,
-                          (newValue) => handleParticipationChange(attendance.id, student._id, newValue)
-                        )}
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          value={studentAttendance?.observation || ''}
-                          onChange={(e) => handleObservationChange(attendance.id, student._id, e.target.value)}
-                          placeholder="Observaciones..."
-                          className="observation-input"
-                        />
-                      </td>
-                    </React.Fragment>
-                  );
-                })}
-              </tr>
-            ))}
+            {estudiantes.map((estudiante) => {
+              const isPresent = asistencias.some(a => 
+                a.estudiantes.some(e => e._id === estudiante._id) &&
+                a.fechaAsistencia.split('T')[0] === selectedDate
+              );
+
+              return (
+                <tr key={estudiante._id} className={isPresent ? 'present' : ''}>
+                  <td className="student-info">
+                    <div className="student-name">
+                      {estudiante.nombreEstudiante} {estudiante.apellidoEstudiante}
+                    </div>
+                  </td>
+                  <td>{estudiante.numeroDocumento}</td>
+                  <td className="college-info">
+                    <School className="w-4 h-4 inline-block mr-2" />
+                    {estudiante.colegioId?.nombreColegio || 'No asignado'}
+                  </td>
+                  <td>{estudiante.correoEstudiante}</td>
+                  <td className="attendance-status">
+                    {isPresent ? (
+                      <span className="status-present">
+                        <CheckCircle className="w-5 h-5" />
+                        Presente
+                      </span>
+                    ) : (
+                      <span className="status-absent">
+                        <XCircle className="w-5 h-5" />
+                        Ausente
+                      </span>
+                    )}
+                  </td>
+                  <td className="actions">
+                    {!isPresent ? (
+                      <button
+                        onClick={(e) => handleSubmit(e, estudiante)}
+                        className="mark-present-btn"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        Marcar Presente
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleMarkAbsent(estudiante)}
+                        className="mark-absent-btn"
+                      >
+                        <XCircle className="w-4 h-4" />
+                        Marcar Ausente
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      <div className="pagination">
-        <div>
-          Rows per page: 
-          <select 
-            value={rowsPerPage} 
-            onChange={(e) => setRowsPerPage(Number(e.target.value))}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-          </select>
-        </div>
-        <div>
-          {(currentPage - 1) * rowsPerPage + 1}-{Math.min(currentPage * rowsPerPage, filteredAttendanceData.length)} of {filteredAttendanceData.length}
-        </div>
-        <div>
-          <button 
-            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-            disabled={currentPage === 1}
-          >
-            &lt;
+      {/* Mensajes de error */}
+      {showError && (
+        <div className="error-message">
+          {errorMessage}
+          <button onClick={() => setShowError(false)} className="error-close">
+            ×
           </button>
-          <button 
-            onClick={() => setCurrentPage(prev => Math.min(pageCount, prev + 1))}
-            disabled={currentPage === pageCount}
-          >
-            &gt;
-          </button>
-        </div>
-      </div>
-
-      {showNewTabModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Nueva Pestaña de Asistencia</h2>
-            <input
-              type="text"
-              placeholder="Título"
-              value={newTabData.title}
-              onChange={(e) => setNewTabData({...newTabData, title: e.target.value})}
-            />
-            <input
-              type="date"
-              value={newTabData.date}
-              onChange={(e) => setNewTabData({...newTabData, date: e.target.value})}
-            />
-            <div>
-              <button onClick={handleCreateNewTab}>Crear</button>
-              <button onClick={() => setShowNewTabModal(false)}>Cancelar</button>
-            </div>
-          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default Asistencias;
+export default Asistencia;
