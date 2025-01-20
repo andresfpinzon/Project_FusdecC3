@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const ObjetivoSchema = new Schema({
 
-  nombreObjetivo: {
+  tituloObjetivo: {
     type: String,
     required: true,
   },
@@ -21,7 +21,7 @@ const ObjetivoSchema = new Schema({
 
   cursoId: {
     type: Schema.Types.ObjectId,
-    ref: "Colegio",
+    ref: "Curso",
     required: true,
   },
 });
