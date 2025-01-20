@@ -67,6 +67,28 @@ async function listarObjetivosActivos() {
   return objetivos;
 }
 
+// Función asíncrona para guardar una colección de objetivos
+async function guardarObjetivos(objetivos) {
+  try {
+    const resultados = [];
+    for (let objetivoData of objetivos) {
+      // Verificar si ya existe un objetivo con el mismo título
+      const objetivoExistente = await Objetivo.findOne({ titulo: obtivoData.titulo });
+      if (!objetivoExistente) {
+        let nuevoObjetivo = new Objetivo(objetivoData);
+        let objetivoGuardado = await nuevoObjetivo.save();
+        resultados.push(objetivoGuardado);
+      } else {
+        console.log(`El objetivo con título "${objetivoData.titulo}" ya existe.`);
+      }
+    }
+    return resultados;
+  } catch (err) {
+    console.error('Error al guardar la colección de objetivos:', err);
+    throw err; // Re-lanza el error para manejarlo en la capa superior si es necesario
+  }
+}
+
 // Función asíncrona para buscar un objetivo por su ID
 async function buscarObjetivoPorId(id) {
   try {
@@ -86,5 +108,6 @@ module.exports = {
   actualizarObjetivo,
   desactivarObjetivo,
   listarObjetivosActivos,
+  guardarObjetivos,
   buscarObjetivoPorId,
 };
