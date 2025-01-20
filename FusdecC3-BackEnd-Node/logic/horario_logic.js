@@ -59,7 +59,7 @@ async function desactivarHorario(id) {
   return horario;
 }
 
-// Función asíncrona para listar los cursos horarios
+// Función asíncrona para listar los horarios
 async function listarHorariosActivos() {
   let horarios = await Horario.find({ estadoHorario: true });
   return horarios;
