@@ -100,7 +100,6 @@ const guardarColeccionObjetivos = async (req, res) => {
     }
 };
 
-
 // Controlador para buscar un horario por su ID
 const obtenerObjetivoPorId = async (req, res) => {
   const { id } = req.params;
