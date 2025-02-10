@@ -40,7 +40,6 @@ async function crearEstudiante(body) {
         estadoEstudiante: body.estadoEstudiante,
         ediciones: body.ediciones || [],
         calificaciones: body.calificaciones || [],
-        inasistencias: body.inasistencias || [],
         asistencias: body.asistencias || [],
         certificados: body.certificados || []
     });
@@ -220,26 +219,6 @@ async function agregarAsistenciaAEstudiante(estudianteId, asistenciasIds) {
     }
 }
 
-// Lógica para agregar inasistencias a un estudiante
-async function agregarInasistenciaAEstudiante(estudianteId, inasistenciasIds) {
-    try {
-        const estudiante = await Estudiante.findById(estudianteId);
-        if (!estudiante) {
-            throw new Error('Estudiante no encontrado');
-        }
-        // Convertir los IDs a strings para comparación
-        const inasistenciasActuales = estudiante.inasistencias.map(id => id.toString());
-        // Filtrar las inasistencias ya existentes para no duplicarlas
-        const nuevasInasistencias = inasistenciasIds.filter(id => !inasistenciasActuales.includes(id.toString()));
-        // Agregar las nuevas inasistencias al array de inasistencias del estudiante
-        estudiante.inasistencias.push(...nuevasInasistencias);
-        const estudianteActualizado = await estudiante.save();
-        return estudianteActualizado;
-    } catch (error) {
-        throw new Error(`Error al agregar inasistencias: ${error.message}`);
-    }
-}
-
 // Lógica para agregar certificados a un estudiante
 async function agregarCertificadoAEstudiante(estudianteId, certificadosIds) {
     try {
@@ -312,7 +291,6 @@ module.exports = {
     listarEstudiantes,
     obtenerEstudiantePorId,
     agregarAsistenciaAEstudiante,
-    agregarInasistenciaAEstudiante,
     agregarCertificadoAEstudiante,
     agregarCalificacionAEstudiante,
     agregarEdicionAEstudiante,
