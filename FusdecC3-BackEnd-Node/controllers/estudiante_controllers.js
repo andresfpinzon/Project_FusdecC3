@@ -30,7 +30,6 @@ const crearEstudiante = async (req, res) => {
     estadoEstudiante: body.estadoEstudiante,
     ediciones: body.ediciones || [],
     calificaciones: body.calificaciones || [],
-    inasistencias: body.inasistencias || [],
     asistencias: body.asistencias || [],
     certificados: body.certificados || []
   });
@@ -68,7 +67,6 @@ const actualizarEstudiante = async (req, res) => {
     estadoEstudiante: body.estadoEstudiante,
     ediciones: body.ediciones || [],
     calificaciones: body.calificaciones || [],
-    inasistencias: body.inasistencias || [],
     asistencias: body.asistencias || [],
     certificados: body.certificados || []
   });
@@ -135,22 +133,6 @@ const agregarAsistenciaAEstudiante = async (req, res) => {
   }
 };
 
-// Controlador para agregar inasistencias a un estudiante
-const agregarInasistenciaAEstudiante = async (req, res) => {
-  const { estudianteId } = req.params;
-  const { inasistencias } = req.body;
-
-  if (!Array.isArray(inasistencias) || inasistencias.length === 0) {
-      return res.status(400).json({ error: 'Se requiere un array de IDs de inasistencias' });
-  }
-
-  try {
-      const estudianteActualizado = await logic.agregarInasistenciaAEstudiante(estudianteId, inasistencias);
-      res.json({ estudiante: estudianteActualizado });
-  } catch (error) {
-      res.status(500).json({ error: error.message });
-  }
-};
 
 // Controlador para agregar certificados a un estudiante
 const agregarCertificadoAEstudiante = async (req, res) => {
@@ -212,7 +194,6 @@ module.exports = {
   desactivarEstudiante,
   obtenerEstudiantePorId,
   agregarAsistenciaAEstudiante,
-  agregarInasistenciaAEstudiante,
   agregarCertificadoAEstudiante,
   agregarCalificacionAEstudiante,
   agregarEdicionAEstudiante

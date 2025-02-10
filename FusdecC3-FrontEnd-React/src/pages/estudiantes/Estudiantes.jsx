@@ -39,10 +39,6 @@ const Estudiantes = () => {
   const [unidades, setUnidades] = useState([]);
   const [colegios, setColegios] = useState([]);
   const [ediciones, setEdiciones] = useState([]);
-  const [calificaciones, setCalificaciones] = useState([]);
-  const [certificados, setCertificados] = useState([]);
-  const [asistencias, setAsistencias] = useState([]);
-  const [inasistencias, setInasistencias] = useState([]);
   const [selectedEstudiante, setSelectedEstudiante] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreEstudiante: "",
@@ -157,82 +153,6 @@ const Estudiantes = () => {
     }
   };
 
-  const fetchCertificados = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/certificados",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener certificados");
-      const data = await response.json();
-      setCertificados(data);
-    } catch (error) {
-      console.error("Error al obtener certificados:", error);
-      setErrorMessage("Error al obtener certificados");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchAsistencias = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/asistencias",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener asistencias");
-      const data = await response.json();
-      setAsistencias(data);
-    } catch (error) {
-      console.error("Error al obtener asistencias:", error);
-      setErrorMessage("Error al obtener asistencias");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchInasistencias = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/inasistencias",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener inasistencias");
-      const data = await response.json();
-      setInasistencias(data);
-    } catch (error) {
-      console.error("Error al obtener inasistencias:", error);
-      setErrorMessage("Error al obtener inasistencias");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchCalificaciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/calificaciones",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener calificaciones");
-      const data = await response.json();
-      setCalificaciones(data);
-    } catch (error) {
-      console.error("Error al obtener calificaciones:", error);
-      setErrorMessage("Error al obtener calificaciones");
-      setOpenSnackbar(true);
-    }
-  };
-  
   // Filtrar usuarios según el término de búsqueda
   const filteredEstudiantes = estudiantes.filter((estudiante) =>
     estudiante.nombreEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -732,14 +652,7 @@ const Estudiantes = () => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Asistencias:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.asistencias?.map((as) => as.tituloAsistencia).join(", ") || "Sin asistencias"}</Typography>
               </Box>
-
-              {/* Inasistencias */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Cancel color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Inasistencias:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.inasistencias?.map((ina) => ina.tituloInasistencia).join(", ") || "Sin inasistencias"}</Typography>
-              </Box>
-
+              
               {/* Calificaciones */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Star color="primary" sx={{ mr: 1 }} />

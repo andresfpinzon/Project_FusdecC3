@@ -300,59 +300,6 @@ router.post('/:id/asistencias', verifyJWT, verifyRole(['Instructor','Secretario'
 
 /**
  * @swagger
- * /api/estudiantes/{id}/inasistencias:
- *   post:
- *     tags:
- *       - Estudiantes
- *     summary: Agregar inasistencias a un estudiante
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: El ID del estudiante al que se le agregarán las inasistencias.
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               inasistencias:
- *                 type: array
- *                 items:
- *                   type: string
- *           examples:
- *             ejemplo1:
- *               value:
- *                 inasistencias: [
- *                   "60d21b4667d0d8992e610c83", // ID de inasistencia 1
- *                   "60d21b4667d0d8992e610c84"  // ID de inasistencia 2
- *                 ]
- *     responses:
- *       200:
- *         description: Inasistencias agregadas correctamente al estudiante.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Estudiante'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   _id: "60d21b4667d0d8992e610c84"
- *                   nombreEstudiante: "Juan"
- *                   apellidoEstudiante: "Pérez"
- *                   correoEstudiante: "juan.perez@gmail.com"
- *                   inasistencias: [
- *                     "60d21b4667d0d8992e610c83",
- *                     "60d21b4667d0d8992e610c84"
- *                   ]
- */
-router.post('/:id/inasistencias', verifyJWT, verifyRole(['Instructor','Secretario','Root']), estudianteController.agregarInasistenciaAEstudiante);
-
-/**
- * @swagger
  * /api/estudiantes/{id}/certificados:
  *   post:
  *     tags:

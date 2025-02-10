@@ -63,13 +63,6 @@ const EstudianteSchema = new Schema({
       required: false,
     },
   ],
-  inasistencias: [
-    {
-      type: Schema.Types.ObjectId, //Referencia a múltiples Inasistencias
-      ref: "Inasistencia",
-      required: false,
-    },
-  ],
   asistencias: [
     {
       type: Schema.Types.ObjectId, // Referencia a múltiples Asistencias
