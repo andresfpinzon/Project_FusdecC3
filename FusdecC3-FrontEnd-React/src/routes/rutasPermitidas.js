@@ -13,7 +13,6 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
       { nombre: "Unidades", ruta: "/unidades", roles: ["Administrador", "Root"] },
       { nombre: "Colegios", ruta: "/colegios", roles: ["Administrador", "Root"] },
       { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrador", "Root"] },
-      { nombre: "Inasistencias", ruta: "/inasistencias", roles: ["Administrador", "Root"] },
       { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrador", "Root"] },
       { nombre: "Certificados", ruta: "/certificados", roles: ["Administrador", "Root"] },
       { nombre: "Usuarios", ruta: "/usuarios", roles: ["Administrador", "Root"] },

@@ -11,7 +11,6 @@ import MasInformacion from "../pages/masinformacion/MasInformacion";
 import Roles from "../pages/roles/Roles";
 import Estudiantes from "../pages/estudiantes/Estudiantes"
 import Asistencias from "../pages/asistencias/Asistencias";
-import Inasistencias from "../pages/inasistencias/Inasistencias";
 import Login from "../pages/login/Login";
 import Auditorias from "../pages/auditorias/Auditorias";
 import Comandos from "../pages/comandos/Comandos";
@@ -47,7 +46,6 @@ const NavbarRoutes = () => {
       <Route path="/roles" element={<ProtectedRoute element={Roles} allowedRoles={["Administrador","Root"]} />} />
       <Route path="/estudiantes" element={<ProtectedRoute element={Estudiantes} allowedRoles={["Instructor", "Secretario","Root"]} />} />
       <Route path="/asistencias" element={<ProtectedRoute element={Asistencias} allowedRoles={["Instructor", "Administrador","Root"]} />} />
-      <Route path="/inasistencias" element={<ProtectedRoute element={Inasistencias} allowedRoles={["Instructor", "Administrador","Root"]} />} />
       <Route path="/calificaciones" element={<ProtectedRoute element={Calificaciones} allowedRoles={["Instructor", "Administrador","Root"]} />} />
     </Routes>
   );
