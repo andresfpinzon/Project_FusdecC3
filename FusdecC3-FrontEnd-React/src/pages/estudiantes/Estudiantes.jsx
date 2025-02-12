@@ -71,10 +71,6 @@ const Estudiantes = () => {
     fetchUnidades();
     fetchColegios();
     fetchEdiciones();
-    fetchCertificados();
-    fetchAsistencias();
-    fetchInasistencias();
-    fetchCalificaciones();
   }, []);
 
   const fetchEstudiantes = async () => {

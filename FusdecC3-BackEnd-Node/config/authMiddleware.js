@@ -5,6 +5,7 @@ const verifyJWT = (req, res, next) => {
     // Verificar token
     const token = req.header('Authorization');
     if (!token) {
+        console.error('Token no proporcionado');
         return res.status(401).json({ message: 'Token no proporcionado' });
     }
     try {
@@ -12,6 +13,7 @@ const verifyJWT = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
+        console.error('Error al verificar el token:', error.message);
         return res.status(401).json({ message: 'Token no válido' });
     }
 };

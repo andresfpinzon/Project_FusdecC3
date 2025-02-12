@@ -178,7 +178,6 @@ async function listarEstudiantes() {
     .populate('colegioId')
     .populate('ediciones')
     .populate('calificaciones')
-    .populate('inasistencias') 
     .populate('asistencias',)
     .populate('certificados');
 }
@@ -190,7 +189,6 @@ async function obtenerEstudiantePorId(id) {
     .populate('colegioId')
     .populate('ediciones')
     .populate('calificaciones')
-    .populate('inasistencias') 
     .populate('asistencias')
     .populate('certificados');
     if (!estudiante) {
