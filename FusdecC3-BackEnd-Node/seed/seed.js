@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Usuario = require("../models/usuario_model");
 const bcrypt = require("bcryptjs");
+const {ERoles} = require('../enums/rolesEnum');
 
 
 
@@ -9,8 +10,8 @@ const usuarioData = {
   apellidoUsuario: "Fusdec",
   numeroDocumento: "1234567890",
   correo: "FusdecC3@gmail.com",
-  contraseñaHash: bcrypt.hashSync("R00tFusd3ccE", 10), // Hashea la contraseña
-  estadoUsuario: true,
+  password: bcrypt.hashSync("R00tFusd3ccE", 10), // Hashea la contraseña
+  roles:[ERoles.Admin]
 };
 
 async function seedDatabase() {

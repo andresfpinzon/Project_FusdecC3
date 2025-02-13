@@ -47,13 +47,13 @@ const usuarioSchemaValidation = Joi.object({
       'any.required': 'El correo es un campo requerido',
     }),
 
-  contraseñaHash: Joi.string()
-    .min(8)
+  password: Joi.string()
+    .min(6)
     .optional()
     .messages({
       'string.base': 'La contraseña debe ser un texto',
       'string.empty': 'La contraseña no puede estar vacía',
-      'string.min': 'La contraseña debe tener al menos 8 caracteres',
+      'string.min': 'La contraseña debe tener al menos 6 caracteres',
       'any.required': 'La contraseña es un campo requerido',
     }),
 
@@ -80,7 +80,7 @@ const usuarioSchemaValidation = Joi.object({
 });
 
 // Para el mensaje específico de actualización
-const crearSchemaValidation = usuarioSchemaValidation.fork(['contraseñaHash'], (field) =>
+const crearSchemaValidation = usuarioSchemaValidation.fork(['password'], (field) =>
   field.required()
 );
 

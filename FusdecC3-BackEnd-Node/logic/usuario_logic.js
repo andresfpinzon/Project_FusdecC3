@@ -22,7 +22,7 @@ async function crearUsuario(body) {
     
 
     // Hashear la contraseña antes de guardarla
-    const contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS).catch(err => {
+    const passwordHash = await bcrypt.hash(body.password, SALT_ROUNDS).catch(err => {
     throw new Error('Error al hashear la contraseña');
     });
 
@@ -32,11 +32,10 @@ async function crearUsuario(body) {
         apellidoUsuario: body.apellidoUsuario,
         numeroDocumento: body.numeroDocumento,
         correo: body.correo,
-        contraseñaHash: contraseñaHash, // Guardar el hash en lugar de la contraseña real
-        roles: body.roles, // Si hay roles en el cuerpo de la solicitud, se agregan
-        estadoUsuario: body.estadoUsuario,
-        creadoEn: body.creadoEn,
-         
+        password: passwordHash, // Guardar el hash en lugar de la contraseña real
+        roles: body.roles,
+        estadoUsuario: body.estadoUsuario
+
     });
 
     return await usuario.save();
@@ -54,8 +53,8 @@ async function actualizarUsuario(id, body) {
     usuario.numeroDocumento = body.numeroDocumento || usuario.numeroDocumento;
 
     // Solo actualizar el hash de la contraseña si se proporciona una nueva
-    if (body.contraseñaHash && body.contraseñaHash.trim() !== '') {
-        usuario.contraseñaHash = await bcrypt.hash(body.contraseñaHash, SALT_ROUNDS);
+    if (body.password && body.password.trim() !== '') {
+        usuario.password = await bcrypt.hash(body.password, SALT_ROUNDS);
     }
 
     usuario.estadoUsuario = body.estadoUsuario !== undefined ? body.estadoUsuario : usuario.estadoUsuario;

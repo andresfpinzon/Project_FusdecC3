@@ -26,20 +26,18 @@ const UsuarioSchema = new Schema({
     required: true,
     unique: true,
   },
-  contraseñaHash: {
+  password: {
     type: String,
     required: true,
   },
   roles: {
       type: [String],
       enum: Object.values(ERoles),
-      default: [ERoles.User],
-    },
-
+        
+     },
   estadoUsuario: {
     type: Boolean,
     default: true,
-    required: true,
   },
   creadoEn: {
     type: Date,
