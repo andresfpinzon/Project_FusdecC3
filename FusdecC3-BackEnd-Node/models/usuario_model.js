@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+
+const {ERoles} = require('../enums/rolesEnum');
 const { Schema } = mongoose;
 
 const UsuarioSchema = new Schema({
@@ -28,12 +30,12 @@ const UsuarioSchema = new Schema({
     type: String,
     required: true,
   },
-  roles: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Rol",
+  roles: {
+      type: [String],
+      enum: Object.values(ERoles),
+      default: [ERoles.User],
     },
-  ],
+
   estadoUsuario: {
     type: Boolean,
     default: true,

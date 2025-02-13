@@ -1,4 +1,5 @@
 const Joi = require('@hapi/joi');
+const { ERoles } = require('../enums/rolesEnum');
 
 const usuarioSchemaValidation = Joi.object({
   nombreUsuario: Joi.string()
@@ -57,11 +58,11 @@ const usuarioSchemaValidation = Joi.object({
     }),
 
   roles: Joi.array()
-    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
+    .items(Joi.string().valid(...Object.values(ERoles)))
     .optional()
     .messages({
       'array.base': 'Roles debe ser un array',
-      'string.pattern.base': 'Cada rol debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
+      'any.only': 'Cada rol debe ser uno de los siguientes: ' + Object.values(ERoles).join(', '),
     }),
 
   estadoUsuario: Joi.boolean()

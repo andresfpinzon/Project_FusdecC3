@@ -33,7 +33,7 @@ async function crearUsuario(body) {
         numeroDocumento: body.numeroDocumento,
         correo: body.correo,
         contraseñaHash: contraseñaHash, // Guardar el hash en lugar de la contraseña real
-        roles: body.roles || [],// Si hay roles en el cuerpo de la solicitud, se agregan
+        roles: body.roles, // Si hay roles en el cuerpo de la solicitud, se agregan
         estadoUsuario: body.estadoUsuario,
         creadoEn: body.creadoEn,
          

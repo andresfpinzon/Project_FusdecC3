@@ -123,7 +123,9 @@ router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioControl
  *                   correo: "maria.gonzalez@mail.com"
  *                   estadoUsuario: true
  */
-router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.crearUsuario);
+router.post('/', usuarioController.crearUsuario);
+
+// router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.crearUsuario);
 
 /**
  * @swagger
