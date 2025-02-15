@@ -4,13 +4,13 @@ const Unidad = require('../models/unidad_model');
 const Brigada = require('../models/brigada_model');
 
 // Controlador para listar unidades
-const listarUnidades = async (_req, res) => {
+const listarUnidades = async (req, res) => {
     try {
-        const unidades = await logic.listarUnidades();
-        res.json(unidades); // Ahora incluirá estudiantes
+        const unidades = await Unidad.find(); // Asegúrate de que esto devuelva un array
+        res.json(unidades);
     } catch (error) {
-        console.error(error); // Registrar el error en el log
-        res.status(500).json({ error: 'Error al obtener las unidades' });
+        console.error('Error al cargar las unidades:', error); // Agrega esto para depuración
+        res.status(500).json({ error: 'Error al cargar las unidades' });
     }
 };
 
