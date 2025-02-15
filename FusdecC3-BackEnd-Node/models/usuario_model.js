@@ -33,8 +33,8 @@ const UsuarioSchema = new Schema({
   roles: {
       type: [String],
       enum: Object.values(ERoles),
-        
-     },
+    },
+
   estadoUsuario: {
     type: Boolean,
     default: true,

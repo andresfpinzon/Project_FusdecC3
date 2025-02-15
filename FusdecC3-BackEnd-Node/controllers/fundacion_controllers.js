@@ -43,13 +43,6 @@ const obtenerFundacionPorId = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor al buscar la fundacion', details: err.message });
     }
 };
-//Agregar comando a una fundacion 
-
-const agregarComandos = async (req, res) => {
-    const { fundacionId } = req.params; // Obtener el ID de la fundacion de los parámetros
-    const { comandosIds } = req.body; // Extraer comandosIds del cuerpo de la solicitud
-}
-
 
 // Controlador para actualizar una fundacion
 const actualizarFundacion = async (req, res) => {
@@ -90,7 +83,6 @@ module.exports = {
     crearFundacion,
     listarFundaciones,
     obtenerFundacionPorId,
-    agregarComandos,
     actualizarFundacion,
     desactivarFundacion,
 };

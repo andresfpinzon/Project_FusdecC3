@@ -1,9 +1,10 @@
 
 // Definición del enumerador de roles
 const ERoles = {
-    Admin: "Admin",
-    User: "User",
-    
+    Administrativo: "Administrativo",
+    Instructor: "Instructor",
+    Secretario: "Secretario",
+    Root: "Root",
   };
   
   // Exportar el enumerador

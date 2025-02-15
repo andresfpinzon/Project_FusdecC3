@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const usuarioController = require('../controllers/usuario_controllers'); 
 const { verifyJWT, verifyRole } = require('../config/authMiddleware');
-const { ERoles } = require('../enums/rolesEnum');
 
 /**
  * @swagger
@@ -83,7 +82,7 @@ const { ERoles } = require('../enums/rolesEnum');
  *                     correo: "juan.perez@mail.com"
  *                     estadoUsuario: true
  */
-router.get('/', verifyJWT, verifyRole(["Admin"]), usuarioController.listarUsuarios);
+router.get('/', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.listarUsuarios);
 
 /**
  * @swagger
@@ -125,7 +124,7 @@ router.get('/', verifyJWT, verifyRole(["Admin"]), usuarioController.listarUsuari
  *                   roles: []
  *                   estadoUsuario: true
  */
-router.post('/',verifyJWT, verifyRole(["Admin"]), usuarioController.crearUsuario);
+router.post('/',verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.crearUsuario);
 
 /**
  * @swagger
@@ -175,7 +174,7 @@ router.post('/',verifyJWT, verifyRole(["Admin"]), usuarioController.crearUsuario
  *       404:
  *         description: Usuario no encontrado.
  */
-router.put('/:id', verifyJWT, verifyRole([ERoles.Admin]), usuarioController.actualizarUsuario);
+router.put('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.actualizarUsuario);
 
 /**
  * @swagger
@@ -210,7 +209,7 @@ router.put('/:id', verifyJWT, verifyRole([ERoles.Admin]), usuarioController.actu
  *       404:
  *         description: Usuario no encontrado.
  */
-router.delete('/:id', verifyJWT, verifyRole([ERoles.Admin]), usuarioController.desactivarUsuario);
+router.delete('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.desactivarUsuario);
 
 /**
  * @swagger
@@ -245,6 +244,6 @@ router.delete('/:id', verifyJWT, verifyRole([ERoles.Admin]), usuarioController.d
  *       404:
  *         description: Usuario no encontrado.
  */
-router.get('/:id', verifyJWT, verifyRole([ERoles.Admin]), usuarioController.obtenerUsuarioPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.obtenerUsuarioPorId);
 
 module.exports = router;

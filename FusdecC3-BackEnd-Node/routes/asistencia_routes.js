@@ -71,7 +71,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     estadoAsistencia: true
  *                     estudiantes: ["estudiante1", "estudiante2"]
  */
-router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), asistenciaController.listarAsistencias);
+router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrativo', 'Root']), asistenciaController.listarAsistencias);
 
 /**
  * @swagger
@@ -233,7 +233,7 @@ router.delete('/:id', verifyJWT, verifyRole(['Instructor', 'Root']), asistenciaC
  *       404:
  *         description: Asistencia no encontrada.
  */
-router.get('/:id', verifyJWT, verifyRole(['Instructor', 'Administrador', 'Root']), asistenciaController.obtenerAsistenciaPorId);
+router.get('/:id', verifyJWT, verifyRole(['Instructor', 'Administrativo', 'Root']), asistenciaController.obtenerAsistenciaPorId);
 
 module.exports = router;
 

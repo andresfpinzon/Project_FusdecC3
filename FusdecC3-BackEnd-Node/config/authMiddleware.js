@@ -4,13 +4,11 @@ require('dotenv').config();
 
 // Middleware para verificar el JWT
 const verifyJWT = async (req, res, next) => {
-    // Verificar token// Verificar token
+    // Verificar token
     const token = req.header('Authorization')?.replace('Bearer ', '');
-    console.log('Paso 1.');
     if (!token) {
         return res.status(401).json({ message: 'Token no proporcionado' });
     }
-    console.log('Paso 2.')
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;

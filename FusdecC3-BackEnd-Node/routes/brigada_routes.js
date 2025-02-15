@@ -85,7 +85,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrador', 'Root']), brigadaController.listarBrigadas);
+router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrativo', 'Root']), brigadaController.listarBrigadas);
 
 /**
  * @swagger
@@ -149,7 +149,7 @@ router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrado
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaController.crearBrigada);
+router.post('/', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.crearBrigada);
 
 /**
  * @swagger
@@ -186,7 +186,7 @@ router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaContro
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaController.obtenerBrigadaPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.obtenerBrigadaPorId);
 
 /**
  * @swagger
@@ -242,7 +242,7 @@ router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaCont
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaController.actualizarBrigada);
+router.put('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.actualizarBrigada);
 
 /**
  * @swagger
@@ -266,7 +266,7 @@ router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaCont
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaController.desactivarBrigada);
+router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.desactivarBrigada);
 
 /**
  * @swagger
@@ -322,6 +322,6 @@ router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaC
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/:id/unidades', verifyJWT, verifyRole(['Administrador', 'Root']), brigadaController.agregarUnidades);
+router.post('/:id/unidades', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.agregarUnidades);
 
 module.exports = router;

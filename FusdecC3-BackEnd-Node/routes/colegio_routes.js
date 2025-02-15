@@ -65,7 +65,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     emailColegio: "contacto@colegionacional.edu"
  *                     estadoColegio: true
  */
-router.get("/", verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), colegioController.listarColegiosActivos);
+router.get("/", verifyJWT, verifyRole(['Secretario','Instructor','Administrativo', 'Root']), colegioController.listarColegiosActivos);
 
 /**
  * @swagger
@@ -101,7 +101,7 @@ router.get("/", verifyJWT, verifyRole(['Secretario','Instructor','Administrador'
  *                   emailColegio: "contacto@nuevo-colegio.edu"
  *                   estadoColegio: true
  */
-router.post("/", verifyJWT, verifyRole(['Administrador','Root']), colegioController.crearColegio);
+router.post("/", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.crearColegio);
 
 /**
  * @swagger
@@ -146,7 +146,7 @@ router.post("/", verifyJWT, verifyRole(['Administrador','Root']), colegioControl
  *       404:
  *         description: Colegio no encontrado.
  */
-router.put("/:id", verifyJWT, verifyRole(['Administrador','Root']), colegioController.actualizarColegio);
+router.put("/:id", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.actualizarColegio);
 
 /**
  * @swagger
@@ -179,7 +179,7 @@ router.put("/:id", verifyJWT, verifyRole(['Administrador','Root']), colegioContr
  *       404:
  *         description: Colegio no encontrado.
  */
-router.delete("/:id", verifyJWT, verifyRole(['Administrador','Root']), colegioController.desactivarColegio);
+router.delete("/:id", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.desactivarColegio);
 
 /**
  * @swagger
@@ -212,7 +212,7 @@ router.delete("/:id", verifyJWT, verifyRole(['Administrador','Root']), colegioCo
  *       404:
  *         description: Colegio no encontrado.
  */
-router.get("/:id", verifyJWT, verifyRole(['Administrador','Root']), colegioController.obtenerColegiosPorId);
+router.get("/:id", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.obtenerColegiosPorId);
 
 /**
  * @swagger
@@ -296,6 +296,6 @@ router.get("/:id", verifyJWT, verifyRole(['Administrador','Root']), colegioContr
  *             example:
  *               error: 'Error al agregar estudiantes: [detalles del error]'
  */
-router.post("/:id/estudiantes",  verifyJWT, verifyRole(['Administrador','Root']), colegioController.agregarEstudianteAColegio);
+router.post("/:id/estudiantes",  verifyJWT, verifyRole(['Administrativo','Root']), colegioController.agregarEstudianteAColegio);
 
 module.exports = router;
