@@ -1,4 +1,5 @@
 const Joi = require('@hapi/joi');
+const { ERoles } = require('../enums/rolesEnum');
 
 const usuarioSchemaValidation = Joi.object({
   nombreUsuario: Joi.string()
@@ -46,22 +47,22 @@ const usuarioSchemaValidation = Joi.object({
       'any.required': 'El correo es un campo requerido',
     }),
 
-  contraseñaHash: Joi.string()
-    .min(8)
+  password: Joi.string()
+    .min(6)
     .optional()
     .messages({
       'string.base': 'La contraseña debe ser un texto',
       'string.empty': 'La contraseña no puede estar vacía',
-      'string.min': 'La contraseña debe tener al menos 8 caracteres',
+      'string.min': 'La contraseña debe tener al menos 6 caracteres',
       'any.required': 'La contraseña es un campo requerido',
     }),
 
   roles: Joi.array()
-    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
+    .items(Joi.string().valid(...Object.values(ERoles)))
     .optional()
     .messages({
       'array.base': 'Roles debe ser un array',
-      'string.pattern.base': 'Cada rol debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
+      'any.only': 'Cada rol debe ser uno de los siguientes: ' + Object.values(ERoles).join(', '),
     }),
 
   estadoUsuario: Joi.boolean()
@@ -79,7 +80,7 @@ const usuarioSchemaValidation = Joi.object({
 });
 
 // Para el mensaje específico de actualización
-const crearSchemaValidation = usuarioSchemaValidation.fork(['contraseñaHash'], (field) =>
+const crearSchemaValidation = usuarioSchemaValidation.fork(['password'], (field) =>
   field.required()
 );
 

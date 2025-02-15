@@ -33,21 +33,6 @@ async function buscarFundacionPorId(id){
     return fundacion;
     }
 
-
-    // Logica para agregar comandos a fundacion 
-     async  function agregarComando(fundacionId, comandoId) {
-        try{
-              const fundacion = await Fundacion.findOne({ fundacionId });
-              if (!fundacion){
-                 throw new Error('Fundacion no encontrada');
-              }            
-        } catch(Error){
-            throw new Error('Fundacion no encontrada');
-        }
-
-     }
-
-
     //Funcion asincrona para editar una fundacion
     async function editarFundacion(id, body){
         const fundacion = await Fundacion.findByIdAndUpdate(id, body, { new : true })
@@ -69,7 +54,6 @@ async function buscarFundacionPorId(id){
         crearFundacion,
         listarFundaciones,
         buscarFundacionPorId,
-        agregarComando,
         editarFundacion,
         desactivarFundacion,
      };

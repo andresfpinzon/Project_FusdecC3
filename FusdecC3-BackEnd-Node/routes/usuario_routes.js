@@ -82,7 +82,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     correo: "juan.perez@mail.com"
  *                     estadoUsuario: true
  */
-router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.listarUsuarios);
+router.get('/', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.listarUsuarios);
 
 /**
  * @swagger
@@ -104,8 +104,7 @@ router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioControl
  *                 apellidoUsuario: "González"
  *                 numeroDocumento: "87654321"
  *                 correo: "maria.gonzalez@mail.com"
- *                 contraseñaHash: "hashed_password"
- *                 estadoUsuario: true
+ *                 password: "password123"
  *     responses:
  *       201:
  *         description: Usuario creado correctamente.
@@ -121,9 +120,11 @@ router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioControl
  *                   apellidoUsuario: "González"
  *                   numeroDocumento: "87654321"
  *                   correo: "maria.gonzalez@mail.com"
+ *                   password: "password123"
+ *                   roles: []
  *                   estadoUsuario: true
  */
-router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.crearUsuario);
+router.post('/',verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.crearUsuario);
 
 /**
  * @swagger
@@ -173,7 +174,7 @@ router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioContro
  *       404:
  *         description: Usuario no encontrado.
  */
-router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.actualizarUsuario);
+router.put('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.actualizarUsuario);
 
 /**
  * @swagger
@@ -208,7 +209,7 @@ router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioCont
  *       404:
  *         description: Usuario no encontrado.
  */
-router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.desactivarUsuario);
+router.delete('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.desactivarUsuario);
 
 /**
  * @swagger
@@ -243,6 +244,6 @@ router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioC
  *       404:
  *         description: Usuario no encontrado.
  */
-router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), usuarioController.obtenerUsuarioPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.obtenerUsuarioPorId);
 
 module.exports = router;

@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [formValues, setFormValues] = useState({
     correo: "",
-    contraseña: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -91,9 +91,9 @@ const Login = () => {
         />
         <TextField
           label="Contraseña"
-          name="contraseña"
+          name="password"
           type={showPassword ? "text" : "password"}
-          value={formValues.contraseña}
+          value={formValues.password}
           onChange={handleInputChange}
           fullWidth
           margin="normal"

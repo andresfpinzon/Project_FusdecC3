@@ -96,7 +96,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     colegioId: "colegio456"
  *                     estadoEstudiante: true
  */
-router.get('/', verifyJWT, verifyRole(['Administrador','Instructor','Secretario','Root']), estudianteController.listarEstudiantes);
+router.get('/', verifyJWT, verifyRole(['Administrativo','Instructor','Secretario','Root']), estudianteController.listarEstudiantes);
 
 /**
  * @swagger
@@ -243,7 +243,7 @@ router.delete('/:id', verifyJWT, verifyRole(['Secretario','Root']), estudianteCo
  *       404:
  *         description: Estudiante no encontrado.
  */
-router.get('/:id', verifyJWT, verifyRole(['Administrador','Instructor','Secretario','Root']), estudianteController.obtenerEstudiantePorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrativo','Instructor','Secretario','Root']), estudianteController.obtenerEstudiantePorId);
 
 /**
  * @swagger

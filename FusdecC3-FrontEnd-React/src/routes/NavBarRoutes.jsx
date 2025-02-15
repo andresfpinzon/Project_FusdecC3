@@ -32,21 +32,21 @@ const NavbarRoutes = () => {
       <Route path="/masinformacion" element={<MasInformacion />} />
       <Route path="/login" element={<Login />} />
       {/* Rutas Protegidas */}
-      <Route path="/fundaciones" element={<ProtectedRoute element={Fundaciones} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/auditorias" element={<ProtectedRoute element={Auditorias} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/brigadas" element={<ProtectedRoute element={Brigadas} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/certificados" element={<ProtectedRoute element={Certificados} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/colegios" element={<ProtectedRoute element={Colegios} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/comandos" element={<ProtectedRoute element={Comandos} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/cursos" element={<ProtectedRoute element={Cursos} allowedRoles={["Secretario", "Administrador","Root"]} />} />
+      <Route path="/fundaciones" element={<ProtectedRoute element={Fundaciones} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/auditorias" element={<ProtectedRoute element={Auditorias} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/brigadas" element={<ProtectedRoute element={Brigadas} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/certificados" element={<ProtectedRoute element={Certificados} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/colegios" element={<ProtectedRoute element={Colegios} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/comandos" element={<ProtectedRoute element={Comandos} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/cursos" element={<ProtectedRoute element={Cursos} allowedRoles={["Secretario", "Administrativo","Root"]} />} />
       <Route path="/ediciones" element={<ProtectedRoute element={Ediciones} allowedRoles={["Secretario","Root"]} />} />
       <Route path="/horarios" element={<ProtectedRoute element={Horarios} allowedRoles={["Secretario","Root"]} />} />
-      <Route path="/unidades" element={<ProtectedRoute element={Unidades} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/usuarios" element={<ProtectedRoute element={Usuarios} allowedRoles={["Administrador","Root"]} />} />
-      <Route path="/roles" element={<ProtectedRoute element={Roles} allowedRoles={["Administrador","Root"]} />} />
+      <Route path="/unidades" element={<ProtectedRoute element={Unidades} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/usuarios" element={<ProtectedRoute element={Usuarios} allowedRoles={["Administrativo","Root"]} />} />
+      <Route path="/roles" element={<ProtectedRoute element={Roles} allowedRoles={["Administrativo","Root"]} />} />
       <Route path="/estudiantes" element={<ProtectedRoute element={Estudiantes} allowedRoles={["Instructor", "Secretario","Root"]} />} />
-      <Route path="/asistencias" element={<ProtectedRoute element={Asistencias} allowedRoles={["Instructor", "Administrador","Root"]} />} />
-      <Route path="/calificaciones" element={<ProtectedRoute element={Calificaciones} allowedRoles={["Instructor", "Administrador","Root"]} />} />
+      <Route path="/asistencias" element={<ProtectedRoute element={Asistencias} allowedRoles={["Instructor", "Administrativo","Root"]} />} />
+      <Route path="/calificaciones" element={<ProtectedRoute element={Calificaciones} allowedRoles={["Instructor", "Administrativo","Root"]} />} />
     </Routes>
   );
 };

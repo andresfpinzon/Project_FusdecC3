@@ -23,9 +23,9 @@ const crearUsuario = async (req, res) => {
     apellidoUsuario: body.apellidoUsuario,
     numeroDocumento: body.numeroDocumento,
     correo: body.correo,
-    contraseñaHash: body.contraseñaHash,
-    roles: body.roles,
-    estadoUsuario: body.estadoUsuario
+    password: body.password,
+    roles: body.roles
+    
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
