@@ -1,4 +1,3 @@
-
 // Definición del enumerador de roles
 const ERoles = {
     Administrativo: "Administrativo",

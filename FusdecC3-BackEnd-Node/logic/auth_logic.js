@@ -29,7 +29,7 @@ const loginServices = async (data) => {
         return { token };
     } catch (error) {
         console.error('Error en auth_logic.js:', error.message);
-        throw error; // Re-lanza el error para manejarlo en el controlador
+        throw error; 
     }
 };
 

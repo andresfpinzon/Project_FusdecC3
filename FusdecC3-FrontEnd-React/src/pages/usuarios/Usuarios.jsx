@@ -43,7 +43,7 @@ const Usuarios = () => {
     apellidoUsuario: "",
     numeroDocumento: "",
     correo: "",
-    contraseñaHash: "",
+    password: "",
     estadoUsuario: true,
     roles: [],
   });
@@ -87,7 +87,7 @@ const Usuarios = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/roles",{
+      const response = await fetch("http://localhost:3000/api/roles/enum",{
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -165,7 +165,7 @@ const Usuarios = () => {
           apellidoUsuario: "",
           numeroDocumento: "",
           correo: "",
-          contraseñaHash: "",
+          password: "",
           estadoUsuario: true,
           roles: [],
         });
@@ -211,7 +211,7 @@ const Usuarios = () => {
           apellidoUsuario: "",
           numeroDocumento: "",
           correo: "",
-          contraseñaHash: "",
+          password: "",
           estadoUsuario: true,
           roles: [],
         });
@@ -270,7 +270,7 @@ const Usuarios = () => {
       apellidoUsuario: usuario.apellidoUsuario,
       numeroDocumento: usuario.numeroDocumento,
       correo: usuario.correo,
-      contraseñaHash: "",
+      password: "",
       estadoUsuario: usuario.estadoUsuario,
       roles: usuario.roles.map((rol) => rol._id),
     });
@@ -329,9 +329,9 @@ const Usuarios = () => {
         />
         <TextField
           label="Contraseña"
-          name="contraseñaHash"
+          name="password"
           type="password"
-          value={formValues.contraseñaHash}
+          value={formValues.password}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
@@ -343,21 +343,17 @@ const Usuarios = () => {
             value={formValues.roles} // Los roles preseleccionados
             onChange={handleRoleChange}
             input={<OutlinedInput label="Roles" />}
-            renderValue={(selected) =>
-              roles
-                .filter((rol) => selected.includes(rol._id))
-                .map((rol) => rol.nombreRol)
-                .join(", ")
-            }
+            renderValue={(selected) => selected.join(", ")}
           >
             {roles.map((rol) => (
-              <MenuItem key={rol._id} value={rol._id}>
-                <Checkbox checked={formValues.roles.indexOf(rol._id) > -1} />
-                <ListItemText primary={rol.nombreRol} />
+              <MenuItem key={rol} value={rol}>
+                <Checkbox checked={formValues.roles.includes(rol)} />
+                <ListItemText primary={rol} />
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+
         <Box marginTop={2} marginBottom={2}>
           <Switch
             checked={formValues.estadoUsuario}
@@ -411,7 +407,7 @@ const Usuarios = () => {
                   <TableCell>{usuario.correo}</TableCell>
                   <TableCell>{usuario.estadoUsuario ? "Activo" : "Inactivo"}</TableCell>
                   <TableCell>
-                    {usuario.roles.map((rol) => rol.nombreRol).join(", ")}
+                    {usuario.roles.map((rol) => rol).join(", ")}
                   </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditClick(usuario)} color="primary">

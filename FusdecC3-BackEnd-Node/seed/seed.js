@@ -2,13 +2,8 @@ const mongoose = require("mongoose");
 const Usuario = require("../models/usuario_model");
 const bcrypt = require("bcryptjs");
 const {ERoles} = require('../enums/rolesEnum');
-
-
 require("dotenv").config(); // Carga las variables de entorno
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const Usuario = require("../models/Usuario");
-const { ERoles } = require("../enums/rolesEnum");
+
 
 async function seedDatabase() {
   try {
@@ -33,12 +28,12 @@ async function seedDatabase() {
 
     // Crea el usuario Root
     const usuarioRoot = new Usuario({
-      nombreUsuario: "Admin",
-      apellidoUsuario: "Root",
+      nombreUsuario: "Fundacion",
+      apellidoUsuario: "Fusdec",
       numeroDocumento: "123456789",
       correo: correoRoot,
-      contraseñaHash: contraseñaHash,
-      roles: [ERoles.Root], // Asigna el rol utilizando el enum
+      password: contraseñaHash,
+      roles: [ERoles.Root], 
     });
 
     await usuarioRoot.save();
