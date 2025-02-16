@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const usuarioController = require('../controllers/usuario_controllers'); 
 const { verifyJWT, verifyRole } = require('../config/authMiddleware');
+const { ERoles } = require('../enums/rolesEnum');
 
 /**
  * @swagger
@@ -174,7 +175,7 @@ router.post('/',verifyJWT, verifyRole(['Administrativo','Root']), usuarioControl
  *       404:
  *         description: Usuario no encontrado.
  */
-router.put('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.actualizarUsuario);
+router.put('/:id', verifyJWT, verifyRole([ERoles.Administrativo, ERoles.Root]), usuarioController.actualizarUsuario);
 
 /**
  * @swagger
@@ -209,7 +210,7 @@ router.put('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioCont
  *       404:
  *         description: Usuario no encontrado.
  */
-router.delete('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.desactivarUsuario);
+router.delete('/:id', verifyJWT, verifyRole(['Administrativo','Root']), usuarioController.toggleStateController);
 
 /**
  * @swagger
