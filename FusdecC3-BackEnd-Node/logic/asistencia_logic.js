@@ -3,6 +3,8 @@ const Estudiante = require("../models/estudiante_model");
 
 // Función asíncrona para crear una asistencia
 async function crearAsistencia(body) {
+    try {
+     
     // Crear una nueva asistencia
     let asistencia = new Asistencia({
         tituloAsistencia: body.tituloAsistencia,
@@ -21,11 +23,17 @@ async function crearAsistencia(body) {
         { _id: { $in: body.estudiantes } }, // Filtrar solo los estudiantes seleccionados
         { $push: { asistencias: asistencia._id } } // Agregar el ID de la asistencia al array
         );
+    }   
+    } catch (error) {
+        console.error('Error al crear la asistencia (asistencia_logic):', error);    
+        throw error;
     }
 }
 
 // Función asíncrona para actualizar una asistencia
 async function actualizarAsistencia(id, body) {
+    try {
+     
     let asistencia = await Asistencia.findById(id).populate('estudiantes');
     if (!asistencia) {
         throw new Error('Asistencia no encontrada');
@@ -58,34 +66,54 @@ async function actualizarAsistencia(id, body) {
         );
     }
 
-    return asistencia;
+    return asistencia;   
+    } catch (error) {
+        console.error('Error al actualizar la asistencia (asistencia_logic):', error);
+        throw error;       
+    }
 }
 
 
 // Función asíncrona para listar las asistencias activas
 async function listarAsistenciasActivas() {
+    try {
     let asistencias = await Asistencia.find({ estadoAsistencia: true })
     .populate('estudiantes');
-    return asistencias;
+    return asistencias;   
+    } catch (error) {
+        console.error('Error al listar las asistencias (asistencia_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para obtener una asistencia por su ID
 async function obtenerAsistenciaPorId(id) {
+    try {
     const asistencia = await Asistencia.findById(id)
     .populate('estudiantes');
     if (!asistencia) {
         throw new Error('Asistencia no encontrada');
     }
-    return asistencia;
+    return asistencia;   
+    } catch (error) {
+        console.error('Error al obtener la asistencia por ID (asistencia_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para eliminar una asistencia
 async function desactivarAsistencia(id) {
+    try {
+     
     let asistencia = await Asistencia.findByIdAndUpdate(id, { estadoAsistencia: false }, { new: true });
     if (!asistencia) {
         throw new Error('Asistencia no encontrada');
     }
-    return asistencia;
+    return asistencia;   
+    } catch (error) {
+        console.error('Error al desactivar la asistencia (asistencia_logic):', error);
+        throw error;
+    }
 }
 
 module.exports = {

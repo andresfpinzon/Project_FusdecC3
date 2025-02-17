@@ -50,6 +50,8 @@ async function buscarBrigadaPorId(id) {
 
 // Función asíncrona para editar una brigada
 async function editarBrigada(id, body) {
+    try {
+        
     // Buscar la brigada existente
     const brigada = await Brigada.findById(id);
     if (!brigada) {
@@ -85,34 +87,53 @@ async function editarBrigada(id, body) {
     }
 
     return brigadaActualizada;
+    } catch (error) {
+        console.error.log('Error al editar la brigada (brigada_logic):', error);
+        throw error;
+    }
 }
 
 
 // Función asíncrona para desactivar una brigada
 async function desactivarBrigada(id) {
+    try {
     const brigada = await Brigada.findByIdAndUpdate(id, { estadoBrigada: false }, { new: true });
     if (!brigada) {
         throw new Error(`Brigada con ID ${id} no encontrada`);
     }
-    return brigada;
+    return brigada;   
+    } catch (error) {
+        console.error('Error al desactivar la brigada (brigada_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para buscar brigadas por comandoId
 async function buscarBrigadasPorComandoId(comandoId) {
+    try {
     const brigadas = await Brigada.find({ comandoId }).populate('comandoId').populate('unidades');
     if (brigadas.length === 0) {
         throw new Error(`No se encontraron brigadas para el comando con ID ${comandoId}`);
     }
-    return brigadas;
+    return brigadas;   
+    } catch (error) {
+        console.error('Error al buscar las brigadas por comando (brigada_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para buscar brigadas por unidad
 async function buscarBrigadasPorUnidadId(unidadId) {
+    try {
     const brigadas = await Brigada.find({ unidades: unidadId }).populate('comandoId').populate('unidades');
     if (brigadas.length === 0) {
         throw new Error(`No se encontraron brigadas para la unidad con ID ${unidadId}`);
     }
-    return brigadas;
+    return brigadas;   
+    } catch (error) {
+        console.error('Error al buscar las brigadas por unidad (brigada_logic):', error);
+        throw error;
+    }
 }
 
 // Lógica para agregar unidades a una brigada

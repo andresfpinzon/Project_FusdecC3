@@ -2,6 +2,8 @@ const Curso = require("../models/curso_model");
 
 // Función asíncrona para crear cursos
 async function crearCurso(body) {
+  try {
+    
   // Verificar si ya existe un curso con el mismo título
   const cursoExistente = await Curso.findOne({ nombreCurso: body.nombreCurso });
   if (cursoExistente) {
@@ -18,10 +20,16 @@ async function crearCurso(body) {
   });
 
   return await curso.save();
+  } catch (error) {
+    console.error('Error al crear el curso (curso_logic):', error);
+    throw error;
+  }
 };
 
 // Función asíncrona para actualizar cursos
 async function actualizarCurso(id, body) {
+  try {
+    
   // Verificar si ya existe un curso con el mismo título, excluyendo el curso actual
   const cursoExistente = await Curso.findOne({
     nombreCurso: body.nombreCurso,
@@ -46,11 +54,17 @@ async function actualizarCurso(id, body) {
   );
 
   return curso;
+  } catch (error) {
+    console.error('Error al actualizar el curso (curso_logic):', error);
+    throw error;
+  }
 }
 
 
 // Función asíncrona para inactivar cursos
 async function desactivarCurso(id) {
+  try {
+    
   let curso = await Curso.findByIdAndUpdate(
     id,
     {
@@ -62,14 +76,24 @@ async function desactivarCurso(id) {
   );
 
   return curso;
+  } catch (error) {
+    console.error('Error al inactivar el curso (curso_logic):', error);
+    throw error;
+  }
 };
 
 // Función asíncrona para listar los cursos activos
 async function listarCursosActivos() {
+  try {
+    
   let cursos = await Curso.find({ estadoCurso: true })
   .populate('fundacionId')
   .populate('ediciones');
   return cursos;
+  } catch (error) {
+    console.error('Error al listar los cursos activos (curso_logic):', error);
+    throw error;
+  }
 };
 
 // Función asíncrona para guardar una colección de cursos
