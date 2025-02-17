@@ -30,7 +30,6 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
     const rutasInstructor = [
       { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor", "Root"] },
       { nombre: "Asistencias", ruta: "/asistencias", roles: ["Instructor", "Root"] },
-      { nombre: "Inasistencias", ruta: "/inasistencias", roles: ["Instructor", "Root"] },
       { nombre: "Calificaciones", ruta: "/calificaciones", roles: ["Instructor", "Root"] },
     ];
 
