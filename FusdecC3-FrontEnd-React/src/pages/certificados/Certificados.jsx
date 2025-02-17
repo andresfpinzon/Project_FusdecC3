@@ -67,23 +67,74 @@ const Certificados = () => {
   const [severity, setSeverity] = useState("success"); // "success" o "error"
 
   useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const usuarioId = decodedToken.id;
+  
+      // Obtener nombre y apellido del usuario
+      const fetchNombreApellido = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/api/usuarios/${usuarioId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": token
+            }
+          });
+  
+          if (!response.ok) throw new Error("Error al obtener datos del usuario");
+          
+          const data = await response.json();
+          setFormValues((prevFormValues) => ({
+            ...prevFormValues,
+            usuarioId: usuarioId,
+            nombreEmisorCertificado: data.nombreUsuario + " " + data.apellidoUsuario
+          }));
+        } catch (error) {
+          console.error("Error al obtener datos del usuario:", error);
+          setErrorMessage("Error al obtener datos del usuario");
+          setOpenSnackbar(true);
+        }
+      };
+  
+      fetchNombreApellido();
+    }
+  }, []);
+  
+  useEffect(() => {
     // Llamadas a las funciones para obtener datos al cargar el componente
     fetchUsuarios();
     fetchCursos();
     fetchEstudiantes();
     fetchCertificados();
     fetchAuditorias();
-    
-    // Decodificar el token y obtener el ID de usuario
-    if (token) {
-      const decodedToken = jwtDecode(token);
+  }, []);
+
+  // Obtener nombre y apellido del usuario
+  const fetchNombreApellido = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/usuarios/${usuarioId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token
+        }
+      });
+
+      if (!response.ok) throw new Error("Error al obtener datos del usuario");
+      
+      const data = await response.json();
       setFormValues((prevFormValues) => ({
         ...prevFormValues,
-        usuarioId: decodedToken.id,
-        nombreEmisorCertificado: decodedToken.nombre + " " + decodedToken.apellido, 
+        usuarioId: usuarioId,
+        nombreEmisorCertificado: data.nombreUsuario + " " + data.apellidoUsuario
       }));
+    } catch (error) {
+      console.error("Error al obtener datos del usuario:", error);
+      setErrorMessage("Error al obtener datos del usuario");
+      setOpenSnackbar(true);
     }
-  }, []);
+  };
 
   // Función para obtener usuarios
   const fetchUsuarios = async () => {
