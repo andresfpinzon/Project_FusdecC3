@@ -94,7 +94,14 @@ const Asistencias = () => {
       if (userRole.includes("Instructor")) {
         data = data.filter((asistencia) => asistencia.usuarioId === userId);
       }
-      setAsistencias(data);
+      // Condicion que verifica si el arreglo de asistencias está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay asistencias registradas.");
+        setOpenSnackbar(true);
+        setAsistencias([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setAsistencias(data);
+      }
     } catch (error) {
       setErrorMessage("Error al obtener asistencias", error);
       setOpenSnackbar(true);
@@ -114,7 +121,15 @@ const Asistencias = () => {
       );
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      setEstudiantes(data);
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registradas.");
+        setOpenSnackbar(true);
+        setAsistencias([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEstudiantes(data);
+      }
+      
     } catch (error) {
       setErrorMessage("Error al obtener estudiantes", error);
       setOpenSnackbar(true);
@@ -172,6 +187,11 @@ const Asistencias = () => {
 
       if (response.ok) {
         await fetchAsistencias();
+
+        // Muestra un mensaje de éxito
+        setSuccessMessage("Asistencia creada exitosamente.");
+        setOpenSnackbar(true);
+      
         setFormValues({
           tituloAsistencia: "",
           fechaAsistencia: "",
@@ -209,6 +229,9 @@ const Asistencias = () => {
           estadoAsistencia: true,
           estudiantes: [],
         });
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La asistencia se actualizó correctamente");
+        setOpenSnackbar(true); 
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar asistencia");
@@ -231,6 +254,11 @@ const Asistencias = () => {
       if (response.ok) {
         setAsistencias(asistencias.filter((asistencia) => asistencia._id !== asistenciaToDelete._id));
         handleCloseDeleteDialog();
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La asistencia se eliminó correctamente");
+        setOpenSnackbar(true);
+        
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar asistencia");
