@@ -73,7 +73,7 @@ const Brigadas = () => {
       
       // Condicion que verifica si el arreglo de comandos está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay estudiantes registradas.");
+        setErrorMessage("No hay comandos registradas.");
         setOpenSnackbar(true);
         setCommands([]); // esto mantiene el estado vacío para evitar errores
       } else {

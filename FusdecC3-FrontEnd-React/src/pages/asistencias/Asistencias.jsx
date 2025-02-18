@@ -94,6 +94,7 @@ const Asistencias = () => {
       if (userRole.includes("Instructor")) {
         data = data.filter((asistencia) => asistencia.usuarioId === userId);
       }
+
       // Condicion que verifica si el arreglo de asistencias está vacío
       if (data.length === 0) {
         setErrorMessage("No hay asistencias registradas.");
@@ -130,7 +131,6 @@ const Asistencias = () => {
       } else {
         setEstudiantes(data);
       }
-      
     } catch (error) {
       setErrorMessage("Error al obtener estudiantes", error);
       setOpenSnackbar(true);
@@ -230,6 +230,7 @@ const Asistencias = () => {
           estadoAsistencia: true,
           estudiantes: [],
         });
+        
         // Mostrar mensaje de éxito
         setSuccessMessage("La asistencia se actualizó correctamente");
         setOpenSnackbar(true); 
