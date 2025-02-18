@@ -121,12 +121,12 @@ const Asistencias = () => {
       );
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      
+
       // Condicion que verifica si el arreglo de estudiantes está vacío
       if (data.length === 0) {
         setErrorMessage("No hay estudiantes registradas.");
         setOpenSnackbar(true);
-        setAsistencias([]); // esto mantiene el estado vacío para evitar errores
+        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
       } else {
         setEstudiantes(data);
       }

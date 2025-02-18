@@ -45,7 +45,15 @@ const Brigadas = () => {
         comandoId: brigade.comandoId || { nombreComando: 'Sin comando asignado' },
         unidades: brigade.unidades || []
       }));
-      setBrigades(validatedBrigades);
+
+      // Condicion que verifica si el arreglo de brigadas está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay brigadas registradas.");
+        setOpenSnackbar(true);
+        setBrigades([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setBrigades(validatedBrigades);
+      }
     } catch (error) {
       setError('Error al obtener brigadas');
     } finally {
@@ -62,7 +70,16 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al obtener comandos');
       const data = await response.json();
-      setCommands(data);
+      
+      // Condicion que verifica si el arreglo de comandos está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registradas.");
+        setOpenSnackbar(true);
+        setCommands([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setCommands(data);
+      }
+      
     } catch (error) {
       setError('Error al obtener comandos');
     }
@@ -93,6 +110,16 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al guardar brigada');
       await fetchBrigades();
+
+      // Mostrar mensaje según la acción realizada (actualizar o crear)
+      if (selectedBrigade) {
+        setSuccessMessage("La brigada se actualizó correctamente");
+      } else {
+        setSuccessMessage("La brigada se creó correctamente");
+      }
+    
+      setOpenSnackbar(true);
+
       setFormValues({ nombreBrigada: '', ubicacionBrigada: '', comandoId: '', estadoBrigada: true });
       setSelectedBrigade(null);
       setShowForm(false);
@@ -112,6 +139,11 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al eliminar brigada');
       await fetchBrigades();
+
+      // Mostrar mensaje de éxito
+      setSuccessMessage("La brigada se eliminó correctamente");
+      setOpenSnackbar(true);
+
     } catch (error) {
       setError('Error al eliminar brigada');
     }

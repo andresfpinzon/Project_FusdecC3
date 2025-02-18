@@ -45,7 +45,7 @@ const Auditorias = () => {
       if (data.length === 0) {
         setErrorMessage("No hay auditorias registradas.");
         setOpenSnackbar(true);
-        setAsistencias([]); // esto mantiene el estado vacío para evitar errores
+        setAuditorias([]); // esto mantiene el estado vacío para evitar errores
       } else {
         setAuditorias(data);
       }
