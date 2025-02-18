@@ -121,6 +121,7 @@ const Asistencias = () => {
       );
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
+      
       // Condicion que verifica si el arreglo de estudiantes está vacío
       if (data.length === 0) {
         setErrorMessage("No hay estudiantes registradas.");
@@ -258,7 +259,7 @@ const Asistencias = () => {
         // Mostrar mensaje de éxito
         setSuccessMessage("La asistencia se eliminó correctamente");
         setOpenSnackbar(true);
-        
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar asistencia");
