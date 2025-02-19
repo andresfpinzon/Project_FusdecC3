@@ -68,7 +68,15 @@ const Cursos = () => {
     });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
-      setCursos(data);
+
+      // Condicion que verifica si el arreglo de cursos está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay cursos registradas.");
+        setOpenSnackbar(true);
+        setCursos([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setCursos(data);
+      }
     } catch (error) {
       console.error("Error al obtener cursos:", error);
       setErrorMessage("Error al obtener cursos");
@@ -87,7 +95,15 @@ const Cursos = () => {
     });
       if (!response.ok) throw new Error("Error al obtener fundaciones");
       const data = await response.json();
-      setFundaciones(data);
+
+      // Condicion que verifica si el arreglo de fundaciones está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay fundaciones registradas.");
+        setOpenSnackbar(true);
+        setFundaciones([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setFundaciones(data);
+      }
     } catch (error) {
       console.error("Error al obtener fundaciones:", error);
       setErrorMessage("Error al obtener fundaciones");
@@ -152,10 +168,14 @@ const Cursos = () => {
             body: JSON.stringify(formValues),
         });
 
-        // Maneja la respuesta
         if (response.ok) {
             const nuevoCurso = await response.json();
             setCursos([...cursos, nuevoCurso]);
+            
+            // Muestra un mensaje de éxito
+            setSuccessMessage("Curso creado exitosamente.");
+            setOpenSnackbar(true);
+
             setFormValues({
                 nombreCurso: "",
                 descripcionCurso: "",
@@ -163,7 +183,8 @@ const Cursos = () => {
                 estadoCurso: true,
                 fundacionId: "",
             });
-            console.log('Curso creado exitosamente:', nuevoCurso);
+            
+
         } else {
             const errorData = await response.json();
             throw new Error(errorData.error || "Error al crear curso");
@@ -205,6 +226,10 @@ const Cursos = () => {
           estadoCurso: true,
           fundacionId: "",
         });
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El curso se actualizó correctamente");
+        setOpenSnackbar(true); 
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar curso");
@@ -232,6 +257,10 @@ const Cursos = () => {
       if (response.ok) {
         setCursos(cursos.filter((curso) => curso._id !== cursoToDelete._id));
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El curso se eliminó correctamente");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar curso");
