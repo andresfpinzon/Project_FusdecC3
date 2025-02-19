@@ -61,7 +61,15 @@ const Horarios = () => {
     });
       if (!response.ok) throw new Error("Error al obtener horarios");
       const data = await response.json();
-      setHorarios(data);
+
+      // Condicion que verifica si el arreglo de horarios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay horarios registradas.");
+        setOpenSnackbar(true);
+        setHorarios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setHorarios(data);
+      }
     } catch (error) {
       console.error("Error al obtener horarios:", error);
       setErrorMessage("Error al obtener horarios");
@@ -125,6 +133,10 @@ const Horarios = () => {
           horaFin: "",
           estadoHorario: true,
         });
+
+        // Muestra un mensaje de éxito
+        setSuccessMessage("Horario creado exitosamente.");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear el horario");
@@ -165,6 +177,10 @@ const Horarios = () => {
           horaFin: "",
           estadoHorario: true,
         });
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El horario se actualizó correctamente");
+        setOpenSnackbar(true); 
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar el  horario");
@@ -194,6 +210,11 @@ const Horarios = () => {
       if (response.ok) {
         setHorarios(horarios.filter((horario) => horario._id !== horarioToDelete._id));
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El horario se eliminó correctamente");
+        setOpenSnackbar(true);
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar el horario");
