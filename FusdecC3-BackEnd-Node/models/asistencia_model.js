@@ -25,12 +25,6 @@ const AsistenciaSchema = new Schema({
       ref: "Estudiante",
     },
   ],
-  inasistencias: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Estudiante",
-    },
-  ],
 })
 
 // Tarea automatizada: Marcar asistencias antiguas como inactivas

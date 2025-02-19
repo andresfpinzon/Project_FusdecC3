@@ -3,8 +3,8 @@ const Estudiante = require("../models/estudiante_model")
 
 // Función asíncrona para crear una asistencia
 async function crearAsistencia(body) {
-  if (!body.tituloAsistencia || !body.fechaAsistencia || (!body.estudiantes && !body.inasistencias)) {
-    throw new Error("Faltan campos requeridos: tituloAsistencia, fechaAsistencia, estudiantes o inasistencias")
+  if (!body.tituloAsistencia || !body.fechaAsistencia || (!body.estudiantes)) {
+    throw new Error("Faltan campos requeridos: tituloAsistencia, fechaAsistencia, estudiantes")
   }
 
   let asistencia = new Asistencia({
@@ -13,7 +13,6 @@ async function crearAsistencia(body) {
     usuarioId: body.usuarioId,
     estadoAsistencia: true,
     estudiantes: body.estudiantes || [],
-    inasistencias: body.inasistencias || [],
   })
 
   // Guardar la asistencia en la base de datos

@@ -32,13 +32,6 @@ const asistenciaSchemaValidation = Joi.object({
       "string.pattern.base": "Cada estudiante debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)",
     }),
 
-  inasistencias: Joi.array()
-    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
-    .optional()
-    .messages({
-      "array.base": "Inasistencias debe ser un array",
-      "string.pattern.base": "Cada inasistencia debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)",
-    }),
 })
 
 module.exports = asistenciaSchemaValidation
