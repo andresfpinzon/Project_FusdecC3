@@ -151,7 +151,7 @@ const Certificados = () => {
 
       // Condicion que verifica si el arreglo de usuarios está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay usuarios registradas.");
+        setErrorMessage("No hay usuarios registrados.");
         setOpenSnackbar(true);
         setUsuarios([]); // esto mantiene el estado vacío para evitar errores
       } else {
@@ -179,7 +179,7 @@ const Certificados = () => {
 
       // Condicion que verifica si el arreglo de cursos está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay cursos registradas.");
+        setErrorMessage("No hay cursos registrados.");
         setOpenSnackbar(true);
         setCursos([]); // esto mantiene el estado vacío para evitar errores
       } else {
@@ -207,7 +207,7 @@ const Certificados = () => {
 
       // Condicion que verifica si el arreglo de estudiantes está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay estudiantes registradas.");
+        setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
         setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
       } else {
@@ -235,7 +235,7 @@ const Certificados = () => {
 
       // Condicion que verifica si el arreglo de certificados está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay certificados registradas.");
+        setErrorMessage("No hay certificados registrados.");
         setOpenSnackbar(true);
         setCertificados([]); // esto mantiene el estado vacío para evitar errores
       } else {

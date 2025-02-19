@@ -71,7 +71,7 @@ const Cursos = () => {
 
       // Condicion que verifica si el arreglo de cursos está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay cursos registradas.");
+        setErrorMessage("No hay cursos registrados.");
         setOpenSnackbar(true);
         setCursos([]); // esto mantiene el estado vacío para evitar errores
       } else {

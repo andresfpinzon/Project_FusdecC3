@@ -125,7 +125,7 @@ const Asistencias = () => {
 
       // Condicion que verifica si el arreglo de estudiantes está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay estudiantes registradas.");
+        setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
         setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
       } else {

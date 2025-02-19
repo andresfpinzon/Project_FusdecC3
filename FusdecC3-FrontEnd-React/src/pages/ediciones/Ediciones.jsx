@@ -103,7 +103,7 @@ const Ediciones = () => {
 
       // Condicion que verifica si el arreglo de cursos está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay cursos registradas.");
+        setErrorMessage("No hay cursos registrados.");
         setOpenSnackbar(true);
         setCursos([]); // esto mantiene el estado vacío para evitar errores
       } else {
@@ -130,7 +130,7 @@ const Ediciones = () => {
 
       // Condicion que verifica si el arreglo de horarios está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay horarios registradas.");
+        setErrorMessage("No hay horarios registrados.");
         setOpenSnackbar(true);
         setHorarios([]); // esto mantiene el estado vacío para evitar errores
       } else {

@@ -59,7 +59,15 @@ const Roles = () => {
     });
       if (!response.ok) throw new Error("Error al obtener roles");
       const data = await response.json();
-      setRoles(data);
+
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay roles registrados.");
+        setOpenSnackbar(true);
+        setRoles([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setRoles(data);
+      }
     } catch (error) {
       console.error("Error al obtener roles:", error);
       setErrorMessage("Error al obtener roles");
@@ -112,6 +120,11 @@ const Roles = () => {
           nombreRol: "",
           estadoRol: true,
         });
+
+        // Muestra un mensaje de éxito
+        setSuccessMessage("Rol creado exitosamente.");
+        setOpenSnackbar(true);
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al crear rol");
@@ -149,6 +162,11 @@ const Roles = () => {
           nombreRol: "",
           estadoRol: true,
         });
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El rol se actualizó correctamente");
+        setOpenSnackbar(true); 
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar rol");
@@ -178,6 +196,11 @@ const Roles = () => {
       if (response.ok) {
         setRoles(roles.filter((rol) => rol._id !== selectedRol._id));
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El rol se eliminó correctamente");
+        setOpenSnackbar(true);
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar rol");

@@ -87,7 +87,7 @@ const Estudiantes = () => {
       
       // Condicion que verifica si el arreglo de estudiantes está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay estudiantes registradas.");
+        setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
         setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
       } else {
@@ -141,7 +141,7 @@ const Estudiantes = () => {
 
       // Condicion que verifica si el arreglo de colegios está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay colegios registradas.");
+        setErrorMessage("No hay colegios registrados.");
         setOpenSnackbar(true);
         setColegios([]); // esto mantiene el estado vacío para evitar errores
       } else {

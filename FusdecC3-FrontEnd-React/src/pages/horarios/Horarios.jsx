@@ -64,7 +64,7 @@ const Horarios = () => {
 
       // Condicion que verifica si el arreglo de horarios está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay horarios registradas.");
+        setErrorMessage("No hay horarios registrados.");
         setOpenSnackbar(true);
         setHorarios([]); // esto mantiene el estado vacío para evitar errores
       } else {
