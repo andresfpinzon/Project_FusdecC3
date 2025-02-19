@@ -77,7 +77,15 @@ const Usuarios = () => {
     });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
-      setUsuarios(data);
+
+      // Condicion que verifica si el arreglo de usuarios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay usuarios registrados.");
+        setOpenSnackbar(true);
+        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setUsuarios(data);
+      }
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
       setErrorMessage("Error al obtener usuarios");
@@ -96,7 +104,15 @@ const Usuarios = () => {
     });
       if (!response.ok) throw new Error("Error al obtener roles");
       const data = await response.json();
-      setRoles(data);
+
+      // Condicion que verifica si el arreglo de roles está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay roles registrados.");
+        setOpenSnackbar(true);
+        setRoles([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setRoles(data);
+      }
     } catch (error) {
       console.error("Error al obtener roles:", error);
       setErrorMessage("Error al obtener roles");
@@ -169,7 +185,8 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
-        setMessage("Usuario guardado exitosamente!");
+        //mensaje de creacion exitosa
+        setMessage("Usuario guardado exitosamente");
         setSeverity("success");
         setOpenSnackbar(true);
       } else {
@@ -215,7 +232,8 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
-        setMessage("Usuario actualizado exitosamente!");
+        //mensaje de actualizacion exitosa
+        setMessage("Usuario actualizado exitosamente");
         setSeverity("success");
         setOpenSnackbar(true);
       } else {
@@ -247,6 +265,8 @@ const Usuarios = () => {
       if (response.ok) {
         setUsuarios(usuarios.filter((user) => user._id !== userToDelete._id));
         handleCloseDeleteDialog();
+
+        //mensaje de eliminación exitosa
         setMessage("Usuario eliminado exitosamente!");
         setSeverity("success");
         setOpenSnackbar(true);
