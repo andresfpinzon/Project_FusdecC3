@@ -3,32 +3,38 @@ const Estudiante = require("../models/estudiante_model");
 
 // Función asíncrona para crear una calificación
 async function crearCalificacion(body) {
+  try {
+   
   // Crear una nueva calificación
   let calificacion = new Calificacion({
-      tituloCalificacion: body.tituloCalificacion,
-      aprobado: body.aprobado,
-      usuarioId: body.usuarioId,
-      estadoCalificacion: body.estadoCalificacion,
-      estudiantes: body.estudiantes || [], // Array de estudiantes
-  });
+    tituloCalificacion: body.tituloCalificacion,
+    aprobado: body.aprobado,
+    usuarioId: body.usuarioId,
+    estadoCalificacion: body.estadoCalificacion,
+    estudiantes: body.estudiantes || [], // Array de estudiantes
+});
 
-  // Guardar la calificación en la base de datos
-  calificacion = await calificacion.save();
+// Guardar la calificación en la base de datos
+calificacion = await calificacion.save();
 
-  // Actualizar los estudiantes seleccionados para agregar esta calificación
-  if (body.estudiantes && body.estudiantes.length > 0) {
-      await Estudiante.updateMany(
-          { _id: { $in: body.estudiantes } }, // Filtrar solo los estudiantes seleccionados
-          { $push: { calificaciones: calificacion._id } } // Agregar el ID de la calificación al array
-      );
+// Actualizar los estudiantes seleccionados para agregar esta calificación
+if (body.estudiantes && body.estudiantes.length > 0) {
+    await Estudiante.updateMany(
+        { _id: { $in: body.estudiantes } }, // Filtrar solo los estudiantes seleccionados
+        { $push: { calificaciones: calificacion._id } } // Agregar el ID de la calificación al array
+    );
+}
+
+return calificacion; 
+  } catch (error) {
+    console.error("Error al crear la calificación:", error);
+    throw error;
   }
-
-  return calificacion;
 }
 
 // Función asíncrona para actualizar calificación
 async function actualizarCalificacion(id, body) {
-
+  try {
   // Buscar la calificación por ID
   let calificacion = await Calificacion.findById(id);
   if (!calificacion) {
@@ -69,13 +75,18 @@ async function actualizarCalificacion(id, body) {
           { $push: { calificaciones: calificacion._id } }
       );
   }
-
-  return calificacion;
+  return calificacion;  
+  } catch (error) {
+   console.error("Error al actualizar la calificación:", error);
+    throw error; 
+  }
 }
 
 
 // Función asíncrona para inactivar calificaciones
 async function desactivarCalificacion(id) {
+  try {
+   
   let calificacion = await Calificacion.findByIdAndUpdate(
     id,
     {
@@ -86,15 +97,24 @@ async function desactivarCalificacion(id) {
     { new: true }
   );
 
-  return calificacion;
+  return calificacion; 
+  } catch (error) {
+    console.error("Error al inactivar la calificación:", error);
+    throw error;
+  }
 }
 
 // Función asíncrona para listar las calificaciones activas
 async function listarCalificacionesActivas() {
+  try {
   let calificacion = await Calificacion.find({ estadoCalificacion: true })
   .populate('usuarioId')
   .populate('estudiantes');
-  return calificacion;
+  return calificacion; 
+  } catch (error) {
+    console.error("Error al listar las calificaciones (calificacion_logic):", error);
+    throw error;
+  }
 }
 
 // Función asíncrona para buscar una calificacion por su ID

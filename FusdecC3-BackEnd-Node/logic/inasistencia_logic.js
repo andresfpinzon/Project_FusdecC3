@@ -3,7 +3,8 @@ const Estudiante = require('../models/estudiante_model');
 
 // Función asíncrona para crear una inasistencia
 async function crearInasistencia(body) {
-    // Crear una nueva inasistencia
+    try {
+        // Crear una nueva inasistencia
     let inasistencia = new Inasistencia({
         tituloInasistencia: body.tituloInasistencia,
         observacion: body.observacion,
@@ -22,10 +23,19 @@ async function crearInasistencia(body) {
         { $push: { inasistencias: inasistencia._id } } // Agregar el ID de la inaasistencia al array
         );
     }
+
+    return inasistencia;
+    } catch (error) {
+        console.error('Error al crear la inasistencia (inasistencia_logic):', error);
+        throw error;
+    }
+    
 }
 
 // Función asíncrona para actualizar una inasistencia
 async function actualizarInasistencia(id, body) {
+    try {
+       
     let inasistencia = await Inasistencia.findById(id);
     if (!inasistencia) {
         throw new Error('Inasistencia no encontrada');
@@ -60,35 +70,52 @@ async function actualizarInasistencia(id, body) {
     }
 
 
-    return inasistencia;
+    return inasistencia; 
+    } catch (error) {
+        console.error('Error al actualizar la inasistencia (inasistencia_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para listar todas las inasistencias
 async function listarInasistencias() {
-    return await Inasistencia.find({})
-    .populate('asistenciaId')
-    .populate('estudiantes');
+    try {
+    return await Inasistencia.find().populate('asistenciaId').populate('estudiantes');
+    } catch (error) {
+        console.error('Error al listar las inasistencias (inasistencia_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para obtener una inasistencia por su ID
 async function obtenerInasistenciaPorId(id) {
-    const inasistencia = await Inasistencia.findById(id)
+    try {
+        const inasistencia = await Inasistencia.findById(id)
     .populate('asistenciaId')
     .populate('estudiantes');
     if (!inasistencia) {
         throw new Error('Inasistencia no encontrada');
     }
     return inasistencia;
+    } catch (error) {
+        console.error('Error al obtener la inasistencia (inasistencia_logic):', error);
+        throw error;       
+    }
 }
 
 
 // Función asíncrona para eliminar una inasistencia
 async function desactivarInasistencia(id) {
-    let inasistencia = await Inasistencia.findByIdAndUpdate(id, { estadoInasistencia: false }, { new: true });
+    try {
+        let inasistencia = await Inasistencia.findByIdAndUpdate(id, { estadoInasistencia: false }, { new: true });
     if (!inasistencia) {
         throw new Error('Asistencia no encontrada');
     }
     return inasistencia;
+    } catch (error) {
+        console.error('Error al desactivar la inasistencia (inasistencia_logic):', error);
+        throw error;
+    }
 }
 
 

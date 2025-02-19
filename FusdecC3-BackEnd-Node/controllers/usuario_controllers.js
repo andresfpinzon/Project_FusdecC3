@@ -45,12 +45,6 @@ const actualizarUsuario = async (req, res) => {
   const { id } = req.params;
   const body = req.body;
 
-  // Obtenemos el usuario actual para mantener su contraseña si no se proporciona una nueva
-  const usuarioActual = await logic.obtenerUsuarioPorId(id);
-  
-  if (!usuarioActual) {
-    return res.status(404).json({ error: 'Usuario no encontrado' });
-  }
 
   // Validamos la entrada, sin incluir la contraseña en la validación a menos que esté presente
   const { error, value } = usuarioSchemaValidation.validate({
@@ -67,7 +61,7 @@ const actualizarUsuario = async (req, res) => {
   }
 
   try {
-    const usuarioActualizado = await logic.actualizarUsuario(id, { ...value, contraseñaHash: body.contraseñaHash });
+    const usuarioActualizado = await logic.actualizarUsuario(id, body);
     
     if (!usuarioActualizado) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -81,10 +75,10 @@ const actualizarUsuario = async (req, res) => {
 
 
 // Controlador para desactivar un usuario
-const desactivarUsuario = async (req, res) => {
+const toggleStateController = async (req, res) => {
   const { id } = req.params;
   try {
-    const usuarioDesactivado = await logic.desactivarUsuario(id);
+    const usuarioDesactivado = await logic.togglerStateLogic(id);
     if (!usuarioDesactivado) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
@@ -112,6 +106,6 @@ module.exports = {
   listarUsuarios,
   crearUsuario,
   actualizarUsuario,
-  desactivarUsuario,
   obtenerUsuarioPorId,
+  toggleStateController
 };

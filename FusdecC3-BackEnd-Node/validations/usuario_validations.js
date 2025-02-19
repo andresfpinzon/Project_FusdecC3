@@ -71,12 +71,7 @@ const usuarioSchemaValidation = Joi.object({
       'boolean.base': 'El estado del usuario debe ser un booleano',
     }),
 
-  creadoEn: Joi.date()
-    .default(() => new Date())
-    .optional()
-    .messages({
-      'date.base': 'La fecha de creación debe ser una fecha válida',
-    }),
+ 
 });
 
 // Para el mensaje específico de actualización

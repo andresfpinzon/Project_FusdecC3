@@ -9,6 +9,8 @@ const Edicion = require('../models/edicion_model');
 
 // Función para crear un nuevo estudiante
 async function crearEstudiante(body) {
+    try {
+     
     // Verificar si ya existe un estudiante con el mismo correo o número de documento
     const estudianteExistente = await Estudiante.findOne({
         $or: [
@@ -73,10 +75,16 @@ async function crearEstudiante(body) {
         );
     }
 
-    return nuevoEstudiante;
+    return nuevoEstudiante;   
+    } catch (error) {
+        console.error('Error al crear el estudiante (estudiante_logic):', error);
+        throw error;
+    }
 }
 
 async function actualizarEstudiante(id, body) {
+    try {
+        
     // Buscar el estudiante por ID
     let estudiante = await Estudiante.findById(id);
     if (!estudiante) {
@@ -168,11 +176,17 @@ async function actualizarEstudiante(id, body) {
     }
 
     return estudiante;
+    } catch (error) {
+        console.error('Error al actualizar el estudiante (estudiante_logic):', error);
+        throw error;
+    }
 }
 
 
 // Función para listar todos los estudiantes
 async function listarEstudiantes() {
+    try {
+        
     return await Estudiante.find({})
     .populate('unidadId')
     .populate('colegioId')
@@ -180,10 +194,16 @@ async function listarEstudiantes() {
     .populate('calificaciones')
     .populate('asistencias',)
     .populate('certificados');
+    } catch (error) {
+        console.error('Error al listar los estudiantes (estudiante_logic):', error);
+        throw error;
+    }
 }
 
 // Función para obtener un estudiante por ID
 async function obtenerEstudiantePorId(id) {
+    try {
+        
     const estudiante = await Estudiante.findById(id)
     .populate('unidadId')
     .populate('colegioId')
@@ -195,6 +215,10 @@ async function obtenerEstudiantePorId(id) {
         throw new Error("Estudiante no encontrado");
     }
     return estudiante;
+    } catch (error) {
+            console.error('Error al obtener el estudiante (estudiante_logic):', error);
+            throw error;
+    }
 }
 
 // Lógica para agregar asistencias a un estudiante
@@ -276,11 +300,16 @@ async function agregarEdicionAEstudiante(estudianteId, edicionesIds) {
 
 // Función para desactivar un estudiante
 async function desactivarEstudiante(id) {
-    let estudiante = await Estudiante.findByIdAndUpdate(id, { estadoEstudiante: false }, { new: true });
+    try {
+        let estudiante = await Estudiante.findByIdAndUpdate(id, { estadoEstudiante: false }, { new: true });
     if (!estudiante) {
         throw new Error('Estudiante no encontrado');
     }
     return estudiante; 
+    } catch (error) {
+        console.error('Error al desactivar el estudiante (estudiante_logic):', error);
+    }
+    
 }
 
 module.exports = {

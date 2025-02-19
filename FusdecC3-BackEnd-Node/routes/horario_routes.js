@@ -185,7 +185,7 @@ router.put("/:id", verifyJWT, verifyRole(['Secretario','Root']), horarioControll
  *       404:
  *         description: Horario no encontrado.
  */
-router.delete("/:id", verifyJWT, verifyRole(['Secretario','Root']), horarioController.desactivarHorario);
+router.delete("/:id", verifyJWT, verifyRole(['Secretario','Root']), horarioController.togglerStateController);
 
 /**
  * @swagger
