@@ -84,7 +84,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      setEstudiantes(data);
+      
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registrados.");
+        setOpenSnackbar(true);
+        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEstudiantes(data);
+      }
     } catch (error) {
       console.error("Error al obtener estudiantes:", error);
       setErrorMessage("Error al obtener estudiantes");
@@ -103,7 +111,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
-      setUnidades(data);
+
+      // Condicion que verifica si el arreglo de unidades está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay unidades registradas.");
+        setOpenSnackbar(true);
+        setUnidades([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setUnidades(data);
+      }
     } catch (error) {
       console.error("Error al obtener unidades:", error);
       setErrorMessage("Error al obtener unidades");
@@ -122,7 +138,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener colegios");
       const data = await response.json();
-      setColegios(data);
+
+      // Condicion que verifica si el arreglo de colegios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay colegios registrados.");
+        setOpenSnackbar(true);
+        setColegios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setColegios(data);
+      }
     } catch (error) {
       console.error("Error al obtener colegios:", error);
       setErrorMessage("Error al obtener colegios");
@@ -141,7 +165,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
-      setEdiciones(data);
+
+      // Condicion que verifica si el arreglo de ediciones está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay ediciones registradas.");
+        setOpenSnackbar(true);
+        setEdiciones([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEdiciones(data);
+      }
     } catch (error) {
       console.error("Error al obtener ediciones:", error);
       setErrorMessage("Error al obtener ediciones");
@@ -208,6 +240,11 @@ const Estudiantes = () => {
 
       if (response.ok) {
         await fetchEstudiantes();
+
+        // Muestra un mensaje de éxito
+        setSuccessMessage("Estudiante creado exitosamente.");
+        setOpenSnackbar(true);
+
         setFormValues({
           nombreEstudiante: "",
           apellidoEstudiante: "",
@@ -262,6 +299,10 @@ const Estudiantes = () => {
           estadoEstudiante: true,
           ediciones: [],
         });
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El estudiante se actualizó correctamente");
+        setOpenSnackbar(true); 
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar estudiante");
@@ -289,6 +330,11 @@ const Estudiantes = () => {
       if (response.ok) {
         setEstudiantes(estudiantes.filter((estudiante) => estudiante._id !== estudianteToDelete._id));
         handleCloseDeleteDialog();
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El estudiante se eliminó correctamente");
+        setOpenSnackbar(true);
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar estudiante");

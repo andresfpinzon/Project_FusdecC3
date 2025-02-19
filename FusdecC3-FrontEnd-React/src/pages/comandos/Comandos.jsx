@@ -69,7 +69,15 @@ const Comandos = () => {
     });
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
-      setComandos(data);
+
+      // Condicion que verifica si el arreglo de comandos está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay comandos registrados.");
+        setOpenSnackbar(true);
+        setComandos([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setComandos(data);
+      }
     } catch (error) {
       console.error("Error al obtener comandos:", error);
       setErrorMessage("Error al obtener comandos");
@@ -88,7 +96,15 @@ const Comandos = () => {
       });
       if (!response.ok) throw new Error("Error al obtener fundaciones");
       const data = await response.json();
-      setFundaciones(data);
+
+      // Condicion que verifica si el arreglo de fundaciones está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay fundaciones registradas.");
+        setOpenSnackbar(true);
+        setFundaciones([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setFundaciones(data);
+      }
     } catch (error) {
       console.error("Error al obtener fundaciones:", error);
       setErrorMessage("Error al obtener fundaciones");
@@ -135,6 +151,8 @@ const Comandos = () => {
         const nuevoComando = await response.json();
         setComandos([...comandos, nuevoComando]);
         clearForm();
+
+        // Muestra un mensaje de éxito
         setSuccessMessage("Comando guardado exitosamente!");
         setOpenSnackbar(true);
       } else {
@@ -174,6 +192,8 @@ const Comandos = () => {
         )
       );
       clearForm();
+
+      // Muestra un mensaje de éxito
       setSuccessMessage("Comando actualizado exitosamente!");
       setOpenSnackbar(true);
     } catch (error) {
@@ -201,6 +221,8 @@ const Comandos = () => {
       if (response.ok) {
         setComandos(comandos.filter((comando) => comando._id !== selectedComando._id));
         handleCloseDeleteDialog();
+
+        // Muestra un mensaje de éxito
         setSuccessMessage("Comando eliminado exitosamente!");
         setOpenSnackbar(true);
       } else {

@@ -85,7 +85,15 @@ const Inasistencias = () => {
     });
       if (!response.ok) throw new Error("Error al obtener asistencias");
       const data = await response.json();
-      setAsistencias(data);
+
+      // Condicion que verifica si el arreglo de asistencias está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay asistencias registradas.");
+        setOpenSnackbar(true);
+        setAsistencias([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setAsistencias(data);
+      }
     } catch (error) {
       setErrorMessage("Error al obtener asistencias", error);
       setOpenSnackbar(true);
@@ -103,7 +111,15 @@ const Inasistencias = () => {
     });
       if (!response.ok) throw new Error("Error al obtener inasistencias");
       const data = await response.json();
-      setInasistencias(data);
+
+      // Condicion que verifica si el arreglo de inasistencias está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay inasistencias registradas.");
+        setOpenSnackbar(true);
+        setInasistencias([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setInasistencias(data);
+      }
     } catch (error) {
       setErrorMessage("Error al obtener inasistencias", error);
       setOpenSnackbar(true);
@@ -121,7 +137,15 @@ const Inasistencias = () => {
     });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      setEstudiantes(data);
+      
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registrados.");
+        setOpenSnackbar(true);
+        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEstudiantes(data);
+      }
     } catch (error) {
       setErrorMessage("Error al obtener estudiantes", error);
       setOpenSnackbar(true);
@@ -179,6 +203,11 @@ const Inasistencias = () => {
 
       if (response.ok) {
         await fetchInasistencias();
+
+        // Muestra un mensaje de éxito
+        setSuccessMessage("Inasistencia creada exitosamente.");
+        setOpenSnackbar(true);
+
         setFormValues({
           tituloInasistencia: "",
           observacion: "",
@@ -223,6 +252,11 @@ const Inasistencias = () => {
           estadoInasistencia: true,
           estudiantes: [],
         });
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La inasistencia se actualizó correctamente");
+        setOpenSnackbar(true); 
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar Inasistencia");
@@ -246,6 +280,11 @@ const Inasistencias = () => {
       if (response.ok) {
         setAsistencias(asistencias.filter((inasistencia) => inasistencia._id !== inasistenciaToDelete._id));
         handleCloseDeleteDialog();
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La asistencia se eliminó correctamente");
+        setOpenSnackbar(true);
+        
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar asistencia");

@@ -43,34 +43,34 @@ const Asistencias = () => {
   // Efecto para cargar datos iniciales
   useEffect(() => {
     if (token) {
-      const decodedToken = jwtDecode(token)
-      setUserId(decodedToken.id)
-      fetchStudents()
-      fetchAttendanceHistory()
+      try {
+        const decodedToken = jwtDecode(token)
+        setUserId(decodedToken.id)
+        fetchStudents()
+        fetchAttendanceHistory()
+      } catch (error) {
+        setSnackbar({ open: true, message: "Error al decodificar el token", severity: "error" })
+      }
     }
   }, [token])
 
-  // Función para obtener la lista de estudiantes
   const fetchStudents = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/estudiantes", {
         headers: {
+          "Content-Type": "application/json",
           Authorization: token,
         },
       })
+      if (!response.ok) throw new Error("Error al obtener estudiantes")
       const data = await response.json()
+      if (data.length === 0) {
+        setSnackbar({ open: true, message: "No hay estudiantes registrados", severity: "warning" })
+      }
       setStudents(data)
-      const initialAttendance = {}
-      data.forEach((student) => {
-        initialAttendance[student._id] = false
-      })
-      setAttendance(initialAttendance)
+      setAttendance(data.reduce((acc, student) => ({ ...acc, [student._id]: false }), {}))
     } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Error al cargar estudiantes",
-        severity: "error",
-      })
+      setSnackbar({ open: true, message: "Error al cargar estudiantes", severity: "error" })
     }
   }
 
@@ -78,39 +78,28 @@ const Asistencias = () => {
   const fetchAttendanceHistory = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/asistencias", {
-        headers: {
-          Authorization: token,
-        },
+        headers: { Authorization: token },
       })
+      if (!response.ok) throw new Error("Error al obtener historial")
       const data = await response.json()
       setAttendanceHistory(data)
     } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Error al cargar historial",
-        severity: "error",
-      })
+      setSnackbar({ open: true, message: "Error al cargar historial", severity: "error" })
     }
   }
 
+
   // Manejador para cambiar el estado de asistencia
   const handleAttendanceChange = (studentId) => {
-    setAttendance((prev) => ({
-      ...prev,
-      [studentId]: !prev[studentId],
-    }))
+    setAttendance((prev) => ({ ...prev, [studentId]: !prev[studentId] }))
   }
+
 
   // Función para guardar la asistencia
   const handleSaveAttendance = async () => {
     try {
-      const presentStudents = Object.entries(attendance)
-        .filter(([_, present]) => present)
-        .map(([id]) => id)
-
-      const absentStudents = Object.entries(attendance)
-        .filter(([_, present]) => !present)
-        .map(([id]) => id)
+      const presentStudents = Object.entries(attendance).filter(([_, present]) => present).map(([id]) => id)
+      const absentStudents = Object.entries(attendance).filter(([_, present]) => !present).map(([id]) => id)
 
       const attendanceData = {
         tituloAsistencia: `Asistencia ${selectedDate}`,
@@ -120,7 +109,7 @@ const Asistencias = () => {
         inasistencias: absentStudents,
       }
 
-      await fetch("http://localhost:3000/api/asistencias", {
+      const response = await fetch("http://localhost:3000/api/asistencias", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,28 +117,19 @@ const Asistencias = () => {
         },
         body: JSON.stringify(attendanceData),
       })
-
-      setSnackbar({
-        open: true,
-        message: "Asistencia guardada exitosamente",
-        severity: "success",
-      })
+      if (!response.ok) throw new Error("Error al guardar asistencia")
+      setSnackbar({ open: true, message: "Asistencia guardada exitosamente", severity: "success" })
       fetchAttendanceHistory()
     } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Error al guardar asistencia",
-        severity: "error",
-      })
+      setSnackbar({ open: true, message: "Error al guardar asistencia", severity: "error" })
     }
   }
 
   // Filtrar estudiantes basado en el término de búsqueda
-  const filteredStudents = students.filter(
-    (student) =>
-      student.nombreEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.apellidoEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.documentoEstudiante?.includes(searchTerm),
+  const filteredStudents = students.filter((student) =>
+    student.nombreEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.apellidoEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.documentoEstudiante?.includes(searchTerm),
   )
 
   return (

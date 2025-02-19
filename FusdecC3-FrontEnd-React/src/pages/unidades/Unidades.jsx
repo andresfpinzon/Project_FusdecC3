@@ -48,7 +48,15 @@ const Unidades = () => {
       });
       if (!response.ok) throw new Error('Error al obtener unidades');
       const data = await response.json();
-      setUnidades(data);
+
+      // Condicion que verifica si el arreglo de unidades está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay unidades registradas.");
+        setOpenSnackbar(true);
+        setUnidades([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setUnidades(data);
+      }
     } catch (error) {
       setError('Error al obtener unidades');
     } finally {
@@ -65,7 +73,15 @@ const Unidades = () => {
       });
       if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
-      setBrigadas(data);
+
+      // Condicion que verifica si el arreglo de brigadas está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay brigadas registradas.");
+        setOpenSnackbar(true);
+        setBrigadas([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setBrigadas(data);
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -80,6 +96,15 @@ const Unidades = () => {
       });
       if (response.ok) {
         const data = await response.json();
+        //setUsuarios(data);
+      }
+      
+      // Condicion que verifica si el arreglo de usuarios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay usuarios registrados.");
+        setOpenSnackbar(true);
+        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
         setUsuarios(data);
       }
     } catch (error) {

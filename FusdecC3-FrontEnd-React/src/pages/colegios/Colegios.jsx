@@ -62,7 +62,15 @@ const Colegios = () => {
     });
       if (!response.ok) throw new Error("Error al obtener colegios");
       const data = await response.json();
-      setColegios(data);
+
+      // Condicion que verifica si el arreglo de colegios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay colegios registrados.");
+        setOpenSnackbar(true);
+        setColegios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setColegios(data);
+      }
     } catch (error) {
       console.error("Error al obtener colegios:", error);
       setErrorMessage("Error al obtener colegios");
@@ -81,7 +89,15 @@ const Colegios = () => {
     });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      setEstudiantes(data);
+
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registrados.");
+        setOpenSnackbar(true);
+        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEstudiantes(data);
+      }
     } catch (error) {
       console.error("Error al obtener estudiantes:", error);
       setErrorMessage("Error al obtener estudiantes");
@@ -151,6 +167,7 @@ const Colegios = () => {
               estadoColegio: true,
               estudiantes: [],
             });
+            // Muestra un mensaje de éxito
             setSuccessMessage("Colegio creado exitosamente");
             setOpenSnackbar(true);
         } else {
@@ -192,6 +209,7 @@ const Colegios = () => {
           estadoColegio: true,
           estudiantes: [],
         });
+        // Muestra un mensaje de éxito
         setSuccessMessage("Colegio actualizado exitosamente");
         setOpenSnackbar(true);
       } else {
@@ -220,6 +238,7 @@ const Colegios = () => {
 
       if (response.ok) {
         setColegios(colegios.filter((colegio) => colegio._id !== colegioToDelete._id));
+        // Muestra un mensaje de éxito
         setSuccessMessage("Colegio eliminado exitosamente");
         setOpenSnackbar(true);
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar

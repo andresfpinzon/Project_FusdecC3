@@ -40,7 +40,15 @@ const Auditorias = () => {
       });
       if (!response.ok) throw new Error("Error al obtener auditorías");
       const data = await response.json();
-      setAuditorias(data);
+
+      // Condicion que verifica si el arreglo de auditorias está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay auditorias registradas.");
+        setOpenSnackbar(true);
+        setAuditorias([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setAuditorias(data);
+      }
     } catch (error) {
       console.error("Error al obtener auditorías:", error);
       setErrorMessage("Error al obtener auditorías");

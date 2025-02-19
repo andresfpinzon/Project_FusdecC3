@@ -73,8 +73,15 @@ const Ediciones = () => {
     });
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
-      console.log(data);
-      setEdiciones(data);
+
+      // Condicion que verifica si el arreglo de ediciones está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay ediciones registradas.");
+        setOpenSnackbar(true);
+        setEdiciones([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEdiciones(data);
+      }
     } catch (error) {
       console.error("Error al obtener ediciones:", error);
       setErrorMessage("Error al obtener ediciones");
@@ -93,7 +100,15 @@ const Ediciones = () => {
     });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
-      setCursos(data);
+
+      // Condicion que verifica si el arreglo de cursos está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay cursos registrados.");
+        setOpenSnackbar(true);
+        setCursos([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setCursos(data);
+      }
     } catch (error) {
       console.error("Error al obtener cursos:", error);
       setErrorMessage("Error al obtener cursos");
@@ -112,7 +127,15 @@ const Ediciones = () => {
     });
       if (!response.ok) throw new Error("Error al obtener horarios");
       const data = await response.json();
-      setHorarios(data);
+
+      // Condicion que verifica si el arreglo de horarios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay horarios registrados.");
+        setOpenSnackbar(true);
+        setHorarios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setHorarios(data);
+      }
     } catch (error) {
       console.error("Error al obtener horarios:", error);
       setErrorMessage("Error al obtener horarios");
@@ -195,7 +218,10 @@ const Ediciones = () => {
               horarios: [],
               estudiantes: [],
             });
-            console.log('Edicion creada exitosamente:', nuevaEdicion);
+
+            // Muestra un mensaje de éxito (similar a handleCreateAsistencia)
+            setSuccessMessage("Edición creada exitosamente.");
+            setOpenSnackbar(true);
         } else {
             const errorData = await response.json();
             throw new Error(errorData.error || "Error al crear edicion");
@@ -205,7 +231,7 @@ const Ediciones = () => {
         setErrorMessage(error.message);
         setOpenSnackbar(true);
     }
-};
+  };
 
 const handleUpdateEdicion = async () => {
   try {
@@ -240,6 +266,10 @@ const handleUpdateEdicion = async () => {
         horarios: [],
         estudiantes: [],
       });
+
+      // Mostrar mensaje de éxito
+      setSuccessMessage("La edición se actualizó correctamente");
+      setOpenSnackbar(true); 
     } else {
       const errorData = await response.json();
       throw new Error(errorData.error || "Error al actualizar edición");
@@ -270,6 +300,11 @@ const handleUpdateEdicion = async () => {
       if (response.ok) {
         setEdiciones(ediciones.filter((edicion) => edicion._id !== edicionToDelete._id));
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La edición se eliminó correctamente");
+        setOpenSnackbar(true);
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar edicion");

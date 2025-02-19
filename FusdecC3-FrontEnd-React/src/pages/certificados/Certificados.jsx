@@ -148,7 +148,15 @@ const Certificados = () => {
       });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
-      setUsuarios(data);
+
+      // Condicion que verifica si el arreglo de usuarios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay usuarios registrados.");
+        setOpenSnackbar(true);
+        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setUsuarios(data);
+      }
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
       setErrorMessage("Error al obtener usuarios");
@@ -168,7 +176,15 @@ const Certificados = () => {
       });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
-      setCursos(data);
+
+      // Condicion que verifica si el arreglo de cursos está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay cursos registrados.");
+        setOpenSnackbar(true);
+        setCursos([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setCursos(data);
+      }
     } catch (error) {
       console.error("Error al obtener cursos:", error);
       setErrorMessage("Error al obtener cursos");
@@ -188,7 +204,15 @@ const Certificados = () => {
       });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      setEstudiantes(data);
+
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registrados.");
+        setOpenSnackbar(true);
+        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEstudiantes(data);
+      }
     } catch (error) {
       console.error("Error al obtener estudiantes:", error);
       setErrorMessage("Error al obtener estudiantes");
@@ -208,7 +232,15 @@ const Certificados = () => {
       });
       if (!response.ok) throw new Error("Error al obtener certificados");
       const data = await response.json();
-      setCertificados(data);
+
+      // Condicion que verifica si el arreglo de certificados está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay certificados registrados.");
+        setOpenSnackbar(true);
+        setCertificados([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setCertificados(data);
+      }
     } catch (error) {
       console.error("Error al obtener certificados:", error);
       setErrorMessage("Error al obtener certificados");
@@ -228,7 +260,15 @@ const Certificados = () => {
       });
       if (!response.ok) throw new Error("Error al obtener auditorías");
       const data = await response.json();
-      setAuditorias(data);
+
+      // Condicion que verifica si el arreglo de auditorias está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay auditorias registradas.");
+        setOpenSnackbar(true);
+        setAuditorias([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setAuditorias(data);
+      }
     } catch (error) {
       console.error("Error al obtener auditorías:", error);
       setErrorMessage("Error al obtener auditorías");
@@ -259,6 +299,11 @@ const Certificados = () => {
 
       if (response.ok) {
         await fetchCertificados();
+
+        // Muestra un mensaje de éxito
+        /* setSuccessMessage("Certificado creado exitosamente.");
+        setOpenSnackbar(true); */
+
         setFormValues({
           fechaEmision: "",
           usuarioId: formValues.usuarioId,
@@ -355,6 +400,11 @@ const Certificados = () => {
       if (response.ok) {
         setCertificados(certificados.filter(certificado => certificado._id !== certificadoToDelete._id));
         handleCloseDeleteDialog();
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La asistencia se eliminó correctamente");
+        setOpenSnackbar(true);
+        
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar certificado");
