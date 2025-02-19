@@ -113,7 +113,7 @@ router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrativo
  *                   estadoAsistencia: true
  *                   estudiantes: ["estudiante3", "estudiante4"]
  */
-router.post('/', verifyJWT, verifyRole(['Instructor', 'Root']), asistenciaController.crearAsistencia);
+router.post('/', verifyJWT, verifyRole(['Instructor', 'Secretario', 'Root']), asistenciaController.crearAsistencia);
 
 
 /**

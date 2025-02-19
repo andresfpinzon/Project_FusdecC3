@@ -9,39 +9,42 @@
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Crear Nuevo</a>
 </p>
-<table id="dataTable" class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Código de Verificación</th>
-            <th>Emisor</th>
-            <th>Estado</th>
-            <th>Curso</th>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Documento del Estudiante</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+
+<div class="table-responsive">
+    <table id="dataTable" class="table table-striped table-bordered">
+        <thead>
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.VerificationCode)</td>
-                <td>@Html.DisplayFor(modelItem => item.NameOfIssuerCert)</td>
-                <td>@(item.CertificateStatus ? "Activo" : "Inactivo")</td>
-                <td>@Html.DisplayFor(modelItem => item.Course.CourseName)</td>
-                <td>@Html.DisplayFor(modelItem => item.Student.StudentName)</td>
-                <td>@Html.DisplayFor(modelItem => item.Student.StudentLastName)</td>
-                <td>@Html.DisplayFor(modelItem => item.Student.DocumentNumber)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdCertificate" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdCertificate" class="btn btn-info btn-sm"><i class="fas fa-info-circle"></i> Detalles</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdCertificate" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>
-                </td>
+                <th>Código de Verificación</th>
+                <th>Emisor</th>
+                <th>Estado</th>
+                <th>Curso</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Documento del Estudiante</th>
+                <th>Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.VerificationCode)</td>
+                    <td>@Html.DisplayFor(modelItem => item.NameOfIssuerCert)</td>
+                    <td>@(item.CertificateStatus ? "Activo" : "Inactivo")</td>
+                    <td>@Html.DisplayFor(modelItem => item.Course.CourseName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Student.StudentName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Student.StudentLastName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Student.DocumentNumber)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.IdCertificate" class="btn btn-warning btn-sm" title="Editar"><i class="fas fa-edit"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.IdCertificate" class="btn btn-info btn-sm" title="Detalles"><i class="fas fa-info-circle"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.IdCertificate" class="btn btn-danger btn-sm" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @section Scripts {
     <script>

@@ -1,11 +1,7 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const mongoose = require("mongoose")
+const { Schema } = mongoose
 
 const AsistenciaSchema = new Schema({
-  /*asistenciaId: {
-    type: Schema.Types.ObjectId,
-    default: () => new mongoose.Types.ObjectId(),
-  },*/
   tituloAsistencia: {
     type: String,
     required: true,
@@ -15,14 +11,13 @@ const AsistenciaSchema = new Schema({
     required: true,
   },
   usuarioId: {
-    type: String,
-    maxlength: 450,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Usuario",
     required: true,
   },
   estadoAsistencia: {
     type: Boolean,
     default: true,
-    required: true,
   },
   estudiantes: [
     {
@@ -30,7 +25,25 @@ const AsistenciaSchema = new Schema({
       ref: "Estudiante",
     },
   ],
-});
+  inasistencias: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Estudiante",
+    },
+  ],
+})
 
-const Asistencia = mongoose.model("Asistencia", AsistenciaSchema);
-module.exports = Asistencia;
+// Tarea automatizada: Marcar asistencias antiguas como inactivas
+AsistenciaSchema.statics.marcarAsistenciasAntiguas = async function () {
+  const unMesAtras = new Date()
+  unMesAtras.setMonth(unMesAtras.getMonth() - 1)
+
+  await this.updateMany(
+    { fechaAsistencia: { $lt: unMesAtras }, estadoAsistencia: true },
+    { $set: { estadoAsistencia: false } },
+  )
+}
+
+const Asistencia = mongoose.model("Asistencia", AsistenciaSchema)
+module.exports = Asistencia
+

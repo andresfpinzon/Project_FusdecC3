@@ -1,8 +1,11 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+"use client"
+
+import { useState, useEffect } from "react"
+import { jwtDecode } from "jwt-decode"
 import {
   Container,
+  Paper,
+  Typography,
   TextField,
   Button,
   Table,
@@ -11,434 +14,247 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Switch,
+  Checkbox,
   Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Typography,
-  Snackbar,
   Alert,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Checkbox,
-  ListItemText,
-  TablePagination
-} from "@mui/material";
-import { Edit, Delete, Info, Event, Group, School } from "@mui/icons-material";
-
-const token = localStorage.getItem("token");
+  Snackbar,
+} from "@mui/material"
+import SaveIcon from "@mui/icons-material/Save"
+import HistoryIcon from "@mui/icons-material/History"
 
 const Asistencias = () => {
-  const [asistencias, setAsistencias] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
-  const [selectedAsistencia, setSelectedAsistencia] = useState(null);
-  const [formValues, setFormValues] = useState({
-    tituloAsistencia: "",
-    fechaAsistencia: "",
-    usuarioId: "", 
-    estadoAsistencia: true,
-    estudiantes: [],
-  });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  // Estado para almacenar el token JWT
+  const token = localStorage.getItem("token")
 
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [asistenciaToDelete, setAsistenciaToDelete] = useState(null);
-  const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  // Estados para manejar la interfaz y los datos
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
+  const [students, setStudents] = useState([])
+  const [attendance, setAttendance] = useState({})
+  const [searchTerm, setSearchTerm] = useState("")
+  const [openHistory, setOpenHistory] = useState(false)
+  const [attendanceHistory, setAttendanceHistory] = useState([])
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
+  const [userId, setUserId] = useState(null)
 
-  // Paginación y búsqueda
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  // Añade estado para almacenar el rol del usuario y su id
-  const [userRole, setUserRole] = useState(null);
-  const [userId, setUserId] = useState(null);
-
+  // Efecto para cargar datos iniciales
   useEffect(() => {
-    fetchEstudiantes();
-     // Decodificar el token y obtener el ID de usuario
-     if (token) {
-      const decodedToken = jwtDecode(token);
-      setFormValues((prevFormValues) => ({
-        ...prevFormValues,
-        usuarioId: decodedToken.id, 
-      }));
-      setUserRole(decodedToken.roles);
+    if (token) {
+      const decodedToken = jwtDecode(token)
       setUserId(decodedToken.id)
+      fetchStudents()
+      fetchAttendanceHistory()
     }
-    if (userRole && userId) {
-      fetchAsistencias();
-    }
-  }, [userRole, userId]);
+  }, [token])
 
-  const fetchAsistencias = async () => {
+  // Función para obtener la lista de estudiantes
+  const fetchStudents = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias", {
-        method: "GET",
+      const response = await fetch("http://localhost:3000/api/estudiantes", {
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener asistencias");
-      let data = await response.json();
-
-      if (userRole.includes("Instructor")) {
-        data = data.filter((asistencia) => asistencia.usuarioId === userId);
-      }
-      setAsistencias(data);
+          Authorization: token,
+        },
+      })
+      const data = await response.json()
+      setStudents(data)
+      const initialAttendance = {}
+      data.forEach((student) => {
+        initialAttendance[student._id] = false
+      })
+      setAttendance(initialAttendance)
     } catch (error) {
-      setErrorMessage("Error al obtener asistencias", error);
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: "Error al cargar estudiantes",
+        severity: "error",
+      })
     }
-  };
+  }
 
-  const fetchEstudiantes = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/estudiantes",
-        {
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization": token 
-          }
-      }
-      );
-      if (!response.ok) throw new Error("Error al obtener estudiantes");
-      const data = await response.json();
-      setEstudiantes(data);
-    } catch (error) {
-      setErrorMessage("Error al obtener estudiantes", error);
-      setOpenSnackbar(true);
-    }
-  };
-
-  // Filtrar asistencia según el término de búsqueda
-  const filteredAsistencias = asistencias.filter((asistencia) =>
-    asistencia.tituloAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    asistencia.fechaAsistencia.toLowerCase().includes(searchTerm.toLowerCase()) 
-  );
-
-  // Cambiar página
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  // Cambiar filas por página
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSwitchChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.checked,
-    });
-  };
-
-  const handleEstudianteChange = (e) => {
-    const { target: { value } } = e;
-    setFormValues({
-      ...formValues,
-      estudiantes: typeof value === "string" ? value.split(",") : value,
-    });
-  };
-
-  const handleCreateAsistencia = async () => {
+  // Función para obtener el historial de asistencias
+  const fetchAttendanceHistory = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/asistencias", {
+        headers: {
+          Authorization: token,
+        },
+      })
+      const data = await response.json()
+      setAttendanceHistory(data)
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Error al cargar historial",
+        severity: "error",
+      })
+    }
+  }
+
+  // Manejador para cambiar el estado de asistencia
+  const handleAttendanceChange = (studentId) => {
+    setAttendance((prev) => ({
+      ...prev,
+      [studentId]: !prev[studentId],
+    }))
+  }
+
+  // Función para guardar la asistencia
+  const handleSaveAttendance = async () => {
+    try {
+      const presentStudents = Object.entries(attendance)
+        .filter(([_, present]) => present)
+        .map(([id]) => id)
+
+      const absentStudents = Object.entries(attendance)
+        .filter(([_, present]) => !present)
+        .map(([id]) => id)
+
+      const attendanceData = {
+        tituloAsistencia: `Asistencia ${selectedDate}`,
+        fechaAsistencia: selectedDate,
+        usuarioId: userId,
+        estudiantes: presentStudents,
+        inasistencias: absentStudents,
+      }
+
+      await fetch("http://localhost:3000/api/asistencias", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-          "Authorization": token 
-         },
-        body: JSON.stringify(formValues),
-      });
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(attendanceData),
+      })
 
-      if (response.ok) {
-        await fetchAsistencias();
-        setFormValues({
-          tituloAsistencia: "",
-          fechaAsistencia: "",
-          usuarioId: formValues.usuarioId,
-          estadoAsistencia: true,
-          estudiantes: [],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear asistencia");
-      }
+      setSnackbar({
+        open: true,
+        message: "Asistencia guardada exitosamente",
+        severity: "success",
+      })
+      fetchAttendanceHistory()
     } catch (error) {
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: "Error al guardar asistencia",
+        severity: "error",
+      })
     }
-  };
+  }
 
-  const handleUpdateAsistencia = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/asistencias/${selectedAsistencia._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json",
-          "Authorization": token 
-         },
-        body: JSON.stringify(formValues),
-      });
-
-      if (response.ok) {
-        await fetchAsistencias();
-        setSelectedAsistencia(null);
-        setFormValues({
-          tituloAsistencia: "",
-          fechaAsistencia: "",
-          usuarioId: "",
-          estadoAsistencia: true,
-          estudiantes: [],
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar asistencia");
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
-    }
-  };
-
-  const handleDeleteAsistencia = async () => {
-    if (!asistenciaToDelete) return;
-    try {
-      const response = await fetch(`http://localhost:3000/api/asistencias/${asistenciaToDelete._id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json",
-          "Authorization": token 
-         },
-      });
-      if (response.ok) {
-        setAsistencias(asistencias.filter((asistencia) => asistencia._id !== asistenciaToDelete._id));
-        handleCloseDeleteDialog();
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar asistencia");
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
-    }
-  };
-
-  const handleEditClick = (asistencia) => {
-    setSelectedAsistencia(asistencia);
-    setFormValues({
-      tituloAsistencia: asistencia.tituloAsistencia,
-      fechaAsistencia: asistencia.fechaAsistencia,
-      usuarioId: asistencia.usuarioId,
-      estadoAsistencia: asistencia.estadoAsistencia,
-      estudiantes: asistencia.estudiantes.map((estudiante) => estudiante._id),
-    });
-  };
-
-  const handleInfoClick = (asistencia) => {
-    setSelectedAsistencia(asistencia);
-    setOpenInfoDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setAsistenciaToDelete(null);
-  };
-
-  const handleCloseInfoDialog = () => {
-    setOpenInfoDialog(false);
-  };
+  // Filtrar estudiantes basado en el término de búsqueda
+  const filteredStudents = students.filter(
+    (student) =>
+      student.nombreEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.apellidoEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.documentoEstudiante?.includes(searchTerm),
+  )
 
   return (
-    <Container>
-      <h1>Gestión de Asistencias</h1>
-      <form noValidate autoComplete="off">
-        <TextField
-          label="Título de Asistencia"
-          name="tituloAsistencia"
-          value={formValues.tituloAsistencia}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Fecha de Asistencia"
-          name="fechaAsistencia"
-          type="date"
-          value={formValues.fechaAsistencia}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Estudiantes</InputLabel>
-          <Select
-            multiple
-            value={formValues.estudiantes}
-            onChange={handleEstudianteChange}
-            input={<OutlinedInput label="Estudiantes" />}
-            renderValue={(selected) =>
-              estudiantes
-                .filter((est) => selected.includes(est._id))
-                .map((est) => est.nombreEstudiante)
-                .join(", ")
-            }
-          >
-            {estudiantes.map((est) => (
-              <MenuItem key={est._id} value={est._id}>
-                <Checkbox checked={formValues.estudiantes.indexOf(est._id) > -1} />
-                <ListItemText primary={est.nombreEstudiante} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Box marginTop={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={selectedAsistencia ? handleUpdateAsistencia : handleCreateAsistencia}
-          >
-            {selectedAsistencia ? "Actualizar Asistencia" : "Crear Asistencia"}
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Control de Asistencia
+        </Typography>
+
+        <Box sx={{ display: "flex", gap: 2, mb: 4, alignItems: "center" }}>
+          <TextField
+            label="Fecha"
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSaveAttendance} color="primary">
+            Guardar Asistencia
+          </Button>
+          <Button variant="outlined" startIcon={<HistoryIcon />} onClick={() => setOpenHistory(true)}>
+            Ver Historial
           </Button>
         </Box>
-      </form>
-      <br></br>
-      {/* Busqueda */}
-      <TextField
-        label="Buscar usuarios"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      {/* cuerpo */}
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Título</TableCell>
-              <TableCell>Fecha</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {filteredAsistencias
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((asistencia) => (
-              <TableRow key={asistencia._id}>
-                <TableCell>{asistencia.tituloAsistencia}</TableCell>
-                <TableCell>{asistencia.fechaAsistencia}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(asistencia)} color="primary">
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleInfoClick(asistencia)} color="primary">
-                    <Info />
-                  </IconButton>
-                  <IconButton onClick={() => setOpenDeleteDialog(true) & setAsistenciaToDelete(asistencia)} color="error">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {/* Paginación */}
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredAsistencias.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+
+        <TextField
+          fullWidth
+          label="Buscar estudiantes"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: 3 }}
         />
-      </TableContainer>
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-          Detalles de la Asistencia
-        </DialogTitle>
-        <DialogContent sx={{ padding: '20px' }}>
-          <Box display="flex" alignItems="center" mb={2}>
-            <School color="primary" sx={{ mr: 1 }} />
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Título:
-            </Typography>
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {selectedAsistencia?.tituloAsistencia || "N/A"}
-            </Typography>
-          </Box>
-          
-          <Box display="flex" alignItems="center" mb={2}>
-            <Event color="primary" sx={{ mr: 1 }} />
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Fecha:
-            </Typography>
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {selectedAsistencia?.fechaAsistencia || "N/A"}
-            </Typography>
-          </Box>
-          
-          <Box display="flex" alignItems="center" mb={2}>
-            <Group color="primary" sx={{ mr: 1 }} />
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Estudiantes:
-            </Typography>
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {selectedAsistencia?.estudiantes?.map((est) => est.nombreEstudiante).join(", ") || "Sin estudiantes"}
-            </Typography>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Apellido</TableCell>
+                <TableCell>Documento</TableCell>
+                <TableCell align="center">Asistencia</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredStudents.map((student) => (
+                <TableRow key={student._id}>
+                  <TableCell>{student.nombreEstudiante}</TableCell>
+                  <TableCell>{student.apellidoEstudiante}</TableCell>
+                  <TableCell>{student.documentoEstudiante}</TableCell>
+                  <TableCell align="center">
+                    <Checkbox
+                      checked={attendance[student._id] || false}
+                      onChange={() => handleAttendanceChange(student._id)}
+                      color="primary"
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
 
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Asistencia</DialogTitle>
+      <Dialog open={openHistory} onClose={() => setOpenHistory(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Historial de Asistencias</DialogTitle>
         <DialogContent>
-          ¿Estás seguro de que quieres eliminar esta asistencia?
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Fecha</TableCell>
+                  <TableCell>Título</TableCell>
+                  <TableCell align="center">Presentes</TableCell>
+                  <TableCell align="center">Estado</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {attendanceHistory.map((record) => (
+                  <TableRow key={record._id}>
+                    <TableCell>{new Date(record.fechaAsistencia).toLocaleDateString()}</TableCell>
+                    <TableCell>{record.tituloAsistencia}</TableCell>
+                    <TableCell align="center">{record.estudiantes?.length || 0}</TableCell>
+                    <TableCell align="center">{record.estadoAsistencia ? "Activa" : "Inactiva"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteAsistencia} color="error">Eliminar</Button>
+          <Button onClick={() => setOpenHistory(false)}>Cerrar</Button>
         </DialogActions>
       </Dialog>
 
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity="error" onClose={() => setOpenSnackbar(false)}>
-          {errorMessage}
+      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+        <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Container>
-  );
-};
+  )
+}
 
-export default Asistencias;
+export default Asistencias
 

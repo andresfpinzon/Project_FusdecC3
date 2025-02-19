@@ -1,0 +1,137 @@
+/*.container-asistencia {
+  padding: 20px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.controles {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filtro-fecha,
+.filtro-unidad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filtro-fecha input,
+.filtro-unidad select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.tabla-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabla-asistencia {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  font-size: 14px;
+}
+
+.tabla-asistencia th,
+.tabla-asistencia td {
+  border: 1px solid #ddd;
+  padding: 12px 8px;
+  text-align: left;
+}
+
+.tabla-asistencia th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.tabla-asistencia tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+.tabla-asistencia tr:hover {
+  background-color: #f0f0f0;
+}
+
+.asistencia-cell {
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+}
+
+.asistencia-cell.presente {
+  background-color: #e6ffe6;
+  color: #008000;
+}
+
+.asistencia-cell.ausente {
+  background-color: #ffe6e6;
+  color: #ff0000;
+}
+
+.asistencia-cell:hover {
+  opacity: 0.8;
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-guardar,
+.btn-exportar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-guardar {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-exportar {
+  background-color: #2196f3;
+  color: white;
+}
+
+.btn-guardar:hover,
+.btn-exportar:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .controles {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tabla-asistencia {
+    font-size: 12px;
+  }
+
+  .tabla-asistencia th,
+  .tabla-asistencia td {
+    padding: 8px 4px;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+}
+
+*/
