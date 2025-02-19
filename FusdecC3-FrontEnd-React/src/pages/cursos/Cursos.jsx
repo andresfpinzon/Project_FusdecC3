@@ -172,10 +172,6 @@ const Cursos = () => {
             const nuevoCurso = await response.json();
             setCursos([...cursos, nuevoCurso]);
             
-            // Muestra un mensaje de éxito
-            setSuccessMessage("Curso creado exitosamente.");
-            setOpenSnackbar(true);
-
             setFormValues({
                 nombreCurso: "",
                 descripcionCurso: "",
@@ -184,6 +180,9 @@ const Cursos = () => {
                 fundacionId: "",
             });
             
+            // Muestra un mensaje de éxito
+            setSuccessMessage("Curso creado exitosamente.");
+            setOpenSnackbar(true);
 
         } else {
             const errorData = await response.json();
