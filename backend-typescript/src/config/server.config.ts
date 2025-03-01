@@ -15,6 +15,7 @@ class Server {
     private apiPaths = {
         auth: '/api/auth',
         user: '/api/user'
+        // TODO: Agregar rutas de los otros módulos
     }
 
     constructor(){
@@ -34,6 +35,7 @@ class Server {
         console.log("*** Rutas Cargadas***")
         this.app.use(this.apiPaths.auth, authRoutes)
         this.app.use(this.apiPaths.user, userRoutes)
+        // TODO: Agregar rutas de los otros módulos
     }
 
     middlewares(){
