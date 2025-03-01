@@ -45,11 +45,11 @@ cd ts
 ## 📦 Instalar las dependencias
 1. Instalar las dependencias:
 ```bash
-npm i express mongoose dotenv bcryptjs jsonwebtoken cors helmet express-rate-limit morgan zod swagger-jsdoc swagger-ui-express
+npm i express mongoose dotenv bcrypt jsonwebtoken cors cookie-parser helmet express-rate-limit morgan zod swagger-jsdoc swagger-ui-express
 ```
 2. Dependencias de desarrollo:
 ```bash
-npm i -D typescript ts-node-dev @types/express @types/node @types/cors @types/bcryptjs @types/jsonwebtoken @types/morgan @types/swagger-jsdoc @types/swagger-ui-express
+npm i -D typescript ts-node-dev tsconfig-paths @types/express @types/cookie-parser@types/node @typs/express @types/mongoose @types/cors @types/bcrypt @types/jsonwebtoken @types/morgan @types/swagger-jsdoc @types/swagger-ui-express
 ```
 3. Iniciar typescript:
 ```bash
