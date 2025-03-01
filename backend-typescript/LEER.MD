@@ -14,6 +14,6 @@
 # 7. Crear las rutas
 - [x] Crear las rutas para el modelo correspondiente
 - [x] Crear la documentación de la api para el modelo correspondiente usando swagger
-- [x] Asignar las validaciones a las rutas
+- [x] Asignar los middlewares necesarios a las rutas
 # 8. Agregar las rutas a la aplicación principal, dentro de la clase Server.ts, se agregan en el metodo routes()
 # 9. Todo cuenta con el ejemplo necesario, para poder guiarse... Tanto en la interfaz como en el modelo se tiene un ejemplo, para todo, pueden revisar ya los archivos creados
