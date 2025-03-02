@@ -2,6 +2,8 @@ import express, { Application } from "express"
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
 import { ENV } from "./environments.config";
 import { dbConnect } from "./db.config";
@@ -26,28 +28,44 @@ class Server {
         this.port = ENV.PORT;
 
         // MIddlewares
-        this.routes();
         this.middlewares();
+        this.routes();
+
 
     }
     
     routes(){
-        console.log("*** Rutas Cargadas***")
         this.app.use(this.apiPaths.auth, authRoutes)
         this.app.use(this.apiPaths.user, userRoutes)
         // TODO: Agregar rutas de los otros módulos
+        console.log("*** Rutas Cargadas***")
     }
 
+    
     middlewares(){
-        this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-        this.app.use(cors(
-            {
+        try {
+            // Seguridad primero
+            this.app.use(helmet())
+            const limiter = rateLimit({
+                windowMs: 15 * 60 * 1000, // 15 minutos
+                max: 100, // Limite de peticiones por IP
+                message: "Demasiadas peticiones desde esta IP, por favor intenta de nuevo más tarde",
+            })
+            this.app.use(limiter)
+            // Documentación 
+            this.app.use("api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+            // Cors para cookies
+            this.app.use(cors({
                 origin: '*',
-                methods: ['GET', 'POST', 'PUT', 'DELETE'],
-                allowedHeaders: ['Content-Type', 'Authorization']
-            }
-        ))
-        
+                methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+                allowedHeaders: ['Content-Type', 'Authorization'],
+                credentials: true, // Importante para permitir cookies
+                }))
+                console.log("*** Middlewares Cargados***")
+        } catch (error) {
+            console.log(`Error al cargar middlewares: ${error}`)
+            throw new Error(`Error al cargar middlewares: ${error}`)
+        }
     }
 
     async listen(){
@@ -55,7 +73,7 @@ class Server {
         this.app.listen(this.port, () => {
             console.log(`Server running on port ${this.port}`);
         })
-        console.log("Documentación swagger en: http://localhost:3000/docs")
+        console.log("Documentación swagger en: http://localhost:3000/api/docs")
     }
 }
 
