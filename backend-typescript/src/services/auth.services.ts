@@ -21,7 +21,7 @@ export const registerUserService = async (data: RegisterDto) => {
         // Devuelvo el usuario creadol, con un estado y un mensaje
         return { status: 201, message: "User created", data: user }
     } catch (error) {
-        console.error(`Error in registerUser: ${error}`)
+        console.error(`Error in services registerUser: ${error}`)
         return { status: 500, message: "Internal server error, register service" }
     }
 }

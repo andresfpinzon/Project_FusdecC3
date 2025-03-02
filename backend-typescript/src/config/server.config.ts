@@ -53,10 +53,10 @@ class Server {
             })
             this.app.use(limiter)
             // Documentación 
-            this.app.use("api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+            this.app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
             // Cors para cookies
             this.app.use(cors({
-                origin: '*',
+                origin: 'http://localhost:5173',
                 methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
                 allowedHeaders: ['Content-Type', 'Authorization'],
                 credentials: true, // Importante para permitir cookies
