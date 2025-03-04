@@ -1,7 +1,7 @@
 import { createCertificateController, deleteCertificateController, getAllCertificatesController, getCertificateByIdController, toggleStateCertificateController, updateCertificateController } from "@controllers/certificate.controller";
 import { authMiddleware } from "@middlewares/auth.middleware";
 import { validateSchema } from "@middlewares/validate.middleware";
-import { certificateSchema, idSchema, updateCertificateSchema } from "@validations/certificate.validations";
+// import { certificateSchema, idSchema, updateCertificateSchema } from "@validations/certificate.validations";
 import { Router } from "express";
 
 const certificateRouter = Router();
@@ -13,26 +13,26 @@ const certificateRouter = Router();
  *     Certificate:
  *       type: object
  *       properties:
- *         nameEmisor:
+ *         nombreEmisorCertificado:
  *           type: string
  *           description: Name of the certificate issuer
  *         fechaEmision:
  *           type: string
  *           format: date
  *           description: Date when the certificate was issued
- *         codigoVerify:
+ *         codigoVerificacion:
  *           type: string
  *           description: Unique verification code
- *         isActive:
+ *         estadoCertificado:
  *           type: boolean
  *           description: Certificate status
- *         usuario:
+ *         usuarioId:
  *           type: string
  *           description: User ID who issued the certificate
- *         curso:
+ *         cursoId:
  *           type: string
  *           description: Course ID associated with the certificate
- *         estudiante:
+ *         estudianteId:
  *           type: string
  *           description: Student ID who received the certificate
  */
@@ -55,7 +55,7 @@ const certificateRouter = Router();
  *       201:
  *         description: Certificate created successfully
  */
-certificateRouter.post('/', authMiddleware, validateSchema(certificateSchema), createCertificateController);
+certificateRouter.post('/', authMiddleware, createCertificateController);
 
 /**
  * @swagger
@@ -69,7 +69,7 @@ certificateRouter.post('/', authMiddleware, validateSchema(certificateSchema), c
  *       200:
  *         description: List of all certificates
  */
-certificateRouter.get('/', authMiddleware, validateSchema(idSchema),getAllCertificatesController);
+certificateRouter.get('/', authMiddleware,getAllCertificatesController);
 
 /**
  * @swagger
@@ -89,7 +89,7 @@ certificateRouter.get('/', authMiddleware, validateSchema(idSchema),getAllCertif
  *       200:
  *         description: Certificate found
  */
-certificateRouter.get('/:id', authMiddleware, validateSchema(idSchema), getCertificateByIdController);
+certificateRouter.get('/:id', authMiddleware, getCertificateByIdController);
 
 /**
  * @swagger
@@ -115,7 +115,7 @@ certificateRouter.get('/:id', authMiddleware, validateSchema(idSchema), getCerti
  *       200:
  *         description: Certificate updated successfully
  */
-certificateRouter.put('/:id', authMiddleware, validateSchema(idSchema), validateSchema(updateCertificateSchema),  updateCertificateController);
+certificateRouter.put('/:id', authMiddleware,  updateCertificateController);
 
 /**
  * @swagger
@@ -135,7 +135,7 @@ certificateRouter.put('/:id', authMiddleware, validateSchema(idSchema), validate
  *       200:
  *         description: Certificate state updated successfully
  */
-certificateRouter.patch('/state/:id', authMiddleware, validateSchema(idSchema), toggleStateCertificateController);
+certificateRouter.patch('/state/:id', authMiddleware, toggleStateCertificateController);
 
 /**
  * @swagger
@@ -155,7 +155,7 @@ certificateRouter.patch('/state/:id', authMiddleware, validateSchema(idSchema), 
  *       200:
  *         description: Certificate deleted successfully
  */
-certificateRouter.delete('/:id', authMiddleware, validateSchema(idSchema), deleteCertificateController);
+certificateRouter.delete('/:id', authMiddleware, deleteCertificateController);
 
 export default certificateRouter;
 

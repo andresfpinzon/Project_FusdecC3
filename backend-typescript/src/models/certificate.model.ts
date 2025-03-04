@@ -3,35 +3,36 @@ import {Schema, model} from "mongoose";
 import { ICertifcate } from "@interfaces/certificado.interface";
 
 const CertificateSchema = new Schema<ICertifcate>({
-    nameEmisor: {
+    nombreEmisorCertificado: {
         type: String,
         required: true,
     },
     fechaEmision: {
         type: Date,
+        default: Date.now,
         required: true,
     },
-    codigoVerify: {
+    codigoVerificacion: {
         type: String,
         required: true,
     },
-    isActive: {
+    estadoCertificado: {
         type: Boolean,
         default: true,
     },
-    usuario: {
+    usuarioId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: false,
     },
-    curso: {
+    cursoId: {
         type: Schema.Types.ObjectId,
-        ref: "Course",
+        ref: "Corso",
         required: false,
     },
-    estudiante:  {
+    estudianteId:  {
         type: Schema.Types.ObjectId,
-        ref: "Student",
+        ref: "Estudiante",
         required: false,
     },
 }, {timestamps: true}) 

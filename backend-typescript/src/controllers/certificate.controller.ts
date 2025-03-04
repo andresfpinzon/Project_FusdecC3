@@ -23,7 +23,7 @@ export const updateCertificateController = async (req: Request, res: Response) =
     }
 }
 
-export const getAllCertificatesController = async ( res: Response) => {
+export const getAllCertificatesController = async ( req: Request, res: Response) => {
     try {
         const result = await getAllCertificatesService()
         res.status(result.status).json(result)

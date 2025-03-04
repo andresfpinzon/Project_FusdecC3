@@ -1,11 +1,11 @@
 import {Document, ObjectId} from 'mongoose'
 
 export interface ICertifcate extends Document {
-    nameEmisor: string
+    nombreEmisorCertificado: string
     fechaEmision: Date
-    codigoVerify: string
-    isActive: boolean
-    usuario: ObjectId
-    curso: ObjectId
-    estudiante:  ObjectId
+    codigoVerificacion: string
+    estadoCertificado: boolean
+    usuarioId: ObjectId
+    cursoId: ObjectId
+    estudianteId:  ObjectId
 }

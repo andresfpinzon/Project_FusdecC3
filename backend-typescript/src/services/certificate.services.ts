@@ -3,9 +3,9 @@ import certificateModel from "@models/certificate.model";
 
 
 export const createCertificateService = async (data: CreateCertificateDTO) => {
-    const {codigoVerify} = data
+    const {codigoVerificacion} = data
     try {
-        const certificateExist = await certificateModel.findOne({codigoVerify}).exec()
+        const certificateExist = await certificateModel.findOne({codigoVerificacion}).exec()
         if(certificateExist) return {status: 400, message: "Certificate already exists"}
         const certificate = new certificateModel(data)
         await certificate.save()
@@ -53,7 +53,7 @@ export const toggleStateCertificateService = async (id: string) => {
     try {
         const certificate = await certificateModel.findById(id).exec()
         if(!certificate) return {status: 404, message: "Certificate not found"}
-        certificate.isActive = !certificate.isActive
+        certificate.estadoCertificado = !certificate.estadoCertificado
         await certificate.save()
         return {status: 200, message: "Certificate updated successfully", data: certificate}
     } catch (error) {

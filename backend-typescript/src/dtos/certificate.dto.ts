@@ -1,20 +1,18 @@
 
 
 export interface CreateCertificateDTO {
-    nameEmisor: string;
-    fechaEmision: Date;
-    codigoVerify: string;
-    isActive: boolean;
-    usuario: string;
-    curso: string;
-    estudiante: string;
+    nombreEmisorCertificado: string;
+    codigoVerificacion: string;
+    usuarioId?: string;
+    cursoId?: string;
+    estudianteId?: string;
 }
 export interface UpdateCertificateDTO {
-    nameEmisor?: string;
+    nombreEmisorCertificado?: string;
     fechaEmision?: Date;
-    codigoVerify?: string;
-    isActive?: boolean;
-    usuario?: string;
-    curso?: string;
-    estudiante?: string;
+    codigoVerificacion?: string;
+    estadoCertificado?: boolean;
+    usuarioId?: string;
+    cursoId?: string;
+    estudianteId?: string;
 }
