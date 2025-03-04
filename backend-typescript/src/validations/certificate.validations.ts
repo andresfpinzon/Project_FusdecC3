@@ -1,75 +1,50 @@
 import { z } from 'zod';
-import { Request, Response, NextFunction } from 'express';
 
-const certificateSchema = z.object({
+export const certificateSchema = z.object({
     nameEmisor: z.string({
         required_error: "Name emisor is required",
         invalid_type_error: "Name emisor must be a string"
-    }),
+    }).min(3, "Name emisor must be at least 3 characters")
+      .max(50, "Name emisor must be less than 50 characters"),
+
     fechaEmision: z.coerce.date({
         required_error: "Fecha emision is required",
         invalid_type_error: "Fecha emision must be a valid date"
-    }),
+    }).min(new Date('2000-01-01'), "Date must be after year 2000")
+      .max(new Date(), "Date cannot be in the future"),
+
     codigoVerify: z.string({
         required_error: "Codigo verify is required",
         invalid_type_error: "Codigo verify must be a string"
-    }),
+    }).min(5, "Verification code must be at least 5 characters")
+      .max(20, "Verification code must be less than 20 characters"),
+
     isActive: z.boolean({
         required_error: "isActive is required",
         invalid_type_error: "isActive must be a boolean"
-    }),
-    usuario: z.string().regex(/^[0-9a-fA-F]{24}$/, "Usuario must be a valid MongoDB ID").optional(),
-    curso: z.string().regex(/^[0-9a-fA-F]{24}$/, "Curso must be a valid MongoDB ID").optional(),
-    estudiante: z.string().regex(/^[0-9a-fA-F]{24}$/, "Estudiante must be a valid MongoDB ID").optional()
+    }).default(true),
+
+    usuario: z.string({
+        required_error: "Usuario ID is required",
+        invalid_type_error: "Usuario ID must be a string"
+    }).regex(/^[0-9a-fA-F]{24}$/, "Invalid Usuario ID format"),
+
+    curso: z.string({
+        required_error: "Curso ID is required",
+        invalid_type_error: "Curso ID must be a string"
+    }).regex(/^[0-9a-fA-F]{24}$/, "Invalid Curso ID format"),
+
+    estudiante: z.string({
+        required_error: "Estudiante ID is required",
+        invalid_type_error: "Estudiante ID must be a string"
+    }).regex(/^[0-9a-fA-F]{24}$/, "Invalid Estudiante ID format")
 });
 
-const updateCertificateSchema = certificateSchema.partial();
+export const updateCertificateSchema = certificateSchema.partial();
 
-const idSchema = z.object({
-    id: z.string().regex(/^[0-9a-fA-F]{24}$/, "ID must be a valid MongoDB ID")
+export const idSchema = z.object({
+    id: z.string({
+        required_error: "ID is required",
+        invalid_type_error: "ID must be a string"
+    }).regex(/^[0-9a-fA-F]{24}$/, "Invalid ID format")
 });
-
-export const validateCreateCertificate = (req: Request, res: Response, next: NextFunction) => {
-    try {
-        certificateSchema.parse(req.body);
-        next();
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({
-                message: "Validation error",
-                errors: error.errors
-            });
-        }
-        next(error);
-    }
-};
-
-export const validateUpdateCertificate = (req: Request, res: Response, next: NextFunction) => {
-    try {
-        updateCertificateSchema.parse(req.body);
-        next();
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({
-                message: "Validation error",
-                errors: error.errors
-            });
-        }
-        next(error);
-    }
-};
-
-export const validateIdParam = (req: Request, res: Response, next: NextFunction) => {
-    try {
-        idSchema.parse({ id: req.params.id });
-        next();
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({
-                message: "Validation error",
-                errors: error.errors
-            });
-        }
-        next(error);
-    }
-};
