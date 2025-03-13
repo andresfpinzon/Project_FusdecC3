@@ -10,13 +10,15 @@ import { dbConnect } from "./db.config";
 import swaggerSpec from "@swagger/swagger";
 import authRoutes from "@routes/auth.routes";
 import userRoutes from "@routes/user.routes";
+import certificateRouter from "@routes/certificate.routes";
 
 class Server {
     private app: Application;
     private port: Number
     private apiPaths = {
         auth: '/api/auth',
-        user: '/api/user'
+        user: '/api/user',
+        certificate: '/api/certificates',
         // TODO: Agregar rutas de los otros módulos
     }
 
@@ -37,6 +39,7 @@ class Server {
     routes(){
         this.app.use(this.apiPaths.auth, authRoutes)
         this.app.use(this.apiPaths.user, userRoutes)
+        this.app.use(this.apiPaths.certificate, certificateRouter)
         // TODO: Agregar rutas de los otros módulos
         console.log("*** Rutas Cargadas***")
     }
