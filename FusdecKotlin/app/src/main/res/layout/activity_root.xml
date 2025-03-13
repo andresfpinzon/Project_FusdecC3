@@ -9,23 +9,16 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Módulo Instructor"
+            android:text="Módulo Root"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"/>
 
     <Button
-            android:id="@+id/asistenciaButton"
+            android:id="@+id/fundacionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Asistencia"
-            android:layout_marginBottom="16dp"/>
-
-    <Button
-            android:id="@+id/calificacionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calificación"/>
+            android:text="Fundación"/>
 
     <Button
             android:id="@+id/volverButton"

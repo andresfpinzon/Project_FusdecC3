@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.fusdeckotlin.ui.activities.administrativo.AdministrativoActivity
 import com.example.fusdeckotlin.ui.activities.instructor.InstructorActivity
+import com.example.fusdeckotlin.ui.activities.root.RootActivity
+import com.example.fusdeckotlin.ui.activities.secretario.SecretarioActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,6 +44,18 @@ class MainActivity : AppCompatActivity() {
         when (rol) {
             "Instructor" -> {
                 val intent = Intent(this, InstructorActivity::class.java)
+                startActivity(intent)
+            }
+            "Administrativo" -> {
+                val intent = Intent(this, AdministrativoActivity::class.java)
+                startActivity(intent)
+            }
+            "Secretario" -> {
+                val intent = Intent(this, SecretarioActivity::class.java)
+                startActivity(intent)
+            }
+            "Root" -> {
+                val intent = Intent(this, RootActivity::class.java)
                 startActivity(intent)
             }
             else -> {

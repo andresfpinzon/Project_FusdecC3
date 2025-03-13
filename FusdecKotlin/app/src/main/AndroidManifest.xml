@@ -23,6 +23,9 @@
         <activity android:name=".ui.activities.instructor.InstructorActivity" />
         <activity android:name=".ui.activities.instructor.asistencia.AsistenciaActivity" />
         <activity android:name=".ui.activities.instructor.calificacion.CalificacionActivity" />
+        <activity android:name=".ui.activities.administrativo.AdministrativoActivity" />
+        <activity android:name=".ui.activities.secretario.SecretarioActivity" />
+        <activity android:name=".ui.activities.root.RootActivity" />
 
     </application>
 
