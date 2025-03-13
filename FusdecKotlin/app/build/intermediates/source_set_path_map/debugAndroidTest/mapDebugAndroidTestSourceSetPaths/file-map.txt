@@ -1,6 +1,0 @@
-com.example.fusdeckotlin.test.app-androidTest-0 C:\Sena\Project_FusdecC3\FusdecKotlin\app\build\generated\res\resValues\androidTest\debug
-com.example.fusdeckotlin.test.app-mergeDebugAndroidTestResources-1 C:\Sena\Project_FusdecC3\FusdecKotlin\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-com.example.fusdeckotlin.test.app-mergeDebugAndroidTestResources-2 C:\Sena\Project_FusdecC3\FusdecKotlin\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-com.example.fusdeckotlin.test.app-debugAndroidTest-3 C:\Sena\Project_FusdecC3\FusdecKotlin\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
-com.example.fusdeckotlin.test.app-core-1.6.1-4 C:\Users\PC\.gradle\caches\8.10.2\transforms\1983eb04ee8eaf29cbc4eabb272b42a3\transformed\core-1.6.1\res
-com.example.fusdeckotlin.test.app-tracing-1.2.0-5 C:\Users\PC\.gradle\caches\8.10.2\transforms\5e8800378646c1d90e42ae13fbf42230\transformed\tracing-1.2.0\res
