@@ -28,7 +28,10 @@ const UnidadSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Estudiante', // Asegúrate de que esto coincida con el modelo de Estudiante
     }],
-});
+},
+    {
+        timestamps: true
+    });
 
 const Unidad = mongoose.model("Unidad", UnidadSchema);
 module.exports = Unidad;

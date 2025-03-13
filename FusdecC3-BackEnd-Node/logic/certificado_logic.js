@@ -5,6 +5,8 @@ const Auditoria = require('../models/auditoria_model');
 
 // Función asíncrona para crear certificados
 async function crearCertificado(body) {
+    try {
+     
     // Verificar si ya existe un certificado con el mismo código de verificación
     const certificadoExistente = await Certificado.findOne({ codigoVerificacion: body.codigoVerificacion });
     if (certificadoExistente) {
@@ -44,25 +46,43 @@ async function crearCertificado(body) {
 
     await nuevaAuditoria.save(); // Guardar la auditoría
 
-    return nuevoCertificado; // Retornar el certificado creado
+    return nuevoCertificado; // Retornar el certificado creado   
+    } catch (error) {
+        console.error('Error al crear el certificado (certificado_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para listar certificados
 async function listarCertificados() {
-    return await Certificado.find().populate('estudianteId cursoId');
+    try {
+        return await Certificado.find().populate('estudianteId cursoId');
+
+    } catch (error) {
+        console.error('Error al listar los certificados (certificado_logic):', error);
+        throw error;        
+    }
 }
 
 // Función asíncrona para buscar un certificado por su ID
 async function buscarCertificadoPorId(id) {
+    try {
+     
     const certificado = await Certificado.findById(id).populate('estudianteId cursoId');
     if (!certificado) {
         throw new Error(`Certificado con ID ${id} no encontrado`);
     }
-    return certificado;
+    return certificado;   
+    } catch (error) {
+        console.error('Error al buscar el certificado por ID (certificado_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para editar un certificado
 async function editarCertificado(id, body) {
+    try {
+     
     // Buscar el certificado existente
     const certificado = await Certificado.findById(id);
     if (!certificado) {
@@ -93,16 +113,26 @@ async function editarCertificado(id, body) {
     certificado.fechaEmision = body.fechaEmision || certificado.fechaEmision;
     certificado.estudianteId = body.estudianteId || certificado.estudianteId;
 
-    return await certificado.save();
+    return await certificado.save();   
+    } catch (error) {
+        console.error('Error al editar el certificado (certificado_logic):', error);
+        throw error;
+    }
 }
 
 // Función asíncrona para desactivar un certificado
 async function desactivarCertificado(id) {
+    try {
+     
     const certificado = await Certificado.findByIdAndUpdate(id, { estadoCertificado: false }, { new: true });
     if (!certificado) {
         throw new Error(`Certificado con ID ${id} no encontrado`);
     }
-    return certificado;
+    return certificado;   
+    } catch (error) {
+        console.error('Error al desactivar el certificado (certificado_logic):', error);
+        throw error;
+    }
 }
 
 module.exports = {

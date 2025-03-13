@@ -70,7 +70,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     usuarioId: "61f7d2bbf1a2b4b5c3cdb71c"
  *                     estadoCalificacion: true
  */
-router.get("/", verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), calificacionController.listarCalificacionesActivas);
+router.get("/", verifyJWT, verifyRole(['Secretario','Instructor','Administrativo', 'Root']), calificacionController.listarCalificacionesActivas);
 
 /**
  * @swagger
@@ -227,6 +227,6 @@ router.delete("/:id", verifyJWT, verifyRole(['Instructor','Root']), calificacion
  *       404:
  *         description: Calificación no encontrada.
  */
-router.get("/:id", verifyJWT, verifyRole(['Instructor','Administrador','Root']), calificacionController.obtenerCalificacionPorId);
+router.get("/:id", verifyJWT, verifyRole(['Instructor','Administrativo','Root']), calificacionController.obtenerCalificacionPorId);
 
 module.exports = router;

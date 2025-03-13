@@ -82,7 +82,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *       400:
  *         description: Datos inválidos
  */
-router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrador', 'Root']), certificadoController.listarCertificados);
+router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrativo', 'Root']), certificadoController.listarCertificados);
 
 /**
  * @swagger
@@ -156,7 +156,7 @@ router.get('/', verifyJWT, verifyRole(['Secretario','Instructor','Administrador'
  *       400:
  *         description: Datos inválidos
  */
-router.post('/', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.crearCertificado);
+router.post('/', verifyJWT, verifyRole(['Administrativo','Root']), certificadoController.crearCertificado);
 
 
 /**
@@ -194,7 +194,7 @@ router.post('/', verifyJWT, verifyRole(['Administrador','Root']), certificadoCon
  *       404:
  *         description: Certificado no encontrado
  */
-router.get('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.obtenerCertificadoPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrativo','Root']), certificadoController.obtenerCertificadoPorId);
 
 /**
  * @swagger
@@ -253,7 +253,7 @@ router.get('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoC
  *       404:
  *         description: Certificado no encontrado
  */
-router.put('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.actualizarCertificado);
+router.put('/:id', verifyJWT, verifyRole(['Administrativo','Root']), certificadoController.actualizarCertificado);
 
 /**
  * @swagger
@@ -275,6 +275,6 @@ router.put('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoC
  *       404:
  *         description: Certificado no encontrado
  */
-router.delete('/:id', verifyJWT, verifyRole(['Administrador','Root']), certificadoController.desactivarCertificado);
+router.delete('/:id', verifyJWT, verifyRole(['Administrativo','Root']), certificadoController.desactivarCertificado);
 
 module.exports = router;

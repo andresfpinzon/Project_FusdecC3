@@ -39,10 +39,6 @@ const Estudiantes = () => {
   const [unidades, setUnidades] = useState([]);
   const [colegios, setColegios] = useState([]);
   const [ediciones, setEdiciones] = useState([]);
-  const [calificaciones, setCalificaciones] = useState([]);
-  const [certificados, setCertificados] = useState([]);
-  const [asistencias, setAsistencias] = useState([]);
-  const [inasistencias, setInasistencias] = useState([]);
   const [selectedEstudiante, setSelectedEstudiante] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreEstudiante: "",
@@ -75,10 +71,6 @@ const Estudiantes = () => {
     fetchUnidades();
     fetchColegios();
     fetchEdiciones();
-    fetchCertificados();
-    fetchAsistencias();
-    fetchInasistencias();
-    fetchCalificaciones();
   }, []);
 
   const fetchEstudiantes = async () => {
@@ -92,7 +84,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      setEstudiantes(data);
+      
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registrados.");
+        setOpenSnackbar(true);
+        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEstudiantes(data);
+      }
     } catch (error) {
       console.error("Error al obtener estudiantes:", error);
       setErrorMessage("Error al obtener estudiantes");
@@ -111,7 +111,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
-      setUnidades(data);
+
+      // Condicion que verifica si el arreglo de unidades está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay unidades registradas.");
+        setOpenSnackbar(true);
+        setUnidades([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setUnidades(data);
+      }
     } catch (error) {
       console.error("Error al obtener unidades:", error);
       setErrorMessage("Error al obtener unidades");
@@ -130,7 +138,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener colegios");
       const data = await response.json();
-      setColegios(data);
+
+      // Condicion que verifica si el arreglo de colegios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay colegios registrados.");
+        setOpenSnackbar(true);
+        setColegios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setColegios(data);
+      }
     } catch (error) {
       console.error("Error al obtener colegios:", error);
       setErrorMessage("Error al obtener colegios");
@@ -149,7 +165,15 @@ const Estudiantes = () => {
     });
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
-      setEdiciones(data);
+
+      // Condicion que verifica si el arreglo de ediciones está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay ediciones registradas.");
+        setOpenSnackbar(true);
+        setEdiciones([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEdiciones(data);
+      }
     } catch (error) {
       console.error("Error al obtener ediciones:", error);
       setErrorMessage("Error al obtener ediciones");
@@ -157,82 +181,6 @@ const Estudiantes = () => {
     }
   };
 
-  const fetchCertificados = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/certificados",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener certificados");
-      const data = await response.json();
-      setCertificados(data);
-    } catch (error) {
-      console.error("Error al obtener certificados:", error);
-      setErrorMessage("Error al obtener certificados");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchAsistencias = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/asistencias",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener asistencias");
-      const data = await response.json();
-      setAsistencias(data);
-    } catch (error) {
-      console.error("Error al obtener asistencias:", error);
-      setErrorMessage("Error al obtener asistencias");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchInasistencias = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/inasistencias",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener inasistencias");
-      const data = await response.json();
-      setInasistencias(data);
-    } catch (error) {
-      console.error("Error al obtener inasistencias:", error);
-      setErrorMessage("Error al obtener inasistencias");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchCalificaciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/calificaciones",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener calificaciones");
-      const data = await response.json();
-      setCalificaciones(data);
-    } catch (error) {
-      console.error("Error al obtener calificaciones:", error);
-      setErrorMessage("Error al obtener calificaciones");
-      setOpenSnackbar(true);
-    }
-  };
-  
   // Filtrar usuarios según el término de búsqueda
   const filteredEstudiantes = estudiantes.filter((estudiante) =>
     estudiante.nombreEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -292,6 +240,11 @@ const Estudiantes = () => {
 
       if (response.ok) {
         await fetchEstudiantes();
+
+        // Muestra un mensaje de éxito
+        setSuccessMessage("Estudiante creado exitosamente.");
+        setOpenSnackbar(true);
+
         setFormValues({
           nombreEstudiante: "",
           apellidoEstudiante: "",
@@ -346,6 +299,10 @@ const Estudiantes = () => {
           estadoEstudiante: true,
           ediciones: [],
         });
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El estudiante se actualizó correctamente");
+        setOpenSnackbar(true); 
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar estudiante");
@@ -373,6 +330,11 @@ const Estudiantes = () => {
       if (response.ok) {
         setEstudiantes(estudiantes.filter((estudiante) => estudiante._id !== estudianteToDelete._id));
         handleCloseDeleteDialog();
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("El estudiante se eliminó correctamente");
+        setOpenSnackbar(true);
+
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar estudiante");
@@ -732,14 +694,7 @@ const Estudiantes = () => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Asistencias:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.asistencias?.map((as) => as.tituloAsistencia).join(", ") || "Sin asistencias"}</Typography>
               </Box>
-
-              {/* Inasistencias */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Cancel color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Inasistencias:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.inasistencias?.map((ina) => ina.tituloInasistencia).join(", ") || "Sin inasistencias"}</Typography>
-              </Box>
-
+              
               {/* Calificaciones */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Star color="primary" sx={{ mr: 1 }} />

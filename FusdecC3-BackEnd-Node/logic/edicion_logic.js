@@ -5,6 +5,8 @@ const Estudiante = require('../models/estudiante_model');
 
 // Función asíncrona para crear ediciones
 async function crearEdicion(body) {
+  try {
+   
   // Verificar si ya existe una edicion con el mismo título
   const edicionExistente = await Edicion.findOne({
     tituloEdicion: body.tituloEdicion,
@@ -32,11 +34,17 @@ async function crearEdicion(body) {
     );
 }
 
-  return await edicion.save();
+  return await edicion.save(); 
+  } catch (error) {
+    console.error('Error al crear la edicion (edicion_logic):', error);
+    throw error;
+  }
 }
 
 // Función asíncrona para actualizar ediciones
 async function actualizarEdicion(id, body) {
+  try {
+    
 
   // Verificar si ya existe una edicion con el mismo título
   const edicionExistente = await Edicion.findOne({
@@ -63,10 +71,16 @@ async function actualizarEdicion(id, body) {
   );
 
   return edicion;
+  } catch (error) {
+    console.error('Error al actualizar la edicion (edicion_logic):', error);
+    throw error;
+  }
 }
 
 // Función asíncrona para inactivar ediciones
 async function desactivarEdicion(id) {
+  try {
+    
   let edicion = await Edicion.findByIdAndUpdate(
     id,
     {
@@ -78,15 +92,24 @@ async function desactivarEdicion(id) {
   );
 
   return edicion;
+  } catch (error) {
+    console.error('Error al inactivar la edicion (edicion_logic):', error);
+    throw error;
+  }
 }
 
 // Función asíncrona para listar las ediciones activas
 async function listarEdicionesActivas() {
-  let ediciones = await Edicion.find({ estadoEdicion: true })
-  .populate('cursoId')
-  .populate('horarios')
-  .populate('estudiantes');
-  return ediciones;
+  try {
+    let ediciones = await Edicion.find({ estadoEdicion: true })
+    .populate('cursoId')
+    .populate('horarios')
+    .populate('estudiantes');
+    return ediciones;
+  } catch (error) {
+    console.error('Error al listar las ediciones (edicion_logic):', error);
+    throw error;
+  }
 }
 
 // Función asíncrona para buscar una edicion por su ID

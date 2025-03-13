@@ -5,199 +5,37 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Rol:
- *       type: object
- *       required:
- *         - nombreRol
- *         - estadoRol
- *       properties:
- *         id:
- *           type: string
- *           description: ID autogenerado del rol.
- *         nombreRol:
- *           type: string
- *           description: Nombre del rol.
- *         estadoRol:
- *           type: boolean
- *           description: Estado del rol (activo/inactivo).
- *           default: true
- */
-
-/**
- * @swagger
- * tags:
- *   - name: Roles
- *     description: API para gestionar roles
- */
-
-/**
- * @swagger
- * /api/roles:
+ * /api/roles/enum:
  *   get:
  *     tags: 
  *       - Roles
- *     summary: Obtener una lista de roles activos
+ *     summary: Obtener una lista de roles desde el enum
+ *     description: Retorna un arreglo de roles definidos en el enum del backend. Solo accesible para usuarios con roles "Root" o "Administrador".
  *     responses:
  *       200:
- *         description: Una colección de roles activos.
+ *         description: Lista de roles obtenidos desde el enum.
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Rol'
+ *                 type: string
  *             examples:
  *               ejemplo1:
  *                 value:
- *                   - id: "617f2bbf1a2b4b5c3cdb71d"
- *                     nombreRol: "Admin"
- *                     estadoRol: true
+ *                   - "Administrativo"
+ *                   - "Instructor"
+ *                   - "Secretario"
+ *                   - "Root"
+ *       401:
+ *         description: No autorizado. Token no válido o no proporcionado.
+ *       403:
+ *         description: Prohibido. El usuario no tiene permiso para acceder a este recurso.
+ *       500:
+ *         description: Error interno del servidor.
  */
-router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.listarRoles);
 
-/**
- * @swagger
- * /api/roles:
- *   post:
- *     tags: 
- *       - Roles
- *     summary: Crear un nuevo rol
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Rol'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreRol: "Editor"
- *                 estadoRol: true
- *     responses:
- *       201:
- *         description: Rol creado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Rol'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "618f2bbf1a2b4b5c3cdb71e"
- *                   nombreRol: "Editor"
- *                   estadoRol: true
- *       409:
- *         description: El nombre del rol ya existe.
- */
-router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.crearRol);
-
-/**
- * @swagger
- * /api/roles/{id}:
- *   put:
- *     tags: 
- *       - Roles
- *     summary: Actualizar un rol mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del rol a actualizar.
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Rol'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreRol: "Editor Actualizado"
- *                 estadoRol: true
- *     responses:
- *       200:
- *         description: Rol actualizado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Rol'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "618f2bbf1a2b4b5c3cdb71e"
- *                   nombreRol: "Editor Actualizado"
- *                   estadoRol: true
- *       404:
- *         description: Rol no encontrado.
- */
-router.put('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.actualizarRol);
-
-/**
- * @swagger
- * /api/roles/{id}:
- *   delete:
- *     tags: 
- *       - Roles
- *     summary: Desactivar un rol mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del rol a desactivar.
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Rol desactivado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Rol'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "618f2bbf1a2b4b5c3cdb71e"
- *                   nombreRol: "Editor"
- *                   estadoRol: false
- *       404:
- *         description: Rol no encontrado.
- */
-router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.desactivarRol);
-
-/**
- * @swagger
- * /api/roles/{id}:
- *   get:
- *     tags: 
- *       - Roles
- *     summary: Obtener un rol mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del rol
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Rol obtenido correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Rol'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "618f2bbf1a2b4b5c3cdb71e"
- *                   nombreRol: "Editor"
- *                   estadoRol: true
- *       404:
- *         description: Rol no encontrado.
- */
-router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), rolController.obtenerRolPorId);
+// Obtener los roles del enum
+router.get('/enum', verifyJWT, verifyRole(['Root', 'Administrador']), rolController.obtenerRolesEnum);
 
 module.exports = router;

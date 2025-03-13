@@ -72,7 +72,16 @@ const Calificaciones = () => {
     });
       if (!response.ok) throw new Error("Error al obtener calificaciones");
       const data = await response.json();
-      setCalificaciones(data);
+
+      // Condicion que verifica si el arreglo de calificaciones está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay calificaciones registradas.");
+        setOpenSnackbar(true);
+        setCalificaciones([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setCalificaciones(data);
+      }
+      
     } catch (error) {
       console.error("Error al obtener calificaciones:", error);
       setErrorMessage("Error al obtener calificaciones");
@@ -91,7 +100,15 @@ const Calificaciones = () => {
     });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      setEstudiantes(data);
+      
+      // Condicion que verifica si el arreglo de estudiantes está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay estudiantes registrados.");
+        setOpenSnackbar(true);
+        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setEstudiantes(data);
+      }
     } catch (error) {
       console.error("Error al obtener estudiantes:", error);
       setErrorMessage("Error al obtener estudiantes");
@@ -110,7 +127,15 @@ const Calificaciones = () => {
     });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
-      setUsuarios(data);
+
+      // Condicion que verifica si el arreglo de usuarios está vacío
+      if (data.length === 0) {
+        setErrorMessage("No hay usuarios registrados.");
+        setOpenSnackbar(true);
+        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
+      } else {
+        setUsuarios(data);
+      }
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
       setErrorMessage("Error al obtener usuarios");
@@ -183,6 +208,11 @@ const Calificaciones = () => {
         if (response.ok) {
             const nuevaCalificacion = await response.json();
             setCalificaciones([...calificaciones, nuevaCalificacion]);
+
+          // Muestra un mensaje de éxito
+          setSuccessMessage("calificación creada exitosamente.");
+          setOpenSnackbar(true);
+
             setFormValues({
               tituloCalificacion: "",
               aprobado: true,
@@ -198,7 +228,7 @@ const Calificaciones = () => {
     } catch (error) {
         handleError("Error al crear calificación", error);
     }
-};
+  };
 
   const handleUpdateCalificacion = async () => {
     if (!selectedCalificacion) return;
@@ -231,6 +261,10 @@ const Calificaciones = () => {
           estudiantes: [],
           estadoCalificacion: true,
         });
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La calificación se actualizó correctamente");
+        setOpenSnackbar(true); 
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar calificación");
@@ -258,6 +292,10 @@ const Calificaciones = () => {
       if (response.ok) {
         setCalificaciones(calificaciones.filter((calificacion) => calificacion._id !== calificacionToDelete._id));
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
+
+        // Mostrar mensaje de éxito
+        setSuccessMessage("La calificación se eliminó correctamente");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al eliminar calificación");
@@ -410,7 +448,7 @@ const Calificaciones = () => {
                 <TableCell>{calificacion.aprobado  ? "Si" : "No"}</TableCell>
                 <TableCell>{calificacion.estadoCalificacion ? "Activa" : "Inactiva"}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditClick(calificacion)}>
+                  <IconButton onClick={() => handleEditClick(calificacion)} color="primary">
                     <Edit />
                   </IconButton>
                   <IconButton onClick={() => handleInfoClick(calificacion)} color="primary">
@@ -418,7 +456,7 @@ const Calificaciones = () => {
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteClick(calificacion)}
-                    color="secondary"
+                    color="error"
                   >
                     <Delete />
                   </IconButton>
@@ -448,7 +486,7 @@ const Calificaciones = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteCalificacion} color="secondary">Eliminar</Button>
+          <Button onClick={handleDeleteCalificacion} color="error">Eliminar</Button>
         </DialogActions>
       </Dialog>
 

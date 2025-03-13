@@ -3,18 +3,18 @@ const horarioSchemaValidation = require("../validations/horario_Validations");
 
 // Controlador para crear un horario
 const crearHorario = async (req, res) => {
+
   const body = req.body;
+  try {
   const { error, value } = horarioSchemaValidation.validate({
     tituloHorario: body.tituloHorario,
     horaInicio: body.horaInicio,
     horaFin: body.horaFin,
-    estadoHorario: body.estadoHorario,
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-  try {
-    const nuevoHorario = await logic.crearHorario(value);
+    const nuevoHorario = await logic.crearHorario(body);
     res.status(201).json(nuevoHorario);
   } catch (err) {
     if (err.message === "El horario con este título ya existe") {
@@ -28,16 +28,15 @@ const crearHorario = async (req, res) => {
 const actualizarHorario = async (req, res) => {
   const { id } = req.params;
   const body = req.body;
+  try {
   const { error, value } = horarioSchemaValidation.validate({
     tituloHorario: body.tituloHorario,
     horaInicio: body.horaInicio,
     horaFin: body.horaFin,
-    estadoHorario: body.estadoHorario
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-  try {
     const horarioActualizado = await logic.actualizarHorario(id, value);
     if (!horarioActualizado) {
       return res.status(404).json({ error: "Horario no encontrado" });
@@ -49,10 +48,10 @@ const actualizarHorario = async (req, res) => {
 };
 
 // Controlador para desactivar un horario
-const desactivarHorario = async (req, res) => {
+const togglerStateController = async (req, res) => {
   const { id } = req.params;
   try {
-    const horarioDesactivado = await logic.desactivarHorario(id);
+    const horarioDesactivado = await logic.togglerStateLogic(id);
     if (!horarioDesactivado) {
       return res.status(404).json({ error: "Horario no encontrado" });
     }
@@ -66,9 +65,6 @@ const desactivarHorario = async (req, res) => {
 const listarHorariosActivos = async (req, res) => {
   try {
     const horariosActivos = await logic.listarHorariosActivos();
-    if (horariosActivos.length === 0) {
-      return res.status(204).send(); // 204 No Content
-    }
     res.json(horariosActivos);
   } catch (err) {
     res.status(500).json({ error: "Error interno del servidor" });
@@ -78,7 +74,7 @@ const listarHorariosActivos = async (req, res) => {
 // Controlador para guardar una colección de horarios
 const guardarColeccionHorarios = async (req, res) => {
   const horarios = req.body;
-
+  try{
   // Validación de cada horario en la colección
   for (let horario of horarios) {
     const { error } = horarioSchemaValidation.validate({
@@ -93,7 +89,6 @@ const guardarColeccionHorarios = async (req, res) => {
       });
     }
   }
-  try {
     // Guardar la colección de horarios
     const resultados = await logic.guardarHorarios(horarios);
     res
@@ -131,7 +126,7 @@ const obtenerHorarioPorId = async (req, res) => {
 module.exports = {
   crearHorario,
   actualizarHorario,
-  desactivarHorario,
+  togglerStateController,
   listarHorariosActivos,
   guardarColeccionHorarios,
   obtenerHorarioPorId,

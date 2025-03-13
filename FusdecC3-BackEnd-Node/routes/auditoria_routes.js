@@ -72,7 +72,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *                     certificadoId: "60d5ec49f1a2c8b1f8e4e1a2"
  *                     codigoVerificacion: "XYZ456"
  */
-router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.listarAuditorias);
+router.get('/', verifyJWT, verifyRole(['Administrativo', 'Root']), auditoriaController.listarAuditorias);
 
 /**
  * @swagger
@@ -116,7 +116,7 @@ router.get('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaContr
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.crearAuditoria);
+router.post('/', verifyJWT, verifyRole(['Administrativo', 'Root']), auditoriaController.crearAuditoria);
 
 /**
  * @swagger
@@ -150,7 +150,7 @@ router.post('/', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaCont
  *       404:
  *         description: Auditoría no encontrada
  */
-router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.obtenerAuditoriaPorId);
+router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), auditoriaController.obtenerAuditoriaPorId);
 
 /**
  * @swagger
@@ -188,7 +188,7 @@ router.get('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaCo
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.desactivarAuditoria);
+router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), auditoriaController.desactivarAuditoria);
 
 /**
  * @swagger
@@ -229,6 +229,6 @@ router.delete('/:id', verifyJWT, verifyRole(['Administrador', 'Root']), auditori
  *       404:
  *         description: Auditorías no encontradas
  */
-router.get('/auditorias/:certificadoId', verifyJWT, verifyRole(['Administrador', 'Root']), auditoriaController.obtenerAuditoriasPorCertificado);
+router.get('/auditorias/:certificadoId', verifyJWT, verifyRole(['Administrativo', 'Root']), auditoriaController.obtenerAuditoriasPorCertificado);
 
 module.exports = router;

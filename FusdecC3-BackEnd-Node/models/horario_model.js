@@ -22,7 +22,11 @@ const HorarioSchema = new Schema({
     type: Boolean,
     default: true,
   },
-});
+},
+{
+  timestamps: true
+}
+);
 
 const Horario = mongoose.model("Horario", HorarioSchema);
 module.exports = Horario;

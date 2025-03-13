@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const fundacionController = require('../controllers/fundacion_controllers');
+const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
 * @swagger
@@ -54,7 +55,7 @@ const fundacionController = require('../controllers/fundacion_controllers');
  *               items:
  *                 $ref: '#/components/schemas/Fundacion'
  */
-router.get('/', fundacionController.listarFundaciones);
+router.get('/', verifyJWT, verifyRole(['Root','Administrativo','secretario']), fundacionController.listarFundaciones);
 
 /**
  * @swagger
@@ -77,7 +78,7 @@ router.get('/', fundacionController.listarFundaciones);
  *             schema:
  *               $ref: '#/components/schemas/Fundacion'
  */
-router.post('/', fundacionController.crearFundacion);
+router.post('/',verifyJWT, verifyRole(['Root']), fundacionController.crearFundacion);
 
 /**
  * @swagger
@@ -103,7 +104,7 @@ router.post('/', fundacionController.crearFundacion);
  *       404:
  *         description: Fundación no encontrada.
  */
-router.get('/:id', fundacionController.obtenerFundacionPorId);
+router.get('/:id',verifyJWT, verifyRole(['Root']), fundacionController.obtenerFundacionPorId);
 
 /**
  * @swagger
@@ -135,7 +136,7 @@ router.get('/:id', fundacionController.obtenerFundacionPorId);
  *       404:
  *         description: Fundación no encontrada.
  */
-router.put('/:id', fundacionController.actualizarFundacion);
+router.put('/:id',verifyJWT, verifyRole(['Root']), fundacionController.actualizarFundacion);
 
 /**
  * @swagger
@@ -157,39 +158,6 @@ router.put('/:id', fundacionController.actualizarFundacion);
  *       404:
  *         description: Fundación no encontrada.
  */
-router.delete('/:id', fundacionController.desactivarFundacion);
-
-/**
- * @swagger
- * /api/fundaciones/{fundacionId}/comandos:
- *   post:
- *     tags:
- *       - Fundaciones
- *     summary: Agregar comandos a una fundación
- *     parameters:
- *       - in: path
- *         name: fundacionId
- *         required: true
- *         description: El ID de la fundación a la que se le agregarán los comandos.
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               comandosIds:
- *                 type: array
- *                 items:
- *                   type: string
- *     responses:
- *       200:
- *         description: Comandos agregados correctamente a la fundación.
- *       404:
- *         description: Fundación no encontrada.
- */
-router.post('/:fundacionId/comandos', fundacionController.agregarComandos);
+router.delete('/:id',verifyJWT, verifyRole(['Root']), fundacionController.desactivarFundacion);
 
 module.exports = router;

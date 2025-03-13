@@ -54,8 +54,13 @@ import {
 
   const fetchFundaciones = async () => {
     try {
-        const response = await fetch("http://localhost:3000/api/fundaciones");
-        
+        const response = await fetch("http://localhost:3000/api/fundaciones",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+        }
+      });
         // Verifica si la respuesta es OK
         if (!response.ok) {
             throw new Error(`Error al obtener fundaciones: ${response.statusText}`);
@@ -96,6 +101,7 @@ import {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+            "Authorization": token 
         },
         body: JSON.stringify({
           nombreFundacion: formValues.nombreFundacion,
@@ -131,6 +137,8 @@ import {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": token 
+            
           },
           body: JSON.stringify(formValues),
         }

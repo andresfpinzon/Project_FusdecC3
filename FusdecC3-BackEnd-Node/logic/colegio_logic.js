@@ -3,6 +3,8 @@ const Estudiante = require('../models/estudiante_model');
 
 // Función asíncrona para crear colegios
 async function crearColegio(body) {
+  try {
+    
   // Verificar si ya existe un colegio con el mismo nombre
   const colegioExistente = await Colegio.findOne({
     nombreColegio: body.nombreColegio,
@@ -19,12 +21,16 @@ async function crearColegio(body) {
   });
 
   return await colegio.save();
+  } catch (error) {
+    console.error('Error al crear el colegio (colegio_logic):', error);
+    throw error;
+  }
 }
 
 // Función asíncrona para actualizar colegios
 async function actualizarColegio(id, body) {
-
-  // Verificar si ya existe un colegio con el mismo nombre
+  try {
+   // Verificar si ya existe un colegio con el mismo nombre
   const colegioExistente = await Colegio.findOne({
     nombreColegio: body.nombreColegio, 
     _id: { $ne: id } // Excluir el colegio actual
@@ -43,14 +49,23 @@ async function actualizarColegio(id, body) {
     { new: true }
   );
 
-  return colegios;
+  return colegios; 
+  } catch (error) {
+    console.error('Error al actualizar el colegio (colegio_logic):', error);
+    throw error;
+  }
 }
 
 // Función asíncrona para listar los colegio activos
 async function listarColegios() {
+  try {
   let colegios = await Colegio.find({ estadoColegio: true })
   .populate('estudiantes');
-  return colegios;
+  return colegios; 
+  } catch (error) {
+    console.error('Error al listar los colegios (colegio_logic):', error);
+    throw error;
+  }
 }
 
 // Función asíncrona para buscar un colegios por su ID
@@ -70,11 +85,16 @@ async function buscarColegiosPorId(id) {
 
 // Función asíncrona para desactivar una brigada
 async function desactivarColegio(id) {
+  try {
   const colegio = await Colegio.findByIdAndUpdate(id, { estadoColegio: false }, { new: true });
   if (!colegio) {
       throw new Error(`Colegio con ID ${id} no encontrada`);
   }
-  return colegio;
+  return colegio; 
+  } catch (error) {
+    console.error('Error al desactivar el colegio (colegio_logic):', error);
+    throw error;
+  }
 }
 
 // Lógica para agregar estudiantes a un colegio
