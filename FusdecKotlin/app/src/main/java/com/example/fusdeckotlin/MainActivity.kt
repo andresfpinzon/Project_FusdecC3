@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, InstructorActivity::class.java)
                 startActivity(intent)
             }
-            // Aquí puedes agregar más casos para otros roles
             else -> {
                 Toast.makeText(this, "Módulo no implementado", Toast.LENGTH_SHORT).show()
             }

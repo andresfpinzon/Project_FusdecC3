@@ -75,10 +75,8 @@ class AsistenciaActivity : AppCompatActivity() {
             return
         }
 
-        // Aquí puedes hacer la lógica de guardar la asistencia, enviándola al backend
         Toast.makeText(this, "Asistencia guardada exitosamente", Toast.LENGTH_SHORT).show()
 
-        // Cerrar actividad después de guardar
         finish()
     }
 }
