@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+    <TextView
+            android:id="@+id/tituloTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Título"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+            android:id="@+id/tituloEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Título de la asistencia"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tituloTextView" />
+
+    <TextView
+            android:id="@+id/fechaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fecha"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tituloEditText"
+            android:layout_marginTop="16dp" />
+
+    <EditText
+            android:id="@+id/fechaEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Fecha (yyyy-MM-dd)"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fechaTextView" />
+
+    <TextView
+            android:id="@+id/idTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fechaEditText"
+            android:layout_marginTop="16dp" />
+
+    <EditText
+            android:id="@+id/usuarioIdEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Usuario ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/idTextView" />
+
+    <TextView
+            android:id="@+id/estudiantesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estudiantes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
+            android:layout_marginTop="16dp" />
+
+    <EditText
+            android:id="@+id/estudiantesEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="IDs de estudiantes separados por coma"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesTextView" />
+
+    <Button
+            android:id="@+id/confirmarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Confirmar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
+            android:layout_marginTop="16dp" />
+
+    <Button
+            android:id="@+id/cancelarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/confirmarButton"
+            android:layout_marginTop="8dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
