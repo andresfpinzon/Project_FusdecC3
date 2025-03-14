@@ -1,16 +1,69 @@
 package models.administrativo.user.model
 
 data class Usuario(
-    val id : String,
-    val nombreUsuario: String,
-    val apellidoUsuario: String,
-    val numeroDocumento: String,
-    val correo: String,
-    val password: String,
-    val roles: List<String>,
-    val estadoUsuario: Boolean,
-    val creadoEn: String
+    private val id : String = generateId(),
+    private var nombreUsuario: String,
+    private var apellidoUsuario: String,
+    private val numeroDocumento: String,
+    private val correo: String,
+    private var password: String,
+    private var roles: List<String>,
+    private var estadoUsuario: Boolean,
+    private val creadoEn: String
 ) {
+
+    /**++++++++++++++GETTERS+++++++++++++++++*/
+    fun getUserId(): String{
+        return id
+    }
+    fun getNombreUsuario(): String{
+        return nombreUsuario
+    }
+    fun getApellidoUsuario(): String{
+        return apellidoUsuario
+    }
+    fun getNumeroDocumento(): String{
+        return numeroDocumento
+    }
+    fun getCorreo(): String{
+        return correo
+    }
+    fun getPassword(): String{
+        return password
+    }
+    fun getRoles(): List<String>{
+        return roles
+    }
+
+    fun getEstadoUsuario(): Boolean{
+        return estadoUsuario
+    }
+    fun getCreadoEn(): String{
+        return creadoEn
+    }
+    /**++++++++++++++SETTERS+++++++++++++++++*/
+
+    fun setNombreUsuario(nuevoNombre: String){
+        nombreUsuario = nuevoNombre
+    }
+
+    fun setApellidoUsuario(nuevoApellido: String){
+        apellidoUsuario = nuevoApellido
+    }
+    fun setPassword(nuevaPassword: String) {
+        password = nuevaPassword
+    }
+
+    fun setRoles(nuevosRoles: List<String>) {
+        roles = nuevosRoles
+    }
+
+    fun setEstadoUsuario(nuevoEstado: Boolean) {
+        estadoUsuario = nuevoEstado
+    }
+
+
+
     companion object{
         val administrador = Usuario(
             id = "SAJDFKLAJDO1-1",
@@ -47,5 +100,10 @@ data class Usuario(
             estadoUsuario = true,
             creadoEn = "2023-01-03"
         )
+        fun generateId(): String{
+            return java.util.UUID.randomUUID().toString()
+        }
     }
+
+
 }

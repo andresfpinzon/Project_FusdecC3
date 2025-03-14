@@ -3,7 +3,7 @@ package servicios.instructor.asistencia
 import models.instructor.asistencia.Asistencia
 import java.util.*
 
-class AsistenciaServicio(){
+class   AsistenciaServicio(){
 
     companion object{
         fun crearAsistencia(
