@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.ui.activities.instructor.asistencia
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.Button
@@ -130,8 +131,23 @@ class AsistenciaActivity : AppCompatActivity() {
     }
 
     private fun onDeleteClick(asistencia: Asistencia) {
-        asistencias.remove(asistencia)
-        adapter.notifyDataSetChanged()
-        Toast.makeText(this, "Asistencia eliminada", Toast.LENGTH_SHORT).show()
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirmar eliminación")
+        builder.setMessage("¿Estás seguro de que deseas eliminar esta asistencia?")
+
+        builder.setPositiveButton("Sí") { _, _ ->
+            // Eliminar la asistencia de la lista
+            asistencias.remove(asistencia)
+            adapter.notifyDataSetChanged()
+            Toast.makeText(this, "Asistencia eliminada", Toast.LENGTH_SHORT).show()
+        }
+
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss() // Cierra el cuadro de diálogo sin hacer nada
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
+
 }
