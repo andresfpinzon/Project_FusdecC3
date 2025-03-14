@@ -13,20 +13,20 @@ class Asistencia(
     companion object {
         val asistencia1 = Asistencia(
             id = "ASIS01",
-            tituloAsistencia = "Clase de Matemáticas",
-            fechaAsistencia = Date(2023, 10, 5),
+            tituloAsistencia = "2025/03/14",
+            fechaAsistencia = Date(2025, 3, 14),
             usuarioId = "USR123456",
             estadoAsistencia = true,
-            estudiantes = listOf("1", "2")
+            estudiantes = listOf("EST01", "EST02")
         )
 
         val asistencia2 = Asistencia(
             id = "ASIS02",
-            tituloAsistencia = "Clase de Ciencias",
-            fechaAsistencia = Date(2023, 10, 6),
+            tituloAsistencia = "2025/03/13",
+            fechaAsistencia = Date(2025,3,13),
             usuarioId = "USR654321",
             estadoAsistencia = true,
-            estudiantes = listOf("2", "3")
+            estudiantes = listOf("EST04", "EST05")
         )
     }
 }
