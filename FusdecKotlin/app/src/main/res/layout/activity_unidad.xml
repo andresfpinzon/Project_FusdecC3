@@ -1,0 +1,65 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+    <TextView
+            android:id="@+id/unidadTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Módulo Unidad"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+            android:id="@+id/nombreUnidadEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Nombre de la unidad"
+            app:layout_constraintTop_toBottomOf="@id/unidadTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+    <textView
+            android:id="@+id/ubicacionUnidadTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubicación de la unidad"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/nombreUnidadEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+    <EditText
+            android:id="@+id/ubicacionUnidadEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Ubicación de la unidad"
+            app:layout_constraintTop_toBottomOf="@id/nombreUnidadEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="108dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    <EditText
+            android:id="@+id/brigadaIdEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="ID de la brigada"
+            app:layout_constraintTop_toBottomOf="@id/ubicacionUnidadEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

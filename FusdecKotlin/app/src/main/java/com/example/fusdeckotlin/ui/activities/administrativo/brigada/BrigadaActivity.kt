@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.R
 
+
 class BrigadaActivity : AppCompatActivity() {
 
     private lateinit var nombreBrigadaEditText: EditText
