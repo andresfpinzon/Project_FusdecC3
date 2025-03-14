@@ -30,13 +30,11 @@
             android:inputType="textEmailAddress"
             android:layout_marginBottom="16dp"/>
 
-    <EditText
-            android:id="@+id/estadoColegioEditText"
-            android:layout_width="match_parent"
+    <Switch android:id="@+id/estadoSwitch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Estado del Colegio (true/false)"
+            android:text="Estado"
             android:layout_marginBottom="16dp"/>
-
     <EditText
             android:id="@+id/estudiantesEditText"
             android:layout_width="match_parent"
