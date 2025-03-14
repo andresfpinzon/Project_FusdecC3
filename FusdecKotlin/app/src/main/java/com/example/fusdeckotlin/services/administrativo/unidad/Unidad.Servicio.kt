@@ -1,7 +1,5 @@
 package models.administrativo.unidad
 
-import java.util.*
-
 class UnidadServicio(){
 
     companion object {

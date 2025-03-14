@@ -1,7 +1,5 @@
 package models.administrativo.brigada
 
-import java.util.*
-
 class BrigadaServicio(){
 
     companion object{

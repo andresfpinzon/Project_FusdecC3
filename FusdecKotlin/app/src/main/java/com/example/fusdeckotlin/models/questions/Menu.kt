@@ -1,4 +1,4 @@
-package models.questions
+package com.example.fusdeckotlin.models.questions
 
 import models.secretario.estudiante.Estudiante
 import models.secretario.estudiante.EstudianteController
@@ -14,8 +14,8 @@ import models.administrativo.brigada.BrigadaController
 import models.administrativo.unidad.Unidad
 import models.administrativo.unidad.UnidadController
 
-import models.administrativo.colegio.Colegio
-import models.administrativo.colegio.ColegioController
+//import models.administrativo.colegio.Colegio
+//import models.administrativo.colegio.ColegioController
 
 
 import controllers.instructor.calificacion.CalificacionController
@@ -63,7 +63,7 @@ class Menu {
                 1 -> crudAuditoria()
                 2 -> crudBrigada()
                 3 -> crudCertificado()
-                4 -> crudColegio()
+//                4 -> crudColegio()
                 5 -> crudComando()
                 6 -> crudUnidad()
                 7 -> crudUsuario()
@@ -171,24 +171,24 @@ class Menu {
             }
         }
 
-        private fun crudColegio() {
-            var colegios = mutableListOf(Colegio.colegio1, Colegio.colegio2)
-            println("Acciones CRUD para Colegio:")
-            println("1. Crear Colegio")
-            println("2. Leer Colegio")
-            println("3. Actualizar Colegio")
-            println("4. desactivar Colegio")
-            println("5. Volver")
-            print("Opción: ")
-            when (scanner.nextInt()) {
-                1 -> ColegioController.crearColegio(colegios)
-                2 -> ColegioController.listarColegiosActivos(colegios)
-                3 -> ColegioController.actualizarColegio(colegios)
-                4 -> ColegioController.desactivarColegio(colegios)
-                5 -> return
-                else -> println("Opción no válida, intente de nuevo.")
-            }
-        }
+//        private fun crudColegio() {
+//            var colegios = mutableListOf(Colegio.colegio1, Colegio.colegio2)
+//            println("Acciones CRUD para Colegio:")
+//            println("1. Crear Colegio")
+//            println("2. Leer Colegio")
+//            println("3. Actualizar Colegio")
+//            println("4. desactivar Colegio")
+//            println("5. Volver")
+//            print("Opción: ")
+//            when (scanner.nextInt()) {
+//                1 -> ColegioController.crearColegio(colegios)
+//                2 -> ColegioController.listarColegiosActivos(colegios)
+//                3 -> ColegioController.actualizarColegio(colegios)
+//                4 -> ColegioController.desactivarColegio(colegios)
+//                5 -> return
+//                else -> println("Opción no válida, intente de nuevo.")
+//            }
+//        }
 
         private fun crudComando() {
             var comandos = mutableListOf(Comando.comando1, Comando.comando2)

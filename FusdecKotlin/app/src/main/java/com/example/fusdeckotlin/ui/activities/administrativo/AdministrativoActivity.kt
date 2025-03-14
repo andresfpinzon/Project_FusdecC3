@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.ui.activities.administrativo.brigada.BrigadaActivity
+import com.example.fusdeckotlin.ui.activities.administrativo.colegio.ColegioActivity
 
 class AdministrativoActivity : AppCompatActivity() {
 
@@ -31,16 +33,25 @@ class AdministrativoActivity : AppCompatActivity() {
         }
 
         brigadaButton.setOnClickListener {
-
-            Toast.makeText(this, "Módulo de Brigada", Toast.LENGTH_SHORT).show()
-        }
-
-        volverButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, BrigadaActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
+        certificadoButton.setOnClickListener {
+            Toast.makeText(this, "Módulo de Certificados", Toast.LENGTH_SHORT).show()
+        }
 
+        colegioButton.setOnClickListener {
+            val intent = Intent(this, ColegioActivity::class.java)
+            startActivity(intent)
+
+            volverButton.setOnClickListener {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+
+        }
     }
 }

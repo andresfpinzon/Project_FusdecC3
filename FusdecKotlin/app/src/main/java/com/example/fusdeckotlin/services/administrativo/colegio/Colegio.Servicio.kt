@@ -1,7 +1,5 @@
 package models.administrativo.colegio
 
-import java.util.*
-
 class ColegioServicio(){
 
     companion object{
@@ -36,21 +34,23 @@ class ColegioServicio(){
         fun obtenerColegioPorId(colegios: List<Colegio>, id: String): Colegio {
             return colegios.find { it.id == id } ?: throw NoSuchElementException("Colegio no encontrado")
         }
-
         fun actualizarColegio(
             colegios: MutableList<Colegio>,
             id: String,
-            nombreColegio: String? = null,
-            emailColegio: String? = null,
-            estadoColegio: Boolean? = null,
-            estudiantes: List<String>? = null
+            nombreColegio: String,
+            emailColegio: String,
+            estadoColegio: Boolean,
+            estudiantes: List<String>
         ): Colegio {
             val colegio = colegios.find { it.id == id } ?: throw NoSuchElementException("Colegio no encontrado")
+            if (nombreColegio.isBlank() || estudiantes.isEmpty()) {
+                throw IllegalArgumentException("Faltan campos requeridos: nombreColegio, estudiantes")
+            }
 
-            colegio.nombreColegio = nombreColegio ?: colegio.nombreColegio
-            colegio.emailColegio = emailColegio ?: colegio.emailColegio
-            colegio.estadoColegio = estadoColegio ?: colegio.estadoColegio
-            colegio.estudiantes = estudiantes ?: colegio.estudiantes
+            colegio.nombreColegio = nombreColegio
+            colegio.emailColegio = emailColegio
+            colegio.estadoColegio = estadoColegio
+            colegio.estudiantes = estudiantes
 
             return colegio
         }

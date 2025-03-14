@@ -1,8 +1,6 @@
 package com.example.fusdeckotlin
 
-import models.administrativo.Usuario
-import models.administrativo.auditoria.DemoAuditoria
-import models.questions.*
+import com.example.fusdeckotlin.models.questions.Menu
 
 fun main() {
 

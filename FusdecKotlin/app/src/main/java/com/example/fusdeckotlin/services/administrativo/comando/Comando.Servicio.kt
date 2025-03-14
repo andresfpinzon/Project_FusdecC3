@@ -1,7 +1,5 @@
 package models.administrativo.comando
 
-import java.util.*
-
 class ComandoServicio(){
 
     companion object{
