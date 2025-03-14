@@ -13,6 +13,7 @@ import userRoutes from "@routes/user.routes";
 import brigadaRouter from "@routes/brigada.routes";
 import comandoRouter from "@routes/comando.routes";
 import unidadRouter from "@routes/unidad.routes";
+import certificateRouter from "@routes/certificate.routes";
 
 class Server {
     private app: Application;
@@ -22,7 +23,8 @@ class Server {
         user: '/api/user',
         brigada: '/api/brigada',
         comando: '/api/comando',
-        unidad: '/api/unidad'
+        unidad: '/api/unidad',
+        certificate: '/api/certificates'
         // TODO: Agregar rutas de los otros módulos
     }
 
@@ -46,6 +48,7 @@ class Server {
         this.app.use(this.apiPaths.brigada, brigadaRouter)
         this.app.use(this.apiPaths.comando, comandoRouter)
         this.app.use(this.apiPaths.unidad, unidadRouter)
+        this.app.use(this.apiPaths.certificate, certificateRouter)
         // TODO: Agregar rutas de los otros módulos
         console.log("*** Rutas Cargadas***")
     }

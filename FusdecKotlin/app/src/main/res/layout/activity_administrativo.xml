@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:padding="16dp">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Módulo Administrativo"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+    <Button
+            android:id="@+id/auditoriaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auditoría"
+            android:layout_marginBottom="16dp"/>
+
+    <Button
+            android:id="@+id/brigadaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brigada"
+            android:layout_marginBottom="16dp"/>
+
+    <Button
+            android:id="@+id/certificadoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Certificado"
+            android:layout_marginBottom="16dp"/>
+
+    <Button
+            android:id="@+id/colegioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Colegio"
+            android:layout_marginBottom="16dp"/>
+
+    <Button
+            android:id="@+id/comandoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comando"
+            android:layout_marginBottom="16dp"/>
+
+    <Button
+            android:id="@+id/unidadButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unidad"
+            android:layout_marginBottom="16dp"/>
+
+    <Button
+            android:id="@+id/userButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User"/>
+    <Button
+            android:id="@+id/volverButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Volver"
+            android:layout_marginTop="24dp"/>
+
+</LinearLayout>

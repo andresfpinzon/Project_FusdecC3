@@ -183,14 +183,14 @@ router.post('/', verifyJWT, verifyRole(['Administrativo','Root']), certificadoCo
  *             examples:
  *               ejemplo1:
  *                 value:
- *                   _id: "60d5ec49f1a2c8b1f8e4e1a1"
+ *                   _id: "671c400195609058229a7de8"
  *                   nombre: "Certificado de Participación"
- *                   fechaEmision: "2023-10-01T12:00:00Z"
- *                   usuarioId: "60d5ec49f1a2c8b1f8e4e1a2"
- *                   cursoId: "60d5ec49f1a2c8b1f8e4e1a3"
- *                   estudianteId: "60d5ec49f1a2c8b1f8e4e1a4"
- *                   nombreEmisorCertificado: "Instituto XYZ"
- *                   codigoVerificacion: "ABC123"
+ *                   fechaEmision: "2024-11-04"
+ *                   usuarioId: "671c400195609058229a7de8"
+ *                   cursoId: "671a5dc57d6f233e78553c17"
+ *                   estudianteId: "671a624e7d6f233e78553c98"
+ *                   nombreEmisorCertificado: "sebas"
+ *                   codigoVerificacion: "54854548845"
  *       404:
  *         description: Certificado no encontrado
  */

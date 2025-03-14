@@ -363,3 +363,28 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignorar la carpeta .gradle
+.gradle/
+
+# Ignorar la carpeta build
+build/
+
+# Ignorar archivos específicos de Gradle
+**/*.gradle
+**/gradle-app.setting
+!gradle-wrapper.jar
+
+# Ignorar archivos generados por Gradle
+**/gradle.properties
+**/gradle-wrapper.properties
+
+# Ignorar archivos de configuración de IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Ignorar archivos de caché de Kotlin
+**/*.kotlin_module
+**/*.kotlin_metadata
