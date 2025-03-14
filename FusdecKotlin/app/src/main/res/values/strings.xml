@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FusdecKotlin</string>
+    <string name="update_button_description">Actualizar</string>
+    <string name="delete_button_description">Eliminar</string>
 </resources>
