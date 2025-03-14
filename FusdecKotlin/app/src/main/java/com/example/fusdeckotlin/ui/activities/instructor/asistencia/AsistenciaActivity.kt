@@ -1,14 +1,21 @@
 package com.example.fusdeckotlin.ui.activities.instructor.asistencia
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.ui.adapters.AsistenciaAdapter
+import models.instructor.asistencia.Asistencia
+import servicios.instructor.asistencia.AsistenciaServicio
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class AsistenciaActivity : AppCompatActivity() {
@@ -19,6 +26,14 @@ class AsistenciaActivity : AppCompatActivity() {
     private lateinit var estudiantesEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
+    private lateinit var asistenciasRecyclerView: RecyclerView
+
+    private val asistencias = mutableListOf(
+        Asistencia.asistencia1,
+        Asistencia.asistencia2
+    )
+
+    private lateinit var adapter: AsistenciaAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +45,12 @@ class AsistenciaActivity : AppCompatActivity() {
         estudiantesEditText = findViewById(R.id.estudiantesEditText)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
+        asistenciasRecyclerView = findViewById(R.id.asistenciasRecyclerView)
+
+        // Configurar RecyclerView
+        adapter = AsistenciaAdapter(asistencias, ::onUpdateClick, ::onDeleteClick)
+        asistenciasRecyclerView.layoutManager = LinearLayoutManager(this)
+        asistenciasRecyclerView.adapter = adapter
 
         // Configurar selector de fecha
         fechaEditText.setOnClickListener {
@@ -75,8 +96,58 @@ class AsistenciaActivity : AppCompatActivity() {
             return
         }
 
+        val nuevaAsistencia = Asistencia(
+            id = "ASIS${asistencias.size + 1}",
+            tituloAsistencia = titulo,
+            fechaAsistencia = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fecha)!!,
+            usuarioId = usuarioId,
+            estadoAsistencia = true,
+            estudiantes = estudiantes.split(",")
+        )
+
+        asistencias.add(nuevaAsistencia)
+        adapter.notifyDataSetChanged()
+
         Toast.makeText(this, "Asistencia guardada exitosamente", Toast.LENGTH_SHORT).show()
 
-        finish()
+        limpiarFormulario()
     }
+
+    private fun limpiarFormulario() {
+        tituloEditText.text.clear()
+        fechaEditText.text.clear()
+        usuarioIdEditText.text.clear()
+        estudiantesEditText.text.clear()
+    }
+
+    private fun onUpdateClick(asistencia: Asistencia) {
+        tituloEditText.setText(asistencia.tituloAsistencia)
+        fechaEditText.setText(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(asistencia.fechaAsistencia))
+        usuarioIdEditText.setText(asistencia.usuarioId)
+        estudiantesEditText.setText(asistencia.estudiantes.joinToString(", "))
+
+        asistencias.remove(asistencia)
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun onDeleteClick(asistencia: Asistencia) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirmar eliminación")
+        builder.setMessage("¿Estás seguro de que deseas eliminar esta asistencia?")
+
+        builder.setPositiveButton("Sí") { _, _ ->
+            // Eliminar la asistencia de la lista
+            asistencias.remove(asistencia)
+            adapter.notifyDataSetChanged()
+            Toast.makeText(this, "Asistencia eliminada", Toast.LENGTH_SHORT).show()
+        }
+
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss() // Cierra el cuadro de diálogo sin hacer nada
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
 }

@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">FusdecKotlin</string>
-    <string name="nombre_de_la_brigada">Nombre de la brigada</string>
-    <string name="nombre">Nombre</string>
 </resources>
