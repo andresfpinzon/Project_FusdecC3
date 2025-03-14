@@ -1,15 +1,11 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.brigada
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.R
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class BrigadaActivity : AppCompatActivity() {
 

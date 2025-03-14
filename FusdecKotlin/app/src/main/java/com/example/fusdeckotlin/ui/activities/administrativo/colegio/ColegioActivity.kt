@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.colegio
 
+
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -7,7 +8,6 @@ import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.R
-
 
 class ColegioActivity : AppCompatActivity() {
 
@@ -17,6 +17,7 @@ class ColegioActivity : AppCompatActivity() {
     private lateinit var estudiantesEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
