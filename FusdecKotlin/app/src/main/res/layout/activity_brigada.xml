@@ -1,10 +1,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
 
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/asistenciasRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/cancelarButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
     <TextView
             android:id="@+id/brigadaTextView"
             android:layout_width="wrap_content"
@@ -58,22 +67,15 @@
 
     <Button
             android:id="@+id/confirmarButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="192dp"
+            android:layout_height="47dp"
             android:text="Confirmar"
-            app:layout_constraintTop_toBottomOf="@id/unidadesEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"/>
-
+            tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="193dp"/>
     <Button
             android:id="@+id/cancelarButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="189dp"
+            android:layout_height="49dp"
             android:text="Cancelar"
-            app:layout_constraintTop_toBottomOf="@id/confirmarButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"/>
+            tools:layout_editor_absoluteY="292dp" tools:layout_editor_absoluteX="2dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
