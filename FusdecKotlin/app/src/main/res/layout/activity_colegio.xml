@@ -1,55 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-              android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="vertical"
-              android:padding="16dp" tools:ignore="ExtraText">
-
+              android:padding="16dp"
+              tools:ignore="ExtraText">
 
     <TextView
             android:id="@+id/nombreColegioTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="nombre"
+            android:text="Nombre del Colegio"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginBottom="16dp"/>
+
     <EditText
             android:id="@+id/nombreColegioEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre del Colegio" />
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-
+            android:hint="Nombre del Colegio"
+            android:layout_marginBottom="16dp"/>
 
     <EditText
             android:id="@+id/emailColegioEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email del Colegio"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="16dp"/>
 
     <EditText
             android:id="@+id/estadoColegioEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Estado del Colegio (true/false)" />
+            android:hint="Estado del Colegio (true/false)"
+            android:layout_marginBottom="16dp"/>
 
     <EditText
             android:id="@+id/estudiantesEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Estudiantes (separados por comas)" />
+            android:hint="Estudiantes (separados por comas)"
+            android:layout_marginBottom="16dp"/>
 
     <Button
             android:id="@+id/confirmarButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirmar" />
+            android:text="Confirmar"
+            android:layout_marginBottom="8dp"/>
 
     <Button
             android:id="@+id/cancelarButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancelar" />
+            android:text="Cancelar"/>
+
 </LinearLayout>

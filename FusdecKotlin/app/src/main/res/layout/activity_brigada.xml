@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
 
@@ -22,53 +22,59 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Nombre de la brigada"
+            app:layout_constraintTop_toBottomOf="@id/brigadaTextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" tools:ignore="MissingConstraints"/>
+            android:layout_marginTop="16dp"/>
 
     <EditText
             android:id="@+id/ubicacionBrigadaEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Ubicación de la brigada"
+            app:layout_constraintTop_toBottomOf="@id/nombreBrigadaEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" tools:ignore="MissingConstraints"/>
+            android:layout_marginTop="16dp"/>
 
     <EditText
             android:id="@+id/comandoIdEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="ID del comando"
+            app:layout_constraintTop_toBottomOf="@id/ubicacionBrigadaEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" tools:ignore="MissingConstraints"/>
+            android:layout_marginTop="16dp"/>
 
     <EditText
             android:id="@+id/unidadesEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Unidades (separadas por coma)"
+            app:layout_constraintTop_toBottomOf="@id/comandoIdEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" tools:ignore="MissingConstraints"/>
+            android:layout_marginTop="16dp"/>
 
     <Button
             android:id="@+id/confirmarButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Confirmar"
+            app:layout_constraintTop_toBottomOf="@id/unidadesEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" tools:ignore="MissingConstraints"/>
+            android:layout_marginTop="16dp"/>
 
     <Button
             android:id="@+id/cancelarButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Cancelar"
+            app:layout_constraintTop_toBottomOf="@id/confirmarButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" tools:ignore="MissingConstraints"/>
+            android:layout_marginTop="8dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

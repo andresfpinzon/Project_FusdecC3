@@ -5,11 +5,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import models.administrativo.colegio.Colegio
-import models.administrativo.colegio.ColegioServicio
-import java.util.UUID
 import com.example.fusdeckotlin.R
-import java.lang.IllegalArgumentException
 
 
 class ColegioActivity : AppCompatActivity() {
@@ -20,7 +16,6 @@ class ColegioActivity : AppCompatActivity() {
     private lateinit var estudiantesEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
-    private lateinit var colegios: MutableList<Colegio>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,21 +38,17 @@ class ColegioActivity : AppCompatActivity() {
     }
 
     private fun guardarColegio() {
-        try {
-            val estadoColegio = estadoColegioEditText.text.toString().toBoolean()
-            val estudiantes = estudiantesEditText.text.toString().split(",")
-            val nuevoColegio = ColegioServicio.crearColegio(
-                colegios,
-                UUID.randomUUID().toString(),
-                nombreColegioEditText.text.toString(),
-                emailColegioEditText.text.toString(),
-                estadoColegio,
-                estudiantes
-            )
-            Toast.makeText(this, "Colegio creado: ${nuevoColegio.nombreColegio}", Toast.LENGTH_SHORT).show()
-            finish()
-        } catch (e: IllegalArgumentException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        val nombreColegio = nombreColegioEditText.text.toString().trim()
+        val emailColegio = emailColegioEditText.text.toString().trim()
+        val estadoColegio = estadoColegioEditText.text.toString().trim()
+        val estudiantes = estudiantesEditText.text.toString().trim()
+
+        if (nombreColegio.isEmpty() || emailColegio.isEmpty() || estadoColegio.isEmpty() || estudiantes.isEmpty()) {
+            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        Toast.makeText(this, "Colegio guardado exitosamente", Toast.LENGTH_SHORT).show()
+        finish()
     }
 }

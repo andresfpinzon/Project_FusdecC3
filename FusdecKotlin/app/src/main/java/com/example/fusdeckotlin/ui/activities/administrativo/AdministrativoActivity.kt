@@ -10,6 +10,7 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.activities.administrativo.brigada.BrigadaActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.colegio.ColegioActivity
 
+
 class AdministrativoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +45,7 @@ class AdministrativoActivity : AppCompatActivity() {
         colegioButton.setOnClickListener {
             val intent = Intent(this, ColegioActivity::class.java)
             startActivity(intent)
+        }
 
             volverButton.setOnClickListener {
                 val intent = Intent(this, MainActivity::class.java)
@@ -51,7 +53,18 @@ class AdministrativoActivity : AppCompatActivity() {
                 finish()
             }
 
-
+        comandoButton.setOnClickListener {
+            Toast.makeText(this, "Módulo de Comandos", Toast.LENGTH_SHORT).show()
         }
+
+        unidadButton.setOnClickListener {
+            Toast.makeText(this, "Módulo de Unidades", Toast.LENGTH_SHORT).show()
+        }
+
+        userButton.setOnClickListener {
+            Toast.makeText(this, "Módulo de Usuarios", Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 }
