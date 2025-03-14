@@ -19,9 +19,12 @@ class AdministrativoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_administrativo)
 
 
-        val brigadaButton: Button = findViewById(R.id.brigadaButton)
+
         val colegioButton: Button = findViewById(R.id.colegioButton)
         val comandoButton: Button = findViewById(R.id.comandoButton)
+        val brigadaButton: Button = findViewById(R.id.brigadaButton)
+        val unidadButton: Button = findViewById(R.id.unidadButton)
+
         val volverButton: Button = findViewById(R.id.volverButton)
 
 
@@ -45,7 +48,9 @@ class AdministrativoActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
-            }
+        }
+
+
 
     }
 }
