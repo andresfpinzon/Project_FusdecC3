@@ -1,19 +1,68 @@
 package models.administrativo.user.model
 
 data class Usuario(
-    val id : String,
-    val nombreUsuario: String,
-    val apellidoUsuario: String,
-    val numeroDocumento: String,
-    val correo: String,
-    val password: String,
-    val roles: List<String>,
-    val estadoUsuario: Boolean,
-    val creadoEn: String
+    private val id : String = generateId(),
+    private var nombreUsuario: String,
+    private var apellidoUsuario: String,
+    private var numeroDocumento: String,
+    private var correo: String,
+    private var password: String,
+    private var roles: List<String>,
+    private var estadoUsuario: Boolean,
+    private val creadoEn: String = obtenerFechaActual()
 ) {
+
+    /**++++++++++++++GETTERS+++++++++++++++++*/
+
+    fun getUserId(): String = id
+
+    fun getNombreUsuario(): String = nombreUsuario
+
+    fun getApellidoUsuario(): String = apellidoUsuario
+
+    fun getNumeroDocumento(): String = numeroDocumento
+
+    fun getCorreo(): String = correo
+
+    fun getPassword(): String= password
+
+    fun getRoles(): List<String> = roles
+
+    fun getEstadoUsuario(): Boolean = estadoUsuario
+
+    fun getCreadoEn(): String = creadoEn
+
+    /**++++++++++++++SETTERS+++++++++++++++++*/
+
+    fun setNombreUsuario(nuevoNombre: String){
+        nombreUsuario = nuevoNombre
+    }
+
+    fun setApellidoUsuario(nuevoApellido: String){
+        apellidoUsuario = nuevoApellido
+    }
+    fun setNuDocumento(newDocumento: String){
+        numeroDocumento = newDocumento
+    }
+    fun setCorreo(newCorreo: String){
+        correo = newCorreo
+    }
+    fun setPassword(nuevaPassword: String) {
+        password = nuevaPassword
+    }
+
+    fun setRoles(nuevosRoles: List<String>) {
+        roles = nuevosRoles
+    }
+
+    fun setEstadoUsuario(nuevoEstado: Boolean) {
+        estadoUsuario = nuevoEstado
+    }
+
+
+
     companion object{
         val administrador = Usuario(
-            id = "SAJDFKLAJDO1-1",
             nombreUsuario = "Carlos",
             apellidoUsuario = "Gómez",
             numeroDocumento = "9876543210",
@@ -25,7 +74,6 @@ data class Usuario(
         )
 
         val secretario = Usuario(
-            id = "NCXVNCZKVDKFA-2",
             nombreUsuario = "Ana",
             apellidoUsuario = "Pérez",
             numeroDocumento = "1234567890",
@@ -37,7 +85,6 @@ data class Usuario(
         )
 
         val instructor = Usuario(
-            id = "YWEIRWEEYIRWH-3",
             nombreUsuario = "Luis",
             apellidoUsuario = "Martínez",
             numeroDocumento = "5555555555",
@@ -47,5 +94,16 @@ data class Usuario(
             estadoUsuario = true,
             creadoEn = "2023-01-03"
         )
+        fun generateId(): String{
+            return java.util.UUID.randomUUID().toString()
+        }
+
+        fun obtenerFechaActual(): String{
+            val formato = java.text.SimpleDateFormat("yyyy-MM-dd")
+
+            return formato.format(java.util.Date())
+        }
     }
+
+
 }
