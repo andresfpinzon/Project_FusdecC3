@@ -388,3 +388,7 @@ build/
 # Ignorar archivos de caché de Kotlin
 **/*.kotlin_module
 **/*.kotlin_metadata
+
+# Ignorar archivos locales de configuración de Android Studio
+local.properties
+
