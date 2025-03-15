@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.ui.activities.administrativo.user.UserActivity
 
 class AdministrativoActivity : AppCompatActivity() {
 
@@ -33,6 +34,11 @@ class AdministrativoActivity : AppCompatActivity() {
         brigadaButton.setOnClickListener {
 
             Toast.makeText(this, "Módulo de Brigada", Toast.LENGTH_SHORT).show()
+        }
+
+        userButton.setOnClickListener{
+            val intent = Intent(this, UserActivity::class.java)
+            startActivity(intent)
         }
 
         volverButton.setOnClickListener {
