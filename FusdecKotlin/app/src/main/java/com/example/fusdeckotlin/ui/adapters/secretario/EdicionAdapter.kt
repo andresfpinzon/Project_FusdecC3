@@ -40,8 +40,8 @@ class EdicionAdapter (
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EdicionViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate()
-            return EdidionViewHolder(view)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_edicion, parent, false)
+            return EdicionViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: EdicionViewHolder, position: Int) {
