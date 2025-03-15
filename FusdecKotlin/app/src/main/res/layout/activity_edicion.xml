@@ -1,0 +1,134 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:padding="16dp">
+
+    <TextView
+            android:id="@+id/tituloFormulario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Formulario edicion"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="30dp"/>
+
+    <TextView
+            android:id="@+id/edicionTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Título de la edición"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="1dp"/>/>
+
+    <EditText
+            android:id="@+id/tituloEdicion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ingrese el título"
+            android:inputType="text"
+            android:ems="10"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="24dp"/>
+
+    <TextView
+            android:id="@+id/edicionFechaInicio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha de inicio"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="1dp"/>
+
+
+    <EditText
+            android:id="@+id/fechaInicioEdicion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha inicio (yyyy-MM-dd)"
+            android:inputType="text"
+            android:ems="10"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="24dp"/>
+
+    <TextView
+            android:id="@+id/edicionFechaFin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha de finalización"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="1dp"/>
+
+    <EditText
+            android:id="@+id/fechaFinEdicion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha fin (yyyy-MM-dd)"
+            android:inputType="text"
+            android:ems="10"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="24dp"/>
+
+    <TextView
+            android:id="@+id/edicionCurso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Curso de la edicion"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="1dp"/>
+
+
+    <EditText
+            android:id="@+id/cursoId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ID del ecurso"
+            android:inputType="text"
+            android:ems="10"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"/>
+
+    <!-- faltan horarios y estudiantes -->
+
+    <Button
+            android:id="@+id/confirmarEdicionButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Confirmar"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp"/>
+
+    <Button
+            android:id="@+id/cancelarEdicionButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

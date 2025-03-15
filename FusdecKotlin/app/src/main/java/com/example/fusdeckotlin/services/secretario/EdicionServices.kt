@@ -1,12 +1,13 @@
-package models.secretario.edicion
+package com.example.fusdeckotlin.services.secretario
 
+import models.secretario.edicion.Edicion
 import java.time.LocalDate
 import java.util.*
 
 class EdicionServices {
 
     companion object {
-        private val ediciones = mutableListOf<EdicionModel>()
+        private val ediciones = mutableListOf<Edicion>()
 
         fun crearEdicion(
             id: String = UUID.randomUUID().toString(),
@@ -17,12 +18,12 @@ class EdicionServices {
             estadoEdicion: Boolean = true,
             horarios: List<String> = emptyList(),
             estudiantes: List<String> = emptyList()
-        ): EdicionModel {
+        ): Edicion {
             if (tituloEdicion.isBlank() || cursoId.isBlank()) {
                 throw IllegalArgumentException("El título y el curso ID son obligatorios")
             }
 
-            val nuevaEdicion = EdicionModel(
+            val nuevaEdicion = Edicion(
                 id = id,
                 tituloEdicion = tituloEdicion,
                 fechaInicioEdicion = fechaInicioEdicion,
@@ -37,9 +38,9 @@ class EdicionServices {
             return nuevaEdicion
         }
 
-        fun listarEdiciones(): List<EdicionModel> = ediciones
+        fun listarEdiciones(): List<Edicion> = ediciones
 
-        fun obtenerEdicionPorId(id: String): EdicionModel {
+        fun obtenerEdicionPorId(id: String): Edicion {
             return ediciones.find { it.id == id } ?: throw NoSuchElementException("Edición no encontrada")
         }
 
@@ -52,7 +53,7 @@ class EdicionServices {
             cursoId: String? = null,
             horarios: List<String>? = null,
             estudiantes: List<String>? = null
-        ): EdicionModel {
+        ): Edicion {
             val edicion = obtenerEdicionPorId(id)
 
             edicion.tituloEdicion = tituloEdicion ?: edicion.tituloEdicion
@@ -66,7 +67,7 @@ class EdicionServices {
             return edicion
         }
 
-        fun desactivarEdicion(id: String): EdicionModel {
+        fun desactivarEdicion(id: String): Edicion {
             val edicion = obtenerEdicionPorId(id)
             edicion.estadoEdicion = false
             return edicion

@@ -2,7 +2,7 @@ package models.secretario.edicion
 
 import java.time.LocalDate
 
-class EdicionModel(
+class Edicion(
     val id: String,
     var tituloEdicion: String,
     var fechaInicioEdicion: LocalDate,
@@ -13,7 +13,7 @@ class EdicionModel(
     var estudiantes: List<String>
 ) {
     companion object {
-        val edicion1 = EdicionModel(
+        val edicion1 = Edicion(
             id = "EDIC01",
             tituloEdicion = "2024-1",
             fechaInicioEdicion = LocalDate.of(2024, 1, 1),
@@ -24,7 +24,7 @@ class EdicionModel(
             estudiantes = listOf("1", "2", "3")
         )
 
-        val edicion2 = EdicionModel(
+        val edicion2 = Edicion(
             id = "EDIC02",
             tituloEdicion = "2024-2",
             fechaInicioEdicion = LocalDate.of(2024, 7, 1),
@@ -35,7 +35,7 @@ class EdicionModel(
             estudiantes = listOf("4", "5")
         )
 
-        val edicion3 = EdicionModel(
+        val edicion3 = Edicion(
             id = "EDIC03",
             tituloEdicion = "2025-1",
             fechaInicioEdicion = LocalDate.of(2025, 1, 1),

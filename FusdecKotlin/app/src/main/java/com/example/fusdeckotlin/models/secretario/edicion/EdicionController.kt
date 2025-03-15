@@ -1,5 +1,6 @@
 package models.secretario.edicion
 
+import com.example.fusdeckotlin.services.secretario.EdicionServices
 import java.time.LocalDate
 import java.util.Scanner
 
