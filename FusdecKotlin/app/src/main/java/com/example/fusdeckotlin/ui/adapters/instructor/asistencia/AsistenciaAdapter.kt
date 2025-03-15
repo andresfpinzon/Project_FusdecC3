@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters
+package com.example.fusdeckotlin.ui.adapters.instructor.asistencia
 
 import android.view.LayoutInflater
 import android.view.View
