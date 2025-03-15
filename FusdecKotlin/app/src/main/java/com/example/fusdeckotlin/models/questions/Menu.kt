@@ -3,7 +3,7 @@ package models.questions
 import models.secretario.estudiante.Estudiante
 import models.secretario.estudiante.EstudianteController
 import com.example.fusdeckotlin.controllers.instructor.asistencia.AsistenciaController
-import models.instructor.asistencia.Asistencia
+import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 
 import models.administrativo.comando.Comando
 import models.administrativo.comando.ComandoController

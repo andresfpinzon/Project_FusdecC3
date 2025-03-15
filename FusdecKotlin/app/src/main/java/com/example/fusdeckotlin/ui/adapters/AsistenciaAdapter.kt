@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.instructor.asistencia.Asistencia
+import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 
 class AsistenciaAdapter(
     private val asistencias: MutableList<Asistencia>,
@@ -24,10 +24,10 @@ class AsistenciaAdapter(
         private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
 
         fun bind(asistencia: Asistencia) {
-            tituloTextView.text = asistencia.tituloAsistencia
-            fechaTextView.text = asistencia.fechaAsistencia.toString()
-            usuarioIdTextView.text = asistencia.usuarioId
-            estudiantesTextView.text = asistencia.estudiantes.joinToString(", ")
+            tituloTextView.text = asistencia.getTituloAsistencia()
+            fechaTextView.text = asistencia.getFechaAsistencia().toString()
+            usuarioIdTextView.text = asistencia.getUsuarioId()
+            estudiantesTextView.text = asistencia.getEstudiantes().joinToString(", ")
 
             updateButton.setOnClickListener {
                 onUpdateClick(asistencia)

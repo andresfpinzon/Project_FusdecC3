@@ -1,7 +1,7 @@
 package com.example.fusdeckotlin.controllers.instructor.asistencia
 
-import models.instructor.asistencia.Asistencia
-import servicios.instructor.asistencia.AsistenciaServicio
+import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
+import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
 import java.util.Date
 import java.util.Scanner
 
