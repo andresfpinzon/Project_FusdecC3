@@ -9,7 +9,7 @@ data class Usuario(
     private var password: String,
     private var roles: List<String>,
     private var estadoUsuario: Boolean,
-    private val creadoEn: String
+    private val creadoEn: String = obtenerFechaActual()
 ) {
 
     /**++++++++++++++GETTERS+++++++++++++++++*/
@@ -34,7 +34,6 @@ data class Usuario(
     fun getRoles(): List<String>{
         return roles
     }
-
     fun getEstadoUsuario(): Boolean{
         return estadoUsuario
     }
@@ -102,6 +101,12 @@ data class Usuario(
         )
         fun generateId(): String{
             return java.util.UUID.randomUUID().toString()
+        }
+
+        fun obtenerFechaActual(): String{
+            val formato = java.text.SimpleDateFormat("yyyy-MM-dd")
+
+            return formato.format(java.util.Date())
         }
     }
 

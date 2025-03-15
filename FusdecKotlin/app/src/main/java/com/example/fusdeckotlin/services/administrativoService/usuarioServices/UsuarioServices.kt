@@ -26,22 +26,47 @@ class UsuarioServices {
             val existeUser = usersDB.find { it.getUserId() == id }
                 ?: throw NoSuchElementException("Usuario no encontrado")
 
-
             existeUser.setNombreUsuario(updateUser.getNombreUsuario())
             existeUser.setApellidoUsuario(updateUser.getApellidoUsuario())
             existeUser.setPassword(updateUser.getPassword())
             existeUser.setRoles(updateUser.getRoles())
-
+            existeUser.setEstadoUsuario(updateUser.getEstadoUsuario())
 
             return existeUser
         }
 
-        // TODO realizar  metodo de buscar por NIT
 
-        // TODO relizar metodo para eliminar por NIT
+        fun getAllUsersActive(usersDB: MutableList<Usuario>): List<Usuario>{
+                return usersDB.filter { it.getEstadoUsuario() }
+        }
 
-        // TODO realizar metodo para desactivar por NIT
 
+        fun getUserByNit(nit: String, usersDB: MutableList<Usuario>): Usuario?{
+            return usersDB.first { it.getNumeroDocumento() == nit }
+        }
+
+
+        fun removeUserByNit(nit: String, usersDB: MutableList<Usuario>): Boolean{
+            val user = usersDB.find { it.getNumeroDocumento() == nit }
+
+            return if (user != null){
+                usersDB.remove(user)
+            }else{
+                false
+            }
+        }
+
+
+        fun toggleStateUser(nit: String, usersDB: MutableList<Usuario>): Boolean{
+            val user = usersDB.find { it.getNumeroDocumento() == nit }
+
+            return  if ( user != null){
+                user.setEstadoUsuario(!user.getEstadoUsuario())
+                true
+            } else{
+                false
+            }
+        }
 
     }
 }
