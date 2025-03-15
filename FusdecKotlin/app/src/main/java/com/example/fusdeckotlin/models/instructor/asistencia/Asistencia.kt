@@ -1,15 +1,44 @@
-package models.instructor.asistencia
+package com.example.fusdeckotlin.models.instructor.asistencia
 
 import java.util.Date
 
 class Asistencia(
-    val id: String,
-    var tituloAsistencia: String,
-    var fechaAsistencia: Date,
-    var usuarioId: String,
-    var estadoAsistencia: Boolean = true,
-    var estudiantes: List<String>
+    private val id: String,
+    private var tituloAsistencia: String,
+    private var fechaAsistencia: Date,
+    private var usuarioId: String,
+    private var estadoAsistencia: Boolean = true,
+    private var estudiantes: List<String>
 ) {
+    // Getters
+    fun getId(): String = id
+    fun getTituloAsistencia(): String = tituloAsistencia
+    fun getFechaAsistencia(): Date = fechaAsistencia
+    fun getUsuarioId(): String = usuarioId
+    fun getEstadoAsistencia(): Boolean = estadoAsistencia
+    fun getEstudiantes(): List<String> = estudiantes
+
+    // Setters
+    fun setTituloAsistencia(titulo: String) {
+        this.tituloAsistencia = titulo
+    }
+
+    fun setFechaAsistencia(fecha: Date) {
+        this.fechaAsistencia = fecha
+    }
+
+    fun setUsuarioId(usuarioId: String) {
+        this.usuarioId = usuarioId
+    }
+
+    fun setEstadoAsistencia(estado: Boolean) {
+        this.estadoAsistencia = estado
+    }
+
+    fun setEstudiantes(estudiantes: List<String>) {
+        this.estudiantes = estudiantes
+    }
+
     companion object {
         val asistencia1 = Asistencia(
             id = "ASIS01",
