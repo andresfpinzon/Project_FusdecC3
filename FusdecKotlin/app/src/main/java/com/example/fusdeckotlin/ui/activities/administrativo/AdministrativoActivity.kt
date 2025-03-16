@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.ui.activities.administrativo.user.UserActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.brigada.BrigadaActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.colegio.ColegioActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.comando.ComandoActivity
@@ -41,6 +42,11 @@ class AdministrativoActivity : AppCompatActivity() {
 
         comandoButton.setOnClickListener {
             val intent = Intent(this, ComandoActivity::class.java)
+            startActivity(intent)
+        }
+
+        userButton.setOnClickListener{
+            val intent = Intent(this, UserActivity::class.java)
             startActivity(intent)
         }
 

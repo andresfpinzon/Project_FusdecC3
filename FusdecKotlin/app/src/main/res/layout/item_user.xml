@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        >
+
+    <!-- Contenedor principal para los datos -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dataContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/actionButtons"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="8dp">
+
+        <!-- ID -->
+        <TextView
+                android:id="@+id/textViewUserId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="ID: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Nombres -->
+        <TextView
+                android:id="@+id/textViewNombres"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Nombres: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewUserId"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Apellidos -->
+        <TextView
+                android:id="@+id/textViewApellidos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Apellidos: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewNombres"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Documento -->
+        <TextView
+                android:id="@+id/textViewDocumento"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Nu.Documento: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewApellidos"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Correo -->
+        <TextView
+                android:id="@+id/textViewCorreo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Correo: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewDocumento"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Contraseña -->
+        <TextView
+                android:id="@+id/textViewPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Contraseña: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewCorreo"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Rol -->
+        <TextView
+                android:id="@+id/textViewRol"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Rol: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewPassword"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Estado -->
+        <TextView
+                android:id="@+id/textViewEstado"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Estado: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewRol"
+                android:layout_marginBottom="8dp" />
+
+        <!-- Creado en -->
+        <TextView
+                android:id="@+id/textViewCreadoEn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Creado: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewEstado"
+                android:layout_marginBottom="8dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Botones de acción -->
+    <LinearLayout
+            android:id="@+id/actionButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center_vertical"
+            android:padding="8dp">
+
+        <!-- Botón de actualización -->
+        <ImageButton
+                android:id="@+id/updateButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/baseline_refresh_24"
+                android:contentDescription="@string/update_button_description"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:layout_marginEnd="8dp" />
+
+        <!-- Botón de eliminación -->
+        <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/baseline_delete_24"
+                android:contentDescription="@string/delete_button_description"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

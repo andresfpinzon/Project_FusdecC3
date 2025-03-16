@@ -1,9 +1,9 @@
-package controllers.instructor.calificacion
+package com.example.fusdeckotlin.controllers.instructor.calificacion
 
 
 
 import models.instructor.calificacion.Calificacion
-import servicios.instructor.calificacion.CalificacionServicio
+import com.example.fusdeckotlin.services.instructor.calificacion.CalificacionServicio
 import java.util.Scanner
 
 class CalificacionController() {
