@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters.secretario
+package com.example.fusdeckotlin.ui.adapters.secretario.edicion
 
 import android.view.LayoutInflater
 import android.view.View

@@ -10,11 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
 import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
-import com.example.fusdeckotlin.ui.adapters.instructor.asistencia.AsistenciaAdapter
-import com.example.fusdeckotlin.ui.adapters.secretario.EdicionAdapter
+import com.example.fusdeckotlin.ui.adapters.secretario.edicion.EdicionAdapter
 import models.secretario.edicion.Edicion
 import java.text.SimpleDateFormat
 import java.util.*

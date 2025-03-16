@@ -1,7 +1,6 @@
 package com.example.fusdeckotlin.services.secretario.edicion
 
 import models.secretario.edicion.Edicion
-import java.time.LocalDate
 import java.util.*
 
 class EdicionServices {
