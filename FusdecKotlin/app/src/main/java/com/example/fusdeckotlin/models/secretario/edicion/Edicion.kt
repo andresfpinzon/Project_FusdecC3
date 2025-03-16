@@ -1,6 +1,6 @@
 package models.secretario.edicion
 
-import java.util.*
+import java.util.Date
 
 class Edicion(
     private val id: String,

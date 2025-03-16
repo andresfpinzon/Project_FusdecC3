@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.secretario
+package com.example.fusdeckotlin.services.secretario.edicion
 
 import models.secretario.edicion.Edicion
 import java.time.LocalDate
@@ -12,8 +12,8 @@ class EdicionServices {
         fun crearEdicion(
             id: String = UUID.randomUUID().toString(),
             tituloEdicion: String,
-            fechaInicioEdicion: LocalDate,
-            fechaFinEdicion: LocalDate,
+            fechaInicioEdicion: Date,
+            fechaFinEdicion: Date,
             cursoId: String,
             estadoEdicion: Boolean = true,
             horarios: List<String> = emptyList(),
@@ -41,40 +41,38 @@ class EdicionServices {
         fun listarEdiciones(): List<Edicion> = ediciones
 
         fun obtenerEdicionPorId(id: String): Edicion {
-            return ediciones.find { it.id == id } ?: throw NoSuchElementException("Edición no encontrada")
+            return ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edición no encontrada")
         }
 
         fun actualizarEdicion(
             id: String,
             tituloEdicion: String? = null,
-            fechaInicioEdicion: LocalDate? = null,
-            fechaFinEdicion: LocalDate? = null,
+            fechaInicioEdicion: Date? = null,
+            fechaFinEdicion: Date? = null,
             estadoEdicion: Boolean? = null,
             cursoId: String? = null,
             horarios: List<String>? = null,
             estudiantes: List<String>? = null
         ): Edicion {
-            val edicion = obtenerEdicionPorId(id)
+            val edicion = ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edicion no encontrada")
 
-            edicion.tituloEdicion = tituloEdicion ?: edicion.tituloEdicion
-            edicion.fechaInicioEdicion = fechaInicioEdicion ?: edicion.fechaInicioEdicion
-            edicion.fechaFinEdicion = fechaFinEdicion ?: edicion.fechaFinEdicion
-            edicion.estadoEdicion = estadoEdicion ?: edicion.estadoEdicion
-            edicion.cursoId = cursoId ?: edicion.cursoId
-            edicion.horarios = horarios ?: edicion.horarios
-            edicion.estudiantes = estudiantes ?: edicion.estudiantes
+            tituloEdicion?.let { edicion.setTituloEdicion(it) }
+            fechaInicioEdicion?.let { edicion.setFechaInicioEdicion(it) }
+            fechaFinEdicion?.let { edicion.setFechaFinEdicion(it) }
+            estadoEdicion?.let { edicion.setEstadoEdicion(it) }
+            cursoId?.let { edicion.setCursoId(it) }
 
             return edicion
         }
 
         fun desactivarEdicion(id: String): Edicion {
-            val edicion = obtenerEdicionPorId(id)
-            edicion.estadoEdicion = false
+            val edicion = ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edicion no encontrada")
+            edicion.setEstadoEdicion(false)
             return edicion
         }
 
         fun eliminarEdicion(id: String): Boolean {
-            return ediciones.removeIf { it.id == id }
+            return ediciones.removeIf { it.getId() == id }
         }
     }
 }
