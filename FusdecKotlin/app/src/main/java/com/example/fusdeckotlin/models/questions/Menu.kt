@@ -18,7 +18,7 @@ import models.administrativo.colegio.Colegio
 import models.administrativo.colegio.ColegioController
 
 
-import controllers.instructor.calificacion.CalificacionController
+import com.example.fusdeckotlin.controllers.instructor.calificacion.CalificacionController
 import models.instructor.calificacion.Calificacion
 
 import java.util.Scanner

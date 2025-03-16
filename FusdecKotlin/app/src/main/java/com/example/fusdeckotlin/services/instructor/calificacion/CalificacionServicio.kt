@@ -1,4 +1,4 @@
-package servicios.instructor.calificacion
+package com.example.fusdeckotlin.services.instructor.calificacion
 
 import models.instructor.calificacion.Calificacion
 
