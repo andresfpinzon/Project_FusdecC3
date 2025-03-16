@@ -1,14 +1,15 @@
 package com.example.fusdeckotlin.services.secretario.edicion
 
+import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import models.secretario.edicion.Edicion
 import java.util.*
 
 class EdicionServices {
 
     companion object {
-        private val ediciones = mutableListOf<Edicion>()
 
         fun crearEdicion(
+            ediciones: MutableList<Edicion>,
             id: String = UUID.randomUUID().toString(),
             tituloEdicion: String,
             fechaInicioEdicion: Date,
@@ -37,13 +38,16 @@ class EdicionServices {
             return nuevaEdicion
         }
 
-        fun listarEdiciones(): List<Edicion> = ediciones
+        fun listarEdicionesActivas(ediciones: List<Edicion>): List<Edicion> {
+            return ediciones.filter { it.getEstadoEdicion() }
+        }
 
-        fun obtenerEdicionPorId(id: String): Edicion {
-            return ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edición no encontrada")
+        fun obtenerEdicionPorId(ediciones: List<Edicion>, id: String): Edicion {
+            return ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edicion no encontrada")
         }
 
         fun actualizarEdicion(
+            ediciones: MutableList<Edicion>,
             id: String,
             tituloEdicion: String? = null,
             fechaInicioEdicion: Date? = null,
@@ -64,14 +68,10 @@ class EdicionServices {
             return edicion
         }
 
-        fun desactivarEdicion(id: String): Edicion {
-            val edicion = ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edicion no encontrada")
+        fun desactivarEdicion(ediciones: MutableList<Edicion>, id: String): Edicion {
+            val edicion = ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edición no encontrada")
             edicion.setEstadoEdicion(false)
             return edicion
-        }
-
-        fun eliminarEdicion(id: String): Boolean {
-            return ediciones.removeIf { it.getId() == id }
         }
     }
 }

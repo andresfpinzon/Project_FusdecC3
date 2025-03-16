@@ -52,11 +52,11 @@ class EdicionActivity : AppCompatActivity() {
 
         // Configurar selector de fecha
         fechaInicioEdicion.setOnClickListener {
-            mostrarDatePicker()
+            mostrarDatePicker(true)
         }
 
         fechaFinEdicion.setOnClickListener {
-            mostrarDatePicker()
+            mostrarDatePicker(false)
         }
 
         confirmarEdicionButton.setOnClickListener {
@@ -68,7 +68,7 @@ class EdicionActivity : AppCompatActivity() {
         }
     }
 
-    private fun mostrarDatePicker() {
+    private fun mostrarDatePicker(isFechaInicio: Boolean) {
         val calendar = Calendar.getInstance()
         val datePicker = DatePickerDialog(
             this,
@@ -76,16 +76,18 @@ class EdicionActivity : AppCompatActivity() {
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(year, month, dayOfMonth)
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                fechaInicioEdicion.setText(dateFormat.format(selectedDate.time))
-                fechaFinEdicion.setText(dateFormat.format(selectedDate.time))
-
+                if (isFechaInicio) {
+                    fechaInicioEdicion.setText(dateFormat.format(selectedDate.time))
+                } else {
+                    fechaFinEdicion.setText(dateFormat.format(selectedDate.time))
+                }
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
         datePicker.show()
-    }
+        }
 
     private fun generarIdUnico(): String {
         // Generar un ID único
@@ -107,7 +109,8 @@ class EdicionActivity : AppCompatActivity() {
             if (isEditing) {
                 // Actualizar la edicion existente
                 EdicionServices.actualizarEdicion(
-                    currentEdicionId!!,
+                    ediciones,
+                     currentEdicionId!!,
                     titulo,
                     SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaInicio)!!,
                     SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaFin)!!,
@@ -121,6 +124,7 @@ class EdicionActivity : AppCompatActivity() {
                 // Crear una nueva edicion
                 val id = generarIdUnico()
                 val nuevaEdicion = EdicionServices.crearEdicion(
+                    ediciones,
                     id,
                     titulo,
                     SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaInicio)!!,
@@ -161,7 +165,7 @@ class EdicionActivity : AppCompatActivity() {
 
         builder.setPositiveButton("Sí") { _, _ ->
             try {
-                EdicionServices.desactivarEdicion(edicion.getId())
+                EdicionServices.desactivarEdicion(ediciones, edicion.getId())
                 ediciones.remove(edicion)
                 adapter.notifyDataSetChanged()
                 Toast.makeText(this, "Edicion eliminada", Toast.LENGTH_SHORT).show()
