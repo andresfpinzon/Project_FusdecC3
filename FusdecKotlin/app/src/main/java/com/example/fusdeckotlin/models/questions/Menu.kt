@@ -1,4 +1,4 @@
-package models.questions
+package com.example.fusdeckotlin.models.questions
 
 import models.secretario.estudiante.Estudiante
 import models.secretario.estudiante.EstudianteController
