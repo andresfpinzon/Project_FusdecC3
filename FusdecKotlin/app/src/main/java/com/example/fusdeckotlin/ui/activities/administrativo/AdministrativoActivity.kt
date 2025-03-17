@@ -11,6 +11,7 @@ import com.example.fusdeckotlin.ui.activities.administrativo.user.UserActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.brigada.BrigadaActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.colegio.ColegioActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.comando.ComandoActivity
+import com.example.fusdeckotlin.ui.activities.administrativo.unidad.UnidadActivity
 
 
 class AdministrativoActivity : AppCompatActivity() {
@@ -21,6 +22,7 @@ class AdministrativoActivity : AppCompatActivity() {
 
 
 
+        val userButton: Button = findViewById(R.id.userButton)
         val colegioButton: Button = findViewById(R.id.colegioButton)
         val comandoButton: Button = findViewById(R.id.comandoButton)
         val brigadaButton: Button = findViewById(R.id.brigadaButton)
@@ -45,14 +47,18 @@ class AdministrativoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        unidadButton.setOnClickListener {
+            val intent = Intent(this, UnidadActivity::class.java)
+            startActivity(intent)
+        }
+
         userButton.setOnClickListener{
             val intent = Intent(this, UserActivity::class.java)
             startActivity(intent)
         }
 
         volverButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+            Intent(this, MainActivity::class.java)
                 finish()
         }
 

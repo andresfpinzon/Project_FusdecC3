@@ -26,7 +26,10 @@
         <activity android:name=".ui.activities.administrativo.AdministrativoActivity" />
         <activity android:name=".ui.activities.secretario.SecretarioActivity" />
         <activity android:name=".ui.activities.root.RootActivity" />
+        <activity android:name=".ui.activities.administrativo.comando.ComandoActivity"/>
         <activity android:name=".ui.activities.administrativo.brigada.BrigadaActivity"/>
+        <activity android:name=".ui.activities.administrativo.unidad.UnidadActivity"/>
+        <activity android:name=".ui.activities.administrativo.colegio.ColegioActivity"/>
         <activity android:name=".ui.activities.administrativo.user.UserActivity"/>
 
     </application>

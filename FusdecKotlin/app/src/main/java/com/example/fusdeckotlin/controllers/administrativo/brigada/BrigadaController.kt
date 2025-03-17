@@ -1,8 +1,10 @@
-package models.administrativo.brigada
+package com.example.fusdeckotlin.controllers.administrativo.brigada
 
+import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import com.example.fusdeckotlin.services.administrativoService.brigada.BrigadaServices
 import java.util.Scanner
 
-class BrigadaController() {
+class BrigadaController {
 
     companion object {
 
@@ -28,7 +30,7 @@ class BrigadaController() {
 
             if (confirmarAccion("¿Desea crear esta brigada?")) {
                 try {
-                    val nuevaBrigada = BrigadaServicio.crearBrigada(
+                    val nuevaBrigada = BrigadaServices.crearBrigada(
                         brigadas = brigadas,
                         id = id,
                         nombreBrigada = nombre,
@@ -46,7 +48,7 @@ class BrigadaController() {
         }
 
         fun listarBrigadasActivas(brigadas: List<Brigada>) {
-            val brigadasActivas = BrigadaServicio.listarBrigadasActivas(brigadas)
+            val brigadasActivas = BrigadaServices.listarBrigadasActivas(brigadas)
             if (brigadasActivas.isEmpty()) {
                 println("No hay brigadas activas.")
             } else {
@@ -60,7 +62,7 @@ class BrigadaController() {
             val id = scanner.next()
 
             try {
-                val brigada = BrigadaServicio.obtenerBrigadaPorId(brigadas, id)
+                val brigada = BrigadaServices.obtenerBrigadaPorId(brigadas, id)
                 println("Brigada encontrada: $brigada")
 
                 print("Nuevo nombre (dejar en blanco para no cambiar): ")
@@ -73,7 +75,7 @@ class BrigadaController() {
                 val unidades = scanner.nextLine().split(",").takeIf { it.isNotEmpty() }
 
                 if (confirmarAccion("¿Desea actualizar esta brigada?")) {
-                    val brigadaActualizada = BrigadaServicio.actualizarBrigada(
+                    val brigadaActualizada = BrigadaServices.actualizarBrigada(
                         brigadas = brigadas,
                         id = id,
                         nombreBrigada = nombre,
@@ -91,18 +93,21 @@ class BrigadaController() {
         }
 
         fun desactivarBrigada(brigadas: MutableList<Brigada>) {
-            println("Ingrese el ID de la brigada a desactivar:")
+            print("Ingrese el ID de la brigada a desactivar: ")
             val id = scanner.next()
 
-            if (confirmarAccion("¿Desea desactivar esta brigada?")) {
-                try {
-                    val brigadaDesactivada = BrigadaServicio.desactivarBrigada(brigadas, id)
+            try {
+                val brigada = BrigadaServices.obtenerBrigadaPorId(brigadas, id)
+                println("Brigada encontrada: $brigada")
+
+                if (confirmarAccion("¿Desea desactivar esta brigada?")) {
+                    val brigadaDesactivada = BrigadaServices.desactivarBrigada(brigadas, id)
                     println("Brigada desactivada: $brigadaDesactivada")
-                } catch (e: NoSuchElementException) {
-                    println("Error: ${e.message}")
+                } else {
+                    println("Operación cancelada.")
                 }
-            } else {
-                println("Operación cancelada.")
+            } catch (e: NoSuchElementException) {
+                println("Error: ${e.message}")
             }
         }
     }

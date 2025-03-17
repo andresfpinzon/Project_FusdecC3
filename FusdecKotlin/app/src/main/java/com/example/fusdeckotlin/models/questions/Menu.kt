@@ -8,8 +8,8 @@ import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import models.administrativo.comando.Comando
 import models.administrativo.comando.ComandoController
 
-import models.administrativo.brigada.Brigada
-import models.administrativo.brigada.BrigadaController
+//import models.administrativo.brigada.Brigada
+//import models.administrativo.brigada.BrigadaController
 
 import models.administrativo.unidad.Unidad
 import models.administrativo.unidad.UnidadController
@@ -135,7 +135,7 @@ class Menu {
         }
 
         private fun crudBrigada() {
-            var brigadas = mutableListOf(Brigada.Brigada1,Brigada.Brigada2,Brigada.Brigada3)
+            //var brigadas = mutableListOf(Brigada.Brigada1,Brigada.Brigada2,Brigada.Brigada3)
             println("Acciones CRUD para Brigada:")
             println("1. Crear Brigada")
             println("2. Leer Brigada")
@@ -144,10 +144,10 @@ class Menu {
             println("5. Volver")
             print("Opción: ")
             when (scanner.nextInt()) {
-                1 -> BrigadaController.crearBrigada(brigadas)
-                2 -> BrigadaController.actualizarBrigada(brigadas)
-                3 -> BrigadaController.listarBrigadasActivas(brigadas)
-                4 -> BrigadaController.desactivarBrigada(brigadas)
+//                1 -> BrigadaController.crearBrigada(brigadas)
+//                2 -> BrigadaController.actualizarBrigada(brigadas)
+//                3 -> BrigadaController.listarBrigadasActivas(brigadas)
+//                4 -> BrigadaController.desactivarBrigada(brigadas)
                 5 -> return
                 else -> println("Opción no válida, intente de nuevo.")
             }

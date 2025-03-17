@@ -1,8 +1,10 @@
-package models.administrativo.brigada
+package com.example.fusdeckotlin.services.administrativoService.brigada
 
-class BrigadaServicio(){
+import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 
-    companion object{
+class BrigadaServices {
+
+    companion object {
         fun crearBrigada(
             brigadas: MutableList<Brigada>,
             id: String,
@@ -11,8 +13,8 @@ class BrigadaServicio(){
             comandoId: String,
             unidades: List<String>
         ): Brigada {
-            if (nombreBrigada.isBlank() || unidades.isEmpty()) {
-                throw IllegalArgumentException("Faltan campos requeridos: nombreBrigada, unidades")
+            if (nombreBrigada.isBlank() || ubicacionBrigada.isBlank() || comandoId.isBlank() || unidades.isEmpty()) {
+                throw IllegalArgumentException("Faltan campos requeridos: nombreBrigada, ubicacionBrigada, comandoId, unidades")
             }
 
             val nuevaBrigada = Brigada(
@@ -27,11 +29,13 @@ class BrigadaServicio(){
             brigadas.add(nuevaBrigada)
             return nuevaBrigada
         }
+
         fun listarBrigadasActivas(brigadas: List<Brigada>): List<Brigada> {
-            return brigadas.filter { it.estadoBrigada }
+            return brigadas.filter { it.getEstadoBrigada() }
         }
+
         fun obtenerBrigadaPorId(brigadas: List<Brigada>, id: String): Brigada {
-            return brigadas.find { it.id == id } ?: throw NoSuchElementException("Brigada no encontrada")
+            return brigadas.find { it.getId() == id } ?: throw NoSuchElementException("Brigada no encontrada")
         }
 
         fun actualizarBrigada(
@@ -42,19 +46,19 @@ class BrigadaServicio(){
             comandoId: String? = null,
             unidades: List<String>? = null
         ): Brigada {
-            val brigada = brigadas.find { it.id == id } ?: throw NoSuchElementException("Brigada no encontrada")
+            val brigada = brigadas.find { it.getId() == id } ?: throw NoSuchElementException("Brigada no encontrada")
 
-            brigada.nombreBrigada = nombreBrigada ?: brigada.nombreBrigada
-            brigada.ubicacionBrigada = ubicacionBrigada ?: brigada.ubicacionBrigada
-            brigada.comandoId = comandoId ?: brigada.comandoId
-            brigada.unidades = unidades ?: brigada.unidades
-
+            nombreBrigada?.let { brigada.setNombreBrigada(it) }
+            ubicacionBrigada?.let { brigada.setUbicacionBrigada(it) }
+            comandoId?.let { brigada.setComandoId(it) }
+            unidades?.let { brigada.setUnidades(it) }
 
             return brigada
         }
+
         fun desactivarBrigada(brigadas: MutableList<Brigada>, id: String): Brigada {
-            val brigada = brigadas.find { it.id == id } ?: throw NoSuchElementException("Brigada no encontrada")
-            brigada.estadoBrigada = false
+            val brigada = brigadas.find { it.getId() == id } ?: throw NoSuchElementException("Brigada no encontrada")
+            brigada.setEstadoBrigada(false)
             return brigada
         }
     }
