@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.administrativoService.usuarioServices
+package com.example.fusdeckotlin.services.administrativo.usuario
 
 import models.administrativo.user.model.Usuario
 

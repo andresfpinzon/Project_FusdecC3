@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+    <!-- ScrollView para el formulario -->
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/estudiantesRecyclerView">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <!-- Formulario de Estudiante -->
+            <TextView
+                    android:id="@+id/nombreTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre"/>
+
+            <EditText
+                    android:id="@+id/nombreEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre del estudiante"/>
+
+            <TextView
+                    android:id="@+id/apellidoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Apellido"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/apellidoEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Apellido del estudiante"/>
+
+            <TextView
+                    android:id="@+id/correoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Correo"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/correoEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Correo del estudiante"/>
+
+            <TextView
+                    android:id="@+id/tipoDocumentoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo de Documento"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/tipoDocumentoEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tipo de documento"/>
+
+            <TextView
+                    android:id="@+id/numeroDocumentoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Número de Documento"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/numeroDocumentoEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Número de documento"/>
+
+            <TextView
+                    android:id="@+id/fechaNacimientoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha de Nacimiento"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/fechaNacimientoEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="dd/MM/yyyy"/>
+
+            <TextView
+                    android:id="@+id/generoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Género"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/generoEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Género del estudiante"/>
+
+            <TextView
+                    android:id="@+id/unidadIdTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Unidad ID"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/unidadIdEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Unidad ID"/>
+
+            <TextView
+                    android:id="@+id/colegioIdTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Colegio ID"
+                    android:layout_marginTop="16dp"/>
+
+            <EditText
+                    android:id="@+id/colegioIdEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Colegio ID"/>
+
+            <Switch
+                    android:id="@+id/estadoSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activo"
+                    android:layout_marginTop="16dp"/>
+
+            <Button
+                    android:id="@+id/confirmarButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmar"
+                    android:layout_marginTop="16dp"/>
+
+            <Button
+                    android:id="@+id/cancelarButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cancelar"
+                    android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- RecyclerView para mostrar la lista de estudiantes -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/estudiantesRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/scrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

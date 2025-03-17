@@ -1,15 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:gravity="center">
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
+    <!-- Formulario de Calificacion -->
     <TextView
+            android:id="@+id/tituloTextView"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Módulo de Calificación"
-            android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:text="Título"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <EditText
+            android:id="@+id/tituloEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Título de la calificacion"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tituloTextView" />
+
+    <Switch
+            android:id="@+id/aprobadoSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aprobado"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tituloEditText" />
+
+    <TextView
+            android:id="@+id/idTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/aprobadoSwitch"
+            android:layout_marginTop="16dp" />
+
+    <EditText
+            android:id="@+id/usuarioIdEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Usuario ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/idTextView" />
+
+    <TextView
+            android:id="@+id/estudiantesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estudiantes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
+            android:layout_marginTop="16dp" />
+
+    <EditText
+            android:id="@+id/estudiantesEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="IDs de estudiantes separados por coma"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesTextView" />
+
+    <Button
+            android:id="@+id/confirmarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Confirmar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
+            android:layout_marginTop="16dp" />
+
+    <Button
+            android:id="@+id/cancelarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/confirmarButton"
+            android:layout_marginTop="8dp" />
+
+    <!-- Lista de calificaciones -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/calificacionesRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/cancelarButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
