@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+
+    <TextView
+            android:id="@+id/textViewPadreC"
+            android:text="Crear Certificado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="79dp"
+            android:textSize="27dp"
+            android:textStyle="bold"
+    />
+
+
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputTextUsuarioC"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:hint="Usuario"
+                app:layout_constraintTop_toBottomOf="@+id/textViewPadreC"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="8dp"
+                android:layout_marginStart="57dp"
+                android:layout_marginTop="10dp"
+
+        />
+
+
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputTextCursoC"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:hint="Curso"
+                app:layout_constraintTop_toBottomOf="@+id/inputTextUsuarioC"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="57dp"
+        />
+
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputTextEstudianteC"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:hint="Estudiante"
+                app:layout_constraintTop_toBottomOf="@+id/inputTextCursoC"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="57dp"
+        />
+
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputTextEmisorC"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:hint="Emisor"
+                app:layout_constraintTop_toBottomOf="@+id/inputTextEstudianteC"
+                app:layout_constraintStart_toStartOf="parent"
+                android:padding="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="57dp"
+        />
+    <Button
+            android:text="Guardar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonGuardarC"
+            app:layout_constraintTop_toBottomOf="@+id/inputTextEmisorC"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="35dp"
+            android:layout_marginStart="65dp"
+            tools:layout_editor_absoluteX="65dp"
+    />
+    <Button
+            android:text="Cancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonCancelarC"
+            app:layout_constraintTop_toBottomOf="@+id/inputTextEmisorC"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="65dp"
+    />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCertificates"
+            android:layout_width="320dp"
+            android:layout_height="150dp"
+            app:layout_constraintTop_toBottomOf="@+id/buttonGuardarC"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="25dp"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+    />
+</androidx.constraintlayout.widget.ConstraintLayout>

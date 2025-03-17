@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+>
+    <!-- Contenedor principal para los datos -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dataContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/actionButtons"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="8dp">
+
+        <!-- ID -->
+        <TextView
+                android:id="@+id/textViewCertificateIdC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="ID: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginBottom="8dp" />
+
+        <TextView
+                android:id="@+id/textViewFechaC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Fecha Emision: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewCertificateIdC"
+                android:layout_marginBottom="8dp" />
+
+        <TextView
+                android:id="@+id/textViewUsuarioC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Usuario: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewFechaC"
+                android:layout_marginBottom="8dp" />
+
+        <TextView
+                android:id="@+id/textViewCursoC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Curso: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewUsuarioC"
+                android:layout_marginBottom="8dp" />
+
+        <TextView
+                android:id="@+id/textViewEstudianteC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Estudiante: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewCursoC"
+                android:layout_marginBottom="8dp" />
+
+        <TextView
+                android:id="@+id/textViewNombreEmisorC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Emisor: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewEstudianteC"
+                android:layout_marginBottom="8dp" />
+
+        <TextView
+                android:id="@+id/textViewCodeVerifyC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Código de verificación: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewNombreEmisorC"
+                android:layout_marginBottom="8dp" />
+
+        <TextView
+                android:id="@+id/textViewEstadoC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Estado del cerfiticado: "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewCodeVerifyC"
+                android:layout_marginBottom="8dp" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Botones de acción -->
+    <LinearLayout
+            android:id="@+id/actionButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center_vertical"
+            android:padding="8dp">
+
+        <!-- Botón de actualización -->
+        <ImageButton
+                android:id="@+id/updateButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/baseline_refresh_24"
+                android:contentDescription="@string/update_button_description"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:layout_marginEnd="8dp" />
+
+        <!-- Botón de eliminación -->
+        <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/baseline_delete_24"
+                android:contentDescription="@string/delete_button_description"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
