@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+    <TextView
+            android:id="@+id/nombreTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/apellidoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Apellido"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nombreTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/correoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Correo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/apellidoTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/tipoDocumentoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tipo de Documento"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/correoTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/numeroDocumentoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Número de Documento"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tipoDocumentoTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/fechaNacimientoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Fecha de Nacimiento"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/numeroDocumentoTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/generoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Género"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fechaNacimientoTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/unidadIdTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Unidad ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/generoTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/colegioIdTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Colegio ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/unidadIdTextView"
+            android:layout_marginTop="8dp" />
+
+    <TextView
+            android:id="@+id/estadoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Estado"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/colegioIdTextView"
+            android:layout_marginTop="8dp" />
+
+    <ImageButton
+            android:id="@+id/updateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_refresh_24"
+            android:contentDescription="@string/update_button_description"
+            app:layout_constraintEnd_toStartOf="@id/deleteButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="8dp" />
+
+    <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_delete_24"
+            android:contentDescription="@string/delete_button_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
