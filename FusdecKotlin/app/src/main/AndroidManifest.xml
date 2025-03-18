@@ -25,7 +25,6 @@
         <activity android:name=".ui.activities.instructor.calificacion.CalificacionActivity" />
         <activity android:name=".ui.activities.administrativo.AdministrativoActivity" />
         <activity android:name=".ui.activities.secretario.SecretarioActivity" />
-        <activity android:name=".ui.activities.secretario.estudiante.EstudianteActivity" />
         <activity android:name=".ui.activities.root.RootActivity" />
         <activity android:name=".ui.activities.administrativo.user.UserActivity"/>
 

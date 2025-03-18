@@ -7,8 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.ui.activities.secretario.estudiante.EstudianteActivity
-
 
 class SecretarioActivity : AppCompatActivity() {
 
@@ -32,11 +30,6 @@ class SecretarioActivity : AppCompatActivity() {
         edicionButton.setOnClickListener {
 
             Toast.makeText(this, "Módulo de Edición", Toast.LENGTH_SHORT).show()
-        }
-
-        estudianteButton.setOnClickListener {
-            val intent = Intent(this, EstudianteActivity::class.java)
-            startActivity(intent)
         }
 
         // Botón para volver a MainActivity

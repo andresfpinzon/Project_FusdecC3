@@ -37,7 +37,7 @@ class UsuarioServices {
 
 
         fun getAllUsersActive(usersDB: MutableList<Usuario>): List<Usuario>{
-                return usersDB.filter { it.getEstadoUsuario() }
+            return usersDB.filter { it.getEstadoUsuario() }
         }
 
 
