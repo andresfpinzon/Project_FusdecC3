@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,75 +7,62 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-    <TextView
-            android:id="@+id/unidadTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Módulo Unidad"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
     <EditText
             android:id="@+id/nombreUnidadEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Nombre de la unidad"
-            app:layout_constraintTop_toBottomOf="@id/unidadTextView"
+            android:hint="Nombre Unidad"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginBottom="8dp"/>
 
     <EditText
-            android:id="@+id/ubicacionUnidadEditText"
+            android:id="@+id/brigadaUnidadEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Ubicación de la unidad"
+            android:hint="Brigada Unidad"
             app:layout_constraintTop_toBottomOf="@id/nombreUnidadEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"/>
-
-    <EditText
-            android:id="@+id/brigadaIdEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="ID de la brigada"
-            app:layout_constraintTop_toBottomOf="@id/ubicacionUnidadEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginBottom="8dp"/>
 
     <Button
             android:id="@+id/confirmarButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Confirmar"
-            app:layout_constraintTop_toBottomOf="@id/brigadaIdEditText"
+            app:layout_constraintTop_toBottomOf="@id/brigadaUnidadEditText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/cancelarButton"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp"/>
 
     <Button
             android:id="@+id/cancelarButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Cancelar"
-            app:layout_constraintTop_toBottomOf="@id/brigadaIdEditText"
-            app:layout_constraintStart_toEndOf="@id/confirmarButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="8dp"/>
-
-    <ListView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/confirmarButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginBottom="8dp"/>
+
+    <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchViewUnidad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/cancelarButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/unidadesRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/searchViewUnidad"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

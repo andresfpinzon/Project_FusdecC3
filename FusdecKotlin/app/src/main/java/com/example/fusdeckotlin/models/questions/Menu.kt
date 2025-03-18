@@ -5,15 +5,15 @@ import models.secretario.estudiante.EstudianteController
 import com.example.fusdeckotlin.controllers.instructor.asistencia.AsistenciaController
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 
-import models.administrativo.comando.Comando
-import models.administrativo.comando.ComandoController
-
-//import models.administrativo.brigada.Brigada
-//import models.administrativo.brigada.BrigadaController
-
-import models.administrativo.unidad.Unidad
-import models.administrativo.unidad.UnidadController
-
+//import models.administrativo.comando.Comando
+//import models.administrativo.comando.ComandoController
+//
+////import models.administrativo.brigada.Brigada
+////import models.administrativo.brigada.BrigadaController
+//
+//import models.administrativo.unidad.Unidad
+//import models.administrativo.unidad.UnidadController
+//
 //import models.administrativo.colegio.Colegio
 //import models.administrativo.colegio.ColegioController
 
@@ -191,7 +191,7 @@ class Menu {
 //        }
 
         private fun crudComando() {
-            var comandos = mutableListOf(Comando.comando1, Comando.comando2)
+           // var comandos = mutableListOf(Comando.comando1, Comando.comando2)
             println("Acciones CRUD para Comando:")
             println("1. Crear Comando")
             println("2. Leer Comando")
@@ -200,17 +200,17 @@ class Menu {
             println("5. Volver")
             print("Opción: ")
             when (scanner.nextInt()) {
-                1 -> ComandoController.crearComando(comandos)
-                2 -> ComandoController.listarComandosActivos(comandos)
-                3 -> ComandoController.actualizarComando(comandos)
-                4 -> ComandoController.desactivarComando(comandos)
+//                1 -> ComandoController.crearComando(comandos)
+//                2 -> ComandoController.listarComandosActivos(comandos)
+//                3 -> ComandoController.actualizarComando(comandos)
+//                4 -> ComandoController.desactivarComando(comandos)
                 5 -> return
                 else -> println("Opción no válida, intente de nuevo.")
             }
         }
 
         private fun crudUnidad() {
-            var unidades = mutableListOf(Unidad.Unidad1, Unidad.Unidad2, Unidad.Unidad3)
+            //var unidades = mutableListOf(Unidad.Unidad1, Unidad.Unidad2, Unidad.Unidad3)
             println("Acciones CRUD para Unidad:")
             println("1. Crear Unidad")
             println("2. Leer Unidad")
@@ -219,10 +219,10 @@ class Menu {
             println("5. Volver")
             print("Opción: ")
             when (scanner.nextInt()) {
-                1 -> UnidadController.crearUnidad(unidades)
-                2 -> UnidadController.listarUnidadesActivas(unidades)
-                3 -> UnidadController.actualizarUnidad(unidades)
-                4 -> UnidadController.desactivarUnidad(unidades)
+//                1 -> UnidadController.crearUnidad(unidades)
+//                2 -> UnidadController.listarUnidadesActivas(unidades)
+//                3 -> UnidadController.actualizarUnidad(unidades)
+//                4 -> UnidadController.desactivarUnidad(unidades)
                 5 -> return
                 else -> println("Opción no válida, intente de nuevo.")
             }

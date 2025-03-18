@@ -1,8 +1,10 @@
-package models.administrativo.comando
+package com.example.fusdeckotlin.controllers.administrativo.comando
 
+import com.example.fusdeckotlin.models.administrativo.comando.Comando
+import com.example.fusdeckotlin.services.administrativoService.comando.ComandoServices
 import java.util.Scanner
 
-class ComandoController() {
+class ComandoController {
 
     companion object {
 
@@ -19,8 +21,6 @@ class ComandoController() {
             val id = scanner.next()
             print("Nombre: ")
             val nombre = scanner.next()
-            print("Estado (true/false): ")
-            val estado = scanner.nextBoolean()
             print("Ubicación: ")
             val ubicacion = scanner.next()
             print("Fundación ID: ")
@@ -30,11 +30,11 @@ class ComandoController() {
 
             if (confirmarAccion("¿Desea crear este comando?")) {
                 try {
-                    val nuevoComando = ComandoServicio.crearComando(
+                    val nuevoComando = ComandoServices.crearComando(
                         comandos = comandos,
                         id = id,
                         nombreComando = nombre,
-                        estadoComando = estado,
+                        estadoComando = true,
                         ubicacionComando = ubicacion,
                         fundacionId = fundacionId,
                         brigadas = brigadas
@@ -49,7 +49,7 @@ class ComandoController() {
         }
 
         fun listarComandosActivos(comandos: List<Comando>) {
-            val comandosActivos = ComandoServicio.listarComandosActivos(comandos)
+            val comandosActivos = ComandoServices.listarComandosActivos(comandos)
             if (comandosActivos.isEmpty()) {
                 println("No hay comandos activos.")
             } else {
@@ -61,29 +61,25 @@ class ComandoController() {
         fun actualizarComando(comandos: MutableList<Comando>) {
             print("Ingrese el ID del comando a actualizar: ")
             val id = scanner.next()
-            scanner.nextLine() // Consumir la nueva línea pendiente
 
             try {
-                val comando = ComandoServicio.obtenerComandoPorId(comandos, id)
+                val comando = ComandoServices.obtenerComandoPorId(comandos, id)
                 println("Comando encontrado: $comando")
 
                 print("Nuevo nombre (dejar en blanco para no cambiar): ")
                 val nombre = scanner.nextLine().takeIf { it.isNotBlank() }
-                print("Nuevo estado (dejar en blanco para no cambiar): ")
-                val estado = scanner.nextLine().takeIf { it.isNotBlank() }?.toBoolean()
                 print("Nueva ubicación (dejar en blanco para no cambiar): ")
                 val ubicacion = scanner.nextLine().takeIf { it.isNotBlank() }
-                print("Nueva fundación ID (dejar en blanco para no cambiar): ")
+                print("Nuevo fundación ID (dejar en blanco para no cambiar): ")
                 val fundacionId = scanner.nextLine().takeIf { it.isNotBlank() }
-                print("Nuevas brigadas (separadas por comas, dejar en blanco para no cambiar): ")
-                val brigadas = scanner.nextLine().takeIf { it.isNotBlank() }?.split(",")
+                print("Nuevas brigadas (dejar en blanco para no cambiar): ")
+                val brigadas = scanner.nextLine().split(",").takeIf { it.isNotEmpty() }
 
                 if (confirmarAccion("¿Desea actualizar este comando?")) {
-                    val comandoActualizado = ComandoServicio.actualizarComando(
+                    val comandoActualizado = ComandoServices.actualizarComando(
                         comandos = comandos,
                         id = id,
                         nombreComando = nombre,
-                        estadoComando = estado,
                         ubicacionComando = ubicacion,
                         fundacionId = fundacionId,
                         brigadas = brigadas
@@ -101,15 +97,18 @@ class ComandoController() {
             print("Ingrese el ID del comando a desactivar: ")
             val id = scanner.next()
 
-            if (confirmarAccion("¿Desea desactivar este comando?")) {
-                try {
-                    val comandoDesactivado = ComandoServicio.desactivarComando(comandos, id)
+            try {
+                val comando = ComandoServices.obtenerComandoPorId(comandos, id)
+                println("Comando encontrado: $comando")
+
+                if (confirmarAccion("¿Desea desactivar este comando?")) {
+                    val comandoDesactivado = ComandoServices.desactivarComando(comandos, id)
                     println("Comando desactivado: $comandoDesactivado")
-                } catch (e: NoSuchElementException) {
-                    println("Error: ${e.message}")
+                } else {
+                    println("Operación cancelada.")
                 }
-            } else {
-                println("Operación cancelada.")
+            } catch (e: NoSuchElementException) {
+                println("Error: ${e.message}")
             }
         }
     }

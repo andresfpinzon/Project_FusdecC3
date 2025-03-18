@@ -1,8 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:padding="16dp">
+              android:padding="16dp"
+              tools:context=".ui.activities.administrativo.comando.ComandoActivity">
 
     <EditText
             android:id="@+id/nombreComandoEditText"
@@ -10,12 +12,6 @@
             android:layout_height="wrap_content"
             android:hint="Nombre del Comando"
             android:inputType="text" />
-
-    <Switch
-            android:id="@+id/estadoComandoSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Estado del Comando" />
 
     <EditText
             android:id="@+id/ubicacionComandoEditText"
@@ -25,32 +21,56 @@
             android:inputType="text" />
 
     <EditText
-            android:id="@+id/fundacionIdEditText"
+            android:id="@+id/brigadaEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ID de la Fundación"
-            android:inputType="text" />
-
-    <EditText
-            android:id="@+id/brigadasEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Brigadas"
+            android:hint="Nombre de la Brigada"
             android:inputType="text" />
 
     <Button
-            android:id="@+id/confirmarButton"
+            android:id="@+id/addBrigadaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agregar Brigada" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/brigadasRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirmar" />
+            android:layout_marginTop="16dp" />
 
-    <Button
-            android:id="@+id/cancelarButton"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancelar" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
 
-    <ListView
+        <Button
+                android:id="@+id/confirmarButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Confirmar" />
+
+        <Button
+                android:id="@+id/cancelarButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancelar" />
+    </LinearLayout>
+
+    <SearchView
+            android:id="@+id/searchViewComando"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:queryHint="Buscar Comando"
+            android:layout_marginTop="16dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comandosRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp"/>
+
 </LinearLayout>

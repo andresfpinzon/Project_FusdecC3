@@ -1,15 +1,17 @@
-package models.administrativo.colegio
+package com.example.fusdeckotlin.services.administrativoService.colegio
 
-class ColegioServicio(){
+import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
 
-    companion object{
+class ColegioServices() {
+
+    companion object {
         fun crearColegio(
             colegios: MutableList<Colegio>,
             id: String,
             nombreColegio: String,
             emailColegio: String,
-            estadoColegio: Boolean = true,
-            estudiantes: List<String> = emptyList()
+            estadoColegio: Boolean,
+            estudiantes: List<String>
         ): Colegio {
             if (nombreColegio.isBlank() || estudiantes.isEmpty()) {
                 throw IllegalArgumentException("Faltan campos requeridos: nombreColegio, estudiantes")
@@ -28,36 +30,34 @@ class ColegioServicio(){
         }
 
         fun listarColegiosActivos(colegios: List<Colegio>): List<Colegio> {
-            return colegios.filter { it.estadoColegio }
+            return colegios.filter { it.getEstadoColegio() }
         }
 
         fun obtenerColegioPorId(colegios: List<Colegio>, id: String): Colegio {
-            return colegios.find { it.id == id } ?: throw NoSuchElementException("Colegio no encontrado")
+            return colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
         }
+
         fun actualizarColegio(
             colegios: MutableList<Colegio>,
             id: String,
-            nombreColegio: String,
-            emailColegio: String,
-            estadoColegio: Boolean,
-            estudiantes: List<String>
+            nombreColegio: String? = null,
+            emailColegio: String? = null,
+            estadoColegio: Boolean? = null,
+            estudiantes: List<String>? = null
         ): Colegio {
-            val colegio = colegios.find { it.id == id } ?: throw NoSuchElementException("Colegio no encontrado")
-            if (nombreColegio.isBlank() || estudiantes.isEmpty()) {
-                throw IllegalArgumentException("Faltan campos requeridos: nombreColegio, estudiantes")
-            }
+            val colegio = colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
 
-            colegio.nombreColegio = nombreColegio
-            colegio.emailColegio = emailColegio
-            colegio.estadoColegio = estadoColegio
-            colegio.estudiantes = estudiantes
+            nombreColegio?.let { colegio.setNombreColegio(it) }
+            emailColegio?.let { colegio.setEmailColegio(it) }
+            estadoColegio?.let { colegio.setEstadoColegio(it) }
+            estudiantes?.let { colegio.setEstudiantes(it) }
 
             return colegio
         }
 
         fun desactivarColegio(colegios: MutableList<Colegio>, id: String): Colegio {
-            val colegio = colegios.find { it.id == id } ?: throw NoSuchElementException("Colegio no encontrado")
-            colegio.estadoColegio = false
+            val colegio = colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
+            colegio.setEstadoColegio(false)
             return colegio
         }
     }

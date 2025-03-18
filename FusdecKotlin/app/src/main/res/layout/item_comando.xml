@@ -1,0 +1,96 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+    <TextView
+            android:id="@+id/textViewComandoId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            android:layout_marginEnd="8dp"
+            tools:text="ID: 1"/>
+
+    <TextView
+            android:id="@+id/textViewNombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewComandoId"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            android:layout_marginEnd="8dp"
+            tools:text="Nombre: Comando 1"/>
+
+    <TextView
+            android:id="@+id/textViewUbicacion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Ubicación"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewNombre"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            android:layout_marginEnd="8dp"
+            tools:text="Ubicación: Ubicación 1"/>
+
+    <TextView
+            android:id="@+id/textViewEstado"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Estado"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewUbicacion"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            android:layout_marginEnd="8dp"
+            tools:text="Estado: Activo"/>
+
+    <TextView
+            android:id="@+id/textViewFundacionId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Fundación ID"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewEstado"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            android:layout_marginEnd="8dp"
+            tools:text="Fundación ID: 123"/>
+
+    <TextView
+            android:id="@+id/textViewBrigadas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Brigadas"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFundacionId"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            android:layout_marginEnd="8dp"
+            tools:text="Brigadas: Brigada 1, Brigada 2"/>
+
+    <ImageButton
+            android:id="@+id/updateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_edit"
+            android:contentDescription="Update"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="8dp"/>
+
+    <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_delete"
+            android:contentDescription="Delete"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/updateButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="8dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

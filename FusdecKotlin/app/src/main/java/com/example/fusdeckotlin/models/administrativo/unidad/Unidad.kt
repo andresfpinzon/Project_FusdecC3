@@ -1,38 +1,35 @@
-package models.administrativo.unidad
+data class Unidad(
+    private val id: String,
+    private var nombreUnidad: String,
+    private var brigadaId: String,
+    private var estadoUnidad: Boolean,
+    private var usuarioId: String,
+    private var comandos: List<String>
+) {
+    fun getId() = id
+    fun getNombreUnidad() = nombreUnidad
+    fun getBrigadaId() = brigadaId
+    fun getEstadoUnidad() = estadoUnidad
+    fun getUsuarioId() = usuarioId
+    fun getComandos() = comandos
 
-class Unidad(
-    val id: String,
-    var nombreUnidad: String,
-    var estadoUnidad: Boolean,
-    var brigadaId: String,
-    var usuarioId: String,
-    var estudiantes: List<String>
-){
+    fun setNombreUnidad(nombre: String) {
+        nombreUnidad = nombre
+    }
 
-    companion object{
-        val Unidad1 = Unidad(
-            id = "UNI12391723-91",
-            nombreUnidad = "Unidad 1",
-            estadoUnidad = true,
-            brigadaId = "BRIG12391723-91",
-            usuarioId = "USU123456",
-            estudiantes = listOf("1", "2")
-        )
-        val Unidad2 = Unidad(
-            id = "UNI12391723-19",
-            nombreUnidad = "Unidad 2",
-            estadoUnidad = true,
-            brigadaId = "BRIG12391723-19",
-            usuarioId = "USU654321",
-            estudiantes = listOf("2", "3")
-        )
-        val Unidad3 = Unidad(
-            id = "UNI12391723-92",
-            nombreUnidad = "Unidad 3",
-            estadoUnidad = true,
-            brigadaId = "BRIG12391723-92",
-            usuarioId = "USU123456",
-            estudiantes = listOf("1", "3")
-        )
+    fun setBrigadaId(brigada: String) {
+        brigadaId = brigada
+    }
+
+    fun setEstadoUnidad(estado: Boolean) {
+        estadoUnidad = estado
+    }
+
+    fun setUsuarioId(usuario: String) {
+        usuarioId = usuario
+    }
+
+    fun setComandos(comandos: List<String>) {
+        this.comandos = comandos
     }
 }

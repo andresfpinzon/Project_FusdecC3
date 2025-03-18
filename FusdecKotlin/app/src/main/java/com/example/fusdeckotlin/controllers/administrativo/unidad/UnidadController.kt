@@ -1,8 +1,10 @@
-package models.administrativo.unidad
+package com.example.fusdeckotlin.controllers.administrativo.unidad
 
+import Unidad
+import com.example.fusdeckotlin.services.administrativoService.unidad.UnidadServices
 import java.util.Scanner
 
-class UnidadController() {
+class UnidadController {
 
     companion object {
 
@@ -23,18 +25,19 @@ class UnidadController() {
             val brigadaId = scanner.next()
             print("Usuario ID: ")
             val usuarioId = scanner.next()
-            print("Estudiantes (separados por comas): ")
-            val estudiantes = scanner.next().split(",")
+            print("Comandos (separados por comas): ")
+            val comandos = scanner.next().split(",")
 
             if (confirmarAccion("¿Desea crear esta unidad?")) {
                 try {
-                    val nuevaUnidad = UnidadServicio.crearUnidad(
+                    val nuevaUnidad = UnidadServices.crearUnidad(
                         unidades = unidades,
                         id = id,
                         nombreUnidad = nombre,
+                        estadoUnidad = true,
                         brigadaId = brigadaId,
                         usuarioId = usuarioId,
-                        estudiantes = estudiantes
+                        comandos = comandos
                     )
                     println("Unidad creada: $nuevaUnidad")
                 } catch (e: IllegalArgumentException) {
@@ -46,7 +49,7 @@ class UnidadController() {
         }
 
         fun listarUnidadesActivas(unidades: List<Unidad>) {
-            val unidadesActivas = UnidadServicio.listarUnidadesActivas(unidades)
+            val unidadesActivas = UnidadServices.listarUnidadesActivas(unidades)
             if (unidadesActivas.isEmpty()) {
                 println("No hay unidades activas.")
             } else {
@@ -60,7 +63,7 @@ class UnidadController() {
             val id = scanner.next()
 
             try {
-                val unidad = UnidadServicio.obtenerUnidadPorId(unidades, id)
+                val unidad = UnidadServices.obtenerUnidadPorId(unidades, id)
                 println("Unidad encontrada: $unidad")
 
                 print("Nuevo nombre (dejar en blanco para no cambiar): ")
@@ -69,17 +72,17 @@ class UnidadController() {
                 val brigadaId = scanner.nextLine().takeIf { it.isNotBlank() }
                 print("Nuevo usuario ID (dejar en blanco para no cambiar): ")
                 val usuarioId = scanner.nextLine().takeIf { it.isNotBlank() }
-                print("Nuevos estudiantes (dejar en blanco para no cambiar): ")
-                val estudiantes = scanner.next().split(",").takeIf { it.isNotEmpty() }
+                print("Nuevos comandos (dejar en blanco para no cambiar): ")
+                val comandos = scanner.nextLine().split(",").takeIf { it.isNotEmpty() }
 
                 if (confirmarAccion("¿Desea actualizar esta unidad?")) {
-                    val unidadActualizada = UnidadServicio.actualizarUnidad(
+                    val unidadActualizada = UnidadServices.actualizarUnidad(
                         unidades = unidades,
                         id = id,
                         nombreUnidad = nombre,
                         brigadaId = brigadaId,
                         usuarioId = usuarioId,
-                        estudiantes = estudiantes
+                        comandos = comandos
                     )
                     println("Unidad actualizada: $unidadActualizada")
                 } else {
@@ -94,15 +97,18 @@ class UnidadController() {
             print("Ingrese el ID de la unidad a desactivar: ")
             val id = scanner.next()
 
-            if (confirmarAccion("¿Desea desactivar esta unidad?")) {
-                try {
-                    val unidadDesactivada = UnidadServicio.desactivarUnidad(unidades, id)
+            try {
+                val unidad = UnidadServices.obtenerUnidadPorId(unidades, id)
+                println("Unidad encontrada: $unidad")
+
+                if (confirmarAccion("¿Desea desactivar esta unidad?")) {
+                    val unidadDesactivada = UnidadServices.desactivarUnidad(unidades, id)
                     println("Unidad desactivada: $unidadDesactivada")
-                } catch (e: NoSuchElementException) {
-                    println("Error: ${e.message}")
+                } else {
+                    println("Operación cancelada.")
                 }
-            } else {
-                println("Operación cancelada.")
+            } catch (e: NoSuchElementException) {
+                println("Error: ${e.message}")
             }
         }
     }

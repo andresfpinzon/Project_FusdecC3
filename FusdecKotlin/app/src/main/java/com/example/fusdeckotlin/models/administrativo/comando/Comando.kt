@@ -1,30 +1,37 @@
-package models.administrativo.comando
+package com.example.fusdeckotlin.models.administrativo.comando
 
-class Comando(
-    val id: String,
-    var nombreComando: String,
-    var estadoComando: Boolean,
-    var ubicacionComando: String,
-    var fundacionId: String,
-    var brigadas: List<String>
-){
-    companion object {
-        val comando1 = Comando(
-            id = "COM12391723-91",
-            nombreComando = "Comando 1",
-            estadoComando = true,
-            ubicacionComando = "Calle 123",
-            fundacionId = "FUN123456",
-            brigadas = listOf("1", "2")
-        )
+data class Comando(
+    private val id: String,
+    private var nombreComando: String,
+    private var estadoComando: Boolean,
+    private var ubicacionComando: String,
+    private var fundacionId: String,
+    private var brigadas: List<String>
+) {
+    fun getId() = id
+    fun getNombreComando() = nombreComando
+    fun getEstadoComando() = estadoComando
+    fun getUbicacionComando() = ubicacionComando
+    fun getFundacionId() = fundacionId
+    fun getBrigadas() = brigadas
 
-        val comando2 = Comando(
-            id = "COM12391723-19",
-            nombreComando = "Comando 2",
-            estadoComando = true,
-            ubicacionComando = "Calle 456",
-            fundacionId = "FUN654321",
-            brigadas = listOf("2", "3")
-        )
+    fun setNombreComando(nombre: String) {
+        nombreComando = nombre
+    }
+
+    fun setEstadoComando(estado: Boolean) {
+        estadoComando = estado
+    }
+
+    fun setUbicacionComando(ubicacion: String) {
+        ubicacionComando = ubicacion
+    }
+
+    fun setFundacionId(fundacion: String) {
+        fundacionId = fundacion
+    }
+
+    fun setBrigadas(brigadas: List<String>) {
+        this.brigadas = brigadas
     }
 }
