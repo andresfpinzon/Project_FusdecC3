@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.services.administrativoService.usuarioServices.UsuarioServices
+import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
 import com.example.fusdeckotlin.ui.adapters.administrador.userAdapter.UserAdapter
 import com.google.android.material.textfield.TextInputEditText
 import models.administrativo.user.model.Usuario

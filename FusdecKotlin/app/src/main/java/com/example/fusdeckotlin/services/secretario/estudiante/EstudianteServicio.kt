@@ -1,8 +1,10 @@
-package models.secretario.estudiante
+package com.example.fusdeckotlin.services.secretario.estudiante
 
-import java.util.*
+import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import java.time.LocalDate
 
-class EstudianteServicio(){
+
+class EstudianteServicio {
 
     companion object {
 
@@ -14,7 +16,7 @@ class EstudianteServicio(){
             correoEstudiante: String,
             tipoDocumento: String,
             numeroDocumento: String,
-            fechaNacimiento: Date,
+            fechaNacimiento: LocalDate,
             generoEstudiante: String,
             unidadId: String,
             colegioId: String,
@@ -26,7 +28,7 @@ class EstudianteServicio(){
         ): Estudiante {
 
             val estudianteExistente = estudiantes.find {
-                it.correoEstudiante == correoEstudiante || it.numeroDocumento == numeroDocumento
+                it.getCorreoEstudiante() == correoEstudiante || it.getNumeroDocumento() == numeroDocumento
             }
 
             if (estudianteExistente != null) {
@@ -60,7 +62,7 @@ class EstudianteServicio(){
         }
 
         fun obtenerEstudiantePorId(estudiantes: List<Estudiante>, id: String): Estudiante {
-            return estudiantes.find { it.id == id } ?: throw NoSuchElementException("Estudiante no encontrado")
+            return estudiantes.find { it.getId() == id } ?: throw NoSuchElementException("Estudiante no encontrado")
         }
 
         fun actualizarEstudiante(
@@ -68,10 +70,8 @@ class EstudianteServicio(){
             id: String,
             nombreEstudiante: String? = null,
             apellidoEstudiante: String? = null,
-            correoEstudiante: String? = null,
             tipoDocumento: String? = null,
-            numeroDocumento: String? = null,
-            fechaNacimiento: Date? = null,
+            fechaNacimiento: LocalDate? = null,
             generoEstudiante: String? = null,
             unidadId: String? = null,
             colegioId: String? = null,
@@ -81,42 +81,28 @@ class EstudianteServicio(){
             asistencias: List<String>? = null,
             certificados: List<String>? = null
         ): Estudiante {
-            val estudiante = estudiantes.find { it.id == id } ?: throw NoSuchElementException("Estudiante no encontrado")
+            val estudiante = estudiantes.find { it.getId() == id } ?: throw NoSuchElementException("Estudiante no encontrado")
 
-            // Verificar si el correo o número de documento ya están en uso por otro estudiante
-            if (correoEstudiante != null || numeroDocumento != null) {
-                val estudianteExistente = estudiantes.find {
-                    (it.correoEstudiante == correoEstudiante || it.numeroDocumento == numeroDocumento) && it.id != id
-                }
-                if (estudianteExistente != null) {
-                    throw IllegalArgumentException("El correo o número de documento ya está registrado")
-                }
-            }
-
-            // Actualizar los campos del estudiante
-            estudiante.nombreEstudiante = nombreEstudiante ?: estudiante.nombreEstudiante
-            estudiante.apellidoEstudiante = apellidoEstudiante ?: estudiante.apellidoEstudiante
-            estudiante.correoEstudiante = correoEstudiante ?: estudiante.correoEstudiante
-            estudiante.tipoDocumento = tipoDocumento ?: estudiante.tipoDocumento
-            estudiante.numeroDocumento = numeroDocumento ?: estudiante.numeroDocumento
-            estudiante.fechaNacimiento = fechaNacimiento ?: estudiante.fechaNacimiento
-            estudiante.generoEstudiante = generoEstudiante ?: estudiante.generoEstudiante
-            estudiante.unidadId = unidadId ?: estudiante.unidadId
-            estudiante.colegioId = colegioId ?: estudiante.colegioId
-            estudiante.estadoEstudiante = estadoEstudiante ?: estudiante.estadoEstudiante
-            estudiante.ediciones = ediciones ?: estudiante.ediciones
-            estudiante.calificaciones = calificaciones ?: estudiante.calificaciones
-            estudiante.asistencias = asistencias ?: estudiante.asistencias
-            estudiante.certificados = certificados ?: estudiante.certificados
+            nombreEstudiante?.let { estudiante.setNombreEstudiante(it) }
+            apellidoEstudiante?.let { estudiante.setApellidoEstudiante(it) }
+            tipoDocumento?.let { estudiante.setTipoDocumento(it) }
+            fechaNacimiento?.let { estudiante.setFechaNacimiento(it) }
+            generoEstudiante?.let { estudiante.setGeneroEstudiante(it) }
+            unidadId?.let { estudiante.setUnidadId(it) }
+            colegioId?.let { estudiante.setColegioId(it) }
+            estadoEstudiante?.let { estudiante.setEstadoEstudiante(it) }
+            ediciones?.let { estudiante.setEdiciones(it) }
+            calificaciones?.let { estudiante.setCalificaciones(it) }
+            asistencias?.let { estudiante.setAsistencias(it) }
+            certificados?.let { estudiante.setCertificados(it) }
 
             return estudiante
         }
 
         fun desactivarEstudiante(estudiantes: MutableList<Estudiante>, id: String): Estudiante {
-            val estudiante = estudiantes.find { it.id == id } ?: throw NoSuchElementException("Estudiante no encontrado")
-            estudiante.estadoEstudiante = false
+            val estudiante = estudiantes.find { it.getId() == id } ?: throw NoSuchElementException("Estudiante no encontrado")
+            estudiante.setEstadoEstudiante(false)
             return estudiante
         }
-
     }
 }

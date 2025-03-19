@@ -13,7 +13,8 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.instructor.asistencia.AsistenciaAdapter
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class AsistenciaActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ class AsistenciaActivity : AppCompatActivity() {
     private lateinit var cancelarButton: Button
     private lateinit var asistenciasRecyclerView: RecyclerView
 
-    private val asistencias = mutableListOf<Asistencia>(Asistencia.asistencia1, Asistencia.asistencia2)
+    private val asistencias = mutableListOf(Asistencia.asistencia1, Asistencia.asistencia2)
     private lateinit var adapter: AsistenciaAdapter
 
     private var isEditing: Boolean = false
@@ -36,6 +37,7 @@ class AsistenciaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_asistencia)
 
+        // Inicializar vistas
         tituloEditText = findViewById(R.id.tituloEditText)
         fechaEditText = findViewById(R.id.fechaEditText)
         usuarioIdEditText = findViewById(R.id.usuarioIdEditText)
@@ -44,25 +46,23 @@ class AsistenciaActivity : AppCompatActivity() {
         cancelarButton = findViewById(R.id.cancelarButton)
         asistenciasRecyclerView = findViewById(R.id.asistenciasRecyclerView)
 
-        // Configurar RecyclerView
-        adapter = AsistenciaAdapter(asistencias, ::onUpdateClick, ::onDeleteClick)
+        // Configurar RecyclerView con asistencias activas
+        adapter = AsistenciaAdapter(
+            AsistenciaServicio.listarAsistenciasActivas(asistencias),
+            ::onUpdateClick,
+            ::onDeleteClick
+        )
         asistenciasRecyclerView.layoutManager = LinearLayoutManager(this)
         asistenciasRecyclerView.adapter = adapter
 
-        // Configurar selector de fecha
-        fechaEditText.setOnClickListener {
-            mostrarDatePicker()
-        }
+        // Configurar DatePicker
+        fechaEditText.setOnClickListener { mostrarDatePicker() }
 
         // Botón confirmar
-        confirmarButton.setOnClickListener {
-            guardarAsistencia()
-        }
+        confirmarButton.setOnClickListener { guardarAsistencia() }
 
         // Botón cancelar
-        cancelarButton.setOnClickListener {
-            finish()
-        }
+        cancelarButton.setOnClickListener { finish() }
     }
 
     private fun mostrarDatePicker() {
@@ -70,10 +70,9 @@ class AsistenciaActivity : AppCompatActivity() {
         val datePicker = DatePickerDialog(
             this,
             { _, year, month, dayOfMonth ->
-                val selectedDate = Calendar.getInstance()
-                selectedDate.set(year, month, dayOfMonth)
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                fechaEditText.setText(dateFormat.format(selectedDate.time))
+                val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                fechaEditText.setText(selectedDate.format(formatter))
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -82,30 +81,30 @@ class AsistenciaActivity : AppCompatActivity() {
         datePicker.show()
     }
 
-    private fun generarIdUnico(): String {
-        // Generar un ID único
-        return "ASIS${asistencias.size + 1}"
-    }
+    private fun generarIdUnico(): String = "ASIS${asistencias.size + 1}"
 
     private fun guardarAsistencia() {
         val titulo = tituloEditText.text.toString().trim()
-        val fecha = fechaEditText.text.toString().trim()
+        val fechaStr = fechaEditText.text.toString().trim()
         val usuarioId = usuarioIdEditText.text.toString().trim()
         val estudiantes = estudiantesEditText.text.toString().trim()
 
-        if (titulo.isEmpty() || fecha.isEmpty() || usuarioId.isEmpty() || estudiantes.isEmpty()) {
+        if (titulo.isEmpty() || fechaStr.isEmpty() || usuarioId.isEmpty() || estudiantes.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
 
         try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val fecha = LocalDate.parse(fechaStr, formatter)
+
             if (isEditing) {
                 // Actualizar la asistencia existente
                 AsistenciaServicio.actualizarAsistencia(
                     asistencias,
                     currentAsistenciaId!!,
                     titulo,
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fecha)!!,
+                    fecha,
                     usuarioId,
                     true,
                     estudiantes.split(",")
@@ -114,24 +113,23 @@ class AsistenciaActivity : AppCompatActivity() {
                 isEditing = false
                 currentAsistenciaId = null
             } else {
-                // Crear una nueva asistencia
+                // Crear nueva asistencia
                 val id = generarIdUnico()
-                val nuevaAsistencia = AsistenciaServicio.crearAsistencia(
+                AsistenciaServicio.crearAsistencia(
                     asistencias,
                     id,
                     titulo,
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fecha)!!,
+                    fecha,
                     usuarioId,
                     true,
                     estudiantes.split(",")
                 )
                 Toast.makeText(this, "Asistencia guardada exitosamente", Toast.LENGTH_SHORT).show()
             }
-
-            adapter.notifyDataSetChanged()
+            actualizarLista()
             limpiarFormulario()
-        } catch (e: IllegalArgumentException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error en el formato de la fecha", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -146,7 +144,7 @@ class AsistenciaActivity : AppCompatActivity() {
         isEditing = true
         currentAsistenciaId = asistencia.getId()
         tituloEditText.setText(asistencia.getTituloAsistencia())
-        fechaEditText.setText(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(asistencia.getFechaAsistencia()))
+        fechaEditText.setText(asistencia.getFechaAsistencia().toString())
         usuarioIdEditText.setText(asistencia.getUsuarioId())
         estudiantesEditText.setText(asistencia.getEstudiantes().joinToString(", "))
     }
@@ -159,19 +157,19 @@ class AsistenciaActivity : AppCompatActivity() {
         builder.setPositiveButton("Sí") { _, _ ->
             try {
                 AsistenciaServicio.desactivarAsistencia(asistencias, asistencia.getId())
-                asistencias.remove(asistencia)
-                adapter.notifyDataSetChanged()
+                actualizarLista()
                 Toast.makeText(this, "Asistencia eliminada", Toast.LENGTH_SHORT).show()
             } catch (e: NoSuchElementException) {
                 Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
             }
         }
 
-        builder.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss()
-        }
+        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+        builder.create().show()
+    }
 
-        val dialog = builder.create()
-        dialog.show()
+    private fun actualizarLista() {
+        adapter.actualizarLista(AsistenciaServicio.listarAsistenciasActivas(asistencias))
     }
 }
+
