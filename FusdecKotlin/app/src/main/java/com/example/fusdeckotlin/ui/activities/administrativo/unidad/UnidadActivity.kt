@@ -44,14 +44,11 @@ class UnidadActivity : AppCompatActivity() {
         unidadesRecyclerView = findViewById(R.id.unidadesRecyclerView)
         searchViewUnidad = findViewById(R.id.searchViewUnidad)
 
-        // Configurar MultiAutoCompleteTextView
-        val estudiantes = listOf("andres", "ramiro", "maria", "juan")
-        val adapterEstudiantes = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, estudiantes)
-        estudiantesMultiAutoCompleteTextView.setAdapter(adapterEstudiantes)
-        estudiantesMultiAutoCompleteTextView.setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
-
         // Configurar RecyclerView
-        adapter = UnidadAdapter(unidades, ::onUpdateClick, ::onDeleteClick)
+        adapter = UnidadAdapter(unidades,
+            ::onUpdateClick,
+            ::onDeleteClick
+        )
         unidadesRecyclerView.layoutManager = LinearLayoutManager(this)
         unidadesRecyclerView.adapter = adapter
 
@@ -77,6 +74,8 @@ class UnidadActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun generarIdUnidadUnico(): String = "ASIS${unidades.size + 1}"
 
     private fun guardarUnidad() {
         val nombreUnidad = nombreUnidadEditText.text.toString().trim()

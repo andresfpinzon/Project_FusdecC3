@@ -1,6 +1,6 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.colegio
 
-import android.annotation.SuppressLint
+
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -15,7 +15,8 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.administrador.colegioAdapter.ColegioAdapter
 import com.example.fusdeckotlin.services.administrativoService.colegio.ColegioServices
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
-import java.util.UUID
+import kotlin.toString
+
 
 class ColegioActivity : AppCompatActivity() {
 
@@ -28,16 +29,12 @@ class ColegioActivity : AppCompatActivity() {
     private lateinit var colegiosRecyclerView: RecyclerView
     private lateinit var searchView: SearchView
 
-    private val colegios = mutableListOf(
-        Colegio.colegio1,
-        Colegio.colegio2
-    )
+    private val colegios = mutableListOf(Colegio.colegio1, Colegio.colegio2)
     private lateinit var adapter: ColegioAdapter
 
     private var isEditing: Boolean = false
     private var currentColegioId: String? = null
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_colegio)
@@ -52,7 +49,10 @@ class ColegioActivity : AppCompatActivity() {
         searchView = findViewById(R.id.searchViewColegio)
 
         // Configurar RecyclerView
-        adapter = ColegioAdapter(colegios, ::onUpdateClick, ::onDeleteClick)
+        adapter = ColegioAdapter(
+            ColegioServices.listarColegiosActivos(colegios)  as MutableList<Colegio>,
+            ::onUpdateClick,
+            ::onDeleteClick)
         colegiosRecyclerView.layoutManager = LinearLayoutManager(this)
         colegiosRecyclerView.adapter = adapter
 
@@ -69,21 +69,24 @@ class ColegioActivity : AppCompatActivity() {
         // Configurar SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+                adapter.filter(query)
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
-                return false
+                adapter.filter(newText)
+                return true
             }
         })
     }
+
+    private fun generarIdUnico(): String = "col-${colegios.size + 1}"
 
     private fun guardarColegio() {
         val nombreColegio = nombreColegioEditText.text.toString().trim()
         val emailColegio = emailColegioEditText.text.toString().trim()
         val estudiantes = estudiantesEditText.text.toString().trim()
-        val estadoColegio = estadoColegioswitch.isChecked
+        val estadoColegio = estadoColegioswitch.isChecked.toString().toBoolean()
 
         if (nombreColegio.isEmpty() || emailColegio.isEmpty() || estudiantes.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
@@ -102,21 +105,19 @@ class ColegioActivity : AppCompatActivity() {
                 )
                 Toast.makeText(this, "Colegio actualizado correctamente", Toast.LENGTH_SHORT).show()
                 isEditing = false
-                currentColegioId = null
             } else {
-                val nuevoColegio = ColegioServices.crearColegio(
+                val id = generarIdUnico()
+                ColegioServices.crearColegio(
                     colegios,
-                    UUID.randomUUID().toString(),
+                    id,
                     nombreColegio,
                     emailColegio,
                     estadoColegio,
                     estudiantes.split(",")
                 )
-                colegios.add(nuevoColegio)
                 Toast.makeText(this, "Colegio creado correctamente", Toast.LENGTH_SHORT).show()
             }
-
-            adapter.notifyDataSetChanged()
+            actualizarLista()
             limpiarFormulario()
         } catch (e: IllegalArgumentException) {
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
@@ -128,6 +129,8 @@ class ColegioActivity : AppCompatActivity() {
         emailColegioEditText.text.clear()
         estudiantesEditText.text.clear()
         estadoColegioswitch.isChecked = false
+        isEditing = false
+        currentColegioId = null
     }
 
     private fun onUpdateClick(colegio: Colegio) {
@@ -147,7 +150,7 @@ class ColegioActivity : AppCompatActivity() {
         builder.setPositiveButton("Sí") { _, _ ->
             try {
                 ColegioServices.desactivarColegio(colegios, colegio.getId())
-                colegios.remove(colegio)
+                actualizarLista()
                 adapter.notifyDataSetChanged()
                 Toast.makeText(this, "Colegio eliminado correctamente", Toast.LENGTH_SHORT).show()
             } catch (e: NoSuchElementException) {
@@ -155,11 +158,13 @@ class ColegioActivity : AppCompatActivity() {
             }
         }
 
-        builder.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss()
-        }
+        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    private fun actualizarLista() {
+        adapter.actualizarLista(ColegioServices.listarColegiosActivos(colegios))
     }
 }

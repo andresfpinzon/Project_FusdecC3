@@ -9,10 +9,10 @@ class ComandoServices {
             comandos: MutableList<Comando>,
             id: String,
             nombreComando: String,
-            estadoComando: Boolean,
+            estadoComando: Boolean = true,
             ubicacionComando: String,
             fundacionId: String,
-            brigadas: List<String>
+            brigadas: List<String> = emptyList()
         ): Comando {
             if (nombreComando.isBlank() || brigadas.isEmpty()) {
                 throw IllegalArgumentException("Faltan campos requeridos: nombreComando, brigadas")

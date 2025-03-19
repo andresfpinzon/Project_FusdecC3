@@ -1,83 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="16dp">
 
-    <EditText
-            android:id="@+id/nombreColegioEditText"
-            android:layout_width="0dp"
+    <TableLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre Colegio"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="8dp"/>
+            android:stretchColumns="1">
 
-    <EditText
-            android:id="@+id/emailColegioEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Email Colegio"
-            app:layout_constraintTop_toBottomOf="@id/nombreColegioEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="8dp"/>
+        <TableRow>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre Colegio"
+                    android:padding="8dp"/>
+            <EditText
+                    android:id="@+id/nombreColegioEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre Colegio"
+                    android:layout_weight="1"
+                    android:padding="8dp"/>
+        </TableRow>
 
-    <EditText
-            android:id="@+id/estudiantesEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Estudiantes (separados por comas)"
-            app:layout_constraintTop_toBottomOf="@id/emailColegioEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="8dp"/>
+        <TableRow>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email Colegio"
+                    android:padding="8dp"/>
+            <EditText
+                    android:id="@+id/emailColegioEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Email Colegio"
+                    android:layout_weight="1"
+                    android:padding="8dp"/>
+        </TableRow>
 
-    <Switch android:id="@+id/estadoColegioSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Activo"
-            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"/>
-    <Button
-            android:id="@+id/confirmarButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Confirmar"
-            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="36dp" app:layout_constraintHorizontal_bias="0.0"/>
-    <Button
-            android:id="@+id/cancelarButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Cancelar"
-            app:layout_constraintTop_toBottomOf="@id/confirmarButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="12dp" app:layout_constraintHorizontal_bias="0.0"/>
-    <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchViewColegio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/cancelarButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" app:layout_constraintHorizontal_bias="0.0"/>
+        <TableRow>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estudiantes"
+                    android:padding="8dp"/>
+            <EditText
+                    android:id="@+id/estudiantesEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Estudiantes (separados por comas)"
+                    android:layout_weight="1"
+                    android:padding="8dp"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activo"
+                    android:padding="8dp"/>
+            <Switch
+                    android:id="@+id/estadoColegioSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activo"
+                    android:padding="8dp"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                    android:id="@+id/confirmarButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmar"
+                    android:layout_weight="1"
+                    android:padding="8dp"/>
+            <Button
+                    android:id="@+id/cancelarButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cancelar"
+                    android:layout_weight="1"
+                    android:padding="8dp"/>
+        </TableRow>
+
+        <TableRow>
+            <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchViewColegio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:queryHint="Buscar Colegio"
+                    android:padding="8dp"/>
+        </TableRow>
+    </TableLayout>
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/colegiosRecyclerView"
-            android:layout_width="377dp"
-            android:layout_height="265dp"
-            app:layout_constraintTop_toBottomOf="@id/searchViewColegio"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"
-            app:layout_constraintHorizontal_bias="0.0"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"/>
+</LinearLayout>

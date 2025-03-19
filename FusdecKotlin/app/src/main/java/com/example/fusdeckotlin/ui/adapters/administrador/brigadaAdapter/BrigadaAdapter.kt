@@ -17,28 +17,29 @@ class BrigadaAdapter(
 
     private val originalBrigadas = brigadas.toMutableList()
 
-    inner class BrigadaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
-        private val textUbicacion: TextView = itemView.findViewById(R.id.textViewUbicacion)
-        private val textComandoId: TextView = itemView.findViewById(R.id.textViewComandoId)
-        private val textUnidades: TextView = itemView.findViewById(R.id.textViewUnidades)
-        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
-        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+    class BrigadaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
+        val textUbicacion: TextView = itemView.findViewById(R.id.textViewUbicacion)
+        val textComandoId: TextView = itemView.findViewById(R.id.textViewComandoId)
+        val textUnidades: TextView = itemView.findViewById(R.id.textViewUnidades)
+        val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrigadaViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_brigada, parent, false)
+        return BrigadaViewHolder(view)
+    }
 
-        fun bind(brigada: Brigada) {
-            textNombre.text = "Nombre: ${brigada.getNombreBrigada()}"
-            textUbicacion.text = "Ubicación: ${brigada.getUbicacionBrigada()}"
-            textComandoId.text = "Comando ID: ${brigada.getComandoId()}"
-            textUnidades.text = "Unidades: ${brigada.getUnidades().joinToString(", ")}"
+    override fun onBindViewHolder(holder: BrigadaViewHolder, position: Int) {
+        val brigada = brigadas[position]
+        holder.textNombre.text = brigada.getNombreBrigada()
+        holder.textUbicacion.text = brigada.getUbicacionBrigada()
+        holder.textComandoId.text = brigada.getComandoId()
+        holder.textUnidades.text = brigada.getUnidades().joinToString(", ")
 
-            updateButton.setOnClickListener {
-                onUpdateClick(brigada)
-            }
-
-            deleteButton.setOnClickListener {
-                onDeleteClick(brigada)
-            }
-        }
+        holder.updateButton.setOnClickListener { onUpdateClick(brigada) }
+        holder.deleteButton.setOnClickListener { onDeleteClick(brigada) }
     }
 
     fun filter(query: String?) {
@@ -51,14 +52,10 @@ class BrigadaAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrigadaViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_brigada, parent, false)
-        return BrigadaViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: BrigadaViewHolder, position: Int) {
-        holder.bind(brigadas[position])
-    }
-
     override fun getItemCount(): Int = brigadas.size
+
+    fun actualizarLista(nuevasBrigadas: List<Brigada>) {
+        brigadas.addAll(nuevasBrigadas)
+        notifyDataSetChanged()
+    }
 }

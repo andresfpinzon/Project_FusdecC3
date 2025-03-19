@@ -10,9 +10,9 @@ class BrigadaServices {
             id: String,
             nombreBrigada: String,
             ubicacionBrigada: String,
+            estadoBrigada: Boolean =true,
             comandoId: String,
-            unidades: List<String>,
-            estadoBrigada: Boolean
+            unidades: List<String> = emptyList()
         ): Brigada {
             if (nombreBrigada.isBlank() || ubicacionBrigada.isBlank() || comandoId.isBlank() || unidades.isEmpty()) {
                 throw IllegalArgumentException("Faltan campos requeridos: nombreBrigada, ubicacionBrigada, comandoId, unidades")
@@ -22,7 +22,7 @@ class BrigadaServices {
                 id = id,
                 nombreBrigada = nombreBrigada,
                 ubicacionBrigada = ubicacionBrigada,
-                estadoBrigada = true,
+                estadoBrigada = estadoBrigada,
                 comandoId = comandoId,
                 unidades = unidades
             )

@@ -11,26 +11,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <ImageView
-                android:id="@+id/backgroundImageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/captura"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="#50000000"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
         <TextView
                 android:id="@+id/titleTextView"
                 android:layout_width="0dp"
@@ -39,7 +19,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:textColor="#FFFFFF"
+                android:textColor="#000000"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
