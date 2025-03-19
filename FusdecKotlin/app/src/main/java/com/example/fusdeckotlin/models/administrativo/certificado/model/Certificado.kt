@@ -55,7 +55,6 @@ data class CertificadoModel(
             cursoId = "CURSO-001",
             estudianteId = "EST-001",
             nombreEmisorCertificado = "Academia de Programación",
-            codigoVerificacion = UUID.randomUUID().toString().substring(0, 8),
             estadoCertificado = true
         )
 
@@ -65,7 +64,6 @@ data class CertificadoModel(
             cursoId = "CURSO-002",
             estudianteId = "EST-002",
             nombreEmisorCertificado = "Escuela de Diseño Digital",
-            codigoVerificacion = UUID.randomUUID().toString().substring(0, 8),
             estadoCertificado = true
         )
 
@@ -75,7 +73,6 @@ data class CertificadoModel(
             cursoId = "CURSO-003",
             estudianteId = "EST-003",
             nombreEmisorCertificado = "Instituto de Marketing Digital",
-            codigoVerificacion = UUID.randomUUID().toString().substring(0, 8),
             estadoCertificado = true
         )
 
@@ -85,7 +82,6 @@ data class CertificadoModel(
             cursoId = "CURSO-004",
             estudianteId = "EST-004",
             nombreEmisorCertificado = "Centro de Idiomas",
-            codigoVerificacion = UUID.randomUUID().toString().substring(0, 8),
             estadoCertificado = false // Certificado expirado o revocado
         )
 
@@ -95,7 +91,6 @@ data class CertificadoModel(
             cursoId = "CURSO-005",
             estudianteId = "EST-005",
             nombreEmisorCertificado = "Escuela de Negocios",
-            codigoVerificacion = UUID.randomUUID().toString().substring(0, 8),
             estadoCertificado = true
         )
 

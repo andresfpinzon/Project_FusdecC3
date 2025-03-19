@@ -12,7 +12,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/actionButtons"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:padding="8dp">
@@ -28,7 +27,8 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+        />
 
         <TextView
                 android:id="@+id/textViewFechaC"
@@ -114,7 +114,7 @@
 
     <!-- Botones de acción -->
     <LinearLayout
-            android:id="@+id/actionButtons"
+            android:id="@+id/actionButtonsC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -126,7 +126,7 @@
 
         <!-- Botón de actualización -->
         <ImageButton
-                android:id="@+id/updateButton"
+                android:id="@+id/updateButtonC"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/baseline_refresh_24"
@@ -137,7 +137,7 @@
 
         <!-- Botón de eliminación -->
         <ImageButton
-                android:id="@+id/deleteButton"
+                android:id="@+id/deleteButtonC"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/baseline_delete_24"

@@ -32,6 +32,7 @@ class CertificateActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_certificate)
 
+        // Initialize fields
         usuario = findViewById(R.id.inputTextUsuarioC)
         curso = findViewById(R.id.inputTextCursoC)
         estudiante = findViewById(R.id.inputTextEstudianteC)
@@ -46,10 +47,13 @@ class CertificateActivity : AppCompatActivity() {
         certificateRecyclerView.layoutManager = LinearLayoutManager(this)
         certificateRecyclerView.adapter = adapter
 
-        guardarButton.setOnClickListener{
+        // Initialize mock certificates or load from service
+        loadCertificates()
+
+        guardarButton.setOnClickListener {
             saveCertificate()
         }
-        cancelarButton.setOnClickListener{
+        cancelarButton.setOnClickListener {
             finish()
         }
     }
@@ -101,6 +105,24 @@ class CertificateActivity : AppCompatActivity() {
         }else{
             Toast.makeText(this, "Error al eliminar el certificado", Toast.LENGTH_SHORT).show()
         }
+
+        adapter.notifyDataSetChanged()
+    }
+    // Load mock data or fetch from your backend service
+    private fun loadCertificates() {
+        // Mock data for testing
+        certificates.add(CertificadoModel(
+            usuarioId = "User1",
+            cursoId = "Course1",
+            estudianteId = "Student1",
+            nombreEmisorCertificado = "Emisor1"
+        ))
+        certificates.add(CertificadoModel(
+            usuarioId = "User2",
+            cursoId = "Course2",
+            estudianteId = "Student2",
+            nombreEmisorCertificado = "Emisor2"
+        ))
 
         adapter.notifyDataSetChanged()
     }

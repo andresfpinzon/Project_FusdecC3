@@ -26,8 +26,8 @@ class CertificateAdapter(
         private val textViewCodeVerify : TextView = item.findViewById(R.id.textViewCodeVerifyC)
         private val textViewState : TextView = item.findViewById(R.id.textViewEstadoC)
 
-        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
-        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButtonC)
+        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButtonC)
 
 
         fun bind(certificate : CertificadoModel){
