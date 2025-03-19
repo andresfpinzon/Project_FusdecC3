@@ -20,23 +20,17 @@
             android:hint="Ubicación del Comando"
             android:inputType="text" />
 
-    <EditText
-            android:id="@+id/brigadaEditText"
+    <Spinner
+            android:id="@+id/brigadaSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre de la Brigada"
-            android:inputType="text" />
+            android:layout_marginTop="16dp" />
 
-    <Button
-            android:id="@+id/addBrigadaButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Agregar Brigada" />
-
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/brigadasRecyclerView"
+    <Switch
+            android:id="@+id/estadoSwitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Estado Activo"
             android:layout_marginTop="16dp" />
 
     <LinearLayout
@@ -66,6 +60,7 @@
             android:layout_height="wrap_content"
             android:queryHint="Buscar Comando"
             android:layout_marginTop="16dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comandosRecyclerView"
             android:layout_width="match_parent"

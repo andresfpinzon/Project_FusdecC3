@@ -11,7 +11,8 @@ class BrigadaServices {
             nombreBrigada: String,
             ubicacionBrigada: String,
             comandoId: String,
-            unidades: List<String>
+            unidades: List<String>,
+            estadoBrigada: Boolean
         ): Brigada {
             if (nombreBrigada.isBlank() || ubicacionBrigada.isBlank() || comandoId.isBlank() || unidades.isEmpty()) {
                 throw IllegalArgumentException("Faltan campos requeridos: nombreBrigada, ubicacionBrigada, comandoId, unidades")
@@ -44,7 +45,8 @@ class BrigadaServices {
             nombreBrigada: String? = null,
             ubicacionBrigada: String? = null,
             comandoId: String? = null,
-            unidades: List<String>? = null
+            unidades: List<String>? = null,
+            estadoBrigada: Boolean
         ): Brigada {
             val brigada = brigadas.find { it.getId() == id } ?: throw NoSuchElementException("Brigada no encontrada")
 
@@ -52,6 +54,7 @@ class BrigadaServices {
             ubicacionBrigada?.let { brigada.setUbicacionBrigada(it) }
             comandoId?.let { brigada.setComandoId(it) }
             unidades?.let { brigada.setUnidades(it) }
+            brigada.setEstadoBrigada(estadoBrigada)
 
             return brigada
         }

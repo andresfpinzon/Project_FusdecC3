@@ -23,6 +23,7 @@ class UnidadAdapter(
         private val textIdUnidad: TextView = itemView.findViewById(R.id.textViewUnidadId)
         private val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
         private val textBrigada: TextView = itemView.findViewById(R.id.textViewBrigada)
+        private val textEstudiantes: TextView = itemView.findViewById(R.id.textViewEstudiantes)
         private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
 
@@ -30,6 +31,7 @@ class UnidadAdapter(
             textIdUnidad.text = "ID: ${unidad.getId()}"
             textNombre.text = "Nombre: ${unidad.getNombreUnidad()}"
             textBrigada.text = "Brigada: ${unidad.getBrigadaId()}"
+            textEstudiantes.text = "Estudiantes: ${unidad.estudiantes.joinToString(", ")}"
 
             updateButton.setOnClickListener {
                 onUpdateClick(unidad)

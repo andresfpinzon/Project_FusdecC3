@@ -34,4 +34,24 @@ data class Comando(
     fun setBrigadas(brigadas: List<String>) {
         this.brigadas = brigadas
     }
+
+    companion object{
+        val comando1 = Comando(
+            id = "COM01",
+            nombreComando = "Comando 1",
+            estadoComando = true,
+            ubicacionComando = "Ubicación 1",
+            fundacionId = "FUND01",
+            brigadas = listOf("BRIG01", "BRIG02")
+        )
+
+        val comando2 = Comando(
+            id = "COM02",
+            nombreComando = "Comando 2",
+            estadoComando = true,
+            ubicacionComando = "Ubicación 2",
+            fundacionId = "FUND02",
+            brigadas = listOf("BRIG03", "BRIG04")
+        )
+    }
 }

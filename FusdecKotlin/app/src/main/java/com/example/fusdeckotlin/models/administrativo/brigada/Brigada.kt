@@ -34,4 +34,24 @@ data class Brigada(
     fun setUnidades(unidades: List<String>) {
         this.unidades = unidades
     }
+
+    companion object{
+        val brigada1 = Brigada(
+            id = "BRIG01",
+            nombreBrigada = "Brigada 1",
+            ubicacionBrigada = "Ubicación 1",
+            estadoBrigada = true,
+            comandoId = "COM01",
+            unidades = listOf("UNI01", "UNI02")
+        )
+
+        val brigada2 = Brigada(
+            id = "BRIG02",
+            nombreBrigada = "Brigada 2",
+            ubicacionBrigada = "Ubicación 2",
+            estadoBrigada = true,
+            comandoId = "COM02",
+            unidades = listOf("UNI03", "UNI04")
+        )
+    }
 }

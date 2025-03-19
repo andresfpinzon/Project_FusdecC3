@@ -45,6 +45,8 @@ data class Colegio(
             estadoColegio = true,
             estudiantes = listOf("EST03", "EST04")
         )
+
+
     }
 
 

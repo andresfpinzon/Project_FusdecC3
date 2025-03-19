@@ -2,37 +2,35 @@ package com.example.fusdeckotlin.ui.activities.administrativo.comando
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.administrador.comandoAdapter.ComandoAdapter
 import com.example.fusdeckotlin.services.administrativoService.comando.ComandoServices
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
-import com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter.BrigadaAdapter
 import java.util.UUID
 
 class ComandoActivity : AppCompatActivity() {
 
     private lateinit var nombreComandoEditText: EditText
     private lateinit var ubicacionComandoEditText: EditText
-    private lateinit var brigadaEditText: EditText
+    private lateinit var brigadaSpinner: Spinner
+    private lateinit var estadoSwitch: Switch
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
-    private lateinit var addBrigadaButton: Button
     private lateinit var comandosRecyclerView: RecyclerView
-    private lateinit var brigadasRecyclerView: RecyclerView
     private lateinit var searchViewComando: SearchView
 
-    private val comandos = mutableListOf<Comando>()
-    private val brigadas = mutableListOf<String>()
+    private val comandos = mutableListOf(
+        Comando.comando1,
+        Comando.comando2
+    )
+    private val brigadas = listOf("Brigada 1", "Brigada 2", "Brigada 3")
     private lateinit var comandoAdapter: ComandoAdapter
-    private lateinit var brigadaAdapter: BrigadaAdapter
 
     private var isEditing: Boolean = false
     private var currentComandoId: String? = null
@@ -45,38 +43,22 @@ class ComandoActivity : AppCompatActivity() {
             // Initialize views
             nombreComandoEditText = findViewById(R.id.nombreComandoEditText)
             ubicacionComandoEditText = findViewById(R.id.ubicacionComandoEditText)
-            brigadaEditText = findViewById(R.id.brigadaEditText)
+            brigadaSpinner = findViewById(R.id.brigadaSpinner)
+            estadoSwitch = findViewById(R.id.estadoSwitch)
             confirmarButton = findViewById(R.id.confirmarButton)
             cancelarButton = findViewById(R.id.cancelarButton)
-            addBrigadaButton = findViewById(R.id.addBrigadaButton)
             comandosRecyclerView = findViewById(R.id.comandosRecyclerView)
-            brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
             searchViewComando = findViewById(R.id.searchViewComando)
+
+            // Configure Spinner for brigades
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brigadas)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            brigadaSpinner.adapter = adapter
 
             // Configure RecyclerView for commands
             comandoAdapter = ComandoAdapter(comandos, ::onUpdateClick, ::onDeleteClick)
             comandosRecyclerView.layoutManager = LinearLayoutManager(this)
             comandosRecyclerView.adapter = comandoAdapter
-
-            // Configure RecyclerView for brigades
-            brigadaAdapter = BrigadaAdapter(
-                brigadas, ::onDeleteBrigadaClick,
-                onDeleteClick = { brigada -> brigadas.remove(brigada) }
-            )
-            brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
-            brigadasRecyclerView.adapter = brigadaAdapter
-
-            // Add brigade button
-            addBrigadaButton.setOnClickListener {
-                val brigada = brigadaEditText.text.toString().trim()
-                if (brigada.isNotEmpty()) {
-                    brigadas.add(brigada)
-                    brigadaAdapter.notifyDataSetChanged()
-                    brigadaEditText.text.clear()
-                } else {
-                    Toast.makeText(this, "Por favor, ingrese el nombre de la brigada", Toast.LENGTH_SHORT).show()
-                }
-            }
 
             // Confirm button
             confirmarButton.setOnClickListener {
@@ -108,8 +90,10 @@ class ComandoActivity : AppCompatActivity() {
     private fun guardarComando() {
         val nombreComando = nombreComandoEditText.text.toString().trim()
         val ubicacionComando = ubicacionComandoEditText.text.toString().trim()
+        val brigadaSeleccionada = brigadaSpinner.selectedItem.toString()
+        val estadoComando = estadoSwitch.isChecked
 
-        if (nombreComando.isEmpty() || ubicacionComando.isEmpty() || brigadas.isEmpty()) {
+        if (nombreComando.isEmpty() || ubicacionComando.isEmpty() || brigadaSeleccionada.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
@@ -120,22 +104,24 @@ class ComandoActivity : AppCompatActivity() {
                     comandos,
                     currentComandoId!!,
                     nombreComando = nombreComando,
+                    estadoComando = estadoComando,
                     ubicacionComando = ubicacionComando,
-                    brigadas = brigadas
+                    brigadas = listOf(brigadaSeleccionada)
                 )
                 Toast.makeText(this, "Comando actualizado correctamente", Toast.LENGTH_SHORT).show()
                 isEditing = false
                 currentComandoId = null
             } else {
-                ComandoServices.crearComando(
+                val nuevoComando = ComandoServices.crearComando(
                     comandos,
                     UUID.randomUUID().toString(),
                     nombreComando,
-                    true,
+                    estadoComando,
                     ubicacionComando,
                     "fundacionId",
-                    brigadas
+                    listOf(brigadaSeleccionada)
                 )
+                comandos.add(nuevoComando)
                 Toast.makeText(this, "Comando creado correctamente", Toast.LENGTH_SHORT).show()
             }
 
@@ -150,9 +136,10 @@ class ComandoActivity : AppCompatActivity() {
     private fun limpiarFormulario() {
         nombreComandoEditText.text.clear()
         ubicacionComandoEditText.text.clear()
-        brigadaEditText.text.clear()
-        brigadas.clear()
-        brigadaAdapter.notifyDataSetChanged()
+        brigadaSpinner.setSelection(0)
+        estadoSwitch.isChecked = false
+        isEditing = false
+        currentComandoId = null
     }
 
     private fun onUpdateClick(comando: Comando) {
@@ -160,9 +147,9 @@ class ComandoActivity : AppCompatActivity() {
         currentComandoId = comando.getId()
         nombreComandoEditText.setText(comando.getNombreComando())
         ubicacionComandoEditText.setText(comando.getUbicacionComando())
-        brigadas.clear()
-        brigadas.addAll(comando.getBrigadas())
-        brigadaAdapter.notifyDataSetChanged()
+        val brigadaIndex = brigadas.indexOf(comando.getBrigadas().firstOrNull())
+        brigadaSpinner.setSelection(if (brigadaIndex >= 0) brigadaIndex else 0)
+        estadoSwitch.isChecked = comando.getEstadoComando()
     }
 
     private fun onDeleteClick(comando: Comando) {
@@ -189,10 +176,4 @@ class ComandoActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
     }
-
-    private fun onDeleteBrigadaClick(brigada: String) {
-        brigadas.remove(brigada)
-        brigadaAdapter.notifyDataSetChanged()
-    }
 }
-

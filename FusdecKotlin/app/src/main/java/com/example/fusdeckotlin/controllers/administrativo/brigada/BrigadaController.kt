@@ -27,6 +27,8 @@ class BrigadaController {
             val comandoId = scanner.next()
             print("Unidades (separadas por comas): ")
             val unidades = scanner.next().split(",")
+            print("Estado (true/false): ")
+            val estadoBrigada = scanner.nextBoolean()
 
             if (confirmarAccion("¿Desea crear esta brigada?")) {
                 try {
@@ -36,7 +38,8 @@ class BrigadaController {
                         nombreBrigada = nombre,
                         ubicacionBrigada = ubicacion,
                         comandoId = comandoId,
-                        unidades = unidades
+                        unidades = unidades,
+                        estadoBrigada = estadoBrigada
                     )
                     println("Brigada creada: $nuevaBrigada")
                 } catch (e: IllegalArgumentException) {
@@ -73,6 +76,8 @@ class BrigadaController {
                 val comandoId = scanner.nextLine().takeIf { it.isNotBlank() }
                 print("Nuevas unidades (dejar en blanco para no cambiar): ")
                 val unidades = scanner.nextLine().split(",").takeIf { it.isNotEmpty() }
+                print("Nuevo estado (true/false): ")
+                val estadoBrigada = scanner.nextBoolean()
 
                 if (confirmarAccion("¿Desea actualizar esta brigada?")) {
                     val brigadaActualizada = BrigadaServices.actualizarBrigada(
@@ -81,7 +86,8 @@ class BrigadaController {
                         nombreBrigada = nombre,
                         ubicacionBrigada = ubicacion,
                         comandoId = comandoId,
-                        unidades = unidades
+                        unidades = unidades,
+                        estadoBrigada = estadoBrigada
                     )
                     println("Brigada actualizada: $brigadaActualizada")
                 } else {

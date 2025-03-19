@@ -27,6 +27,8 @@ class UnidadController {
             val usuarioId = scanner.next()
             print("Comandos (separados por comas): ")
             val comandos = scanner.next().split(",")
+            print("Estudiantes (separados por comas): ")
+            val estudiantes = scanner.next().split(",")
 
             if (confirmarAccion("¿Desea crear esta unidad?")) {
                 try {
@@ -37,7 +39,8 @@ class UnidadController {
                         estadoUnidad = true,
                         brigadaId = brigadaId,
                         usuarioId = usuarioId,
-                        comandos = comandos
+                        comandos = comandos,
+                        estudiantes = estudiantes
                     )
                     println("Unidad creada: $nuevaUnidad")
                 } catch (e: IllegalArgumentException) {

@@ -1,12 +1,11 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.brigada
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.util.Log
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
@@ -21,12 +20,16 @@ class BrigadaActivity : AppCompatActivity() {
     private lateinit var ubicacionBrigadaEditText: EditText
     private lateinit var comandoIdEditText: EditText
     private lateinit var unidadesEditText: EditText
+    private lateinit var estadoSwitch: Switch
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var brigadasRecyclerView: RecyclerView
     private lateinit var searchView: SearchView
 
-    private val brigadas = mutableListOf<Brigada>()
+    private val brigadas = mutableListOf(
+        Brigada.brigada1,
+        Brigada.brigada2
+    )
     private lateinit var adapter: BrigadaAdapter
 
     private var isEditing: Boolean = false
@@ -36,48 +39,56 @@ class BrigadaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_brigada)
 
-        nombreBrigadaEditText = findViewById(R.id.nombreBrigadaEditText)
-        ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
-        comandoIdEditText = findViewById(R.id.comandoIdEditText)
-        unidadesEditText = findViewById(R.id.unidadesEditText)
-        confirmarButton = findViewById(R.id.confirmarButton)
-        cancelarButton = findViewById(R.id.cancelarButton)
-        brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
-        searchView = findViewById(R.id.searchView)
+        try {
+            // Initialize views
+            nombreBrigadaEditText = findViewById(R.id.nombreBrigadaEditText)
+            ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
+            comandoIdEditText = findViewById(R.id.comandoIdEditText)
+            unidadesEditText = findViewById(R.id.unidadesEditText)
+            estadoSwitch = findViewById(R.id.estadoSwitch)
+            confirmarButton = findViewById(R.id.confirmarButton)
+            cancelarButton = findViewById(R.id.cancelarButton)
+            brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
+            searchView = findViewById(R.id.searchView)
 
-        // Configurar RecyclerView
-        adapter = BrigadaAdapter(brigadas, ::onUpdateClick, ::onDeleteClick)
-        brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
-        brigadasRecyclerView.adapter = adapter
+            // Configure RecyclerView for brigadas
+            adapter = BrigadaAdapter(brigadas, ::onUpdateClick, ::onDeleteClick)
+            brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
+            brigadasRecyclerView.adapter = adapter
 
-        // Botón confirmar
-        confirmarButton.setOnClickListener {
-            guardarBrigada()
-        }
-
-        // Botón cancelar
-        cancelarButton.setOnClickListener {
-            finish()
-        }
-
-        // Configurar SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+            // Confirm button
+            confirmarButton.setOnClickListener {
+                guardarBrigada()
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
-                return false
+            // Cancel button
+            cancelarButton.setOnClickListener {
+                finish()
             }
-        })
+
+            // Configure SearchView
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    adapter.filter(newText)
+                    return false
+                }
+            })
+        } catch (e: Exception) {
+            Log.e("BrigadaActivity", "Error initializing activity", e)
+            Toast.makeText(this, "Error initializing activity: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun guardarBrigada() {
         val nombreBrigada = nombreBrigadaEditText.text.toString().trim()
         val ubicacionBrigada = ubicacionBrigadaEditText.text.toString().trim()
         val comandoId = comandoIdEditText.text.toString().trim()
-        val unidades = unidadesEditText.text.toString().trim()
+        val unidades = unidadesEditText.text.toString().trim().split(",").map { it.trim() }
+        val estadoBrigada = estadoSwitch.isChecked
 
         if (nombreBrigada.isEmpty() || ubicacionBrigada.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
@@ -89,30 +100,35 @@ class BrigadaActivity : AppCompatActivity() {
                 BrigadaServices.actualizarBrigada(
                     brigadas,
                     currentBrigadaId!!,
-                    nombreBrigada,
-                    ubicacionBrigada,
+                    nombreBrigada = nombreBrigada,
+                    ubicacionBrigada = ubicacionBrigada,
                     comandoId = comandoId,
-                    unidades = unidades.split(",")
+                    unidades = unidades,
+                    estadoBrigada = estadoBrigada
+
                 )
                 Toast.makeText(this, "Brigada actualizada correctamente", Toast.LENGTH_SHORT).show()
                 isEditing = false
                 currentBrigadaId = null
             } else {
-                BrigadaServices.crearBrigada(
+                val nuevaBrigada = BrigadaServices.crearBrigada(
                     brigadas,
                     UUID.randomUUID().toString(),
                     nombreBrigada,
                     ubicacionBrigada,
-                    comandoId = comandoId,
-                    unidades = unidades.split(",")
+                    comandoId,
+                    unidades,
+                    estadoBrigada
                 )
+                brigadas.add(nuevaBrigada)
                 Toast.makeText(this, "Brigada creada correctamente", Toast.LENGTH_SHORT).show()
             }
 
             adapter.notifyDataSetChanged()
             limpiarFormulario()
         } catch (e: IllegalArgumentException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            Log.e("BrigadaActivity", "Error saving brigada", e)
+            Toast.makeText(this, "Error saving brigada: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -121,6 +137,9 @@ class BrigadaActivity : AppCompatActivity() {
         ubicacionBrigadaEditText.text.clear()
         comandoIdEditText.text.clear()
         unidadesEditText.text.clear()
+        estadoSwitch.isChecked = false
+        isEditing = false
+        currentBrigadaId = null
     }
 
     private fun onUpdateClick(brigada: Brigada) {
@@ -130,6 +149,7 @@ class BrigadaActivity : AppCompatActivity() {
         ubicacionBrigadaEditText.setText(brigada.getUbicacionBrigada())
         comandoIdEditText.setText(brigada.getComandoId())
         unidadesEditText.setText(brigada.getUnidades().joinToString(", "))
+        estadoSwitch.isChecked = brigada.getEstadoBrigada()
     }
 
     private fun onDeleteClick(brigada: Brigada) {
@@ -144,7 +164,8 @@ class BrigadaActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
                 Toast.makeText(this, "Brigada eliminada correctamente", Toast.LENGTH_SHORT).show()
             } catch (e: NoSuchElementException) {
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+                Log.e("BrigadaActivity", "Error deleting brigada", e)
+                Toast.makeText(this, "Error deleting brigada: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
 

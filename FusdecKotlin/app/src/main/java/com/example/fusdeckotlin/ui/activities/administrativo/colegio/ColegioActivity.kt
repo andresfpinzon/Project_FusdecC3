@@ -16,7 +16,6 @@ import com.example.fusdeckotlin.ui.adapters.administrador.colegioAdapter.Colegio
 import com.example.fusdeckotlin.services.administrativoService.colegio.ColegioServices
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
 import java.util.UUID
-import kotlin.Int
 
 class ColegioActivity : AppCompatActivity() {
 
@@ -29,7 +28,10 @@ class ColegioActivity : AppCompatActivity() {
     private lateinit var colegiosRecyclerView: RecyclerView
     private lateinit var searchView: SearchView
 
-    private val colegios = mutableListOf<Colegio>()
+    private val colegios = mutableListOf(
+        Colegio.colegio1,
+        Colegio.colegio2
+    )
     private lateinit var adapter: ColegioAdapter
 
     private var isEditing: Boolean = false
@@ -77,12 +79,6 @@ class ColegioActivity : AppCompatActivity() {
         })
     }
 
-    private fun listarColegioActivos() {
-        colegios.clear()
-        colegios.addAll(ColegioServices.listarColegiosActivos(colegios))
-        adapter.notifyDataSetChanged()
-    }
-
     private fun guardarColegio() {
         val nombreColegio = nombreColegioEditText.text.toString().trim()
         val emailColegio = emailColegioEditText.text.toString().trim()
@@ -101,20 +97,22 @@ class ColegioActivity : AppCompatActivity() {
                     currentColegioId!!,
                     nombreColegio,
                     emailColegio,
-                    estudiantes = estudiantes.split(",")
+                    estadoColegio,
+                    estudiantes.split(",")
                 )
                 Toast.makeText(this, "Colegio actualizado correctamente", Toast.LENGTH_SHORT).show()
                 isEditing = false
                 currentColegioId = null
             } else {
-                ColegioServices.crearColegio(
+                val nuevoColegio = ColegioServices.crearColegio(
                     colegios,
                     UUID.randomUUID().toString(),
                     nombreColegio,
                     emailColegio,
-                    estadoColegio = true,
-                    estudiantes = estudiantes.split(",")
+                    estadoColegio,
+                    estudiantes.split(",")
                 )
+                colegios.add(nuevoColegio)
                 Toast.makeText(this, "Colegio creado correctamente", Toast.LENGTH_SHORT).show()
             }
 
@@ -163,14 +161,5 @@ class ColegioActivity : AppCompatActivity() {
 
         val dialog = builder.create()
         dialog.show()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        listarColegioActivos()
-    }
-
-    private fun filter(newText: String) {
-        adapter.filter.filter(newText)
     }
 }
