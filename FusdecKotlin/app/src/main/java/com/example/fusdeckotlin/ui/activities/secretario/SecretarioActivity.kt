@@ -9,6 +9,7 @@ import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.activities.instructor.calificacion.CalificacionActivity
 import com.example.fusdeckotlin.ui.activities.secretario.edicion.EdicionActivity
+import com.example.fusdeckotlin.ui.activities.secretario.horario.HorarioActivity
 import models.secretario.edicion.Edicion
 
 class SecretarioActivity : AppCompatActivity() {
@@ -33,6 +34,13 @@ class SecretarioActivity : AppCompatActivity() {
         edicionButton.setOnClickListener {
 
             val intent = Intent(this, EdicionActivity::class.java)
+            startActivity(intent)
+
+        }
+
+        horarioButton.setOnClickListener {
+
+            val intent = Intent(this, HorarioActivity::class.java)
             startActivity(intent)
 
         }

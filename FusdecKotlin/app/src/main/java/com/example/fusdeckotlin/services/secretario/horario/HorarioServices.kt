@@ -1,23 +1,23 @@
-package models.secretario.horario
+package com.example.fusdeckotlin.services.secretario.horario
 
+import models.secretario.horario.Horario
 import java.util.*
 
 class HorarioServices {
     companion object {
-        private val horarios = mutableListOf<HorarioModel>()
-
         fun crearHorario(
+            horarios: MutableList<Horario>,
             id: String = UUID.randomUUID().toString(),
             tituloHorario: String,
             horaInicio: String,
             horaFin: String,
             estadoHorario: Boolean = true
-        ): HorarioModel {
+        ): Horario {
             if (tituloHorario.isBlank() || horaInicio.isBlank() || horaFin.isBlank()) {
                 throw IllegalArgumentException("El título, la hora de inicio y la hora de fin son obligatorios")
             }
 
-            val nuevoHorario = HorarioModel(
+            val nuevoHorario = Horario(
                 id = id,
                 tituloHorario = tituloHorario,
                 horaInicio = horaInicio,
@@ -29,36 +29,39 @@ class HorarioServices {
             return nuevoHorario
         }
 
-        fun listarHorarios(): List<HorarioModel> = horarios
+        fun listarHorariosActivos(horarios: List<Horario>): List<Horario> {
+            return horarios.filter { it.estadoHorario }
+        }
 
-        fun obtenerHorarioPorId(id: String): HorarioModel {
+        fun obtenerHorarioPorId(horarios: List<Horario>, id: String): Horario {
             return horarios.find { it.id == id } ?: throw NoSuchElementException("Horario no encontrado")
         }
 
         fun actualizarHorario(
+            horarios: MutableList<Horario>,
             id: String,
             tituloHorario: String? = null,
             horaInicio: String? = null,
             horaFin: String? = null,
             estadoHorario: Boolean? = null
-        ): HorarioModel {
-            val horario = obtenerHorarioPorId(id)
+        ): Horario {
+            val horario = horarios.find { it.id == id } ?: throw NoSuchElementException("Horario no encontrado")
 
-            horario.tituloHorario = tituloHorario ?: horario.tituloHorario
-            horario.horaInicio = horaInicio ?: horario.horaInicio
-            horario.horaFin = horaFin ?: horario.horaFin
-            horario.estadoHorario = estadoHorario ?: horario.estadoHorario
+            tituloHorario?.let { horario.tituloHorario = it }
+            horaInicio?.let { horario.horaInicio = it }
+            horaFin?.let { horario.horaFin = it }
+            estadoHorario?.let { horario.estadoHorario = it }
 
             return horario
         }
 
-        fun desactivarHorario(id: String): HorarioModel {
-            val horario = obtenerHorarioPorId(id)
+        fun desactivarHorario(horarios: MutableList<Horario>, id: String): Horario {
+            val horario = horarios.find { it.id == id } ?: throw NoSuchElementException("Horario no encontrado")
             horario.estadoHorario = false
             return horario
         }
 
-        fun eliminarHorario(id: String): Boolean {
+        fun eliminarHorario(horarios: MutableList<Horario>, id: String): Boolean {
             return horarios.removeIf { it.id == id }
         }
     }
