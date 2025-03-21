@@ -47,6 +47,7 @@ class ColegioActivity : AppCompatActivity() {
         colegiosRecyclerView = findViewById(R.id.colegiosRecyclerView)
         searchView = findViewById(R.id.searchViewColegio)
 
+
         // Configurar RecyclerView
         adapter = ColegioAdapter(
             colegios,

@@ -38,7 +38,6 @@ class BrigadaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_brigada)
 
-        // Initialize views
         nombreBrigadaEditText = findViewById(R.id.nombreBrigadaEditText)
         ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
         comandoIdEditText = findViewById(R.id.comandoIdEditText)
@@ -49,7 +48,6 @@ class BrigadaActivity : AppCompatActivity() {
         brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
         searchView = findViewById(R.id.searchView)
 
-        // Configure RecyclerView for brigadas
         adapter = BrigadaAdapter(
             brigadas,
             ::onUpdateClick,
@@ -58,17 +56,14 @@ class BrigadaActivity : AppCompatActivity() {
         brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
         brigadasRecyclerView.adapter = adapter
 
-        // Confirm button
         confirmarButton.setOnClickListener {
             guardarBrigada()
         }
 
-        // Cancel button
         cancelarButton.setOnClickListener {
             finish()
         }
 
-        // Configure SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false

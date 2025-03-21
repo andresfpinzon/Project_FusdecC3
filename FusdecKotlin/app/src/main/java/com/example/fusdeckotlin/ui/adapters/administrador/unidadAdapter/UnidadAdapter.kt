@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.ui.adapters.administrador.unidadAdapter
 
-import Unidad
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,72 +7,59 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import android.widget.Filter
-import android.widget.Filterable
+import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 
 class UnidadAdapter(
     private val unidades: MutableList<Unidad>,
     private val onUpdateClick: (Unidad) -> Unit,
     private val onDeleteClick: (Unidad) -> Unit
-) : RecyclerView.Adapter<UnidadAdapter.UnidadViewHolder>(), Filterable {
+) : RecyclerView.Adapter<UnidadAdapter.UnidadViewHolder>() {
 
-    private var unidadesFiltradas: MutableList<Unidad> = unidades.toMutableList()
+    private val originalUnidades = unidades.toMutableList()
 
-    inner class UnidadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textIdUnidad: TextView = itemView.findViewById(R.id.textViewUnidadId)
-        private val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
-        private val textBrigada: TextView = itemView.findViewById(R.id.textViewBrigada)
-        private val textEstudiantes: TextView = itemView.findViewById(R.id.textViewEstudiantes)
-        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
-        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
-
-        fun bind(unidad: Unidad) {
-            textIdUnidad.text = "ID: ${unidad.getId()}"
-            textNombre.text = "Nombre: ${unidad.getNombreUnidad()}"
-            textBrigada.text = "Brigada: ${unidad.getBrigadaId()}"
-            textEstudiantes.text = "Estudiantes: ${unidad.estudiantes.joinToString(", ")}"
-
-            updateButton.setOnClickListener {
-                onUpdateClick(unidad)
-            }
-
-            deleteButton.setOnClickListener {
-                onDeleteClick(unidad)
-            }
-        }
+    class UnidadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textIdUnidad: TextView = itemView.findViewById(R.id.textViewUnidadId)
+        val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
+        val textBrigada: TextView = itemView.findViewById(R.id.textViewBrigada)
+        val textEstudiantes: TextView = itemView.findViewById(R.id.textViewEstudiantes)
+        val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UnidadViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_unidad, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_unidad, parent, false)
         return UnidadViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: UnidadViewHolder, position: Int) {
-        holder.bind(unidadesFiltradas[position])
+        val unidad = unidades[position]
+        holder.textIdUnidad.text = unidad.getId()
+        holder.textNombre.text = unidad.getNombreUnidad()
+        holder.textBrigada.text = unidad.getBrigadaId()
+        holder.textEstudiantes.text = unidad.getEstudiantes().joinToString(", ")
+
+        holder.updateButton.setOnClickListener { onUpdateClick(unidad) }
+        holder.deleteButton.setOnClickListener { onDeleteClick(unidad) }
     }
 
-    override fun getItemCount(): Int = unidadesFiltradas.size
-
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val query = constraint?.toString()?.lowercase() ?: ""
-                val filteredList = if (query.isEmpty()) {
-                    unidades
-                } else {
-                    unidades.filter {
-                        it.getNombreUnidad().lowercase().contains(query) ||
-                                it.getBrigadaId().lowercase().contains(query)
-                    }.toMutableList()
-                }
-                return FilterResults().apply { values = filteredList }
-            }
-
-            @Suppress("UNCHECKED_CAST")
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                unidadesFiltradas = results?.values as MutableList<Unidad>
-                notifyDataSetChanged()
-            }
+    fun filter(query: String?) {
+        unidades.clear()
+        if (query.isNullOrEmpty()) {
+            unidades.addAll(originalUnidades)
+        } else {
+            unidades.addAll(originalUnidades.filter { it.getNombreUnidad().contains(query, ignoreCase = true) })
         }
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int = unidades.size
+
+    fun actualizarLista(nuevasUnidades: List<Unidad>) {
+        unidades.clear()
+        unidades.addAll(nuevasUnidades)
+        originalUnidades.clear()
+        originalUnidades.addAll(nuevasUnidades)
+        notifyDataSetChanged()
     }
 }

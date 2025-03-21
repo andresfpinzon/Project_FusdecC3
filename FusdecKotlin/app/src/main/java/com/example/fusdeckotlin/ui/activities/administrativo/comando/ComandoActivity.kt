@@ -2,7 +2,13 @@ package com.example.fusdeckotlin.ui.activities.administrativo.comando
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.SearchView
+import android.widget.Spinner
+import android.widget.Toast
+import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +40,7 @@ class ComandoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comando)
 
-        try {
+
             // Initialize views
             nombreComandoEditText = findViewById(R.id.nombreComandoEditText)
             ubicacionComandoEditText = findViewById(R.id.ubicacionComandoEditText)
@@ -79,19 +85,16 @@ class ComandoActivity : AppCompatActivity() {
                     return false
                 }
             })
-        } catch (e: Exception) {
-            Log.e("ComandoActivity", "Error initializing activity", e)
-            Toast.makeText(this, "Error initializing activity: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
+
     }
 
-    private fun generarIdUnico(): String = "com-${System.currentTimeMillis()}"
+    private fun generarIdUnico(): String = "COM-${comandos.size + 1}"
 
     private fun guardarComando() {
         val nombreComando = nombreComandoEditText.text.toString().trim()
         val ubicacionComando = ubicacionComandoEditText.text.toString().trim()
         val brigadaSeleccionada = brigadaSpinner.selectedItem.toString()
-        val estadoComando = estadoSwitch.isChecked
+        val estadoComando = estadoSwitch.isChecked.toString().toBoolean()
 
         if (nombreComando.isEmpty() || ubicacionComando.isEmpty() || brigadaSeleccionada.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
@@ -119,7 +122,7 @@ class ComandoActivity : AppCompatActivity() {
                     nombreComando,
                     estadoComando,
                     ubicacionComando,
-                    fundacionId = "FUND01", // Assuming a default value for fundacionId
+                    fundacionId = "FUSDEC", // default fundacionId
                     brigadas = listOf(brigadaSeleccionada)
                 )
                 Toast.makeText(this, "Comando creado correctamente", Toast.LENGTH_SHORT).show()

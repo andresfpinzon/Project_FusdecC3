@@ -1,13 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
+    <color name="colorPrimary">#FF6200EE</color>
+    <color name="colorPrimaryDark">#FF3700B3</color>
+    <color name="colorAccent">#FF03DAC5</color>
+    <color name="colorBackground">#FF121212</color>
+    <color name="primaryColor">#2196F3</color> <!-- Azul -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#FF808080</color>
+    <color name="navy">#FF000080</color>
+    <color name="olive">#FF808000</color>
+    grises administrador  -->
+    <color name="gray_50">#FFF5F5F5</color>
+    <color name="gray_100">#FFE5E5E5</color>
+    <color name="gray_200">#FFBDBDBD</color>
+    <color name="gray_300">#FF9E9E9E</color>
+    <color name="gray_400">#FF757575</color>
+    <color name="gray_500">#FF616161</color>
+    <color name="gray_600">#FF424242</color>
+    <color name="gray_700">#FF303030</color>
+    <color name="gray_800">#FF212121</color>
+    <color name="gray_900">#FF121212</color>
+    <color name="gray_1000">#FF000000</color>
+      -->
+    <color name="lime">#FF00FF00</color>
+    <color name="silver">#FFC0C0C0</color>
+    <color name="maroon">#FF800000</color>
     <color name="light_gray">#FFD3D3D3</color>
     <color name="dark_gray">#FFA9A9A9</color>
     <color name="red">#FFFF0000</color>
-    <color name="blue">#FF0000FF</color>
+    <color name="light_red">#FFFFC0CB</color>
+    <color name="dark_red">#FF8B0000</color>
     <color name="green">#FF008000</color>
+    <color name="light_green">#FF90EE90</color>
+    <color name="dark_green">#FF006400</color>
+    azules-->
+    <color name="blue">#FF0000FF</color>
+    <color name="blue_100">#B52424A7</color>
+    <color name="blue_200">#B52424A7</color>
+    <color name="blue_300">#B52424A7</color>
+    <color name="blue_400">#B52424A7</color>
+    <color name="blue_500">#B52424A7</color>
+    -->
+
+    <color name="orange_600">#FFFB8C00</color>
     <color name="yellow">#FFFFFF00</color>
     <color name="orange">#FFFFA500</color>
     <color name="purple">#FF800080</color>
@@ -17,6 +55,5 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black_700">#FF000000</color>
-    <color name="black_900">#FF000000</color>
-
+    <color name="gold">#E6C529</color>
 </resources>

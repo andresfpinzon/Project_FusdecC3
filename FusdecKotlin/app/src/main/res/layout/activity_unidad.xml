@@ -27,12 +27,42 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="8dp"/>
 
-    <MultiAutoCompleteTextView
-            android:id="@+id/estudiantesMultiAutoCompleteTextView"
+    <EditText
+            android:id="@+id/usuarioIdEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Usuario ID"
+            app:layout_constraintTop_toBottomOf="@id/brigadaUnidadEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp"/>
+
+    <EditText
+            android:id="@+id/comandosEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Comandos (separados por comas)"
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp"/>
+
+    <EditText
+            android:id="@+id/estudiantesEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Estudiantes (separados por comas)"
-            app:layout_constraintTop_toBottomOf="@id/brigadaUnidadEditText"
+            app:layout_constraintTop_toBottomOf="@id/comandosEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp"/>
+
+    <Switch
+            android:id="@+id/estadoUnidadSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado Unidad"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="8dp"/>
@@ -42,7 +72,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Confirmar"
-            app:layout_constraintTop_toBottomOf="@id/estudiantesMultiAutoCompleteTextView"
+            app:layout_constraintTop_toBottomOf="@id/estadoUnidadSwitch"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="8dp"/>

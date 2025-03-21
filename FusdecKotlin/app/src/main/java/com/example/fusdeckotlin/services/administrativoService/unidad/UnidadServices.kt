@@ -1,6 +1,6 @@
 package com.example.fusdeckotlin.services.administrativoService.unidad
 
-import Unidad
+import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 
 class UnidadServices {
 
@@ -9,8 +9,8 @@ class UnidadServices {
             unidades: MutableList<Unidad>,
             id: String,
             nombreUnidad: String,
-            estadoUnidad: Boolean,
             brigadaId: String,
+            estadoUnidad: Boolean,
             usuarioId: String,
             comandos: List<String>,
             estudiantes: List<String>
@@ -37,14 +37,18 @@ class UnidadServices {
             id: String,
             nombreUnidad: String?,
             brigadaId: String?,
+            estadoUnidad: Boolean?,
             usuarioId: String?,
-            comandos: List<String>?
+            comandos: List<String>?,
+            estudiantes: List<String>?
         ): Unidad {
             val unidad = obtenerUnidadPorId(unidades, id)
             nombreUnidad?.let { unidad.setNombreUnidad(it) }
             brigadaId?.let { unidad.setBrigadaId(it) }
+            estadoUnidad?.let { unidad.setEstadoUnidad(it) }
             usuarioId?.let { unidad.setUsuarioId(it) }
             comandos?.let { unidad.setComandos(it) }
+            estudiantes?.let { unidad.setEstudiantes(it) }
             return unidad
         }
 
@@ -53,7 +57,6 @@ class UnidadServices {
             unidad.setEstadoUnidad(false)
             return unidad
         }
-
 
         fun obtenerUnidadPorId(unidades: List<Unidad>, id: String): Unidad {
             return unidades.firstOrNull { it.getId() == id }

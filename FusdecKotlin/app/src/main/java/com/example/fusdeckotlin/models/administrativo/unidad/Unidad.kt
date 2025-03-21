@@ -1,3 +1,5 @@
+package com.example.fusdeckotlin.models.administrativo.unidad
+
 data class Unidad(
     private val id: String,
     private var nombreUnidad: String,
@@ -5,12 +7,15 @@ data class Unidad(
     private var estadoUnidad: Boolean,
     private var usuarioId: String,
     private var comandos: List<String>,
-    internal var estudiantes: List<String>
+    private var estudiantes: List<String>
 ) {
     fun getId() = id
     fun getNombreUnidad() = nombreUnidad
     fun getBrigadaId() = brigadaId
     fun getEstadoUnidad() = estadoUnidad
+    fun getUsuarioId() = usuarioId
+    fun getComandos() = comandos
+    fun getEstudiantes() = estudiantes
 
     fun setNombreUnidad(nombre: String) {
         nombreUnidad = nombre
