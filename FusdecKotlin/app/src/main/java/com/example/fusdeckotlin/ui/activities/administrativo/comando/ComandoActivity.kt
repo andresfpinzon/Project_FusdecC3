@@ -5,14 +5,12 @@ import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.administrador.comandoAdapter.ComandoAdapter
 import com.example.fusdeckotlin.services.administrativoService.comando.ComandoServices
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
-import java.util.UUID
 
 class ComandoActivity : AppCompatActivity() {
 
@@ -25,10 +23,7 @@ class ComandoActivity : AppCompatActivity() {
     private lateinit var comandosRecyclerView: RecyclerView
     private lateinit var searchViewComando: SearchView
 
-    private val comandos = mutableListOf(
-        Comando.comando1,
-        Comando.comando2
-    )
+    private val comandos = mutableListOf(Comando.comando1, Comando.comando2)
     private val brigadas = listOf("Brigada 1", "Brigada 2", "Brigada 3")
     private lateinit var comandoAdapter: ComandoAdapter
 
@@ -56,7 +51,10 @@ class ComandoActivity : AppCompatActivity() {
             brigadaSpinner.adapter = adapter
 
             // Configure RecyclerView for commands
-            comandoAdapter = ComandoAdapter(comandos, ::onUpdateClick, ::onDeleteClick)
+            comandoAdapter = ComandoAdapter(
+                ComandoServices.listarComandosActivos(comandos) as MutableList<Comando>,
+                ::onUpdateClick,
+                ::onDeleteClick)
             comandosRecyclerView.layoutManager = LinearLayoutManager(this)
             comandosRecyclerView.adapter = comandoAdapter
 
@@ -83,9 +81,11 @@ class ComandoActivity : AppCompatActivity() {
             })
         } catch (e: Exception) {
             Log.e("ComandoActivity", "Error initializing activity", e)
-            Toast.makeText(this, "Error initializing activity: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Error initializing activity: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun generarIdUnico(): String = "com-${System.currentTimeMillis()}"
 
     private fun guardarComando() {
         val nombreComando = nombreComandoEditText.text.toString().trim()
@@ -103,30 +103,30 @@ class ComandoActivity : AppCompatActivity() {
                 ComandoServices.actualizarComando(
                     comandos,
                     currentComandoId!!,
-                    nombreComando = nombreComando,
-                    estadoComando = estadoComando,
-                    ubicacionComando = ubicacionComando,
+                    nombreComando,
+                    estadoComando,
+                    ubicacionComando,
                     brigadas = listOf(brigadaSeleccionada)
                 )
                 Toast.makeText(this, "Comando actualizado correctamente", Toast.LENGTH_SHORT).show()
                 isEditing = false
                 currentComandoId = null
             } else {
-                val nuevoComando = ComandoServices.crearComando(
+                val id = generarIdUnico()
+                ComandoServices.crearComando(
                     comandos,
-                    UUID.randomUUID().toString(),
+                    id,
                     nombreComando,
                     estadoComando,
                     ubicacionComando,
-                    "fundacionId",
-                    listOf(brigadaSeleccionada)
+                    fundacionId = "FUND01", // Assuming a default value for fundacionId
+                    brigadas = listOf(brigadaSeleccionada)
                 )
-                comandos.add(nuevoComando)
                 Toast.makeText(this, "Comando creado correctamente", Toast.LENGTH_SHORT).show()
             }
-
-            comandoAdapter.notifyDataSetChanged()
+            actualizarLista()
             limpiarFormulario()
+            comandoAdapter.notifyDataSetChanged()
         } catch (e: IllegalArgumentException) {
             Log.e("ComandoActivity", "Error saving command", e)
             Toast.makeText(this, "Error saving command: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -175,5 +175,9 @@ class ComandoActivity : AppCompatActivity() {
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    private fun actualizarLista() {
+        comandoAdapter.actualizarLista(ComandoServices.listarComandosActivos(comandos))
     }
 }

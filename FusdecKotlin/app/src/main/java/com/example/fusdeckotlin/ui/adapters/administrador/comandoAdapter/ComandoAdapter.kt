@@ -17,32 +17,34 @@ class ComandoAdapter(
 
     private val originalComandos = comandos.toMutableList()
 
-    inner class ComandoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val textIdComando: TextView = itemView.findViewById(R.id.textViewComandoId)
-        private val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
-        private val textUbicacion: TextView = itemView.findViewById(R.id.textViewUbicacion)
-        private val textEstado: TextView = itemView.findViewById(R.id.textViewEstado)
-        private val textFundacionId: TextView = itemView.findViewById(R.id.textViewFundacionId)
-        private val textBrigadas: TextView = itemView.findViewById(R.id.textViewBrigadas)
-        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
-        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+    class ComandoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textIdComando: TextView = itemView.findViewById(R.id.textIdComando)
+        val textNombre: TextView = itemView.findViewById(R.id.textNombre)
+        val textUbicacion: TextView = itemView.findViewById(R.id.textUbicacion)
+        val textEstado: TextView = itemView.findViewById(R.id.textEstado)
+        val textFundacionId: TextView = itemView.findViewById(R.id.textFundacionId)
+        val textBrigadas: TextView = itemView.findViewById(R.id.textBrigadas)
+        val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+    }
 
-        fun bind(comando: Comando) {
-            textIdComando.text = "ID: ${comando.getId()}"
-            textNombre.text = "Nombre: ${comando.getNombreComando()}"
-            textUbicacion.text = "Ubicación: ${comando.getUbicacionComando()}"
-            textEstado.text = "Estado: ${if (comando.getEstadoComando()) "Activo" else "Inactivo"}"
-            textFundacionId.text = "Fundación ID: ${comando.getFundacionId()}"
-            textBrigadas.text = "Brigadas: ${comando.getBrigadas().joinToString(", ")}"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComandoViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_comando, parent, false)
+        return ComandoViewHolder(view)
+    }
 
-            updateButton.setOnClickListener {
-                onUpdateClick(comando)
-            }
+    override fun onBindViewHolder(holder: ComandoViewHolder, position: Int) {
+        val comando = comandos[position]
+        holder.textIdComando.text = comando.getId()
+        holder.textNombre.text = comando.getNombreComando()
+        holder.textUbicacion.text = comando.getUbicacionComando()
+        holder.textEstado.text = if (comando.getEstadoComando()) "Activo" else "Inactivo"
+        holder.textFundacionId.text = comando.getFundacionId()
+        holder.textBrigadas.text = comando.getBrigadas().joinToString(", ")
 
-            deleteButton.setOnClickListener {
-                onDeleteClick(comando)
-            }
-        }
+        holder.updateButton.setOnClickListener { onUpdateClick(comando) }
+        holder.deleteButton.setOnClickListener { onDeleteClick(comando) }
     }
 
     fun filter(query: String?) {
@@ -55,14 +57,11 @@ class ComandoAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComandoViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comando, parent, false)
-        return ComandoViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ComandoViewHolder, position: Int) {
-        holder.bind(comandos[position])
-    }
-
     override fun getItemCount(): Int = comandos.size
+
+    fun actualizarLista(nuevosComandos: List<Comando>) {
+        comandos.clear()
+        comandos.addAll(nuevosComandos)
+        notifyDataSetChanged()
+    }
 }

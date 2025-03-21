@@ -11,10 +11,11 @@ class ColegioServices() {
             nombreColegio: String,
             emailColegio: String,
             estadoColegio: Boolean,
-            estudiantes: List<String>
+            estudiantes: List<String>,
+            direccionColegio: String
         ): Colegio {
-            if (nombreColegio.isBlank() || estudiantes.isEmpty()) {
-                throw IllegalArgumentException("Faltan campos requeridos: nombreColegio, estudiantes")
+            if (nombreColegio.isBlank() || estudiantes.isEmpty() || emailColegio.isBlank() || direccionColegio.isBlank()) {
+                throw IllegalArgumentException("Faltan campos requeridos: nombreColegio, estudiantes, direccion")
             }
 
             val nuevoColegio = Colegio(
@@ -22,11 +23,32 @@ class ColegioServices() {
                 nombreColegio = nombreColegio,
                 emailColegio = emailColegio,
                 estadoColegio = estadoColegio,
-                estudiantes = estudiantes
+                estudiantes = estudiantes,
+                direccionColegio = direccionColegio
             )
 
             colegios.add(nuevoColegio)
             return nuevoColegio
+        }
+
+        fun actualizarColegio(
+            colegios: MutableList<Colegio>,
+            id: String,
+            nombreColegio: String? = null,
+            emailColegio: String? = null,
+            estadoColegio: Boolean? = null,
+            estudiantes: List<String>? = null,
+            direccionColegio: String? = null
+        ): Colegio {
+            val colegio = colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
+
+            nombreColegio?.let { colegio.setNombreColegio(it) }
+            emailColegio?.let { colegio.setEmailColegio(it) }
+            estadoColegio?.let { colegio.setEstadoColegio(it) }
+            estudiantes?.let { colegio.setEstudiantes(it) }
+            direccionColegio?.let { colegio.setDireccionColegio(it) }
+
+            return colegio
         }
 
         fun listarColegiosActivos(colegios: List<Colegio>): List<Colegio> {
@@ -37,28 +59,9 @@ class ColegioServices() {
             return colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
         }
 
-        fun actualizarColegio(
-            colegios: MutableList<Colegio>,
-            id: String,
-            nombreColegio: String? = null,
-            emailColegio: String? = null,
-            estadoColegio: Boolean? = null,
-            estudiantes: List<String>? = null
-        ): Colegio {
-            val colegio = colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
-
-            nombreColegio?.let { colegio.setNombreColegio(it) }
-            emailColegio?.let { colegio.setEmailColegio(it) }
-            estadoColegio?.let { colegio.setEstadoColegio(it) }
-            estudiantes?.let { colegio.setEstudiantes(it) }
-
-            return colegio
-        }
-
-        fun desactivarColegio(colegios: MutableList<Colegio>, id: String): Colegio {
+        fun desactivarColegio(colegios: MutableList<Colegio>, id: String) {
             val colegio = colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
             colegio.setEstadoColegio(false)
-            return colegio
         }
     }
 }

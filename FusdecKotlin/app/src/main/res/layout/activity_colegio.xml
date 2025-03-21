@@ -60,6 +60,21 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Dirección Colegio"
+                    android:padding="8dp"/>
+            <EditText
+                    android:id="@+id/direccionColegioEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Dirección Colegio"
+                    android:layout_weight="1"
+                    android:padding="8dp"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Activo"
                     android:padding="8dp"/>
             <Switch

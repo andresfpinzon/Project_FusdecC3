@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.colegio
 
-
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -15,14 +14,13 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.administrador.colegioAdapter.ColegioAdapter
 import com.example.fusdeckotlin.services.administrativoService.colegio.ColegioServices
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
-import kotlin.toString
-
 
 class ColegioActivity : AppCompatActivity() {
 
     private lateinit var nombreColegioEditText: EditText
     private lateinit var emailColegioEditText: EditText
     private lateinit var estudiantesEditText: EditText
+    private lateinit var direccionColegioEditText: EditText
     private lateinit var estadoColegioswitch: Switch
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
@@ -42,6 +40,7 @@ class ColegioActivity : AppCompatActivity() {
         nombreColegioEditText = findViewById(R.id.nombreColegioEditText)
         emailColegioEditText = findViewById(R.id.emailColegioEditText)
         estudiantesEditText = findViewById(R.id.estudiantesEditText)
+        direccionColegioEditText = findViewById(R.id.direccionColegioEditText)
         estadoColegioswitch = findViewById(R.id.estadoColegioSwitch)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
@@ -50,9 +49,10 @@ class ColegioActivity : AppCompatActivity() {
 
         // Configurar RecyclerView
         adapter = ColegioAdapter(
-            ColegioServices.listarColegiosActivos(colegios)  as MutableList<Colegio>,
+            colegios,
             ::onUpdateClick,
-            ::onDeleteClick)
+            ::onDeleteClick
+        )
         colegiosRecyclerView.layoutManager = LinearLayoutManager(this)
         colegiosRecyclerView.adapter = adapter
 
@@ -86,9 +86,10 @@ class ColegioActivity : AppCompatActivity() {
         val nombreColegio = nombreColegioEditText.text.toString().trim()
         val emailColegio = emailColegioEditText.text.toString().trim()
         val estudiantes = estudiantesEditText.text.toString().trim()
-        val estadoColegio = estadoColegioswitch.isChecked.toString().toBoolean()
+        val direccionColegio = direccionColegioEditText.text.toString().trim()
+        val estadoColegio = estadoColegioswitch.isChecked
 
-        if (nombreColegio.isEmpty() || emailColegio.isEmpty() || estudiantes.isEmpty()) {
+        if (nombreColegio.isEmpty() || emailColegio.isEmpty() || estudiantes.isEmpty() || direccionColegio.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
@@ -101,7 +102,8 @@ class ColegioActivity : AppCompatActivity() {
                     nombreColegio,
                     emailColegio,
                     estadoColegio,
-                    estudiantes.split(",")
+                    estudiantes.split(","),
+                    direccionColegio
                 )
                 Toast.makeText(this, "Colegio actualizado correctamente", Toast.LENGTH_SHORT).show()
                 isEditing = false
@@ -113,7 +115,8 @@ class ColegioActivity : AppCompatActivity() {
                     nombreColegio,
                     emailColegio,
                     estadoColegio,
-                    estudiantes.split(",")
+                    estudiantes.split(","),
+                    direccionColegio
                 )
                 Toast.makeText(this, "Colegio creado correctamente", Toast.LENGTH_SHORT).show()
             }
@@ -128,7 +131,9 @@ class ColegioActivity : AppCompatActivity() {
         nombreColegioEditText.text.clear()
         emailColegioEditText.text.clear()
         estudiantesEditText.text.clear()
+        direccionColegioEditText.text.clear()
         estadoColegioswitch.isChecked = false
+
         isEditing = false
         currentColegioId = null
     }
@@ -139,6 +144,7 @@ class ColegioActivity : AppCompatActivity() {
         nombreColegioEditText.setText(colegio.getNombreColegio())
         emailColegioEditText.setText(colegio.getEmailColegio())
         estudiantesEditText.setText(colegio.getEstudiantes().joinToString(", "))
+        direccionColegioEditText.setText(colegio.getDireccionColegio())
         estadoColegioswitch.isChecked = colegio.getEstadoColegio()
     }
 
@@ -166,5 +172,6 @@ class ColegioActivity : AppCompatActivity() {
 
     private fun actualizarLista() {
         adapter.actualizarLista(ColegioServices.listarColegiosActivos(colegios))
+        adapter.notifyDataSetChanged()
     }
 }

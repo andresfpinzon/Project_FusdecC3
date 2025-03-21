@@ -13,7 +13,7 @@ class ColegioAdapter(
     private val colegios: MutableList<Colegio>,
     private val onUpdateClick: (Colegio) -> Unit,
     private val onDeleteClick: (Colegio) -> Unit
-) : RecyclerView.Adapter<ColegioAdapter.ColegioViewHolder>(){
+) : RecyclerView.Adapter<ColegioAdapter.ColegioViewHolder>() {
 
     private val originalColegios = colegios.toMutableList()
 
@@ -31,7 +31,7 @@ class ColegioAdapter(
         return ColegioViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ColegioViewHolder , position: Int) {
+    override fun onBindViewHolder(holder: ColegioViewHolder, position: Int) {
         val colegio = colegios[position]
         holder.textIdColegio.text = colegio.getId()
         holder.textNombre.text = colegio.getNombreColegio()
@@ -52,13 +52,11 @@ class ColegioAdapter(
         notifyDataSetChanged()
     }
 
-
-
     override fun getItemCount(): Int = colegios.size
 
     fun actualizarLista(nuevosColegios: List<Colegio>) {
+        colegios.clear()
         colegios.addAll(nuevosColegios)
         notifyDataSetChanged()
     }
-
 }

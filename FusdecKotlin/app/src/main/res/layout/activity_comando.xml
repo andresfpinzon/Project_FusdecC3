@@ -1,71 +1,52 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="16dp"
-              tools:context=".ui.activities.administrativo.comando.ComandoActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <EditText
-            android:id="@+id/nombreComandoEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre del Comando"
-            android:inputType="text" />
+        android:id="@+id/nombreComandoEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del Comando" />
 
     <EditText
-            android:id="@+id/ubicacionComandoEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ubicación del Comando"
-            android:inputType="text" />
+        android:id="@+id/ubicacionComandoEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ubicación del Comando" />
 
     <Spinner
-            android:id="@+id/brigadaSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+        android:id="@+id/brigadaSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Switch
-            android:id="@+id/estadoSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Estado Activo"
-            android:layout_marginTop="16dp" />
+        android:id="@+id/estadoSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estado" />
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+    <Button
+        android:id="@+id/confirmarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirmar" />
 
-        <Button
-                android:id="@+id/confirmarButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Confirmar" />
-
-        <Button
-                android:id="@+id/cancelarButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cancelar" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/cancelarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancelar" />
 
     <SearchView
-            android:id="@+id/searchViewComando"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:queryHint="Buscar Comando"
-            android:layout_marginTop="16dp"/>
+        android:id="@+id/searchViewComando"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="Buscar comando" />
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/comandosRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="16dp"/>
-
+    <RecyclerView
+        android:id="@+id/comandosRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

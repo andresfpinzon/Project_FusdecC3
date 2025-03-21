@@ -18,6 +18,7 @@ class BrigadaAdapter(
     private val originalBrigadas = brigadas.toMutableList()
 
     class BrigadaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textIdBrigada: TextView = itemView.findViewById(R.id.textViewBrigadaId)
         val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
         val textUbicacion: TextView = itemView.findViewById(R.id.textViewUbicacion)
         val textComandoId: TextView = itemView.findViewById(R.id.textViewComandoId)
@@ -25,6 +26,7 @@ class BrigadaAdapter(
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrigadaViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_brigada, parent, false)
@@ -33,6 +35,7 @@ class BrigadaAdapter(
 
     override fun onBindViewHolder(holder: BrigadaViewHolder, position: Int) {
         val brigada = brigadas[position]
+        holder.textIdBrigada.text = brigada.getId()
         holder.textNombre.text = brigada.getNombreBrigada()
         holder.textUbicacion.text = brigada.getUbicacionBrigada()
         holder.textComandoId.text = brigada.getComandoId()
@@ -55,6 +58,7 @@ class BrigadaAdapter(
     override fun getItemCount(): Int = brigadas.size
 
     fun actualizarLista(nuevasBrigadas: List<Brigada>) {
+        brigadas.clear()
         brigadas.addAll(nuevasBrigadas)
         notifyDataSetChanged()
     }

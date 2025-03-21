@@ -1,17 +1,19 @@
 package com.example.fusdeckotlin.models.administrativo.colegio
 
 data class Colegio(
-   private  val id: String,
-   private  var nombreColegio: String,
-   private  var emailColegio: String,
-   private  var estadoColegio: Boolean,
-   private  var estudiantes: List<String>
+    private val id: String,
+    private var nombreColegio: String,
+    private var emailColegio: String,
+    private var estadoColegio: Boolean,
+    private var estudiantes: List<String>,
+    private var direccionColegio: String
 ) {
     fun getId() = id
     fun getNombreColegio() = nombreColegio
     fun getEmailColegio() = emailColegio
     fun getEstadoColegio() = estadoColegio
     fun getEstudiantes() = estudiantes
+    fun getDireccionColegio() = direccionColegio
 
     fun setNombreColegio(nombre: String) {
         nombreColegio = nombre
@@ -29,13 +31,18 @@ data class Colegio(
         this.estudiantes = estudiantes
     }
 
-    companion object{
+    fun setDireccionColegio(direccion: String) {
+        direccionColegio = direccion
+    }
+
+    companion object {
         val colegio1 = Colegio(
             id = "COL01",
             nombreColegio = "Colegio 1",
             emailColegio = "mmc@gmail.com",
             estadoColegio = true,
-            estudiantes = listOf("EST01", "EST02")
+            estudiantes = listOf("EST01", "EST02"),
+            direccionColegio = "Direccion 1"
         )
 
         val colegio2 = Colegio(
@@ -43,11 +50,8 @@ data class Colegio(
             nombreColegio = "Colegio 2",
             emailColegio = "colegio2@gmail.com",
             estadoColegio = true,
-            estudiantes = listOf("EST03", "EST04")
+            estudiantes = listOf("EST03", "EST04"),
+            direccionColegio = "Direccion 2"
         )
-
-
     }
-
-
 }

@@ -16,7 +16,6 @@ import com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter.Brigada
 import com.example.fusdeckotlin.services.administrativoService.brigada.BrigadaServices
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 
-
 class BrigadaActivity : AppCompatActivity() {
 
     private lateinit var nombreBrigadaEditText: EditText
@@ -29,7 +28,7 @@ class BrigadaActivity : AppCompatActivity() {
     private lateinit var brigadasRecyclerView: RecyclerView
     private lateinit var searchView: SearchView
 
-    private val brigadas = mutableListOf(Brigada.brigada1, Brigada.brigada2)
+    private val brigadas = mutableListOf<Brigada>()
     private lateinit var adapter: BrigadaAdapter
 
     private var isEditing: Boolean = false
@@ -39,59 +38,57 @@ class BrigadaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_brigada)
 
-
         // Initialize views
-            nombreBrigadaEditText = findViewById(R.id.nombreBrigadaEditText)
-            ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
-            comandoIdEditText = findViewById(R.id.comandoIdEditText)
-            unidadesEditText = findViewById(R.id.unidadesEditText)
-            estadoSwitch = findViewById(R.id.estadoSwitch)
-            confirmarButton = findViewById(R.id.confirmarButton)
-            cancelarButton = findViewById(R.id.cancelarButton)
-            brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
-            searchView = findViewById(R.id.searchView)
+        nombreBrigadaEditText = findViewById(R.id.nombreBrigadaEditText)
+        ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
+        comandoIdEditText = findViewById(R.id.comandoIdEditText)
+        unidadesEditText = findViewById(R.id.unidadesEditText)
+        estadoSwitch = findViewById(R.id.estadoSwitch)
+        confirmarButton = findViewById(R.id.confirmarButton)
+        cancelarButton = findViewById(R.id.cancelarButton)
+        brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
+        searchView = findViewById(R.id.searchView)
 
-            // Configure RecyclerView for brigadas
-            adapter = BrigadaAdapter(
-                BrigadaServices.listarBrigadasActivas(brigadas) as MutableList<Brigada>,
-                ::onUpdateClick,
-                ::onDeleteClick
-            )
-            brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
-            brigadasRecyclerView.adapter = adapter
+        // Configure RecyclerView for brigadas
+        adapter = BrigadaAdapter(
+            brigadas,
+            ::onUpdateClick,
+            ::onDeleteClick
+        )
+        brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
+        brigadasRecyclerView.adapter = adapter
 
-            // Confirm button
-            confirmarButton.setOnClickListener {
-                guardarBrigada()
+        // Confirm button
+        confirmarButton.setOnClickListener {
+            guardarBrigada()
+        }
+
+        // Cancel button
+        cancelarButton.setOnClickListener {
+            finish()
+        }
+
+        // Configure SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
             }
 
-            // Cancel button
-            cancelarButton.setOnClickListener {
-                finish()
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter(newText)
+                return false
             }
-
-            // Configure SearchView
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    adapter.filter(newText)
-                    return false
-                }
-            })
+        })
     }
 
-    private fun generarIdUnico(): String = "BRIG-${brigadas.size + 1}"
+    private fun generarIdUnico(): String = "BRIG-${System.currentTimeMillis()}"
 
     private fun guardarBrigada() {
         val nombreBrigada = nombreBrigadaEditText.text.toString().trim()
         val ubicacionBrigada = ubicacionBrigadaEditText.text.toString().trim()
-        val estadoBrigada = estadoSwitch.isChecked.toString().toBoolean()
+        val estadoBrigada = estadoSwitch.isChecked
         val comandoId = comandoIdEditText.text.toString().trim()
         val unidades = unidadesEditText.text.toString().trim().split(",").map { it.trim() }
-
 
         if (nombreBrigada.isEmpty() || ubicacionBrigada.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
@@ -108,7 +105,6 @@ class BrigadaActivity : AppCompatActivity() {
                     comandoId,
                     unidades,
                     estadoBrigada
-
                 )
                 Toast.makeText(this, "Brigada actualizada correctamente", Toast.LENGTH_SHORT).show()
                 isEditing = false
@@ -120,7 +116,7 @@ class BrigadaActivity : AppCompatActivity() {
                     id,
                     nombreBrigada,
                     ubicacionBrigada,
-                    estadoBrigada = true,
+                    estadoBrigada,
                     comandoId,
                     unidades
                 )
@@ -130,9 +126,10 @@ class BrigadaActivity : AppCompatActivity() {
             limpiarFormulario()
         } catch (e: Exception) {
             Log.e("BrigadaActivity", "Error al guardar brigada", e)
-            Toast.makeText(this, "Error al gusrdar brigada  : ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Error al guardar brigada: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun limpiarFormulario() {
         nombreBrigadaEditText.text.clear()
@@ -163,7 +160,6 @@ class BrigadaActivity : AppCompatActivity() {
             try {
                 BrigadaServices.desactivarBrigada(brigadas, brigada.getId())
                 actualizarLista()
-                adapter.notifyDataSetChanged()
                 Toast.makeText(this, "Brigada eliminada correctamente", Toast.LENGTH_SHORT).show()
             } catch (e: NoSuchElementException) {
                 Toast.makeText(this, "Error deleting brigada: ${e.message}", Toast.LENGTH_SHORT).show()
