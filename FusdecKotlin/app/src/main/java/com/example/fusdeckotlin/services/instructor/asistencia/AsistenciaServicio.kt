@@ -1,7 +1,8 @@
 package com.example.fusdeckotlin.services.instructor.asistencia
 
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import java.util.*
+import java.time.LocalDate
+
 
 class AsistenciaServicio(){
 
@@ -10,7 +11,7 @@ class AsistenciaServicio(){
             asistencias: MutableList<Asistencia>,
             id: String,
             tituloAsistencia: String,
-            fechaAsistencia: Date,
+            fechaAsistencia: LocalDate,
             usuarioId: String,
             estadoAsistencia: Boolean = true,
             estudiantes: List<String> = emptyList()
@@ -44,7 +45,7 @@ class AsistenciaServicio(){
             asistencias: MutableList<Asistencia>,
             id: String,
             tituloAsistencia: String? = null,
-            fechaAsistencia: Date? = null,
+            fechaAsistencia: LocalDate? = null,
             usuarioId: String? = null,
             estadoAsistencia: Boolean? = null,
             estudiantes: List<String>? = null

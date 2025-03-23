@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.administrativoService.usuarioServices
+package com.example.fusdeckotlin.services.administrativo.usuario
 
 import models.administrativo.user.model.Usuario
 
@@ -37,7 +37,7 @@ class UsuarioServices {
 
 
         fun getAllUsersActive(usersDB: MutableList<Usuario>): List<Usuario>{
-                return usersDB.filter { it.getEstadoUsuario() }
+            return usersDB.filter { it.getEstadoUsuario() }
         }
 
 

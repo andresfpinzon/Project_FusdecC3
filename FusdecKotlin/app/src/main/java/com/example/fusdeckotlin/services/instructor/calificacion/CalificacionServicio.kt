@@ -1,6 +1,6 @@
 package com.example.fusdeckotlin.services.instructor.calificacion
 
-import models.instructor.calificacion.Calificacion
+import com.example.fusdeckotlin.models.instructor.calificacion.Calificacion
 
 class CalificacionServicio(){
     companion object{
@@ -32,11 +32,11 @@ class CalificacionServicio(){
         }
 
         fun listarCalificacionesActivas(calificaciones: List<Calificacion>): List<Calificacion> {
-            return calificaciones.filter { it.estadoCalificacion }
+            return calificaciones.filter { it.getEstadoCalificacion() }
         }
 
         fun buscarCalificacionPorId(calificaciones: List<Calificacion>, id: String): Calificacion {
-            return calificaciones.find { it.id == id } ?: throw NoSuchElementException("Calificación no encontrada")
+            return calificaciones.find { it.getId() == id } ?: throw NoSuchElementException("Calificación no encontrada")
         }
 
         fun actualizarCalificacion(
@@ -48,20 +48,20 @@ class CalificacionServicio(){
             estadoCalificacion: Boolean? = null,
             estudiantes: List<String>? = null
         ): Calificacion {
-            val calificacion = calificaciones.find { it.id == id } ?: throw NoSuchElementException("Calificación no encontrada")
+            val calificacion = calificaciones.find { it.getId() == id } ?: throw NoSuchElementException("Calificación no encontrada")
 
-            calificacion.tituloCalificacion = tituloCalificacion ?: calificacion.tituloCalificacion
-            calificacion.aprobado = aprobado ?: calificacion.aprobado
-            calificacion.usuarioId = usuarioId ?: calificacion.usuarioId
-            calificacion.estadoCalificacion = estadoCalificacion ?: calificacion.estadoCalificacion
-            calificacion.estudiantes = estudiantes ?: calificacion.estudiantes
+            tituloCalificacion?.let { calificacion.setTituloCalificacion(it) }
+            aprobado?.let {  calificacion.setAprobado(it)}
+            usuarioId?.let { calificacion.setUsuarioId(it) }
+            estadoCalificacion?.let { calificacion.setEstadoCalificacion(it) }
+            estudiantes?.let { calificacion.setEstudiantes(it) }
 
             return calificacion
         }
 
         fun desactivarCalificacion(calificaciones: MutableList<Calificacion>, id: String): Calificacion {
-            val calificacion = calificaciones.find { it.id == id } ?: throw NoSuchElementException("Calificación no encontrada")
-            calificacion.estadoCalificacion = false
+            val calificacion = calificaciones.find { it.getId()== id } ?: throw NoSuchElementException("Calificación no encontrada")
+            calificacion.setEstadoCalificacion(false)
             return calificacion
         }
 
