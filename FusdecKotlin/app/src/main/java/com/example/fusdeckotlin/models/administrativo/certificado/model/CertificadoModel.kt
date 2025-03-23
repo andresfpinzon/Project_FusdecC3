@@ -1,6 +1,5 @@
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.UUID
+package models.administrativo.c
+import java.util.*
 
 data class CertificadoModel(
     private val id: String = generarId(),

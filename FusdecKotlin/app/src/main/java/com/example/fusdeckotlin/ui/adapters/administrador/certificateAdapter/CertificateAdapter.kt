@@ -8,7 +8,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.ui.adapters.administrador.userAdapter.UserAdapter.UserViewHolder
 
 class CertificateAdapter(
     private val certificates: MutableList<CertificadoModel>,

@@ -6,15 +6,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
 >
-    <!-- Contenedor principal para los datos -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/dataContainer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="8dp">
+
 
         <!-- ID -->
         <TextView
@@ -109,41 +101,27 @@
 
 
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Botones de acción -->
-    <LinearLayout
-            android:id="@+id/actionButtonsC"
+    <ImageButton
+            android:id="@+id/updateButtonC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/baseline_refresh_24"
+            android:contentDescription="@string/update_button_description"
+            app:layout_constraintEnd_toStartOf="@id/deleteButtonC"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:gravity="center_vertical"
-            android:padding="8dp">
+            android:layout_marginEnd="8dp" />
 
-        <!-- Botón de actualización -->
-        <ImageButton
-                android:id="@+id/updateButtonC"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_refresh_24"
-                android:contentDescription="@string/update_button_description"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="4dp"
-                android:layout_marginEnd="8dp" />
+    <ImageButton
+            android:id="@+id/deleteButtonC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_delete_24"
+            android:contentDescription="@string/delete_button_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!-- Botón de eliminación -->
-        <ImageButton
-                android:id="@+id/deleteButtonC"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_delete_24"
-                android:contentDescription="@string/delete_button_description"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="4dp" />
-    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -73,7 +73,7 @@ class CertificateActivity : AppCompatActivity() {
 
         val certificateCreate = CertificadoServices.createCertificate(newCertificate)
 
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemChanged(certificates.size - 1)
 
         Toast.makeText(this, "Certificado guardado exitosamente", Toast.LENGTH_SHORT).show()
 
