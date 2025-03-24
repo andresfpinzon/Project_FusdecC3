@@ -27,6 +27,7 @@
         <activity android:name=".ui.activities.secretario.SecretarioActivity" />
         <activity android:name=".ui.activities.secretario.edicion.EdicionActivity" />
         <activity android:name=".ui.activities.secretario.horario.HorarioActivity" />
+        <activity android:name=".ui.activities.secretario.curso.CursoActivity" />
         <activity android:name=".ui.activities.root.RootActivity" />
         <activity android:name=".ui.activities.administrativo.user.UserActivity"/>
 
