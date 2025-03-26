@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.ui.adapters.administrador.certificateAdapter
 
-import CertificadoModel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +7,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import models.administrativo.c.CertificadoModel
 
 class CertificateAdapter(
     private val certificates: MutableList<CertificadoModel>,

@@ -29,6 +29,8 @@
         <activity android:name=".ui.activities.root.RootActivity" />
         <activity android:name=".ui.activities.administrativo.user.UserActivity"/>
         <activity android:name=".ui.activities.administrativo.certificate.CertificateActivity"/>
+        <activity android:name=".ui.activities.administrativo.auditoria.AuditoriaActivity"/>
+
 
     </application>
 

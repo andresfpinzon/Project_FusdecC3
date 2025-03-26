@@ -1,6 +1,7 @@
-package com.example.fusdeckotlin.services.administrativoService.certificadoServices
+package com.example.fusdeckotlin.services.administrativo.certificate
 
-import CertificadoModel
+import models.administrativo.c.CertificadoModel
+
 
 class CertificadoServices {
     companion object{

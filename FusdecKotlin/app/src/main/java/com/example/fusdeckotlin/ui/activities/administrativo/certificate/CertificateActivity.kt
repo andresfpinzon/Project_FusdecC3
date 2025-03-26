@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.certificate
 
-import CertificadoModel
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -8,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.services.administrativoService.certificadoServices.CertificadoServices
+import com.example.fusdeckotlin.services.administrativo.certificate.CertificadoServices
+
 import com.example.fusdeckotlin.ui.adapters.administrador.certificateAdapter.CertificateAdapter
 import com.google.android.material.textfield.TextInputEditText
+import models.administrativo.c.CertificadoModel
 
 class CertificateActivity : AppCompatActivity() {
 

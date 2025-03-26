@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.ui.activities.administrativo.auditoria.AuditoriaActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.certificate.CertificateActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.user.UserActivity
 
@@ -28,8 +29,8 @@ class AdministrativoActivity : AppCompatActivity() {
 
 
         auditoriaButton.setOnClickListener {
-
-            Toast.makeText(this, "Módulo de Auditoría", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AuditoriaActivity::class.java)
+            startActivity(intent)
         }
 
         brigadaButton.setOnClickListener {
