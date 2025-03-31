@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.AdministrativoActivity
+import com.example.fusdeckotlin.ui.activities.general.login.LoginActivity
 import com.example.fusdeckotlin.ui.activities.instructor.InstructorActivity
 import com.example.fusdeckotlin.ui.activities.root.RootActivity
 import com.example.fusdeckotlin.ui.activities.secretario.SecretarioActivity
@@ -19,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         val administrativoButton: Button = findViewById(R.id.administrativoButton)
         val instructorButton: Button = findViewById(R.id.instructorButton)
         val secretarioButton: Button = findViewById(R.id.secretarioButton)
+        val loginButton: Button = findViewById(R.id.loginButton)
+
         val rootButton: Button = findViewById(R.id.rootButton)
 
         administrativoButton.setOnClickListener {
@@ -31,6 +34,18 @@ class MainActivity : AppCompatActivity() {
 
         secretarioButton.setOnClickListener {
             abrirPantalla("Secretario")
+        }
+
+        loginButton.setOnClickListener {
+            abrirPantalla("Secretario")
+        }
+
+        loginButton.setOnClickListener {
+            // Cambiamos esto para que vaya a LoginActivity
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            // Opcional: agregar animación de transición
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
 
         rootButton.setOnClickListener {
