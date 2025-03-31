@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.administrativoService.comando
+package com.example.fusdeckotlin.services.administrativo.comando
 
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
 

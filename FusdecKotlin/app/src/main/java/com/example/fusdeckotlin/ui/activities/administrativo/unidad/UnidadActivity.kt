@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.administrador.unidadAdapter.UnidadAdapter
-import com.example.fusdeckotlin.services.administrativoService.unidad.UnidadServices
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 
 class UnidadActivity : AppCompatActivity() {

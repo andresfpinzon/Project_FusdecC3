@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.administrativoService.unidad
+package com.example.fusdeckotlin.services.administrativo.unidad
 
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 

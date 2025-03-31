@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter.BrigadaAdapter
-import com.example.fusdeckotlin.services.administrativoService.brigada.BrigadaServices
+import com.example.fusdeckotlin.services.administrativo.brigada.BrigadaServices
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 
 class BrigadaActivity : AppCompatActivity() {

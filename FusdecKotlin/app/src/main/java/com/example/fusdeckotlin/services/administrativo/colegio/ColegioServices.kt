@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.administrativoService.colegio
+package com.example.fusdeckotlin.services.administrativo.colegio
 
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
 

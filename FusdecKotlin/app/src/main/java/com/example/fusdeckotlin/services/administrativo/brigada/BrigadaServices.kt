@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.administrativoService.brigada
+package com.example.fusdeckotlin.services.administrativo.brigada
 
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 

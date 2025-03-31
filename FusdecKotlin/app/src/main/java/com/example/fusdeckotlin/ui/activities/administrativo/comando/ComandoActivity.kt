@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
-import com.example.fusdeckotlin.services.administrativoService.comando.ComandoServices
+import com.example.fusdeckotlin.services.administrativo.comando.ComandoServices
 import com.example.fusdeckotlin.ui.adapters.administrador.comandoAdapter.ComandoAdapter
 
 class ComandoActivity : AppCompatActivity() {
