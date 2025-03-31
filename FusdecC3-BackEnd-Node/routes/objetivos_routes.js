@@ -118,9 +118,9 @@ router.post('/', verifyJWT, verifyRole(['Secretario', 'Root']), objetivoControll
  *             $ref: '#/components/schemas/Objetivo'
  *           example:
  *             tituloObjetivo: "objetivo 1"
- *               descripcionObjetivo: "el estudiante puede prevenir una cituacion de riesgo."
- *               estadoObjetivo: true
- *               cursoId: "63f1b6d09f1b2c0012341234"
+ *             descripcionObjetivo: "el estudiante puede prevenir una cituacion de riesgo."
+ *             estadoObjetivo: true
+ *             cursoId: "63f1b6d09f1b2c0012341234"
  *     responses:
  *       200:
  *         description: Objetivo actualizado correctamente.
