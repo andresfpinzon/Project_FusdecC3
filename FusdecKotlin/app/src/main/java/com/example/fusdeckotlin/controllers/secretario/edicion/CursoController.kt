@@ -1,5 +1,7 @@
-package models.secretario.curso
+/*package com.example.fusdeckotlin.controllers.secretario.edicion
 
+import models.secretario.curso.CursoModel
+import com.example.fusdeckotlin.services.secretario.curso.CursoServices
 import java.util.Scanner
 
 class CursoController {
@@ -108,4 +110,4 @@ class CursoController {
             }
         }
     }
-}
+}*/

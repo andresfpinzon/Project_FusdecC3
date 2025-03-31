@@ -1,5 +1,6 @@
-package models.secretario.horario
+/*package com.example.fusdeckotlin.controllers.secretario.edicion
 
+import com.example.fusdeckotlin.services.secretario.horario.HorarioServices
 import java.util.Scanner
 
 class HorarioController {
@@ -113,3 +114,4 @@ class HorarioController {
         }
     }
 }
+*/

@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.services.secretario.edicion
 
-import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import models.secretario.edicion.Edicion
 import java.util.*
 

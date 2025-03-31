@@ -26,7 +26,13 @@
         <activity android:name=".ui.activities.administrativo.AdministrativoActivity" />
         <activity android:name=".ui.activities.secretario.SecretarioActivity" />
         <activity android:name=".ui.activities.secretario.edicion.EdicionActivity" />
+        <activity android:name=".ui.activities.secretario.horario.HorarioActivity" />
+        <activity android:name=".ui.activities.secretario.curso.CursoActivity" />
         <activity android:name=".ui.activities.root.RootActivity" />
+        <activity android:name=".ui.activities.administrativo.comando.ComandoActivity"/>
+        <activity android:name=".ui.activities.administrativo.brigada.BrigadaActivity"/>
+        <activity android:name=".ui.activities.administrativo.unidad.UnidadActivity"/>
+        <activity android:name=".ui.activities.administrativo.colegio.ColegioActivity"/>
         <activity android:name=".ui.activities.administrativo.user.UserActivity"/>
         <activity android:name=".ui.activities.administrativo.certificate.CertificateActivity"/>
         <activity android:name=".ui.activities.administrativo.auditoria.AuditoriaActivity"/>

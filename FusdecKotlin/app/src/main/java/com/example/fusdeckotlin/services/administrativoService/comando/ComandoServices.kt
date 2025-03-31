@@ -1,21 +1,21 @@
-package models.administrativo.comando
+package com.example.fusdeckotlin.services.administrativoService.comando
 
-import java.util.*
+import com.example.fusdeckotlin.models.administrativo.comando.Comando
 
-class ComandoServicio(){
+class ComandoServices {
 
-    companion object{
+    companion object {
         fun crearComando(
             comandos: MutableList<Comando>,
             id: String,
             nombreComando: String,
-            estadoComando: Boolean,
+            estadoComando: Boolean = true,
             ubicacionComando: String,
             fundacionId: String,
-            brigadas: List<String>
+            brigadas: List<String> = emptyList()
         ): Comando {
-            if (nombreComando.isBlank() || ubicacionComando.isBlank() || brigadas.isEmpty()) {
-                throw IllegalArgumentException("Faltan campos requeridos: nombreComando, ubicacionComando, brigadas")
+            if (nombreComando.isBlank() || brigadas.isEmpty()) {
+                throw IllegalArgumentException("Faltan campos requeridos: nombreComando, brigadas")
             }
 
             val nuevoComando = Comando(
@@ -30,11 +30,13 @@ class ComandoServicio(){
             comandos.add(nuevoComando)
             return nuevoComando
         }
+
         fun listarComandosActivos(comandos: List<Comando>): List<Comando> {
-            return comandos.filter { it.estadoComando }
+            return comandos.filter { it.getEstadoComando() }
         }
+
         fun obtenerComandoPorId(comandos: List<Comando>, id: String): Comando {
-            return comandos.find { it.id == id } ?: throw NoSuchElementException("Comando no encontrado")
+            return comandos.find { it.getId() == id } ?: throw NoSuchElementException("Comando no encontrado")
         }
 
         fun actualizarComando(
@@ -46,20 +48,20 @@ class ComandoServicio(){
             fundacionId: String? = null,
             brigadas: List<String>? = null
         ): Comando {
-            val comando = comandos.find { it.id == id } ?: throw NoSuchElementException("Comando no encontrado")
+            val comando = comandos.find { it.getId() == id } ?: throw NoSuchElementException("Comando no encontrado")
 
-            comando.nombreComando = nombreComando ?: comando.nombreComando
-            comando.estadoComando = estadoComando ?: comando.estadoComando
-            comando.ubicacionComando = ubicacionComando ?: comando.ubicacionComando
-            comando.fundacionId = fundacionId ?: comando.fundacionId
-            comando.brigadas = brigadas ?: comando.brigadas
+            nombreComando?.let { comando.setNombreComando(it) }
+            estadoComando?.let { comando.setEstadoComando(it) }
+            ubicacionComando?.let { comando.setUbicacionComando(it) }
+            fundacionId?.let { comando.setFundacionId(it) }
+            brigadas?.let { comando.setBrigadas(it) }
 
             return comando
         }
 
         fun desactivarComando(comandos: MutableList<Comando>, id: String): Comando {
-            val comando = comandos.find { it.id == id } ?: throw NoSuchElementException("Comando no encontrado")
-            comando.estadoComando = false
+            val comando = comandos.find { it.getId() == id } ?: throw NoSuchElementException("Comando no encontrado")
+            comando.setEstadoComando(false)
             return comando
         }
     }

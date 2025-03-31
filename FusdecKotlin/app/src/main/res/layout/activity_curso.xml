@@ -8,7 +8,7 @@
             android:id="@+id/tituloFormulario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Formulario edicion"
+            android:text="Formulario curso"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -17,10 +17,10 @@
             android:layout_marginBottom="30dp"/>
 
     <TextView
-            android:id="@+id/edicionTitulo"
+            android:id="@+id/cursoTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Título de la edición"
+            android:text="Título del curso"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -29,7 +29,7 @@
             android:layout_marginBottom="1dp"/>
 
     <EditText
-            android:id="@+id/tituloEdicion"
+            android:id="@+id/tituloCurso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Ingrese el título"
@@ -41,10 +41,10 @@
             android:layout_marginBottom="24dp"/>
 
     <TextView
-            android:id="@+id/edicionFechaInicio"
+            android:id="@+id/cursodescripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fecha de inicio"
+            android:text="Descripción"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -54,10 +54,10 @@
 
 
     <EditText
-            android:id="@+id/fechaInicioEdicion"
+            android:id="@+id/descripcionCurso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha inicio (yyyy-MM-dd)"
+            android:hint="Ingrese el título"
             android:inputType="text"
             android:ems="10"
             android:gravity="center"
@@ -66,10 +66,10 @@
             android:layout_marginBottom="24dp"/>
 
     <TextView
-            android:id="@+id/edicionFechaFin"
+            android:id="@+id/cursoIntensidadHoraria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fecha de finalización"
+            android:text="Intencidad Horaria"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -78,10 +78,10 @@
             android:layout_marginBottom="1dp"/>
 
     <EditText
-            android:id="@+id/fechaFinEdicion"
+            android:id="@+id/intensidadHorariaCurso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha fin (yyyy-MM-dd)"
+            android:hint="Ingrese la intencidad"
             android:inputType="text"
             android:ems="10"
             android:gravity="center"
@@ -90,10 +90,10 @@
             android:layout_marginBottom="24dp"/>
 
     <TextView
-            android:id="@+id/edicionCurso"
+            android:id="@+id/cursoFundacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Curso de la edicion"
+            android:text="Fundación del curso"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -103,10 +103,10 @@
 
 
     <EditText
-            android:id="@+id/cursoId"
+            android:id="@+id/fundacionId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ID del curso"
+            android:hint="ID de la fundación"
             android:inputType="text"
             android:ems="10"
             android:gravity="center"
@@ -117,7 +117,7 @@
     <!-- faltan horarios y estudiantes -->
 
     <Button
-            android:id="@+id/confirmarEdicionButton"
+            android:id="@+id/confirmarCursoButton"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Confirmar"
@@ -125,7 +125,7 @@
             android:layout_marginBottom="12dp"/>
 
     <Button
-            android:id="@+id/cancelarEdicionButton"
+            android:id="@+id/cancelarCursoButton"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Cancelar"
@@ -133,7 +133,7 @@
 
     <!-- Lista de Ediciones -->
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/edicionesRecyclerView"
+            android:id="@+id/cursosRecyclerView"
             android:layout_width="362dp"
             android:layout_height="120dp"
             app:layout_constraintTop_toBottomOf="@id/cancelarButton"

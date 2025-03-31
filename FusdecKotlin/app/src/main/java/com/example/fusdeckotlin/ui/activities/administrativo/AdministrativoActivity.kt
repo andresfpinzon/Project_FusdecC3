@@ -10,6 +10,10 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.activities.administrativo.auditoria.AuditoriaActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.certificate.CertificateActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.user.UserActivity
+import com.example.fusdeckotlin.ui.activities.administrativo.brigada.BrigadaActivity
+import com.example.fusdeckotlin.ui.activities.administrativo.colegio.ColegioActivity
+import com.example.fusdeckotlin.ui.activities.administrativo.comando.ComandoActivity
+import com.example.fusdeckotlin.ui.activities.administrativo.unidad.UnidadActivity
 
 class AdministrativoActivity : AppCompatActivity() {
 
@@ -27,6 +31,22 @@ class AdministrativoActivity : AppCompatActivity() {
         val userButton: Button = findViewById(R.id.userButton)
         val volverButton: Button = findViewById(R.id.volverButton)
 
+        val buttons = listOf(userButton, colegioButton, comandoButton, brigadaButton, unidadButton, volverButton)
+
+        buttons.forEach { button ->
+            button.setOnClickListener {
+                val intent = when (button.id) {
+                    R.id.userButton -> Intent(this, UserActivity::class.java)
+                    R.id.colegioButton -> Intent(this, ColegioActivity::class.java)
+                    R.id.comandoButton -> Intent(this, ComandoActivity::class.java)
+                    R.id.brigadaButton -> Intent(this, BrigadaActivity::class.java)
+                    R.id.unidadButton -> Intent(this, UnidadActivity::class.java)
+                    R.id.volverButton -> Intent(this, MainActivity::class.java)
+                    else -> null
+                }
+                intent?.let { startActivity(it) }
+                animateButton(button)
+            }
 
         auditoriaButton.setOnClickListener {
             val intent = Intent(this, AuditoriaActivity::class.java)
@@ -53,7 +73,11 @@ class AdministrativoActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
 
-
+    private fun animateButton(button: Button) {
+        val animator = ObjectAnimator.ofFloat(button, "translationY", 0f, -10f, 0f)
+        animator.duration = 300
+        animator.start()
     }
 }

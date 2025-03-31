@@ -7,9 +7,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.ui.activities.instructor.calificacion.CalificacionActivity
+import com.example.fusdeckotlin.ui.activities.secretario.curso.CursoActivity
 import com.example.fusdeckotlin.ui.activities.secretario.edicion.EdicionActivity
-import models.secretario.edicion.Edicion
+import com.example.fusdeckotlin.ui.activities.secretario.horario.HorarioActivity
 
 class SecretarioActivity : AppCompatActivity() {
 
@@ -27,12 +27,20 @@ class SecretarioActivity : AppCompatActivity() {
 
         cursoButton.setOnClickListener {
 
-            Toast.makeText(this, "Módulo de Curso", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, CursoActivity::class.java)
+            startActivity(intent)
         }
 
         edicionButton.setOnClickListener {
 
             val intent = Intent(this, EdicionActivity::class.java)
+            startActivity(intent)
+
+        }
+
+        horarioButton.setOnClickListener {
+
+            val intent = Intent(this, HorarioActivity::class.java)
             startActivity(intent)
 
         }
