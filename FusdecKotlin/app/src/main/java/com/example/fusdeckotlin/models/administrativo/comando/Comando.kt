@@ -1,30 +1,57 @@
-package models.administrativo.comando
+package com.example.fusdeckotlin.models.administrativo.comando
 
-class Comando(
-    val id: String,
-    var nombreComando: String,
-    var estadoComando: Boolean,
-    var ubicacionComando: String,
-    var fundacionId: String,
-    var brigadas: List<String>
-){
-    companion object {
+data class Comando(
+    private val id: String,
+    private var nombreComando: String,
+    private var estadoComando: Boolean,
+    private var ubicacionComando: String,
+    private var fundacionId: String,
+    private var brigadas: List<String>
+) {
+    fun getId() = id
+    fun getNombreComando() = nombreComando
+    fun getEstadoComando() = estadoComando
+    fun getUbicacionComando() = ubicacionComando
+    fun getFundacionId() = fundacionId
+    fun getBrigadas() = brigadas
+
+    fun setNombreComando(nombre: String) {
+        nombreComando = nombre
+    }
+
+    fun setEstadoComando(estado: Boolean) {
+        estadoComando = estado
+    }
+
+    fun setUbicacionComando(ubicacion: String) {
+        ubicacionComando = ubicacion
+    }
+
+    fun setFundacionId(fundacion: String) {
+        fundacionId = fundacion
+    }
+
+    fun setBrigadas(brigadas: List<String>) {
+        this.brigadas = brigadas
+    }
+
+    companion object{
         val comando1 = Comando(
-            id = "COM12391723-91",
+            id = "COM01",
             nombreComando = "Comando 1",
             estadoComando = true,
-            ubicacionComando = "Calle 123",
-            fundacionId = "FUN123456",
-            brigadas = listOf("1", "2")
+            ubicacionComando = "Ubicación 1",
+            fundacionId = "FUND01",
+            brigadas = listOf("BRIG01", "BRIG02")
         )
 
         val comando2 = Comando(
-            id = "COM12391723-19",
+            id = "COM02",
             nombreComando = "Comando 2",
             estadoComando = true,
-            ubicacionComando = "Calle 456",
-            fundacionId = "FUN654321",
-            brigadas = listOf("2", "3")
+            ubicacionComando = "Ubicación 2",
+            fundacionId = "FUND02",
+            brigadas = listOf("BRIG03", "BRIG04")
         )
     }
 }

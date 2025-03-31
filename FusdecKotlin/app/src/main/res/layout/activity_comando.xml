@@ -1,0 +1,91 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".ui.activities.administrativo.comando.ComandoActivity">
+
+    <EditText
+            android:id="@+id/nombreComandoEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del Comando"
+            android:inputType="text" />
+
+    <Spinner
+            android:id="@+id/brigadaSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <EditText
+            android:id="@+id/ubicacionComandoEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ubicación del Comando"
+            android:inputType="text" />
+
+    <EditText
+            android:id="@+id/usuarioIdEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ID del Usuario"
+            android:inputType="text" />
+
+    <EditText
+            android:id="@+id/comandosEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Comandos (separados por comas)"
+            android:inputType="text" />
+
+    <EditText
+            android:id="@+id/estudiantesEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Estudiantes (separados por comas)"
+            android:inputType="text" />
+
+    <Switch
+            android:id="@+id/estadoComandoSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estado Activo"
+            android:layout_marginTop="16dp" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+        <Button
+                android:id="@+id/confirmarButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Confirmar" />
+
+        <Button
+                android:id="@+id/cancelarButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancelar" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchViewComando"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Buscar comando"
+            android:layout_marginTop="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comandosRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp"/>
+</LinearLayout>

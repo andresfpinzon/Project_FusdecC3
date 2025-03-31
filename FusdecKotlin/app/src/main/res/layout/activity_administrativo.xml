@@ -1,71 +1,110 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:gravity="center"
-              android:padding="16dp">
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:context=".ui.activities.administrativo.AdministrativoActivity">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Módulo Administrativo"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <Button
-            android:id="@+id/auditoriaButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Auditoría"
-            android:layout_marginBottom="16dp"/>
+        <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Módulo Administrativo"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="#000000"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="32dp"/>
 
-    <Button
-            android:id="@+id/brigadaButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Brigada"
-            android:layout_marginBottom="16dp"/>
+        <Button
+                android:id="@+id/auditoriaButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Auditoría"
+                app:layout_constraintTop_toBottomOf="@id/titleTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"/>
 
-    <Button
-            android:id="@+id/certificadoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Certificado"
-            android:layout_marginBottom="16dp"/>
+        <Button
+                android:id="@+id/brigadaButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Brigada"
+                app:layout_constraintTop_toBottomOf="@id/auditoriaButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"/>
 
-    <Button
-            android:id="@+id/colegioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Colegio"
-            android:layout_marginBottom="16dp"/>
+        <Button
+                android:id="@+id/certificadoButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Certificado"
+                app:layout_constraintTop_toBottomOf="@id/brigadaButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"/>
 
-    <Button
-            android:id="@+id/comandoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comando"
-            android:layout_marginBottom="16dp"/>
+        <Button
+                android:id="@+id/colegioButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Colegio"
+                app:layout_constraintTop_toBottomOf="@id/certificadoButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"/>
 
-    <Button
-            android:id="@+id/unidadButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Unidad"
-            android:layout_marginBottom="16dp"/>
+        <Button
+                android:id="@+id/comandoButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Comando"
+                app:layout_constraintTop_toBottomOf="@id/colegioButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"/>
 
-    <Button
-            android:id="@+id/userButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User"/>
-    <Button
-            android:id="@+id/volverButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Volver"
-            android:layout_marginTop="24dp"/>
+        <Button
+                android:id="@+id/unidadButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Unidad"
+                app:layout_constraintTop_toBottomOf="@id/comandoButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"
+                android:layout_marginTop="304dp"
+                app:layout_constraintHorizontal_bias="0.0"/>
+        <Button
+                android:id="@+id/userButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="User"
+                app:layout_constraintTop_toBottomOf="@id/unidadButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"/>
 
-</LinearLayout>
+        <Button
+                android:id="@+id/volverButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Volver"
+                app:layout_constraintTop_toBottomOf="@id/userButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="8dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,38 +1,65 @@
-package models.administrativo.unidad
+package com.example.fusdeckotlin.models.administrativo.unidad
 
-class Unidad(
-    val id: String,
-    var nombreUnidad: String,
-    var estadoUnidad: Boolean,
-    var brigadaId: String,
-    var usuarioId: String,
-    var estudiantes: List<String>
-){
+data class Unidad(
+    private val id: String,
+    private var nombreUnidad: String,
+    private var brigadaId: String,
+    private var estadoUnidad: Boolean,
+    private var usuarioId: String,
+    private var comandos: List<String>,
+    private var estudiantes: List<String>
+) {
+    fun getId() = id
+    fun getNombreUnidad() = nombreUnidad
+    fun getBrigadaId() = brigadaId
+    fun getEstadoUnidad() = estadoUnidad
+    fun getUsuarioId() = usuarioId
+    fun getComandos() = comandos
+    fun getEstudiantes() = estudiantes
 
-    companion object{
-        val Unidad1 = Unidad(
-            id = "UNI12391723-91",
+    fun setNombreUnidad(nombre: String) {
+        nombreUnidad = nombre
+    }
+
+    fun setBrigadaId(brigada: String) {
+        brigadaId = brigada
+    }
+
+    fun setEstadoUnidad(estado: Boolean) {
+        estadoUnidad = estado
+    }
+
+    fun setUsuarioId(usuario: String) {
+        usuarioId = usuario
+    }
+
+    fun setComandos(comandos: List<String>) {
+        this.comandos = comandos
+    }
+
+    fun setEstudiantes(estudiantes: List<String>) {
+        this.estudiantes = estudiantes
+    }
+
+    companion object {
+        val unidad1 = Unidad(
+            id = "UNI01",
             nombreUnidad = "Unidad 1",
+            brigadaId = "BRIG01",
             estadoUnidad = true,
-            brigadaId = "BRIG12391723-91",
-            usuarioId = "USU123456",
-            estudiantes = listOf("1", "2")
+            usuarioId = "USU01",
+            comandos = listOf("COM01", "COM02"),
+            estudiantes = listOf("andres", "ramiro")
         )
-        val Unidad2 = Unidad(
-            id = "UNI12391723-19",
+
+        val unidad2 = Unidad(
+            id = "UNI02",
             nombreUnidad = "Unidad 2",
+            brigadaId = "BRIG02",
             estadoUnidad = true,
-            brigadaId = "BRIG12391723-19",
-            usuarioId = "USU654321",
-            estudiantes = listOf("2", "3")
-        )
-        val Unidad3 = Unidad(
-            id = "UNI12391723-92",
-            nombreUnidad = "Unidad 3",
-            estadoUnidad = true,
-            brigadaId = "BRIG12391723-92",
-            usuarioId = "USU123456",
-            estudiantes = listOf("1", "3")
+            usuarioId = "USU02",
+            comandos = listOf("COM03", "COM04"),
+            estudiantes = listOf("andres", "ramiros")
         )
     }
 }
