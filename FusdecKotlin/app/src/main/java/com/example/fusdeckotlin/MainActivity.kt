@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.AdministrativoActivity
 import com.example.fusdeckotlin.ui.activities.instructor.InstructorActivity
-import com.example.fusdeckotlin.ui.activities.root.RootActivity
+import com.example.fusdeckotlin.ui.activities.root.`FundacionActivity.kt`
 import com.example.fusdeckotlin.ui.activities.secretario.SecretarioActivity
 
 class MainActivity : AppCompatActivity() {
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             "Root" -> {
-                val intent = Intent(this, RootActivity::class.java)
+                val intent = Intent(this, `FundacionActivity.kt`::class.java)
                 startActivity(intent)
             }
             else -> {
