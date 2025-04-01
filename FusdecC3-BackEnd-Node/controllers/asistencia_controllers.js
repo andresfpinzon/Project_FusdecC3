@@ -29,18 +29,25 @@ const crearAsistencia = async (req, res) => {
   }
 }
 
-// Controlador para actualizar una asistencia
 const actualizarAsistencia = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   try {
-    const { error } = asistenciaSchemaValidation.validate(req.body)
+    const { error } = asistenciaSchemaValidation.validate(req.body);
     if (error) {
-      return res.status(400).json({ error: error.details[0].message })
+      return res.status(400).json({ error: error.details[0].message });
     }
-    const asistenciaActualizada = await logic.actualizarAsistencia(id, req.body)
-    res.json(asistenciaActualizada)
+
+    // Si vienen objetos completos, extrae solo los IDs
+    const body = {
+      ...req.body,
+      estudiantes: req.body.estudiantes?.map(e => e._id || e) // Extrae IDs si son objetos
+    };
+
+    const asistenciaActualizada = await logic.actualizarAsistencia(id, body);
+    res.json(asistenciaActualizada);
   } catch (error) {
-    res.status(500).json({ error: "Error interno del servidor" })
+    console.error('Error en controlador:', error);
+    res.status(500).json({ error: "Error interno del servidor", details: error.message });
   }
 }
 

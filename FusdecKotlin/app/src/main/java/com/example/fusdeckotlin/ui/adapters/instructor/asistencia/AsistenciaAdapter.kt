@@ -32,10 +32,12 @@ class AsistenciaAdapter(
 
     override fun onBindViewHolder(holder: AsistenciaViewHolder, position: Int) {
         val asistencia = asistencias[position]
-        holder.tituloTextView.text = asistencia.getTituloAsistencia()
-        holder.fechaTextView.text = asistencia.getFechaAsistencia().toString()
-        holder.usuarioIdTextView.text = asistencia.getUsuarioId()
-        holder.estudiantesTextView.text = asistencia.getEstudiantes().joinToString(", ")
+        holder.tituloTextView.text = asistencia.tituloAsistencia
+        holder.fechaTextView.text = asistencia.fechaAsistencia.toString()
+        holder.usuarioIdTextView.text = asistencia.usuarioId
+        holder.estudiantesTextView.text = asistencia.estudiantes.joinToString(", ") {
+            "${it.nombreEstudiante} ${it.apellidoEstudiante}"
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(asistencia) }
         holder.deleteButton.setOnClickListener { onDeleteClick(asistencia) }
@@ -48,3 +50,4 @@ class AsistenciaAdapter(
         notifyDataSetChanged()
     }
 }
+

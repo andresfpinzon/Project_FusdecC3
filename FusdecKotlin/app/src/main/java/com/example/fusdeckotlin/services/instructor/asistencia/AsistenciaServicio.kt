@@ -1,56 +1,93 @@
 package com.example.fusdeckotlin.services.instructor.asistencia
 
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
-import com.example.fusdeckotlin.config.retrofit.RetrofitClient
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import java.time.LocalDate
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
-object AsistenciaService {
-    private val api: AsistenciaApi by lazy { RetrofitClient.asistenciaApi }
+class AsistenciaServicio(private val api: AsistenciaApi) {
 
-    suspend fun crearAsistencia(
-        tituloAsistencia: String,
-        fechaAsistencia: LocalDate,
-        usuarioId: String,
-        estudiantes: List<String>
-    ): Response<Asistencia> {
-        val asistencia = Asistencia(
-            tituloAsistencia = tituloAsistencia,
-            fechaAsistencia = fechaAsistencia.toString(),
-            usuarioId = usuarioId,
-            estudiantes = estudiantes
-        )
-        return api.crearAsistencia(asistencia)
+    suspend fun listarAsistencias(): Response<List<Asistencia>> {
+        return try {
+            val response = api.listarAsistencias()
+            if (!response.isSuccessful) {
+                // Log de error si la respuesta de la API no es exitosa
+                println("Error al obtener asistencias: ${response.code()} - ${response.errorBody()?.string()}")
+            }
+            response
+        } catch (e: Exception) {
+            e.printStackTrace()
+            println("Excepción en listarAsistencias: ${e.message}")
+            Response.success(emptyList()) // Devuelve una lista vacía en caso de error
+        }
     }
 
-    suspend fun listarAsistenciasActivas(): Response<List<Asistencia>> {
-        // El filtrado de activas podría hacerse en el backend o aquí
-        return api.listarAsistencias()
-    }
 
     suspend fun obtenerAsistenciaPorId(id: String): Response<Asistencia> {
-        return api.obtenerAsistenciaPorId(id)
+        return try {
+            api.obtenerAsistenciaPorId(id)
+        } catch (e: Exception) {
+            Response.error(500, e.message?.toResponseBody())
+        }
+    }
+
+    suspend fun crearAsistencia(
+        titulo: String,
+        fecha: String,
+        usuarioId: String,
+        estudiantesIds: List<String> // Solo IDs
+    ): Response<Asistencia> {
+        return try {
+            val asistencia = Asistencia(
+                tituloAsistencia = titulo,
+                fechaAsistencia = fecha,
+                usuarioId = usuarioId,
+                estudiantesIds = estudiantesIds
+            )
+            api.crearAsistencia(asistencia)
+        } catch (e: Exception) {
+            Response.error(500, e.message?.toResponseBody())
+        }
     }
 
     suspend fun actualizarAsistencia(
         id: String,
-        tituloAsistencia: String,
-        fechaAsistencia: LocalDate,
-        usuarioId: String,
-        estudiantes: List<String>
+        titulo: String? = null,
+        fecha: String? = null,
+        usuarioId: String? = null,
+        estado: Boolean? = null,
+        estudiantesIds: List<String>? = null // Solo IDs
     ): Response<Asistencia> {
-        val asistencia = Asistencia(
-            id = id,
-            tituloAsistencia = tituloAsistencia,
-            fechaAsistencia = fechaAsistencia.toString(),
-            usuarioId = usuarioId,
-            estudiantes = estudiantes
-        )
-        return api.actualizarAsistencia(id, asistencia)
+        return try {
+            // Obtener la asistencia existente primero
+            val response = api.obtenerAsistenciaPorId(id)
+            if (!response.isSuccessful) {
+                return response
+            }
+
+            val asistenciaExistente = response.body()!!
+
+            // Crear la asistencia actualizada
+            val asistenciaActualizada = Asistencia(
+                id = id,
+                tituloAsistencia = titulo ?: asistenciaExistente.tituloAsistencia,
+                fechaAsistencia = fecha ?: asistenciaExistente.fechaAsistencia,
+                usuarioId = usuarioId ?: asistenciaExistente.usuarioId,
+                estadoAsistencia = estado ?: asistenciaExistente.estadoAsistencia,
+                estudiantesIds = estudiantesIds ?: asistenciaExistente.estudiantesIds
+            )
+
+            api.actualizarAsistencia(id, asistenciaActualizada)
+        } catch (e: Exception) {
+            Response.error(500, e.message?.toResponseBody())
+        }
     }
 
     suspend fun desactivarAsistencia(id: String): Response<Asistencia> {
-        return api.desactivarAsistencia(id)
+        return try {
+            api.desactivarAsistencia(id)
+        } catch (e: Exception) {
+            Response.error(500, e.message?.toResponseBody())
+        }
     }
 }

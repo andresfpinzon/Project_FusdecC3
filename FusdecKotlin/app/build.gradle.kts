@@ -7,6 +7,10 @@ android {
     namespace = "com.example.fusdeckotlin"
     compileSdk = 35
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.example.fusdeckotlin"
         minSdk = 26
