@@ -3,6 +3,7 @@ package com.example.fusdeckotlin.ui.activities.instructor.asistencia
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -11,14 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.config.retrofit.RetrofitClient
-import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
-import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
-import com.example.fusdeckotlin.services.secretario.estudiante.EstudianteServicio
 import com.example.fusdeckotlin.ui.adapters.instructor.asistencia.AsistenciaAdapter
+import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
+import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
 import kotlinx.coroutines.launch
-import retrofit2.Response
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.*
 
 class AsistenciaActivity : AppCompatActivity() {
@@ -26,17 +26,13 @@ class AsistenciaActivity : AppCompatActivity() {
     private lateinit var tituloEditText: EditText
     private lateinit var fechaEditText: EditText
     private lateinit var usuarioIdEditText: EditText
-    private lateinit var estudiantesButton: Button
+    private lateinit var estudiantesEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var asistenciasRecyclerView: RecyclerView
 
+    private val asistenciaServicio = AsistenciaServicio()
     private lateinit var adapter: AsistenciaAdapter
-    private val asistenciaServicio = AsistenciaServicio(RetrofitClient.asistenciaApi)
-    private val estudianteServicio = EstudianteServicio(RetrofitClient.estudianteApi)
-
-    private var estudiantesSeleccionadosIds = mutableListOf<String>()
-    private var todosEstudiantes = listOf<Estudiante>()
 
     private var isEditing: Boolean = false
     private var currentAsistenciaId: String? = null
@@ -45,239 +41,198 @@ class AsistenciaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_asistencia)
 
-        initViews()
-        setupRecyclerView()
-        loadData()
-        setupListeners()
-    }
-
-    private fun initViews() {
+        // Inicializar vistas
         tituloEditText = findViewById(R.id.tituloEditText)
         fechaEditText = findViewById(R.id.fechaEditText)
         usuarioIdEditText = findViewById(R.id.usuarioIdEditText)
-        estudiantesButton = findViewById(R.id.estudiantesButton)
+        estudiantesEditText = findViewById(R.id.estudiantesEditText)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
         asistenciasRecyclerView = findViewById(R.id.asistenciasRecyclerView)
-    }
 
-    private fun setupRecyclerView() {
-        adapter = AsistenciaAdapter(emptyList(), ::onUpdateClick, ::onDeleteClick)
+        // Configurar RecyclerView
+        adapter = AsistenciaAdapter(
+            emptyList(),
+            ::onUpdateClick,
+            ::onDeleteClick
+        )
         asistenciasRecyclerView.layoutManager = LinearLayoutManager(this)
         asistenciasRecyclerView.adapter = adapter
-    }
 
-    private fun loadData() {
+        // Cargar asistencias al iniciar
         cargarAsistencias()
-        cargarEstudiantes()
-    }
 
-    private fun setupListeners() {
+        // Configurar DatePicker
         fechaEditText.setOnClickListener { mostrarDatePicker() }
-        estudiantesButton.setOnClickListener { mostrarDialogoSeleccionEstudiantes() }
-        confirmarButton.setOnClickListener { guardarAsistencia() }
-        cancelarButton.setOnClickListener { finish() }
-    }
 
-    private fun cargarEstudiantes() {
-        lifecycleScope.launch {
-            try {
-                val response = estudianteServicio.listarEstudiantes()
-                if (response.isSuccessful) {
-                    todosEstudiantes = response.body() ?: emptyList()
-                } else {
-                    showError("Error al cargar estudiantes: ${response.code()}")
-                }
-            } catch (e: Exception) {
-                showError("Excepción al cargar estudiantes: ${e.message}")
-            }
-        }
+        // Botón confirmar
+        confirmarButton.setOnClickListener { guardarAsistencia() }
+
+        // Botón cancelar
+        cancelarButton.setOnClickListener { finish() }
     }
 
     private fun cargarAsistencias() {
         lifecycleScope.launch {
-            try {
-                val response = asistenciaServicio.listarAsistencias()
-                if (response.isSuccessful) {
-                    val asistencias = response.body() ?: emptyList()
-                    if (asistencias.isEmpty()) {
-                        showMessage("No hay asistencias registradas")
-                    }
-                    adapter.actualizarLista(asistencias)
-                } else {
-                    val errorBody = response.errorBody()?.string() ?: "Error desconocido"
-                    showError("Error al cargar asistencias: ${response.code()} - $errorBody")
-                }
-            } catch (e: Exception) {
-                showError("Excepción al cargar asistencias: ${e.message}")
-                e.printStackTrace()
+            val result = asistenciaServicio.listarAsistenciasActivas()
+            result.onSuccess { asistencias ->
+                adapter.actualizarLista(asistencias)
+            }.onFailure { error ->
+                Toast.makeText(
+                    this@AsistenciaActivity,
+                    "Error al cargar asistencias: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        }
-    }
-
-    private fun mostrarDialogoSeleccionEstudiantes() {
-        if (todosEstudiantes.isEmpty()) {
-            showMessage("Cargando estudiantes...")
-            cargarEstudiantes()
-            return
-        }
-
-        val estudiantesArray = todosEstudiantes.map {
-            "${it.nombreEstudiante} ${it.apellidoEstudiante} (${it.numeroDocumento})"
-        }.toTypedArray()
-
-        val checkedItems = BooleanArray(todosEstudiantes.size) { false }
-
-        // Marcar los ya seleccionados
-        estudiantesSeleccionadosIds.forEach { seleccionadoId ->
-            val index = todosEstudiantes.indexOfFirst { it.id == seleccionadoId }
-            if (index != -1) {
-                checkedItems[index] = true
-            }
-        }
-
-        AlertDialog.Builder(this)
-            .setTitle("Seleccionar estudiantes")
-            .setMultiChoiceItems(estudiantesArray, checkedItems) { _, which, isChecked ->
-                checkedItems[which] = isChecked
-            }
-            .setPositiveButton("Aceptar") { _, _ ->
-                estudiantesSeleccionadosIds.clear()
-                checkedItems.forEachIndexed { index, isChecked ->
-                    if (isChecked) {
-                        todosEstudiantes[index].id?.let { id ->
-                            estudiantesSeleccionadosIds.add(id)
-                        }
-                    }
-                }
-                actualizarBotonEstudiantes()
-            }
-            .setNegativeButton("Cancelar", null)
-            .show()
-    }
-
-    private fun actualizarBotonEstudiantes() {
-        estudiantesButton.text = if (estudiantesSeleccionadosIds.isEmpty()) {
-            "Seleccionar estudiantes"
-        } else {
-            "${estudiantesSeleccionadosIds.size} estudiantes seleccionados"
         }
     }
 
     private fun mostrarDatePicker() {
         val calendar = Calendar.getInstance()
-        DatePickerDialog(
+        val datePicker = DatePickerDialog(
             this,
             { _, year, month, dayOfMonth ->
-                fechaEditText.setText(String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth))
+                val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                fechaEditText.setText(selectedDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        )
+        datePicker.show()
     }
 
     private fun guardarAsistencia() {
         val titulo = tituloEditText.text.toString().trim()
-        val fecha = fechaEditText.text.toString().trim()
+        val fechaStr = fechaEditText.text.toString().trim()
         val usuarioId = usuarioIdEditText.text.toString().trim()
+        val estudiantes = estudiantesEditText.text.toString().trim()
 
-        if (titulo.isEmpty() || fecha.isEmpty() || usuarioId.isEmpty() || estudiantesSeleccionadosIds.isEmpty()) {
-            showMessage("Complete todos los campos")
+        if (titulo.isEmpty() || fechaStr.isEmpty() || usuarioId.isEmpty() || estudiantes.isEmpty()) {
+            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
 
         lifecycleScope.launch {
             try {
-                val response = if (isEditing) {
-                    asistenciaServicio.actualizarAsistencia(
-                        id = currentAsistenciaId!!,
-                        titulo = titulo,
-                        fecha = fecha,
-                        usuarioId = usuarioId,
-                        estudiantesIds = estudiantesSeleccionadosIds
-                    )
-                } else {
-                    asistenciaServicio.crearAsistencia(
-                        titulo = titulo,
-                        fecha = fecha,
-                        usuarioId = usuarioId,
-                        estudiantesIds = estudiantesSeleccionadosIds
-                    )
-                }
+                val fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+                val estudiantesList = estudiantes.split(",").map { it.trim() }
 
-                if (response.isSuccessful) {
-                    showMessage(if (isEditing) "Asistencia actualizada" else "Asistencia creada")
-                    resetForm()
-                    cargarAsistencias()
+                if (isEditing && currentAsistenciaId != null) {
+                    // VERIFICACIÓN EXTRA PARA EVITAR CREACIONES DUPLICADAS
+                    if (currentAsistenciaId.isNullOrEmpty()) {
+                        Toast.makeText(
+                            this@AsistenciaActivity,
+                            "Error: ID de asistencia no válido",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@launch
+                    }
+
+                    val result = asistenciaServicio.actualizarAsistencia(
+                        currentAsistenciaId!!,
+                        titulo,
+                        fecha,
+                        usuarioId,
+                        true,
+                        estudiantesList
+                    )
+
+                    result.onSuccess {
+                        Toast.makeText(
+                            this@AsistenciaActivity,
+                            "Asistencia actualizada exitosamente",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        resetEditingState()
+                        cargarAsistencias()
+                    }.onFailure { error ->
+                        showError("Error al actualizar: ${error.message}")
+                        Log.e("AsistenciaActivity", "Error actualizando", error)
+                    }
                 } else {
-                    handleErrorResponse(response)
+                    val result = asistenciaServicio.crearAsistencia(
+                        titulo,
+                        fecha,
+                        usuarioId,
+                        estudiantesList
+                    )
+
+                    result.onSuccess {
+                        Toast.makeText(
+                            this@AsistenciaActivity,
+                            "Asistencia creada exitosamente",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        resetEditingState()
+                        cargarAsistencias()
+                    }.onFailure { error ->
+                        showError("Error al crear: ${error.message}")
+                        Log.e("AsistenciaActivity", "Error creando", error)
+                    }
                 }
+            } catch (e: DateTimeParseException) {
+                showError("Formato de fecha inválido. Use AAAA/MM/DD")
             } catch (e: Exception) {
-                showError("Error: ${e.message}")
+                showError("Error inesperado: ${e.message}")
             }
         }
+    }
+
+    private fun resetEditingState() {
+        isEditing = false
+        currentAsistenciaId = null
+        limpiarFormulario()
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun limpiarFormulario() {
+        tituloEditText.text.clear()
+        fechaEditText.text.clear()
+        usuarioIdEditText.text.clear()
+        estudiantesEditText.text.clear()
     }
 
     private fun onUpdateClick(asistencia: Asistencia) {
         isEditing = true
-        currentAsistenciaId = asistencia.id
-        tituloEditText.setText(asistencia.tituloAsistencia)
-        fechaEditText.setText(asistencia.fechaAsistencia)
-        usuarioIdEditText.setText(asistencia.usuarioId)
-
-        // Convertir estudiantes poblados a IDs
-        estudiantesSeleccionadosIds.clear()
-        asistencia.estudiantes.forEach { estudiante ->
-            estudiante.id?.let { estudiantesSeleccionadosIds.add(it) }
-        }
-        actualizarBotonEstudiantes()
+        currentAsistenciaId = asistencia.getId()
+        tituloEditText.setText(asistencia.getTituloAsistencia())
+        fechaEditText.setText(asistencia.getFechaAsistencia()
+            .format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+        usuarioIdEditText.setText(asistencia.getUsuarioId())
+        estudiantesEditText.setText(asistencia.getEstudiantes().joinToString(", "))
     }
 
     private fun onDeleteClick(asistencia: Asistencia) {
-        AlertDialog.Builder(this)
-            .setTitle("Confirmar eliminación")
-            .setMessage("¿Estás seguro de que deseas eliminar esta asistencia?")
-            .setPositiveButton("Sí") { _, _ ->
-                lifecycleScope.launch {
-                    try {
-                        val response = asistenciaServicio.desactivarAsistencia(asistencia.id!!)
-                        if (response.isSuccessful) {
-                            showMessage("Asistencia eliminada")
-                            cargarAsistencias()
-                        } else {
-                            handleErrorResponse(response)
-                        }
-                    } catch (e: Exception) {
-                        showError("Error al eliminar: ${e.message}")
-                    }
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirmar eliminación")
+        builder.setMessage("¿Estás seguro de que deseas eliminar esta asistencia?")
+
+        builder.setPositiveButton("Sí") { _, _ ->
+            lifecycleScope.launch {
+                val result = asistenciaServicio.desactivarAsistencia(asistencia.getId())
+                result.onSuccess {
+                    Toast.makeText(
+                        this@AsistenciaActivity,
+                        "Asistencia eliminada",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    cargarAsistencias()
+                }.onFailure { error ->
+                    Toast.makeText(
+                        this@AsistenciaActivity,
+                        error.message ?: "Error al eliminar",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-            .setNegativeButton("No", null)
-            .show()
-    }
+        }
 
-    private fun resetForm() {
-        isEditing = false
-        currentAsistenciaId = null
-        tituloEditText.text.clear()
-        fechaEditText.text.clear()
-        usuarioIdEditText.text.clear()
-        estudiantesSeleccionadosIds.clear()
-        actualizarBotonEstudiantes()
-    }
-
-    private fun handleErrorResponse(response: Response<*>) {
-        val errorMsg = response.errorBody()?.string() ?: "Error desconocido"
-        showError("Error del servidor: $errorMsg")
-    }
-
-    private fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+        builder.create().show()
     }
 }
 

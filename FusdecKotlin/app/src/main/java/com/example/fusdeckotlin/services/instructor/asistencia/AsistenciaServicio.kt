@@ -1,93 +1,125 @@
 package com.example.fusdeckotlin.services.instructor.asistencia
 
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.instructor.asistencia.CrearAsistenciaRequest
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import okhttp3.ResponseBody.Companion.toResponseBody
+import java.time.LocalDate
 import retrofit2.Response
 
-class AsistenciaServicio(private val api: AsistenciaApi) {
+class AsistenciaServicio {
 
-    suspend fun listarAsistencias(): Response<List<Asistencia>> {
-        return try {
-            val response = api.listarAsistencias()
-            if (!response.isSuccessful) {
-                // Log de error si la respuesta de la API no es exitosa
-                println("Error al obtener asistencias: ${response.code()} - ${response.errorBody()?.string()}")
-            }
-            response
-        } catch (e: Exception) {
-            e.printStackTrace()
-            println("Excepción en listarAsistencias: ${e.message}")
-            Response.success(emptyList()) // Devuelve una lista vacía en caso de error
-        }
-    }
-
-
-    suspend fun obtenerAsistenciaPorId(id: String): Response<Asistencia> {
-        return try {
-            api.obtenerAsistenciaPorId(id)
-        } catch (e: Exception) {
-            Response.error(500, e.message?.toResponseBody())
-        }
-    }
+    private val asistenciaApi: AsistenciaApi = RetrofitClient.asistenciaApi
 
     suspend fun crearAsistencia(
         titulo: String,
-        fecha: String,
+        fecha: LocalDate,
         usuarioId: String,
-        estudiantesIds: List<String> // Solo IDs
-    ): Response<Asistencia> {
+        estudiantes: List<String>
+    ): Result<Asistencia> {
         return try {
-            val asistencia = Asistencia(
-                tituloAsistencia = titulo,
-                fechaAsistencia = fecha,
+            val request = CrearAsistenciaRequest.from(
+                titulo = titulo,
+                fecha = fecha,
                 usuarioId = usuarioId,
-                estudiantesIds = estudiantesIds
+                estudiantes = estudiantes
             )
-            api.crearAsistencia(asistencia)
+
+            val response = asistenciaApi.crearAsistencia(request)
+            handleResponse(response)
         } catch (e: Exception) {
-            Response.error(500, e.message?.toResponseBody())
+            Result.failure(e)
+        }
+    }
+
+    suspend fun listarAsistenciasActivas(): Result<List<Asistencia>> {
+        return try {
+            val response = asistenciaApi.listarAsistencias()
+            handleListResponse(response) { it.filter { asistencia -> asistencia.getEstadoAsistencia() } }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun obtenerAsistenciaPorId(id: String): Result<Asistencia> {
+        return try {
+            val response = asistenciaApi.obtenerAsistenciaPorId(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
     suspend fun actualizarAsistencia(
         id: String,
-        titulo: String? = null,
-        fecha: String? = null,
+        tituloAsistencia: String? = null,
+        fechaAsistencia: LocalDate? = null,
         usuarioId: String? = null,
-        estado: Boolean? = null,
-        estudiantesIds: List<String>? = null // Solo IDs
-    ): Response<Asistencia> {
+        estadoAsistencia: Boolean? = null,
+        estudiantes: List<String>? = null
+    ): Result<Asistencia> {
         return try {
-            // Obtener la asistencia existente primero
-            val response = api.obtenerAsistenciaPorId(id)
-            if (!response.isSuccessful) {
-                return response
+
+            val currentResponse = asistenciaApi.obtenerAsistenciaPorId(id)
+            if (!currentResponse.isSuccessful || currentResponse.body() == null) {
+                return Result.failure(Exception("Asistencia no encontrada"))
             }
 
-            val asistenciaExistente = response.body()!!
+            val asistenciaActual = currentResponse.body()!!
 
-            // Crear la asistencia actualizada
-            val asistenciaActualizada = Asistencia(
-                id = id,
-                tituloAsistencia = titulo ?: asistenciaExistente.tituloAsistencia,
-                fechaAsistencia = fecha ?: asistenciaExistente.fechaAsistencia,
-                usuarioId = usuarioId ?: asistenciaExistente.usuarioId,
-                estadoAsistencia = estado ?: asistenciaExistente.estadoAsistencia,
-                estudiantesIds = estudiantesIds ?: asistenciaExistente.estudiantesIds
-            )
 
-            api.actualizarAsistencia(id, asistenciaActualizada)
+            tituloAsistencia?.let { asistenciaActual.setTituloAsistencia(it) }
+            fechaAsistencia?.let { asistenciaActual.setFechaAsistencia(it) }
+            usuarioId?.let { asistenciaActual.setUsuarioId(it) }
+            estadoAsistencia?.let { asistenciaActual.setEstadoAsistencia(it) }
+            estudiantes?.let { asistenciaActual.setEstudiantes(it) }
+
+            val response = asistenciaApi.actualizarAsistencia(id, asistenciaActual)
+            handleResponse(response)
         } catch (e: Exception) {
-            Response.error(500, e.message?.toResponseBody())
+            Result.failure(e)
         }
     }
 
-    suspend fun desactivarAsistencia(id: String): Response<Asistencia> {
+    suspend fun desactivarAsistencia(id: String): Result<Asistencia> {
         return try {
-            api.desactivarAsistencia(id)
+            val response = asistenciaApi.desactivarAsistencia(id)
+
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Respuesta vacía del servidor"))
+            } else {
+                when (response.code()) {
+                    404 -> Result.failure(Exception("Asistencia no encontrada"))
+                    else -> Result.failure(Exception("Error del servidor: ${response.code()}"))
+                }
+            }
         } catch (e: Exception) {
-            Response.error(500, e.message?.toResponseBody())
+            Result.failure(e)
+        }
+    }
+
+    private fun <T> handleResponse(response: Response<T>): Result<T> {
+        return if (response.isSuccessful) {
+            response.body()?.let {
+                Result.success(it)
+            } ?: Result.failure(Exception("Respuesta vacía del servidor"))
+        } else {
+            Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
+        }
+    }
+
+    private fun <T> handleListResponse(
+        response: Response<List<T>>,
+        transform: (List<T>) -> List<T> = { it }
+    ): Result<List<T>> {
+        return if (response.isSuccessful) {
+            response.body()?.let {
+                Result.success(transform(it))
+            } ?: Result.failure(Exception("Respuesta vacía del servidor"))
+        } else {
+            Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
         }
     }
 }

@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
+import java.time.format.DateTimeFormatter
 
 class AsistenciaAdapter(
     private var asistencias: List<Asistencia>,
@@ -32,12 +33,12 @@ class AsistenciaAdapter(
 
     override fun onBindViewHolder(holder: AsistenciaViewHolder, position: Int) {
         val asistencia = asistencias[position]
-        holder.tituloTextView.text = asistencia.tituloAsistencia
-        holder.fechaTextView.text = asistencia.fechaAsistencia.toString()
-        holder.usuarioIdTextView.text = asistencia.usuarioId
-        holder.estudiantesTextView.text = asistencia.estudiantes.joinToString(", ") {
-            "${it.nombreEstudiante} ${it.apellidoEstudiante}"
-        }
+        holder.tituloTextView.text = asistencia.getTituloAsistencia()
+        // Formatear fecha para mostrar (dd/MM/yyyy)
+        holder.fechaTextView.text = asistencia.getFechaAsistencia()
+            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        holder.usuarioIdTextView.text = asistencia.getUsuarioId()
+        holder.estudiantesTextView.text = asistencia.getEstudiantes().joinToString(", ")
 
         holder.updateButton.setOnClickListener { onUpdateClick(asistencia) }
         holder.deleteButton.setOnClickListener { onDeleteClick(asistencia) }

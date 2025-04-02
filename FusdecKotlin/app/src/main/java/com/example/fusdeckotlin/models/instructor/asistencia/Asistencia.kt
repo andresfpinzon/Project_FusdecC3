@@ -1,18 +1,53 @@
 package com.example.fusdeckotlin.models.instructor.asistencia
 
-import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDate
 
-data class Asistencia(
-    @SerializedName("_id") val id: String? = null,
-    @SerializedName("tituloAsistencia") val tituloAsistencia: String,
-    @SerializedName("fechaAsistencia") val fechaAsistencia: String, // Formato ISO o "YYYY-MM-DD"
-    @SerializedName("usuarioId") val usuarioId: String,
-    @SerializedName("estadoAsistencia") val estadoAsistencia: Boolean = true,
+class Asistencia(
+    @SerializedName("_id") private val id: String,
+    @SerializedName("tituloAsistencia") private var tituloAsistencia: String,
+    @SerializedName("fechaAsistencia") private var fechaAsistenciaString: String,
+    @SerializedName("usuarioId") private var usuarioId: String,
+    @SerializedName("estadoAsistencia") private var estadoAsistencia: Boolean = true,
+    @SerializedName("estudiantes") private var estudiantes: List<String> = emptyList()
+) {
+    // Getters
+    fun getId(): String = id
+    fun getTituloAsistencia(): String = tituloAsistencia
 
-    // Para enviar al backend (solo ID)
-    @SerializedName("estudiantes") val estudiantesIds: List<String> = emptyList(),
+    fun getFechaAsistencia(): LocalDate {
+        return LocalDate.parse(fechaAsistenciaString.substring(0, 10))
+    }
 
-    // Para recibir del backend (objetos poblados)
-    @Transient val estudiantes: List<Estudiante> = emptyList()
-)
+    fun getUsuarioId(): String = usuarioId
+    fun getEstadoAsistencia(): Boolean = estadoAsistencia
+    fun getEstudiantes(): List<String> = estudiantes
+
+    // Setters
+    fun setTituloAsistencia(titulo: String) {
+        this.tituloAsistencia = titulo
+    }
+
+    fun setFechaAsistencia(fecha: LocalDate) {
+        this.fechaAsistenciaString = fecha.toString()
+    }
+
+    fun setUsuarioId(usuarioId: String) {
+        this.usuarioId = usuarioId
+    }
+
+    fun setEstadoAsistencia(estado: Boolean) {
+        this.estadoAsistencia = estado
+    }
+
+    fun setEstudiantes(estudiantes: List<String>) {
+        this.estudiantes = estudiantes
+    }
+
+
+    override fun toString(): String {
+        return "Asistencia(id='$id', titulo='$tituloAsistencia', fecha=${getFechaAsistencia()}, " +
+                "estudiantes=${estudiantes.joinToString()})"
+    }
+
+}

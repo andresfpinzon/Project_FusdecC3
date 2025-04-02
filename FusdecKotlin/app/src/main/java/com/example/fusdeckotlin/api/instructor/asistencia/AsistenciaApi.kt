@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.api.instructor.asistencia
 
+import com.example.fusdeckotlin.dto.instructor.asistencia.CrearAsistenciaRequest
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import retrofit2.Response
 import retrofit2.http.*
@@ -9,7 +10,7 @@ interface AsistenciaApi {
     suspend fun listarAsistencias(): Response<List<Asistencia>>
 
     @POST("api/asistencias")
-    suspend fun crearAsistencia(@Body asistencia: Asistencia): Response<Asistencia>
+    suspend fun crearAsistencia(@Body request: CrearAsistenciaRequest): Response<Asistencia>
 
     @PUT("api/asistencias/{id}")
     suspend fun actualizarAsistencia(

@@ -69,34 +69,34 @@
             app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
             android:layout_marginTop="16dp" />
 
-    <Button
-            android:id="@+id/estudiantesButton"
+    <EditText
+            android:id="@+id/estudiantesEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Seleccionar estudiantes"
+            android:hint="IDs de estudiantes separados por coma"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/estudiantesTextView" />
 
-        <Button
-                android:id="@+id/confirmarButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Confirmar"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/estudiantesButton"
-                android:layout_marginTop="16dp" />
+    <Button
+            android:id="@+id/confirmarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Confirmar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
+            android:layout_marginTop="16dp" />
 
-        <Button
-                android:id="@+id/cancelarButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Cancelar"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/confirmarButton"
-                android:layout_marginTop="8dp" />
+    <Button
+            android:id="@+id/cancelarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/confirmarButton"
+            android:layout_marginTop="8dp" />
 
     <!-- Lista de Asistencias -->
     <androidx.recyclerview.widget.RecyclerView

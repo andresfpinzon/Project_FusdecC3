@@ -80,8 +80,7 @@ async function actualizarAsistencia(id, body) {
 // Función asíncrona para listar las asistencias activas
 async function listarAsistenciasActivas() {
     try {
-        let asistencias = await Asistencia.find({ estadoAsistencia: true })
-            .populate('estudiantes');
+        let asistencias = await Asistencia.find({ estadoAsistencia: true });
         return asistencias;
     } catch (error) {
         console.error('Error al listar las asistencias (asistencia_logic):', error);
