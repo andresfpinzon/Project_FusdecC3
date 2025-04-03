@@ -38,9 +38,19 @@ class AsistenciaAdapter(
             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         holder.usuarioIdTextView.text = asistencia.getUsuarioId()
 
-        // Mostrar nombres de estudiantes en lugar de IDs
-        holder.estudiantesTextView.text = asistencia.getEstudiantes()
-            .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+        // Mostrar información de estudiantes según lo disponible
+        holder.estudiantesTextView.text = when {
+            // Si tenemos objetos completos de estudiantes, mostrar nombres
+            asistencia.getEstudiantes().isNotEmpty() &&
+                    asistencia.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                asistencia.getEstudiantes()
+                    .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+            }
+            // Si solo tenemos IDs, mostrarlos directamente
+            else -> {
+                asistencia.getEstudiantesIds().joinToString(", ")
+            }
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(asistencia) }
         holder.deleteButton.setOnClickListener { onDeleteClick(asistencia) }
@@ -53,4 +63,3 @@ class AsistenciaAdapter(
         notifyDataSetChanged()
     }
 }
-

@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.dto.instructor.asistencia
 
-import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -19,7 +18,7 @@ data class ActualizarAsistenciaRequest(
     val estado: Boolean? = null,
 
     @SerializedName("estudiantes")
-    val estudiantes: List<Estudiante>? = null
+    val estudiantes: List<String>? = null
 ) {
     companion object {
         fun from(
@@ -27,7 +26,7 @@ data class ActualizarAsistenciaRequest(
             fecha: LocalDate? = null,
             usuarioId: String? = null,
             estado: Boolean? = null,
-            estudiantes: List<Estudiante>? = null
+            estudiantes: List<String>? = null
         ): ActualizarAsistenciaRequest {
             return ActualizarAsistenciaRequest(
                 titulo = titulo,
