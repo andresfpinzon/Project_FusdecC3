@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.dto.instructor.asistencia.ActualizarAsistenciaRequest
 import com.example.fusdeckotlin.ui.adapters.instructor.asistencia.AsistenciaAdapter
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
@@ -119,7 +120,6 @@ class AsistenciaActivity : AppCompatActivity() {
                 val estudiantesList = estudiantes.split(",").map { it.trim() }
 
                 if (isEditing && currentAsistenciaId != null) {
-                    // VERIFICACIÓN EXTRA PARA EVITAR CREACIONES DUPLICADAS
                     if (currentAsistenciaId.isNullOrEmpty()) {
                         Toast.makeText(
                             this@AsistenciaActivity,

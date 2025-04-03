@@ -2,8 +2,10 @@ package com.example.fusdeckotlin.services.instructor.asistencia
 
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.instructor.asistencia.ActualizarAsistenciaRequest
 import com.example.fusdeckotlin.dto.instructor.asistencia.CrearAsistenciaRequest
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
+import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import java.time.LocalDate
 import retrofit2.Response
 
@@ -15,7 +17,7 @@ class AsistenciaServicio {
         titulo: String,
         fecha: LocalDate,
         usuarioId: String,
-        estudiantes: List<String>
+        estudiantes: List<Estudiante>
     ): Result<Asistencia> {
         return try {
             val request = CrearAsistenciaRequest.from(
@@ -56,25 +58,18 @@ class AsistenciaServicio {
         fechaAsistencia: LocalDate? = null,
         usuarioId: String? = null,
         estadoAsistencia: Boolean? = null,
-        estudiantes: List<String>? = null
+        estudiantesIds: List<Estudiante>? = null
     ): Result<Asistencia> {
         return try {
+            val request = ActualizarAsistenciaRequest.from(
+                titulo = tituloAsistencia,
+                fecha = fechaAsistencia,
+                usuarioId = usuarioId,
+                estado = estadoAsistencia,
+                estudiantes = estudiantesIds
+            )
 
-            val currentResponse = asistenciaApi.obtenerAsistenciaPorId(id)
-            if (!currentResponse.isSuccessful || currentResponse.body() == null) {
-                return Result.failure(Exception("Asistencia no encontrada"))
-            }
-
-            val asistenciaActual = currentResponse.body()!!
-
-
-            tituloAsistencia?.let { asistenciaActual.setTituloAsistencia(it) }
-            fechaAsistencia?.let { asistenciaActual.setFechaAsistencia(it) }
-            usuarioId?.let { asistenciaActual.setUsuarioId(it) }
-            estadoAsistencia?.let { asistenciaActual.setEstadoAsistencia(it) }
-            estudiantes?.let { asistenciaActual.setEstudiantes(it) }
-
-            val response = asistenciaApi.actualizarAsistencia(id, asistenciaActual)
+            val response = asistenciaApi.actualizarAsistencia(id, request)
             handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)

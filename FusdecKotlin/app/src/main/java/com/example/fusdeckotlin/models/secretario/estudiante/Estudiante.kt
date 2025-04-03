@@ -1,25 +1,25 @@
 package com.example.fusdeckotlin.models.secretario.estudiante
 
+import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
 class Estudiante(
-    private val id: String,
-    private var nombreEstudiante: String,
-    private var apellidoEstudiante: String,
-    private val correoEstudiante: String,
-    private var tipoDocumento: String,
-    private val numeroDocumento: String,
-    private var fechaNacimiento: LocalDate,
-    private var generoEstudiante: String,
-    private var unidadId: String,
-    private var colegioId: String,
-    private var estadoEstudiante: Boolean,
-    private var ediciones: List<String>,
-    private var calificaciones: List<String>,
-    private var asistencias: List<String>,
-    private var certificados: List<String>
+    @SerializedName("_id") private val id: String,
+    @SerializedName("nombreEstudiante") private var nombreEstudiante: String,
+    @SerializedName("apellidoEstudiante") private var apellidoEstudiante: String,
+    @SerializedName("correoEstudiante") private val correoEstudiante: String,
+    @SerializedName("tipoDocumento") private var tipoDocumento: String,
+    @SerializedName("numeroDocumento") private val numeroDocumento: String,
+    @SerializedName("fechaNacimiento") private var fechaNacimientoString: String,
+    @SerializedName("generoEstudiante") private var generoEstudiante: String,
+    @SerializedName("unidadId") private var unidadId: String,
+    @SerializedName("colegioId") private var colegioId: String,
+    @SerializedName("estadoEstudiante") private var estadoEstudiante: Boolean,
+    @SerializedName("ediciones") private var ediciones: List<String>,
+    @SerializedName("calificaciones") private var calificaciones: List<String>,
+    @SerializedName("asistencias") private var asistencias: List<String>,
+    @SerializedName("certificados") private var certificados: List<String>,
 ) {
-
     // Getters
     fun getId(): String = id
     fun getNombreEstudiante(): String = nombreEstudiante
@@ -27,7 +27,11 @@ class Estudiante(
     fun getCorreoEstudiante(): String = correoEstudiante
     fun getTipoDocumento(): String = tipoDocumento
     fun getNumeroDocumento(): String = numeroDocumento
-    fun getFechaNacimiento(): LocalDate = fechaNacimiento
+
+    fun getFechaNacimiento(): LocalDate {
+        return LocalDate.parse(fechaNacimientoString.substring(0, 10))
+    }
+
     fun getGeneroEstudiante(): String = generoEstudiante
     fun getUnidadId(): String = unidadId
     fun getColegioId(): String = colegioId
@@ -50,8 +54,8 @@ class Estudiante(
         this.tipoDocumento = tipoDocumento
     }
 
-    fun setFechaNacimiento(fechaNacimiento: LocalDate) {
-        this.fechaNacimiento = fechaNacimiento
+    fun setFechaNacimientoString(fechaNacimiento: String) {
+        this.fechaNacimientoString = fechaNacimiento
     }
 
     fun setGeneroEstudiante(genero: String) {
@@ -84,61 +88,5 @@ class Estudiante(
 
     fun setCertificados(certificados: List<String>) {
         this.certificados = certificados
-    }
-
-    companion object {
-        val estudiante1 = Estudiante(
-            id = "EST01",
-            nombreEstudiante = "Juan",
-            apellidoEstudiante = "Perez",
-            correoEstudiante = "juan.perez@gmail.com",
-            tipoDocumento = "C.C",
-            numeroDocumento = "123456789",
-            fechaNacimiento = LocalDate.of(2000,4,3),
-            generoEstudiante = "Masculino",
-            unidadId = "UN1018238",
-            colegioId = "C0L12381918",
-            estadoEstudiante = true,
-            ediciones = listOf("2025-1"),
-            calificaciones = listOf("CAL18270123"),
-            asistencias = listOf("ASIS12391723-91"),
-            certificados = listOf("CERT1293123801")
-        )
-
-        val estudiante2 = Estudiante(
-            id = "EST02",
-            nombreEstudiante = "Julian",
-            apellidoEstudiante = "Rivera",
-            correoEstudiante = "julian.rivera@gmail.com",
-            tipoDocumento = "C.C",
-            numeroDocumento = "123972123",
-            fechaNacimiento = LocalDate.of(2005, 3, 30),
-            generoEstudiante = "Masculino",
-            unidadId = "UN1018238",
-            colegioId = "C0L12381918",
-            estadoEstudiante = true,
-            ediciones = listOf("2025-1"),
-            calificaciones = listOf("CAL18270321"),
-            asistencias = listOf("ASIS12391723-19"),
-            certificados = listOf("CERT1293123963")
-        )
-
-        val estudiante3 = Estudiante(
-            id = "EST03",
-            nombreEstudiante = "Andres",
-            apellidoEstudiante = "Pinzon",
-            correoEstudiante = "andres.pinzon@gmail.com",
-            tipoDocumento = "C.C",
-            numeroDocumento = "123972123",
-            fechaNacimiento = LocalDate.of(1996, 4, 24),
-            generoEstudiante = "Masculino",
-            unidadId = "UN1018238",
-            colegioId = "C0L12381918",
-            estadoEstudiante = true,
-            ediciones = listOf("2025-1"),
-            calificaciones = listOf("CAL18270723"),
-            asistencias = listOf("ASIS12391723-46"),
-            certificados = listOf("CERT1293123753")
-        )
     }
 }

@@ -183,13 +183,7 @@ async function actualizarEstudiante(id, body) {
 async function listarEstudiantes() {
     try {
         
-    return await Estudiante.find({})
-    .populate('unidadId')
-    .populate('colegioId')
-    .populate('ediciones')
-    .populate('calificaciones')
-    .populate('asistencias',)
-    .populate('certificados');
+    return await Estudiante.find({});
     } catch (error) {
         console.error('Error al listar los estudiantes (estudiante_logic):', error);
         throw error;

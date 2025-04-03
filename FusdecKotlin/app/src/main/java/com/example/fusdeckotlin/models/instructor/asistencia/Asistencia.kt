@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.models.instructor.asistencia
 
+import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
@@ -9,7 +10,7 @@ class Asistencia(
     @SerializedName("fechaAsistencia") private var fechaAsistenciaString: String,
     @SerializedName("usuarioId") private var usuarioId: String,
     @SerializedName("estadoAsistencia") private var estadoAsistencia: Boolean = true,
-    @SerializedName("estudiantes") private var estudiantes: List<String> = emptyList()
+    @SerializedName("estudiantes") private var estudiantes: List<Estudiante> = emptyList()
 ) {
     // Getters
     fun getId(): String = id
@@ -21,7 +22,8 @@ class Asistencia(
 
     fun getUsuarioId(): String = usuarioId
     fun getEstadoAsistencia(): Boolean = estadoAsistencia
-    fun getEstudiantes(): List<String> = estudiantes
+    fun getEstudiantes(): List<Estudiante> = estudiantes
+
 
     // Setters
     fun setTituloAsistencia(titulo: String) {
@@ -40,7 +42,7 @@ class Asistencia(
         this.estadoAsistencia = estado
     }
 
-    fun setEstudiantes(estudiantes: List<String>) {
+    fun setEstudiantes(estudiantes: List<Estudiante>) {
         this.estudiantes = estudiantes
     }
 

@@ -5,34 +5,33 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class CrearAsistenciaRequest(
+data class ActualizarAsistenciaRequest(
     @SerializedName("tituloAsistencia")
-    val titulo: String,
+    val titulo: String? = null,
 
     @SerializedName("fechaAsistencia")
-    val fecha: String,
+    val fecha: String? = null,
 
     @SerializedName("usuarioId")
-    val usuarioId: String,
+    val usuarioId: String? = null,
 
     @SerializedName("estadoAsistencia")
-    val estado: Boolean = true,
+    val estado: Boolean? = null,
 
     @SerializedName("estudiantes")
-    val estudiantes: List<Estudiante>
+    val estudiantes: List<Estudiante>? = null
 ) {
     companion object {
-
         fun from(
-            titulo: String,
-            fecha: LocalDate,
-            usuarioId: String,
-            estudiantes: List<Estudiante>,
-            estado: Boolean = true
-        ): CrearAsistenciaRequest {
-            return CrearAsistenciaRequest(
+            titulo: String? = null,
+            fecha: LocalDate? = null,
+            usuarioId: String? = null,
+            estado: Boolean? = null,
+            estudiantes: List<Estudiante>? = null
+        ): ActualizarAsistenciaRequest {
+            return ActualizarAsistenciaRequest(
                 titulo = titulo,
-                fecha = fecha.format(DateTimeFormatter.ISO_DATE),
+                fecha = fecha?.format(DateTimeFormatter.ISO_DATE),
                 usuarioId = usuarioId,
                 estado = estado,
                 estudiantes = estudiantes
