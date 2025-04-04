@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
@@ -11,6 +12,7 @@ import com.example.fusdeckotlin.services.administrativo.certificate.CertificadoS
 
 import com.example.fusdeckotlin.ui.adapters.administrador.certificateAdapter.CertificateAdapter
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 import models.administrativo.c.CertificadoModel
 
 class CertificateActivity : AppCompatActivity() {
@@ -109,22 +111,48 @@ class CertificateActivity : AppCompatActivity() {
 
         adapter.notifyDataSetChanged()
     }
-    // Load mock data or fetch from your backend service
-    private fun loadCertificates() {
-        // Mock data for testing
-        certificates.add(CertificadoModel(
-            usuarioId = "User1",
-            cursoId = "Course1",
-            estudianteId = "Student1",
-            nombreEmisorCertificado = "Emisor1"
-        ))
-        certificates.add(CertificadoModel(
-            usuarioId = "User2",
-            cursoId = "Course2",
-            estudianteId = "Student2",
-            nombreEmisorCertificado = "Emisor2"
-        ))
 
-        adapter.notifyDataSetChanged()
+    private fun loadCertificates() {
+        lifecycleScope.launch {
+            try {
+                val certificadosApi = CertificadoServices.getCertificados()
+                certificates.clear()
+
+                certificadosApi.forEach { certMap ->
+                    val certificado = CertificadoModel(
+                        usuarioId = certMap["usuario_id"].toString(),
+                        cursoId = certMap["curso_id"].toString(),
+                        estudianteId = certMap["estudiante_id"].toString(),
+                        nombreEmisorCertificado = certMap["nombre_emisor_certificado"].toString(),
+                        codigoVerificacion = certMap["codigo_verificacion"].toString(),
+                        estadoCertificado = certMap["estado_certificado"] as? Boolean ?: true
+                    )
+                    certificates.add(certificado)
+                }
+
+                adapter.notifyDataSetChanged()
+            } catch (e: Exception) {
+                Toast.makeText(this@CertificateActivity, "Error al cargar certificados", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+            }
+        }
     }
+    // Load mock data or fetch from your backend service
+//    private fun loadCertificates() {
+//        // Mock data for testing
+//        certificates.add(CertificadoModel(
+//            usuarioId = "User1",
+//            cursoId = "Course1",
+//            estudianteId = "Student1",
+//            nombreEmisorCertificado = "Emisor1"
+//        ))
+//        certificates.add(CertificadoModel(
+//            usuarioId = "User2",
+//            cursoId = "Course2",
+//            estudianteId = "Student2",
+//            nombreEmisorCertificado = "Emisor2"
+//        ))
+//
+//        adapter.notifyDataSetChanged()
+//    }
 }

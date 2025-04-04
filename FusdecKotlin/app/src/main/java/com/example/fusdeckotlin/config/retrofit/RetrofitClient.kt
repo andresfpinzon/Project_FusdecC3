@@ -1,6 +1,7 @@
 package com.example.fusdeckotlin.config.retrofit
 
 import com.example.fusdeckotlin.api.auth.AuthApi
+import com.example.fusdeckotlin.api.certificadosspring.CertificadoApi
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
 import com.example.fusdeckotlin.api.secretario.estudiante.EstudianteApi
 import com.example.fusdeckotlin.models.auth.AuthManager
@@ -11,6 +12,23 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
+
+    // conexion retrofit para spring
+    private const val CERTIFICADO_BASE_URL = "http://10.0.2.2:8080/"  // <- puerto 8080 para certificados
+
+    private val certificadoRetrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(CERTIFICADO_BASE_URL)
+            .client(provideOkHttpClient())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val certificadoApi: CertificadoApi by lazy {
+        certificadoRetrofit.create(CertificadoApi::class.java)
+    }
+
+    // conexion apis backend
     private const val BASE_URL = "http://10.0.2.2:3000/"
 
     private val authInterceptor = Interceptor { chain ->
@@ -47,5 +65,6 @@ object RetrofitClient {
     val authApi: AuthApi by lazy { retrofit.create(AuthApi::class.java) }
     val asistenciaApi: AsistenciaApi by lazy { retrofit.create(AsistenciaApi::class.java) }
     val estudianteApi: EstudianteApi by lazy { retrofit.create(EstudianteApi::class.java) }
+
 
 }

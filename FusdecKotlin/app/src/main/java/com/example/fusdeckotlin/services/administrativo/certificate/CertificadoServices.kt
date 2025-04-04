@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.services.administrativo.certificate
 
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
 import models.administrativo.c.CertificadoModel
 
 
@@ -45,5 +46,11 @@ class CertificadoServices {
                 false
             }
         }
+
+        // Prueba Spring
+        suspend fun getCertificados(): List<Map<String, Any>> {
+            return RetrofitClient.certificadoApi.obtenerCertificados()
+        }
+
     }
 }
