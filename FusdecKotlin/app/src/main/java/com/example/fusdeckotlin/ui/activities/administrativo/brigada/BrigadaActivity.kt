@@ -9,12 +9,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter.BrigadaAdapter
 import com.example.fusdeckotlin.services.administrativo.brigada.BrigadaServices
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import kotlinx.coroutines.launch
 
 class BrigadaActivity : AppCompatActivity() {
 
@@ -28,7 +30,7 @@ class BrigadaActivity : AppCompatActivity() {
     private lateinit var brigadasRecyclerView: RecyclerView
     private lateinit var searchView: SearchView
 
-    private val brigadas = mutableListOf<Brigada>()
+    private val brigadaServices = BrigadaServices()
     private lateinit var adapter: BrigadaAdapter
 
     private var isEditing: Boolean = false
@@ -49,20 +51,18 @@ class BrigadaActivity : AppCompatActivity() {
         searchView = findViewById(R.id.searchView)
 
         adapter = BrigadaAdapter(
-            brigadas,
+            emptyList(),
             ::onUpdateClick,
             ::onDeleteClick
         )
         brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
         brigadasRecyclerView.adapter = adapter
 
-        confirmarButton.setOnClickListener {
-            guardarBrigada()
-        }
+        cargarBrigadas()
 
-        cancelarButton.setOnClickListener {
-            finish()
-        }
+        confirmarButton.setOnClickListener { guardarBrigada() }
+
+        cancelarButton.setOnClickListener { finish() }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -76,7 +76,20 @@ class BrigadaActivity : AppCompatActivity() {
         })
     }
 
-    private fun generarIdUnico(): String = "BRIG-${System.currentTimeMillis()}"
+    private fun cargarBrigadas() {
+        lifecycleScope.launch {
+            val result = brigadaServices.listarBrigadasActivas()
+            result.onSuccess { brigadas ->
+                adapter.actualizarLista(brigadas)
+            }.onFailure { error ->
+                Toast.makeText(
+                    this@BrigadaActivity,
+                    "Error al cargar brigadas: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
     private fun guardarBrigada() {
         val nombreBrigada = nombreBrigadaEditText.text.toString().trim()
@@ -90,41 +103,45 @@ class BrigadaActivity : AppCompatActivity() {
             return
         }
 
-        try {
-            if (isEditing) {
-                BrigadaServices.actualizarBrigada(
-                    brigadas,
-                    currentBrigadaId!!,
-                    nombreBrigada,
-                    ubicacionBrigada,
-                    comandoId,
-                    unidades,
-                    estadoBrigada
-                )
-                Toast.makeText(this, "Brigada actualizada correctamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-                currentBrigadaId = null
-            } else {
-                val id = generarIdUnico()
-                BrigadaServices.crearBrigada(
-                    brigadas,
-                    id,
-                    nombreBrigada,
-                    ubicacionBrigada,
-                    estadoBrigada,
-                    comandoId,
-                    unidades
-                )
-                Toast.makeText(this, "Brigada creada correctamente", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            try {
+                if (isEditing && currentBrigadaId != null) {
+                    brigadaServices.actualizarBrigada(
+                        id = currentBrigadaId!!,
+                        nombreBrigada = nombreBrigada,
+                        ubicacionBrigada = ubicacionBrigada,
+                        estadoBrigada = estadoBrigada,
+                        comandoId = comandoId,
+                        unidades = unidades
+                    )
+                } else {
+                    brigadaServices.crearBrigada(
+                        nombreBrigada = nombreBrigada,
+                        ubicacionBrigada = ubicacionBrigada,
+                        estadoBrigada = estadoBrigada,
+                        comandoId = comandoId,
+                        unidades = unidades
+                    )
+                }
+                Toast.makeText(this@BrigadaActivity, "Operación exitosa", Toast.LENGTH_SHORT).show()
+                limpiarFormulario()
+                cargarBrigadas()
+            } catch (e: Exception) {
+                Log.e("Error", "Error al guardar brigada: ${e.message}")
+                Toast.makeText(this@BrigadaActivity, "Error al guardar brigada: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-            actualizarLista()
-            limpiarFormulario()
-        } catch (e: Exception) {
-            Log.e("BrigadaActivity", "Error al guardar brigada", e)
-            Toast.makeText(this, "Error al guardar brigada: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun resetEditingState() {
+        isEditing = false
+        currentBrigadaId = null
+        limpiarFormulario()
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 
     private fun limpiarFormulario() {
         nombreBrigadaEditText.text.clear()
@@ -152,22 +169,18 @@ class BrigadaActivity : AppCompatActivity() {
         builder.setMessage("¿Estás seguro de que deseas eliminar esta brigada?")
 
         builder.setPositiveButton("Sí") { _, _ ->
-            try {
-                BrigadaServices.desactivarBrigada(brigadas, brigada.getId())
-                actualizarLista()
-                Toast.makeText(this, "Brigada eliminada correctamente", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, "Error deleting brigada: ${e.message}", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                try {
+                    brigadaServices.desactivarBrigada(brigada.getId())
+                    Toast.makeText(this@BrigadaActivity, "Brigada eliminada", Toast.LENGTH_SHORT).show()
+                    cargarBrigadas()
+                } catch (e: Exception) {
+                    showError("Error al eliminar brigada: ${e.message}")
+                }
             }
         }
 
         builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
-
-    private fun actualizarLista() {
-        adapter.actualizarLista(BrigadaServices.listarBrigadasActivas(brigadas))
+        builder.create().show()
     }
 }

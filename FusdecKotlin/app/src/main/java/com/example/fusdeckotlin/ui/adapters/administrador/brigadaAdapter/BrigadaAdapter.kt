@@ -10,12 +10,12 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 
 class BrigadaAdapter(
-    private val brigadas: MutableList<Brigada>,
+    private var brigadas: List<Brigada>,
     private val onUpdateClick: (Brigada) -> Unit,
     private val onDeleteClick: (Brigada) -> Unit
 ) : RecyclerView.Adapter<BrigadaAdapter.BrigadaViewHolder>() {
 
-    private val originalBrigadas = brigadas.toMutableList()
+    private var brigadasFiltradas: List<Brigada> = brigadas
 
     class BrigadaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textIdBrigada: TextView = itemView.findViewById(R.id.textViewBrigadaId)
@@ -34,7 +34,7 @@ class BrigadaAdapter(
     }
 
     override fun onBindViewHolder(holder: BrigadaViewHolder, position: Int) {
-        val brigada = brigadas[position]
+        val brigada = brigadasFiltradas[position]
         holder.textIdBrigada.text = brigada.getId()
         holder.textNombre.text = brigada.getNombreBrigada()
         holder.textUbicacion.text = brigada.getUbicacionBrigada()
@@ -45,21 +45,23 @@ class BrigadaAdapter(
         holder.deleteButton.setOnClickListener { onDeleteClick(brigada) }
     }
 
-    fun filter(query: String?) {
-        brigadas.clear()
-        if (query.isNullOrEmpty()) {
-            brigadas.addAll(originalBrigadas)
-        } else {
-            brigadas.addAll(originalBrigadas.filter { it.getNombreBrigada().contains(query, ignoreCase = true) })
-        }
+    override fun getItemCount(): Int = brigadasFiltradas.size
+
+    fun actualizarLista(nuevaBrigada: List<Brigada>) {
+        brigadas = nuevaBrigada
+        brigadasFiltradas = nuevaBrigada
         notifyDataSetChanged()
     }
 
-    override fun getItemCount(): Int = brigadas.size
-
-    fun actualizarLista(nuevasBrigadas: List<Brigada>) {
-        brigadas.clear()
-        brigadas.addAll(nuevasBrigadas)
+    fun filter(query: String?) {
+        brigadasFiltradas = if (query.isNullOrEmpty()) {
+            brigadas
+        } else {
+            brigadas.filter {
+                it.getNombreBrigada().contains(query, ignoreCase = true) ||
+                        it.getUbicacionBrigada().contains(query, ignoreCase = true)
+            }
+        }
         notifyDataSetChanged()
     }
 }

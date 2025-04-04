@@ -36,7 +36,17 @@ class AdministrativoActivity : AppCompatActivity() {
         buttonMap.forEach { (buttonId, activityClass) ->
             findViewById<Button>(buttonId).setOnClickListener {
                 if (buttonId == R.id.brigadaButton) {
-                    Toast.makeText(this, "Módulo de Brigada", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Accediendo a Brigada", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, activityClass))
+                    animateButton(it as Button)
+                } else if (buttonId == R.id.certificadoButton) {
+                    Toast.makeText(this, "Accediendo a Certificado", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, activityClass))
+                    animateButton(it as Button)
+                } else if (buttonId == R.id.auditoriaButton) {
+                    Toast.makeText(this, "Accediendo a Auditoria", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, activityClass))
+                    animateButton(it as Button)
                 } else {
                     startActivity(Intent(this, activityClass))
                     animateButton(it as Button)

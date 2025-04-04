@@ -35,9 +35,7 @@ async function crearBrigada(body) {
 
 // Función asíncrona para listar brigadas activas
 async function listarBrigadas() {
-    return await Brigada.find({ estadoBrigada: true }) 
-        .populate('unidades')
-        .populate('comandoId');
+    return await Brigada.find({ estadoBrigada: true });
 }
 
 

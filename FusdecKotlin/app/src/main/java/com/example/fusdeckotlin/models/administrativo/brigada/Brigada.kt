@@ -1,12 +1,15 @@
 package com.example.fusdeckotlin.models.administrativo.brigada
 
+import com.google.gson.annotations.SerializedName
+
 data class Brigada(
-    private val id: String,
-    private var nombreBrigada: String,
-    private var ubicacionBrigada: String,
-    private var estadoBrigada: Boolean,
-    private var comandoId: String,
-    private var unidades: List<String>
+
+    @SerializedName("_id")              private val id: String,
+    @SerializedName("nombreBrigda")     private var nombreBrigada: String,
+    @SerializedName("ubicacionBrigada") private var ubicacionBrigada: String,
+    @SerializedName("estadoBrigada")    private var estadoBrigada: Boolean,
+    @SerializedName("comandoId")        private var comandoId: String,
+    @SerializedName("unidades")         private var unidades: List<String>
 ) {
     fun getId() = id
     fun getNombreBrigada() = nombreBrigada
@@ -35,23 +38,8 @@ data class Brigada(
         this.unidades = unidades
     }
 
-    companion object{
-        val brigada1 = Brigada(
-            id = "BRIG01",
-            nombreBrigada = "Brigada 1",
-            ubicacionBrigada = "Ubicación 1",
-            estadoBrigada = true,
-            comandoId = "COM01",
-            unidades = listOf("UNI01", "UNI02")
-        )
-
-        val brigada2 = Brigada(
-            id = "BRIG02",
-            nombreBrigada = "Brigada 2",
-            ubicacionBrigada = "Ubicación 2",
-            estadoBrigada = true,
-            comandoId = "COM02",
-            unidades = listOf("UNI03", "UNI04")
-        )
+    override fun toString(): String {
+        return "Brigada(id='$id', nombreBrigada='$nombreBrigada', ubicacionBrigada='$ubicacionBrigada', " +
+                "estadoBrigada=$estadoBrigada, comandoId='$comandoId', unidades=$unidades)"
     }
 }
