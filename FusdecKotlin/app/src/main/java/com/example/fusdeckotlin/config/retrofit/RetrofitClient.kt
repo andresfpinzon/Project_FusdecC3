@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
 
     // conexion retrofit para spring
-    private const val CERTIFICADO_BASE_URL = "http://10.0.2.2:8080/"  // <- puerto 8080 para certificados
+    private const val CERTIFICADO_BASE_URL = "http://10.0.2.2:8080/"  
 
     private val certificadoRetrofit by lazy {
         Retrofit.Builder()
