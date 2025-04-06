@@ -16,5 +16,23 @@ data class UpdateBrigadaDto(
     var comandoId: String? = null,
 
     @SerializedName("unidades")
-    private var unidades: List<String>? = null
-)
+    var unidades: List<String>? = null
+){
+    companion object{
+        fun from(
+            nombreBrigada: String? = null,
+            ubicacionBrigada: String? = null,
+            estadoBrigada: Boolean?= null,
+            comandoId: String? = null,
+            unidades: List<String>? = null
+        ):UpdateBrigadaDto{
+            return UpdateBrigadaDto(
+                nombreBrigada = nombreBrigada,
+                ubicacionBrigada = ubicacionBrigada,
+                estadoBrigada = estadoBrigada,
+                comandoId = comandoId,
+                unidades = unidades
+            )
+        }
+    }
+}
