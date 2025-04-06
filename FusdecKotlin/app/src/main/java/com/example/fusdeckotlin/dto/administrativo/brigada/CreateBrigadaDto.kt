@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.dto.administrativo.brigada
 
+import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 import com.google.gson.annotations.SerializedName
 
 data class CreateBrigadaDto(
@@ -16,5 +17,17 @@ data class CreateBrigadaDto(
     var comandoId: String,
 
     @SerializedName("unidades")
-    private var unidades: List<String>
-)
+    var unidades: List<String>
+){
+    companion object{
+        fun from(data: CreateBrigadaDto): Brigada {
+            return Brigada (
+                nombreBrigada = data.nombreBrigada,
+                ubicacionBrigada = data.ubicacionBrigada,
+                estadoBrigada = data.estadoBrigada,
+                comandoId = data.comandoId,
+                unidades = data.unidades
+            )
+        }
+    }
+}

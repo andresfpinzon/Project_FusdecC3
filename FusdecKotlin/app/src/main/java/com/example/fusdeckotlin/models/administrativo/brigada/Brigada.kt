@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Brigada(
     @SerializedName("_id")
-    private val id: String,
+    private val id: String? = null, // Permite que mongo genere el id automaticamente *Facilidad*
     @SerializedName("nombreBrigada")
     private var nombreBrigada: String,
     @SerializedName("ubicacionBrigada")
