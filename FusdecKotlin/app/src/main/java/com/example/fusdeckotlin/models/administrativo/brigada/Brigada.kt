@@ -70,7 +70,7 @@ data class Brigada(
     fun getUnidadesIds(): List<String>{
         return  unidades.map{
             when(it) {
-                is Unidad -> it.getId()
+                is Unidad -> it.getId() ?: ""
                 is String -> it
                 is Map<*, *> -> it["_id"] as? String ?: ""
                 else -> ""

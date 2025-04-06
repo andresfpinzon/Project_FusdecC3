@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.models.administrativo.unidad
 
+import com.example.fusdeckotlin.models.administrativo.comando.Comando
 import com.google.gson.annotations.SerializedName
 
 data class Unidad(
@@ -50,6 +51,17 @@ data class Unidad(
         this.estudiantes = estudiantes
     }
 
+
+    private fun converMaptoComandos(map: Map<*,*>): Comando {
+        return Comando (
+            id = map["_id"] as? String ?: "",
+            nombreComando = map["nombreComando"] as? String ?: "",
+            estadoComando = map["estadoComando"] as? Boolean ?: true,
+            ubicacionComando = map["ubicacionComando"] as? String ?: "",
+            fundacionId = map["fundacionId"] as? String ?: "",
+            brigadas = map["brigadas"] as? List<String> ?: emptyList()
+        )
+    }
     companion object {
         val unidad1 = Unidad(
             id = "UNI01",
