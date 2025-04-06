@@ -1,12 +1,21 @@
 package com.example.fusdeckotlin.models.administrativo.unidad
 
+import com.google.gson.annotations.SerializedName
+
 data class Unidad(
-    private val id: String,
+    @SerializedName("_id")
+    private val id: String? = null,
+    @SerializedName("nombreUnidad")
     private var nombreUnidad: String,
+    @SerializedName("brigadaId")
     private var brigadaId: String,
+    @SerializedName("estadoUnidad")
     private var estadoUnidad: Boolean,
+    @SerializedName("usuarioId")
     private var usuarioId: String,
+    @SerializedName("comandos")
     private var comandos: List<String>,
+    @SerializedName("estudiantes")
     private var estudiantes: List<String>
 ) {
     fun getId() = id
