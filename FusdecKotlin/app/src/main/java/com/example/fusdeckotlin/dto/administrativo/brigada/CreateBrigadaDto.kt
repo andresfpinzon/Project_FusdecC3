@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class CreateBrigadaDto(
     @SerializedName("nombreBrigada")
-    var nombreBrigada: String? = null,
+    var nombreBrigada: String,
 
     @SerializedName("ubicacionBrigada")
-    var ubicacionBrigada: String? = null,
+    var ubicacionBrigada: String,
 
     @SerializedName("estadoBrigada")
-     var estadoBrigada: Boolean? = null,
+     var estadoBrigada: Boolean = true,
 
     @SerializedName("comandoId")
-    var comandoId: String? = null,
+    var comandoId: String,
 
     @SerializedName("unidades")
-    private var unidades: List<String>? = null
+    private var unidades: List<String>
 )
