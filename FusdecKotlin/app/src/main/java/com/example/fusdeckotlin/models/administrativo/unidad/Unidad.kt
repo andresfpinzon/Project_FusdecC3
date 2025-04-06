@@ -1,5 +1,5 @@
-package com.example.fusdeckotlin.models.administrativo.unidad
 
+package com.example.fusdeckotlin.models.administrativo.unidad
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
 import com.google.gson.annotations.SerializedName
 
@@ -24,7 +24,6 @@ data class Unidad(
     fun getBrigadaId() = brigadaId
     fun getEstadoUnidad() = estadoUnidad
     fun getUsuarioId() = usuarioId
-    fun getComandos() = comandos
     fun getEstudiantes() = estudiantes
 
     fun setNombreUnidad(nombre: String) {
@@ -51,6 +50,27 @@ data class Unidad(
         this.estudiantes = estudiantes
     }
 
+    fun getComandos(): List<Comando>{
+        return comandos.mapNotNull {
+            when (it) {
+                is Comando -> it
+                is String -> Comando (id = it, "", true, "", "", emptyList() )
+                is Map<*, *> -> converMaptoComandos(it)
+                else -> null
+            }
+        }
+    }
+
+    fun getComandoByIds(): List<String>{
+        return comandos.map{
+            when(it){
+                is Comando -> it.getId() ?: ""
+                is String -> it
+                is Map<*,*> -> it["_id"] as? String ?: ""
+                else -> ""
+            }
+        }.filter { it.isNotEmpty() }
+    }
 
     private fun converMaptoComandos(map: Map<*,*>): Comando {
         return Comando (
@@ -62,25 +82,7 @@ data class Unidad(
             brigadas = map["brigadas"] as? List<String> ?: emptyList()
         )
     }
-    companion object {
-        val unidad1 = Unidad(
-            id = "UNI01",
-            nombreUnidad = "Unidad 1",
-            brigadaId = "BRIG01",
-            estadoUnidad = true,
-            usuarioId = "USU01",
-            comandos = listOf("COM01", "COM02"),
-            estudiantes = listOf("andres", "ramiro")
-        )
 
-        val unidad2 = Unidad(
-            id = "UNI02",
-            nombreUnidad = "Unidad 2",
-            brigadaId = "BRIG02",
-            estadoUnidad = true,
-            usuarioId = "USU02",
-            comandos = listOf("COM03", "COM04"),
-            estudiantes = listOf("andres", "ramiros")
-        )
-    }
+
+
 }
