@@ -1,6 +1,7 @@
 
 package com.example.fusdeckotlin.models.administrativo.unidad
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
+import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
 
 data class Unidad(
@@ -24,7 +25,6 @@ data class Unidad(
     fun getBrigadaId() = brigadaId
     fun getEstadoUnidad() = estadoUnidad
     fun getUsuarioId() = usuarioId
-    fun getEstudiantes() = estudiantes
 
     fun setNombreUnidad(nombre: String) {
         nombreUnidad = nombre
@@ -55,7 +55,7 @@ data class Unidad(
             when (it) {
                 is Comando -> it
                 is String -> Comando (id = it, "", true, "", "", emptyList() )
-                is Map<*, *> -> converMaptoComandos(it)
+                is Map<*, *> -> convertMaptoComandos(it)
                 else -> null
             }
         }
@@ -72,7 +72,7 @@ data class Unidad(
         }.filter { it.isNotEmpty() }
     }
 
-    private fun converMaptoComandos(map: Map<*,*>): Comando {
+    private fun convertMaptoComandos(map: Map<*,*>): Comando {
         return Comando (
             id = map["_id"] as? String ?: "",
             nombreComando = map["nombreComando"] as? String ?: "",
@@ -80,6 +80,48 @@ data class Unidad(
             ubicacionComando = map["ubicacionComando"] as? String ?: "",
             fundacionId = map["fundacionId"] as? String ?: "",
             brigadas = map["brigadas"] as? List<String> ?: emptyList()
+        )
+    }
+
+    fun getEstudiantes(): List<Estudiante>{
+        return estudiantes.mapNotNull {
+            when (it) {
+                is Estudiante -> it
+                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "", "", true, emptyList(), emptyList(),
+                    emptyList(), emptyList())
+                is Map<*,*> -> convertMapToEstudiantes(it)
+                else -> null
+            }
+        }
+    }
+    fun getEstudiantesByIds(): List<String>{
+        return estudiantes.map{
+            when(it){
+                is Estudiante -> it.getId() ?: ""
+                is String -> it
+                is Map<*,*> -> it["_id"] as? String ?: ""
+                else -> ""
+            }
+        }
+    }
+
+    private fun convertMapToEstudiantes(map: Map<*,*>): Estudiante{
+        return Estudiante(
+            id = map["_id"] as? String ?: "",
+            nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
+            apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
+            correoEstudiante = map["correoEstudiante"] as? String ?: "",
+            tipoDocumento = map["tipoDocumento"] as? String ?: "",
+            numeroDocumento = map["numeroDocumento"] as? String ?: "",
+            fechaNacimientoString = map["fecaNacimineto"] as? String ?: "",
+            generoEstudiante = map["generoEstudiante"] as? String ?: "",
+            unidadId = map["unidadId"] as? String ?: "",
+            colegioId = map["colegioId"] as? String ?: "",
+            estadoEstudiante = map["estadoEstudiante"] as? Boolean ?: true,
+            ediciones = map["ediciones"] as? List<String> ?: emptyList(),
+            calificaciones = map["calificaciones"] as? List<String> ?: emptyList(),
+            asistencias = map["asistencias"] as? List<String> ?: emptyList(),
+            certificados = map["certificados"] as? List<String> ?: emptyList()
         )
     }
 

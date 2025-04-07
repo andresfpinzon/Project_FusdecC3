@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
 class Estudiante(
-    @SerializedName("_id") private val id: String,
+    @SerializedName("_id") private val id: String? = null,
     @SerializedName("nombreEstudiante") private var nombreEstudiante: String,
     @SerializedName("apellidoEstudiante") private var apellidoEstudiante: String,
     @SerializedName("correoEstudiante") private val correoEstudiante: String,
@@ -21,7 +21,7 @@ class Estudiante(
     @SerializedName("certificados") private var certificados: List<String>,
 ) {
     // Getters
-    fun getId(): String = id
+    fun getId() = id
     fun getNombreEstudiante(): String = nombreEstudiante
     fun getApellidoEstudiante(): String = apellidoEstudiante
     fun getCorreoEstudiante(): String = correoEstudiante
