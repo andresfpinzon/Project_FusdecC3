@@ -15,8 +15,6 @@ data class Brigada(
     private var estadoBrigada: Boolean = true,
     @SerializedName("comandoId")
     private var comandoId: String,
-    @SerializedName("comando")
-    private var comando: String,
     @SerializedName("unidades")
     private var unidades: List<Any> = emptyList()
 ) {

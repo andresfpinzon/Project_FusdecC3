@@ -1,19 +1,27 @@
 package com.example.fusdeckotlin.models.administrativo.comando
 
+import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import com.google.gson.annotations.SerializedName
+
 data class Comando(
-    private val id: String,
+    @SerializedName("_id")
+    private val id: String? = null,
+    @SerializedName("nombreComando")
     private var nombreComando: String,
+    @SerializedName("estadoComando")
     private var estadoComando: Boolean,
+    @SerializedName("ubicacionComando")
     private var ubicacionComando: String,
+    @SerializedName("fundacionid")
     private var fundacionId: String,
-    private var brigadas: List<String>
+    @SerializedName("brigadas")
+    private var brigadas: List<Any> = emptyList()
 ) {
     fun getId() = id
     fun getNombreComando() = nombreComando
     fun getEstadoComando() = estadoComando
     fun getUbicacionComando() = ubicacionComando
     fun getFundacionId() = fundacionId
-    fun getBrigadas() = brigadas
 
     fun setNombreComando(nombre: String) {
         nombreComando = nombre
@@ -35,23 +43,36 @@ data class Comando(
         this.brigadas = brigadas
     }
 
-    companion object{
-        val comando1 = Comando(
-            id = "COM01",
-            nombreComando = "Comando 1",
-            estadoComando = true,
-            ubicacionComando = "Ubicación 1",
-            fundacionId = "FUND01",
-            brigadas = listOf("BRIG01", "BRIG02")
-        )
-
-        val comando2 = Comando(
-            id = "COM02",
-            nombreComando = "Comando 2",
-            estadoComando = true,
-            ubicacionComando = "Ubicación 2",
-            fundacionId = "FUND02",
-            brigadas = listOf("BRIG03", "BRIG04")
+    
+    fun getBrigadas(): List<Brigada>{
+        return  brigadas.mapNotNull { 
+            when(it){
+                is Brigada -> it
+                is String -> Brigada(id = it, "", "", true, "", emptyList())
+                is Map<*,*> -> convertMapToBrigadas(it)
+                else -> null
+            }
+        }
+    }
+    fun getBrigadasIds(): List<String>{
+        return  brigadas.map{
+            when(it){
+                is Brigada -> it.getId() ?: ""
+                is String -> it
+                is Map<*,*> -> it["_id"] as? String ?:""
+                else -> ""
+            }
+        }
+    }
+    
+    fun convertMapToBrigadas(map: Map<*,*>): Brigada{
+        return Brigada(
+            id = map["_id"] as? String ?: "",
+            nombreBrigada = map["nombreBrigada"] as? String ?: "",
+            ubicacionBrigada = map["ubicacionBrigada"] as? String ?: "",
+            estadoBrigada = map["estadoBrigada"] as? Boolean ?: true,
+            comandoId = map["comandoId"] as? String ?: "",
+            unidades = map["unidades"] as? List<String> ?: emptyList()
         )
     }
 }
