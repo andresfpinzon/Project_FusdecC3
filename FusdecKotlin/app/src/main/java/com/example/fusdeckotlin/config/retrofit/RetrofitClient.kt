@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.config.retrofit
 
+import com.example.fusdeckotlin.api.administrativo.brigada.BrigadaApi
 import com.example.fusdeckotlin.api.auth.AuthApi
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
 import com.example.fusdeckotlin.api.secretario.estudiante.EstudianteApi
@@ -47,5 +48,6 @@ object RetrofitClient {
     val authApi: AuthApi by lazy { retrofit.create(AuthApi::class.java) }
     val asistenciaApi: AsistenciaApi by lazy { retrofit.create(AsistenciaApi::class.java) }
     val estudianteApi: EstudianteApi by lazy { retrofit.create(EstudianteApi::class.java) }
+    val brigadaApi: BrigadaApi by lazy { retrofit.create(BrigadaApi::class.java)}
 
 }
