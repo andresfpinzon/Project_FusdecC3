@@ -1,9 +1,74 @@
 package com.example.fusdeckotlin.services.administrativo.brigada
 
+import com.example.fusdeckotlin.api.administrativo.brigada.BrigadaApi
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.administrativo.brigada.CreateBrigadaDto
+import com.example.fusdeckotlin.dto.administrativo.brigada.UpdateBrigadaDto
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 
 class BrigadaServices {
 
+    private val brigadaApi : BrigadaApi = RetrofitClient.brigadaApi
+
+    suspend fun createBrigada(data: CreateBrigadaDto): Result<Brigada>{
+        return  try {
+            val req = data
+            val res = brigadaApi.createBrigada(req)
+            handleResponse(res)
+        }catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getBrigadasActives(): Result<List<Brigada>>{
+        return  try {
+            val res = brigadaApi.getBrigadas()
+            handleListResponse(res) {it.filter{brigada -> brigada.getEstadoBrigada() == true}}
+        }catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getBrigadaById(id: String): Result<Brigada>{
+        return try {
+            val res = brigadaApi.getBrigadaById(id)
+            handleResponse(res)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateBrigada(id:String, data: UpdateBrigadaDto): Result<Brigada> {
+        return try {
+            val req = data
+            val res = brigadaApi.updateBrigada(id,req)
+            handleResponse(res)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun deleteBrigadaById(id: String): Result<Brigada>{
+        return try {
+            val res = brigadaApi.deleteBrigadaByid(id)
+            if( res .isSuccessful){
+                res.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Respuesta: Vacio el servidor"))
+            }else {
+                when (res.code()){
+                    404 -> Result.failure(Exception("Asistencia no encontrada"))
+                    else -> Result.failure(Exception("Error del servidor: ${res.code()}"))
+                }
+            }
+        }catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    /*
     companion object {
         fun crearBrigada(
             brigadas: MutableList<Brigada>,
@@ -65,4 +130,6 @@ class BrigadaServices {
             return brigada
         }
     }
+
+     */
 }
