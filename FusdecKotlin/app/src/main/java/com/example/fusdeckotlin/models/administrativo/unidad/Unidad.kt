@@ -16,9 +16,9 @@ data class Unidad(
     @SerializedName("usuarioId")
     private var usuarioId: String,
     @SerializedName("comandos")
-    private var comandos: List<String>,
+    private var comandos: List<Any>,
     @SerializedName("estudiantes")
-    private var estudiantes: List<String>
+    private var estudiantes: List<Any>
 ) {
     fun getId() = id
     fun getNombreUnidad() = nombreUnidad
@@ -104,6 +104,7 @@ data class Unidad(
             }
         }
     }
+
 
     private fun convertMapToEstudiantes(map: Map<*,*>): Estudiante{
         return Estudiante(
