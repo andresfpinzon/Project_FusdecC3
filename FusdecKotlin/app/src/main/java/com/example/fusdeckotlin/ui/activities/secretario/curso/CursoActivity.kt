@@ -1,20 +1,19 @@
 package com.example.fusdeckotlin.ui.activities.secretario.curso
 
 import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.secretario.curso.Curso
 import com.example.fusdeckotlin.services.secretario.curso.CursoServices
 import com.example.fusdeckotlin.ui.adapters.secretario.curso.CursoAdapter
-import models.secretario.curso.Curso
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.launch
 
 class CursoActivity : AppCompatActivity() {
 
@@ -22,11 +21,12 @@ class CursoActivity : AppCompatActivity() {
     private lateinit var descripcionCurso: EditText
     private lateinit var intensidadHorariaCurso: EditText
     private lateinit var fundacionId: EditText
+    private lateinit var edicionesCurso: EditText
     private lateinit var confirmarCursoButton: Button
     private lateinit var cancelarCursoButton: Button
     private lateinit var cursosRecyclerView: RecyclerView
 
-    private val cursos = mutableListOf(Curso.curso1, Curso.curso2, Curso.curso3)
+    private val cursoServicio = CursoServices()
     private lateinit var adapter: CursoAdapter
 
     private var isEditing: Boolean = false
@@ -36,72 +36,114 @@ class CursoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_curso)
 
+        // Inicializar vistas con tus nombres exactos
         tituloCurso = findViewById(R.id.tituloCurso)
         descripcionCurso = findViewById(R.id.descripcionCurso)
         intensidadHorariaCurso = findViewById(R.id.intensidadHorariaCurso)
         fundacionId = findViewById(R.id.fundacionId)
+        edicionesCurso = findViewById(R.id.edicionesCurso)
         confirmarCursoButton = findViewById(R.id.confirmarCursoButton)
         cancelarCursoButton = findViewById(R.id.cancelarCursoButton)
         cursosRecyclerView = findViewById(R.id.cursosRecyclerView)
 
-        adapter = CursoAdapter(cursos, ::onUpdateClick, ::onDeleteClick)
+        // Configurar RecyclerView
+        adapter = CursoAdapter(
+            emptyList(),
+            ::onUpdateClick,
+            ::onDeleteClick
+        )
         cursosRecyclerView.layoutManager = LinearLayoutManager(this)
         cursosRecyclerView.adapter = adapter
 
-        confirmarCursoButton.setOnClickListener {
-            guardarCurso()
-        }
+        // Cargar cursos al iniciar
+        cargarCursos()
 
-        cancelarCursoButton.setOnClickListener {
-            finish()
-        }
+        // Configurar listeners de botones
+        confirmarCursoButton.setOnClickListener { guardarCurso() }
+        cancelarCursoButton.setOnClickListener { finish() }
     }
 
-    private fun generarIdUnico(): String {
-        return "CURSO${cursos.size + 1}"
+    private fun cargarCursos() {
+        lifecycleScope.launch {
+            val result = cursoServicio.listarCursosActivos()
+            result.onSuccess { cursos ->
+                adapter.actualizarLista(cursos)
+            }.onFailure { error ->
+                Toast.makeText(
+                    this@CursoActivity,
+                    "Error al cargar cursos: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun guardarCurso() {
-        val titulo = tituloCurso.text.toString().trim()
+        val nombre = tituloCurso.text.toString().trim()
         val descripcion = descripcionCurso.text.toString().trim()
         val intensidadHoraria = intensidadHorariaCurso.text.toString().trim()
-        val fundacionId = fundacionId.text.toString().trim()
+        val fundacionIdStr = fundacionId.text.toString().trim()
+        val edicionesStr = edicionesCurso.text.toString().trim()
 
-        if (titulo.isEmpty() || descripcion.isEmpty() || intensidadHoraria.isEmpty()) {
+        if (nombre.isEmpty() || descripcion.isEmpty() || intensidadHoraria.isEmpty() || fundacionIdStr.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
 
-        try {
-            if (isEditing) {
-                val curso = cursos.find { it.getId() == currentCursoId }
-                curso?.setNombreCurso(titulo)
-                curso?.setDescripcionCurso(descripcion)
-                curso?.setIntensidadHorariaCurso(intensidadHoraria)
-                curso?.setFundacionId(fundacionId)
-                Toast.makeText(this, "Curso actualizado exitosamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-                currentCursoId = null
-            } else {
-                val id = generarIdUnico()
-                val nuevoCurso = Curso(
-                    id = id,
-                    nombreCurso = titulo,
-                    descripcionCurso = descripcion,
-                    intensidadHorariaCurso = intensidadHoraria,
-                    estadoCurso = true,
-                    fundacionId = fundacionId,
-                    ediciones = emptyList()
-                )
-                cursos.add(nuevoCurso)
-                Toast.makeText(this, "Curso guardado exitosamente", Toast.LENGTH_SHORT).show()
-            }
-
-            adapter.notifyDataSetChanged()
-            limpiarFormulario()
-        } catch (e: IllegalArgumentException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        // Convertir string de ediciones a lista
+        val edicionesList = if (edicionesStr.isNotEmpty()) {
+            edicionesStr.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        } else {
+            emptyList()
         }
+
+        lifecycleScope.launch {
+            try {
+                if (isEditing && currentCursoId != null) {
+                    cursoServicio.actualizarCurso(
+                        id = currentCursoId!!,
+                        nombre = nombre,
+                        descripcion = descripcion,
+                        intensidadHoraria = intensidadHoraria,
+                        fundacionId = fundacionIdStr,
+                        estado = true,
+                        ediciones = edicionesList
+                    ).onSuccess {
+                        Toast.makeText(this@CursoActivity, "Curso actualizado", Toast.LENGTH_SHORT).show()
+                        resetEditingState()
+                        cargarCursos()
+                    }.onFailure { error ->
+                        showError("Error al actualizar: ${error.message}")
+                    }
+                } else {
+                    cursoServicio.crearCurso(
+                        nombre = nombre,
+                        descripcion = descripcion,
+                        intensidadHoraria = intensidadHoraria,
+                        fundacionId = fundacionIdStr,
+                        ediciones = edicionesList
+                    ).onSuccess {
+                        Toast.makeText(this@CursoActivity, "Curso creado", Toast.LENGTH_SHORT).show()
+                        resetEditingState()
+                        cargarCursos()
+                    }.onFailure { error ->
+                        showError("Error al crear: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                showError("Error: ${e.message}")
+            }
+        }
+    }
+
+    private fun resetEditingState() {
+        isEditing = false
+        currentCursoId = null
+        limpiarFormulario()
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun limpiarFormulario() {
@@ -109,6 +151,7 @@ class CursoActivity : AppCompatActivity() {
         descripcionCurso.text.clear()
         intensidadHorariaCurso.text.clear()
         fundacionId.text.clear()
+        edicionesCurso.text.clear()
     }
 
     private fun onUpdateClick(curso: Curso) {
@@ -118,6 +161,10 @@ class CursoActivity : AppCompatActivity() {
         descripcionCurso.setText(curso.getDescripcionCurso())
         intensidadHorariaCurso.setText(curso.getIntensidadHorariaCurso())
         fundacionId.setText(curso.getFundacionId())
+
+        // Mostrar ediciones como lista separada por comas
+        val edicionesIds = curso.getEdiciones()
+        edicionesCurso.setText(edicionesIds.joinToString(", "))
     }
 
     private fun onDeleteClick(curso: Curso) {
@@ -126,21 +173,27 @@ class CursoActivity : AppCompatActivity() {
         builder.setMessage("¿Estás seguro de que deseas eliminar este curso?")
 
         builder.setPositiveButton("Sí") { _, _ ->
-            try {
-                cursos.removeIf { it.getId() == curso.getId() }
-                adapter.notifyDataSetChanged()
-                Toast.makeText(this, "Curso eliminado", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val result = cursoServicio.desactivarCurso(curso.getId())
+                result.onSuccess {
+                    Toast.makeText(
+                        this@CursoActivity,
+                        "Curso eliminado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    cargarCursos()
+                }.onFailure { error ->
+                    Toast.makeText(
+                        this@CursoActivity,
+                        error.message ?: "Error al eliminar",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
-        builder.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val dialog = builder.create()
-        dialog.show()
+        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+        builder.create().show()
     }
 }
 

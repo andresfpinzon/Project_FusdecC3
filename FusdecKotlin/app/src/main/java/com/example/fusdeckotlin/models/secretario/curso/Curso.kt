@@ -1,15 +1,15 @@
-package models.secretario.curso
+package com.example.fusdeckotlin.models.secretario.curso
 
-import java.util.*
+import com.google.gson.annotations.SerializedName
 
 class Curso(
-    private val id: String,
-    private var nombreCurso: String,
-    private var descripcionCurso: String,
-    private var intensidadHorariaCurso: String,
-    private var estadoCurso: Boolean = true,
-    private var fundacionId: String,
-    private var ediciones: List<String>
+    @SerializedName("_id") private val id: String,
+    @SerializedName("nombreCurso") private var nombreCurso: String,
+    @SerializedName("descripcionCurso") private var descripcionCurso: String,
+    @SerializedName("intensidadHorariaCurso") private var intensidadHorariaCurso: String,
+    @SerializedName("estadoCurso") private var estadoCurso: Boolean = true,
+    @SerializedName("fundacionId") private var fundacionId: String,
+    @SerializedName("ediciones") private var ediciones: List<Any> = emptyList()
 ) {
     // Getters
     fun getId(): String = id
@@ -18,7 +18,16 @@ class Curso(
     fun getIntensidadHorariaCurso(): String = intensidadHorariaCurso
     fun getEstadoCurso(): Boolean = estadoCurso
     fun getFundacionId(): String = fundacionId
-    fun getEdiciones(): List<String> = ediciones
+
+    fun getEdiciones(): List<String> {
+        return ediciones.map {
+            when (it) {
+                is String -> it
+                is Map<*, *> -> it["_id"] as? String ?: ""
+                else -> ""
+            }
+        }.filter { it.isNotEmpty() }
+    }
 
     // Setters
     fun setNombreCurso(nombre: String) {
@@ -45,35 +54,9 @@ class Curso(
         this.ediciones = ediciones
     }
 
-    companion object {
-        val curso1 = Curso(
-            id = "curso1",
-            nombreCurso = "Primeros Auxilios Básicos",
-            descripcionCurso = "Curso introductorio sobre primeros auxilios en situaciones de emergencia.",
-            intensidadHorariaCurso = "30 horas",
-            estadoCurso = true,
-            fundacionId = "F001",
-            ediciones = listOf("E101", "E102")
-        )
-
-        val curso2 = Curso(
-            id = "curso2",
-            nombreCurso = "Reanimación Cardiopulmonar (RCP) y Uso del DEA",
-            descripcionCurso = "Técnicas de RCP y uso del desfibrilador externo automático (DEA).",
-            intensidadHorariaCurso = "20 horas",
-            estadoCurso = true,
-            fundacionId = "F002",
-            ediciones = listOf("E201", "E202")
-        )
-
-        val curso3 = Curso(
-            id = "curso3",
-            nombreCurso = "Atención de Emergencias y Traumatismos",
-            descripcionCurso = "Manejo de heridas, fracturas y quemaduras en situaciones de emergencia.",
-            intensidadHorariaCurso = "40 horas",
-            estadoCurso = true,
-            fundacionId = "F003",
-            ediciones = listOf("E301", "E302")
-        )
+    override fun toString(): String {
+        return "Curso(id='$id', nombre='$nombreCurso', descripción='$descripcionCurso', " +
+                "fundacionId='$fundacionId', ediciones=${ediciones.joinToString()})"
     }
+
 }

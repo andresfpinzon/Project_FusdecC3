@@ -4,7 +4,8 @@ import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
-class Asistencia(
+class
+Asistencia(
     @SerializedName("_id") private val id: String,
     @SerializedName("tituloAsistencia") private var tituloAsistencia: String,
     @SerializedName("fechaAsistencia") private var fechaAsistenciaString: String,

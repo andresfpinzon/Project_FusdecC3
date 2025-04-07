@@ -2,7 +2,6 @@ package com.example.fusdeckotlin.services.secretario.estudiante
 
 import com.example.fusdeckotlin.api.secretario.estudiante.EstudianteApi
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
-import okhttp3.ResponseBody
 import retrofit2.Response
 
 class EstudianteServicio(private val api: EstudianteApi) {
