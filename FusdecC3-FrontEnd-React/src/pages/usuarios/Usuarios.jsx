@@ -28,7 +28,8 @@ import {
   OutlinedInput,
   Checkbox,
   ListItemText,
-  TablePagination
+  TablePagination,
+  Chip
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 
@@ -156,14 +157,34 @@ const Usuarios = () => {
     const {
       target: { value },
     } = e;
+    // Convertir a array y asegurar que sean strings válidos
+    const rolesArray = Array.isArray(value) 
+      ? value.map(role => {
+          if (role && typeof role === 'string') {
+            return role.trim();
+          }
+          return null;
+        }).filter(role => role !== null)
+      : value ? [value.toString()] : [];
+    
+    // Filtrar roles no válidos
+    const validRoles = rolesArray.filter(role => roles.includes(role));
+    
     setFormValues({
       ...formValues,
-      roles: typeof value === "string" ? value.split(",") : value,
+      roles: validRoles,
     });
   };
 
   const handleCreateUser = async () => {
     try {
+      // Validar que al menos haya un rol seleccionado
+      if (!formValues.roles || formValues.roles.length === 0) {
+        setErrorMessage("Debe seleccionar al menos un rol");
+        setOpenSnackbar(true);
+        return;
+      }
+
       const response = await fetch("http://localhost:3000/api/usuarios", {
         method: "POST",
         headers: {
@@ -185,7 +206,6 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
-        //mensaje de creacion exitosa
         setMessage("Usuario guardado exitosamente");
         setSeverity("success");
         setOpenSnackbar(true);
@@ -204,25 +224,35 @@ const Usuarios = () => {
 
   const handleUpdateUser = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/usuarios/${selectedUser._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
+      // Validar que al menos haya un rol seleccionado
+      if (!formValues.roles || formValues.roles.length === 0) {
+        setErrorMessage("Debe seleccionar al menos un rol");
+        setOpenSnackbar(true);
+        return;
+      }
+
+      // Validar que los roles sean válidos
+      const invalidRoles = formValues.roles.filter(role => !roles.includes(role));
+      if (invalidRoles.length > 0) {
+        setErrorMessage(`Roles inválidos: ${invalidRoles.join(', ')}`);
+        setOpenSnackbar(true);
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/api/usuarios/${selectedUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+        },
+        body: JSON.stringify(formValues),
+      });
 
       if (response.ok) {
-        const updatedUser = await response.json();
-        const updatedUsuarios = usuarios.map((user) =>
-          user._id === updatedUser._id ? updatedUser : user
-        );
-        setUsuarios(updatedUsuarios);
-        setSelectedUser(null);
+        const updatedUsuario = await response.json();
+        setUsuarios(usuarios.map(usuario => 
+          usuario._id === selectedUser._id ? updatedUsuario : usuario
+        ));
         setFormValues({
           nombreUsuario: "",
           apellidoUsuario: "",
@@ -232,7 +262,7 @@ const Usuarios = () => {
           estadoUsuario: true,
           roles: [],
         });
-        //mensaje de actualizacion exitosa
+        setSelectedUser(null);
         setMessage("Usuario actualizado exitosamente");
         setSeverity("success");
         setOpenSnackbar(true);
@@ -283,16 +313,16 @@ const Usuarios = () => {
     }
   };
 
-  const handleEditClick = (usuario) => {
+  const handleEdit = (usuario) => {
     setSelectedUser(usuario);
     setFormValues({
-      nombreUsuario: usuario.nombreUsuario,
-      apellidoUsuario: usuario.apellidoUsuario,
-      numeroDocumento: usuario.numeroDocumento,
-      correo: usuario.correo,
+      nombreUsuario: usuario.nombreUsuario || "",
+      apellidoUsuario: usuario.apellidoUsuario || "",
+      numeroDocumento: usuario.numeroDocumento || "",
+      correo: usuario.correo || "",
       password: "",
-      estadoUsuario: usuario.estadoUsuario,
-      roles: usuario.roles.map((rol) => rol._id),
+      estadoUsuario: usuario.estadoUsuario || true,
+      roles: usuario.roles || [],
     });
   };
 
@@ -360,15 +390,15 @@ const Usuarios = () => {
           <InputLabel>Roles</InputLabel>
           <Select
             multiple
-            value={formValues.roles} // Los roles preseleccionados
+            value={formValues.roles}
             onChange={handleRoleChange}
             input={<OutlinedInput label="Roles" />}
-            renderValue={(selected) => selected.join(", ")}
+            renderValue={(selected) => selected.join(', ')}
           >
-            {roles.map((rol) => (
-              <MenuItem key={rol} value={rol}>
-                <Checkbox checked={formValues.roles.includes(rol)} />
-                <ListItemText primary={rol} />
+            {roles.map((role) => (
+              <MenuItem key={role} value={role}>
+                <Checkbox checked={formValues.roles.includes(role)} />
+                <ListItemText primary={role} />
               </MenuItem>
             ))}
           </Select>
@@ -412,8 +442,8 @@ const Usuarios = () => {
               <TableCell>Nombre</TableCell>
               <TableCell>Apellido</TableCell>
               <TableCell>Correo</TableCell>
-              <TableCell>Estado</TableCell>
               <TableCell>Roles</TableCell>
+              <TableCell>Estado</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -425,12 +455,24 @@ const Usuarios = () => {
                   <TableCell>{usuario.nombreUsuario}</TableCell>
                   <TableCell>{usuario.apellidoUsuario}</TableCell>
                   <TableCell>{usuario.correo}</TableCell>
+                  <TableCell>
+                    {usuario.roles && usuario.roles.length > 0 ? (
+                      usuario.roles.map((role) => (
+                        <Chip
+                          key={role}
+                          label={role}
+                          color="primary"
+                          size="small"
+                          sx={{ mr: 1 }}
+                        />
+                      ))
+                    ) : (
+                      <Typography color="error">Sin roles asignados</Typography>
+                    )}
+                  </TableCell>
                   <TableCell>{usuario.estadoUsuario ? "Activo" : "Inactivo"}</TableCell>
                   <TableCell>
-                    {usuario.roles.map((rol) => rol).join(", ")}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEditClick(usuario)} color="primary">
+                    <IconButton onClick={() => handleEdit(usuario)} color="primary">
                       <Edit />
                     </IconButton>
                     <IconButton onClick={() => handleDeleteClick(usuario)} color="error">

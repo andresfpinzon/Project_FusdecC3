@@ -88,12 +88,31 @@ const agregarBrigadasAComandos = async (req, res) => {
     }
 };
 
+// Controlador para obtener fundaciones asignadas a comandos
+const obtenerFundacionesAsignadas = async (req, res) => {
+    try {
+        const comandos = await Comando.find()
+            .populate('fundaciones', 'nombreFundacion');
+        
+        const result = comandos.map(comando => ({
+            comandoId: comando._id,
+            fundacionIds: comando.fundaciones.map(f => f._id),
+            fundaciones: comando.fundaciones
+        }));
+
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};
+
 // Exportar los controladores
 module.exports = {
-    listarComandos,
     crearComando,
+    listarComandos,
+    obtenerComandoPorId,
     actualizarComando,
     desactivarComando,
-    obtenerComandoPorId,
-    agregarBrigadasAComandos
+    agregarBrigadasAComandos,
+    obtenerFundacionesAsignadas
 };

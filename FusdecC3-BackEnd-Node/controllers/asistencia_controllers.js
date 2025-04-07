@@ -1,5 +1,6 @@
 const logic = require("../logic/asistencia_logic")
 const asistenciaSchemaValidation = require("../validations/asistencia_validations")
+const Estudiante = require("../models/estudiante_model")
 
 // Controlador para listar todas las asistencias
 const listarAsistencias = async (req, res) => {
@@ -8,7 +9,24 @@ const listarAsistencias = async (req, res) => {
     if (asistencias.length === 0) {
       return res.status(204).json({ message: "No hay asistencias disponibles" })
     }
-    res.json(asistencias)
+    
+    // Obtener estudiantes completos para cada asistencia
+    const asistenciasConEstudiantes = await Promise.all(
+      asistencias.map(async (asistencia) => {
+        const estudiantes = await Estudiante.find({ _id: { $in: asistencia.estudiantes } })
+        return {
+          ...asistencia.toObject(),
+          estudiantes: estudiantes.map(est => ({
+            _id: est._id,
+            nombreEstudiante: est.nombreEstudiante,
+            apellidoEstudiante: est.apellidoEstudiante,
+            documentoEstudiante: est.documentoEstudiante
+          }))
+        }
+      })
+    )
+    
+    res.json(asistenciasConEstudiantes)
   } catch (err) {
     console.error("Error al listar asistencias:", err)
     res.status(500).json({ error: "Error interno del servidor", details: err.message })
@@ -86,4 +104,3 @@ module.exports = {
   desactivarAsistencia,
   obtenerAsistenciaPorId,
 }
-

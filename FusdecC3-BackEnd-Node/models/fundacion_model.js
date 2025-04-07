@@ -8,6 +8,7 @@ const fundacionSchema =new Schema ({
    },*/ 
    nombreFundacion: { 
     type: String, 
+    required: true
    }, 
    estadoFundacion: {
       type: Boolean,

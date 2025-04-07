@@ -36,6 +36,7 @@ const token = localStorage.getItem("token");
 const Comandos = () => {
   const [comandos, setComandos] = useState([]);
   const [fundaciones, setFundaciones] = useState([]);
+  const [assignedFundaciones, setAssignedFundaciones] = useState([]);
   const [selectedComando, setSelectedComando] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreComando: "",
@@ -54,62 +55,134 @@ const Comandos = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetchComandos();
-    fetchFundaciones();
+    const fetchData = async () => {
+      try {
+        const [comandosRes, fundacionesRes] = await Promise.all([
+          fetch("http://localhost:3000/api/comandos", {
+            headers: { "Authorization": token }
+          }),
+          fetch("http://localhost:3000/api/fundaciones", {
+            headers: { "Authorization": token }
+          })
+        ]);
+
+        if (comandosRes.ok && fundacionesRes.ok) {
+          const [comandosData, fundacionesData] = await Promise.all([
+            comandosRes.json(),
+            fundacionesRes.json()
+          ]);
+
+          // Inicializar las fundaciones asignadas con un objeto vacío
+          const initialAssigned = comandosData.reduce((acc, comando) => {
+            acc[comando._id] = { comandoId: comando._id, fundacionIds: [] };
+            return acc;
+          }, {});
+
+          setAssignedFundaciones(Object.values(initialAssigned));
+          setComandos(comandosData);
+          setFundaciones(fundacionesData);
+        }
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+        setErrorMessage("Error al cargar los datos. Por favor, inténtalo de nuevo.");
+        setOpenSnackbar(true);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const fetchComandos = async () => {
+  const handleAssignFundacion = async (comandoId, fundacionId) => {
     try {
-      const response = await fetch("http://localhost:3000/api/comandos",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener comandos");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de comandos está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay comandos registrados.");
-        setOpenSnackbar(true);
-        setComandos([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setComandos(data);
-      }
-    } catch (error) {
-      console.error("Error al obtener comandos:", error);
-      setErrorMessage("Error al obtener comandos");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const fetchFundaciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/fundaciones", {
-        method: "GET",
+      const response = await fetch(`http://localhost:3000/api/comandos/${comandoId}/fundaciones/${fundacionId}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": token
         }
       });
-      if (!response.ok) throw new Error("Error al obtener fundaciones");
-      const data = await response.json();
 
-      // Condicion que verifica si el arreglo de fundaciones está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay fundaciones registradas.");
-        setOpenSnackbar(true);
-        setFundaciones([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setFundaciones(data);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Error al asignar fundación");
       }
+
+      const updatedComando = await response.json();
+      setComandos(comandos.map(c => 
+        c._id === comandoId ? updatedComando : c
+      ));
+
+      // Actualizar las fundaciones asignadas
+      const currentAssigned = assignedFundaciones.find(a => a.comandoId === comandoId) || {
+        comandoId,
+        fundacionIds: []
+      };
+      const newAssigned = {
+        comandoId,
+        fundacionIds: [...currentAssigned.fundacionIds, fundacionId]
+      };
+      setAssignedFundaciones(assignedFundaciones.map(a => 
+        a.comandoId === comandoId ? newAssigned : a
+      ));
+
+      setSuccessMessage("Fundación asignada exitosamente!");
+      setErrorMessage(null);
     } catch (error) {
-      console.error("Error al obtener fundaciones:", error);
-      setErrorMessage("Error al obtener fundaciones");
+      console.error("Error al asignar fundación:", error);
+      setErrorMessage(error.message);
+      setSuccessMessage(null);
+    } finally {
       setOpenSnackbar(true);
     }
+  };
+
+  const handleUnassignFundacion = async (comandoId, fundacionId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/comandos/${comandoId}/fundaciones/${fundacionId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Error al desasignar fundación");
+      }
+
+      const updatedComando = await response.json();
+      setComandos(comandos.map(c => 
+        c._id === comandoId ? updatedComando : c
+      ));
+
+      // Actualizar las fundaciones asignadas
+      const currentAssigned = assignedFundaciones.find(a => a.comandoId === comandoId) || {
+        comandoId,
+        fundacionIds: []
+      };
+      const newAssigned = {
+        comandoId,
+        fundacionIds: currentAssigned.fundacionIds.filter(id => id !== fundacionId)
+      };
+      setAssignedFundaciones(assignedFundaciones.map(a => 
+        a.comandoId === comandoId ? newAssigned : a
+      ));
+
+      setSuccessMessage("Fundación desasignada exitosamente!");
+      setErrorMessage(null);
+    } catch (error) {
+      console.error("Error al desasignar fundación:", error);
+      setErrorMessage(error.message);
+      setSuccessMessage(null);
+    } finally {
+      setOpenSnackbar(true);
+    }
+  };
+
+  const getAssignedFundaciones = (comandoId) => {
+    const assigned = assignedFundaciones.find(a => a.comandoId === comandoId);
+    return assigned ? assigned.fundacionIds || [] : [];
   };
 
   const handleInputChange = (e) => {
@@ -127,16 +200,17 @@ const Comandos = () => {
   };
 
   const handleCreateComando = async () => {
-    if (!formValues.nombreComando || !isValidGoogleMapsLink(formValues.ubicacionComando) || !formValues.fundacionId) {
-      setErrorMessage("Por favor, completa todos los campos requeridos y asegúrate de que la ubicación sea un enlace válido de Google Maps.");
+    if (!formValues.nombreComando || !formValues.fundacionId) {
+      setErrorMessage("Por favor, completa todos los campos requeridos");
       setOpenSnackbar(true);
       return;
     }
-
+  
     const comandoData = {
-      ...formValues
+      ...formValues,
+      fundacionId: formValues.fundacionId, // Asegúrate de que esto esté correcto
     };
-
+  
     try {
       const response = await fetch("http://localhost:3000/api/comandos", {
         method: "POST",
@@ -146,13 +220,11 @@ const Comandos = () => {
         },
         body: JSON.stringify(comandoData),
       });
-
+  
       if (response.ok) {
         const nuevoComando = await response.json();
         setComandos([...comandos, nuevoComando]);
         clearForm();
-
-        // Muestra un mensaje de éxito
         setSuccessMessage("Comando guardado exitosamente!");
         setOpenSnackbar(true);
       } else {
@@ -276,25 +348,6 @@ const Comandos = () => {
     setSelectedComando(null);
   };
 
-  // Función para validar el enlace de Google Maps
-  const isValidGoogleMapsLink = (link) => {
-    const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)/;
-    return regex.test(link);
-  };
-
-  const obtenerFundacionesAsignadas = () => {
-    const fundacionesAsignadas = comandos.map(comando => {
-      const fundacion = fundaciones.find(fundacion => fundacion._id === comando.fundacionId);
-      return fundacion ? fundacion.nombreFundacion : null;
-    }).filter((nombre) => nombre !== null);
-
-    return [...new Set(fundacionesAsignadas)]; // Elimina duplicados
-  };
-
-  // Uso de la función
-  const fundacionesUnicas = obtenerFundacionesAsignadas();
-  console.log(fundacionesUnicas);
-
   const filteredComandos = comandos.filter((comando) =>
     comando.nombreComando.toLowerCase().includes(searchTerm.toLowerCase()) ||
     comando.ubicacionComando.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -373,7 +426,7 @@ const Comandos = () => {
                   <TableCell>Nombre</TableCell>
                   <TableCell>Ubicación</TableCell>
                   <TableCell>Estado</TableCell>
-                  <TableCell>Fundación</TableCell>
+                  <TableCell>Fundación Asignada</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -384,20 +437,20 @@ const Comandos = () => {
                     <TableCell>{comando.ubicacionComando}</TableCell>
                     <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
-                      {fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}
+                      {comando.fundacionId?.nombreFundacion || "Sin Fundación"}
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(comando)} color="primary">
                         <Edit />
-                      </IconButton>
-                      <IconButton onClick={() => handleInfoClick(comando)} color="primary">
-                        <Info />
                       </IconButton>
                       <IconButton onClick={() => {
                         setSelectedComando(comando);
                         setOpenDeleteDialog(true);
                       }} color="error">
                         <Delete />
+                      </IconButton>
+                      <IconButton onClick={() => handleInfoClick(comando)} color="primary">
+                        <Info />
                       </IconButton>
                     </TableCell>
                   </TableRow>

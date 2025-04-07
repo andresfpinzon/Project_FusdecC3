@@ -76,7 +76,51 @@ const desactivarFundacion = async (req, res) => {
     }
 };
 
+// Controlador para asignar un comando a una fundación
+const asignarComando = async (req, res) => {
+    const { id } = req.params;
+    const { comandoId } = req.body;
 
+    try {
+        const fundacion = await logic.asignarComando(id, comandoId);
+        if (!fundacion) {
+            return res.status(404).json({ error: 'Fundación o comando no encontrado' });
+        }
+        res.json(fundacion);
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};
+
+// Controlador para desasignar un comando de una fundación
+const desasignarComando = async (req, res) => {
+    const { id, comandoId } = req.params;
+
+    try {
+        const fundacion = await logic.desasignarComando(id, comandoId);
+        if (!fundacion) {
+            return res.status(404).json({ error: 'Fundación o comando no encontrado' });
+        }
+        res.json(fundacion);
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};
+
+// Controlador para obtener comandos asignados a una fundación
+const obtenerComandosAsignados = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const comandos = await logic.obtenerComandosAsignados(id);
+        if (!comandos) {
+            return res.status(404).json({ error: 'Fundación no encontrada' });
+        }
+        res.json(comandos);
+    } catch (err) {
+        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    }
+};
 
 // Exportar los controladores
 module.exports = {
@@ -85,4 +129,7 @@ module.exports = {
     obtenerFundacionPorId,
     actualizarFundacion,
     desactivarFundacion,
+    asignarComando,
+    desasignarComando,
+    obtenerComandosAsignados
 };

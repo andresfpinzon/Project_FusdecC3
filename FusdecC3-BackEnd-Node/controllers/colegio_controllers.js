@@ -13,16 +13,23 @@ const crearColegio = async (req, res) => {
     estudiantes: body.estudiantes,
   });
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    return res.status(400).json({ 
+      error: `Error de validación: ${error.details[0].message}` 
+    });
   }
   try {
     const nuevoColegio = await logic.crearColegio(value);
     res.status(201).json(nuevoColegio);
   } catch (err) {
     if (err.message === "El colegio con este título ya existe") {
-      return res.status(409).json({ error: err.message });
+      return res.status(409).json({ 
+        error: "Ya existe un colegio con este nombre o email" 
+      });
     }
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error al crear colegio:", err);
+    res.status(500).json({ 
+      error: "Error interno del servidor al crear el colegio" 
+    });
   }
 };
 
@@ -37,16 +44,23 @@ const actualizarColegio = async (req, res) => {
     estudiantes: body.estudiantes,
   });
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    return res.status(400).json({ 
+      error: `Error de validación: ${error.details[0].message}` 
+    });
   }
   try {
     const colegioActualizado = await logic.actualizarColegio(id, value);
     if (!colegioActualizado) {
-      return res.status(404).json({ error: "Colegio no encontrado" });
+      return res.status(404).json({ 
+        error: "No se encontró el colegio para actualizar" 
+      });
     }
     res.json(colegioActualizado);
   } catch (err) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error al actualizar colegio:", err);
+    res.status(500).json({ 
+      error: "Error interno del servidor al actualizar el colegio" 
+    });
   }
 };
 
@@ -56,11 +70,16 @@ const desactivarColegio = async (req, res) => {
   try {
     const colegioDesactivado = await logic.desactivarColegio(id);
     if (!colegioDesactivado) {
-      return res.status(404).json({ error: "Colegio no encontrado" });
+      return res.status(404).json({ 
+        error: "No se encontró el colegio para desactivar" 
+      });
     }
     res.json(colegioDesactivado);
   } catch (err) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error al desactivar colegio:", err);
+    res.status(500).json({ 
+      error: "Error interno del servidor al desactivar el colegio" 
+    });
   }
 };
 
@@ -73,7 +92,10 @@ const listarColegiosActivos = async (req, res) => {
     }
     res.json(colegiosActivos);
   } catch (err) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error al listar colegios:", err);
+    res.status(500).json({ 
+      error: "Error interno del servidor al listar los colegios" 
+    });
   }
 };
 
@@ -85,12 +107,15 @@ const obtenerColegiosPorId = async (req, res) => {
     if (!colegio) {
       return res
         .status(404)
-        .json({ error: `Colegio con ID ${id} no encontrado` });
+        .json({ 
+          error: `No se encontró el colegio con ID ${id}` 
+        });
     }
     res.json(colegio);
   } catch (err) {
-    res.status(500).json({
-      error: `Error interno del servidor al buscar el colegio: ${err.message}`,
+    console.error("Error al buscar colegio:", err);
+    res.status(500).json({ 
+      error: "Error interno del servidor al buscar el colegio" 
     });
   }
 };
@@ -101,14 +126,19 @@ const agregarEstudianteAColegio = async (req, res) => {
   const { estudiantes } = req.body;
 
   if (!Array.isArray(estudiantes) || estudiantes.length === 0) {
-      return res.status(400).json({ error: 'Se requiere un array de IDs de estidiantes' });
+      return res.status(400).json({ 
+        error: 'Se requiere un array de IDs de estudiantes' 
+      });
   }
 
   try {
       const colegioActualizado = await logic.agregarEstudianteAColegio(colegioId, estudiantes);
       res.json({ colegio: colegioActualizado });
   } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.error("Error al agregar estudiantes:", error);
+      res.status(500).json({ 
+        error: "Error interno del servidor al agregar estudiantes" 
+      });
   }
 };
 

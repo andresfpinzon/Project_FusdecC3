@@ -160,4 +160,94 @@ router.put('/:id',verifyJWT, verifyRole(['Root']), fundacionController.actualiza
  */
 router.delete('/:id',verifyJWT, verifyRole(['Root']), fundacionController.desactivarFundacion);
 
+/**
+ * @swagger
+ * /api/fundaciones/{id}/comandos:
+ *   post:
+ *     tags:
+ *       - Fundaciones
+ *     summary: Asignar un comando a una fundación
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la fundación
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - comandoId
+ *             properties:
+ *               comandoId:
+ *                 type: string
+ *                 description: ID del comando a asignar
+ *     responses:
+ *       200:
+ *         description: Comando asignado correctamente
+ *       404:
+ *         description: Fundación o comando no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post('/:id/comandos', verifyJWT, verifyRole(['Root']), fundacionController.asignarComando);
+
+/**
+ * @swagger
+ * /api/fundaciones/{id}/comandos/{comandoId}:
+ *   delete:
+ *     tags:
+ *       - Fundaciones
+ *     summary: Desasignar un comando de una fundación
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la fundación
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: comandoId
+ *         required: true
+ *         description: ID del comando a desasignar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Comando desasignado correctamente
+ *       404:
+ *         description: Fundación o comando no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.delete('/:id/comandos/:comandoId', verifyJWT, verifyRole(['Root']), fundacionController.desasignarComando);
+
+/**
+ * @swagger
+ * /api/fundaciones/{id}/comandos:
+ *   get:
+ *     tags:
+ *       - Fundaciones
+ *     summary: Obtener comandos asignados a una fundación
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la fundación
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de comandos asignados
+ *       404:
+ *         description: Fundación no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id/comandos', verifyJWT, verifyRole(['Root']), fundacionController.obtenerComandosAsignados);
+
 module.exports = router;
