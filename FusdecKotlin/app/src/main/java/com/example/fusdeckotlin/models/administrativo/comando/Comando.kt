@@ -9,7 +9,7 @@ data class Comando(
     @SerializedName("nombreComando")
     private var nombreComando: String,
     @SerializedName("estadoComando")
-    private var estadoComando: Boolean,
+    private var estadoComando: Boolean = true,
     @SerializedName("ubicacionComando")
     private var ubicacionComando: String,
     @SerializedName("fundacionid")
