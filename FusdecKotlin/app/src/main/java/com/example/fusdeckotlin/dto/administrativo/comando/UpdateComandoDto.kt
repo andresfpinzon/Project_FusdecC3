@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class UpdateComandoDto(
     @SerializedName("nombreComando")
-    var nombreComando: String,
+    var nombreComando: String? = null,
 
     @SerializedName("estadoComadno")
-    var estadoComando: Boolean,
+    var estadoComando: Boolean ? = null,
 
     @SerializedName("ubicacionComando")
-    var ubicacionComando: String,
+    var ubicacionComando: String? = null,
 
     @SerializedName("fundacionId")
-    var fundacionId: String,
+    var fundacionId: String? = null,
 
     @SerializedName("brigadas")
-    var brigadas: List<String>
+    var brigadas: List<String> ? = null
 )
