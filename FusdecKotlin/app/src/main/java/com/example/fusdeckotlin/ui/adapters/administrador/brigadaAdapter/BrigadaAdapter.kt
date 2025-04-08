@@ -39,7 +39,18 @@ class BrigadaAdapter(
         holder.textNombre.text = brigada.getNombreBrigada()
         holder.textUbicacion.text = brigada.getUbicacionBrigada()
         holder.textComandoId.text = brigada.getComandoId()
-        holder.textUnidades.text = brigada.getUnidades().joinToString(", ")
+        holder.textUnidades.text = when {
+            brigada.getUnidades().isNotEmpty() &&
+                    brigada.getUnidades().first().getNombreUnidad().isNotEmpty() -> {
+                        brigada.getUnidades()
+                            .joinToString(", ") {"${it.getNombreUnidad()}"}
+
+                    }
+            else -> {
+                brigada.getUnidadesIds().joinToString(", ")
+            }
+        }
+
 
         holder.updateButton.setOnClickListener { onUpdateClick(brigada) }
         holder.deleteButton.setOnClickListener { onDeleteClick(brigada) }
