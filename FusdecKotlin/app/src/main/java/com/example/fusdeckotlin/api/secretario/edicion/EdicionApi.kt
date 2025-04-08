@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.api.secretario.edicion
+/*package com.example.fusdeckotlin.api.secretario.edicion
 
 import com.example.fusdeckotlin.dto.secretario.edicion.ActualizarEdicionRequest
 import com.example.fusdeckotlin.dto.secretario.edicion.CrearEdicionRequest
@@ -32,4 +32,4 @@ interface EdicionApi {
         @Path("id") id: String,
         @Body request: AgregarEstudianteRequest
     ): Response<Edicion>
-}
+}*/

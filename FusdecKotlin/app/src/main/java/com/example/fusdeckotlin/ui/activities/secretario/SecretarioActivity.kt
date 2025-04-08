@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.activities.secretario.curso.CursoActivity
-import com.example.fusdeckotlin.ui.activities.secretario.edicion.EdicionActivity
+//import com.example.fusdeckotlin.ui.activities.secretario.edicion.EdicionActivity
 import com.example.fusdeckotlin.ui.activities.secretario.horario.HorarioActivity
 
 class SecretarioActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class SecretarioActivity : AppCompatActivity() {
 
 
         val cursoButton: Button = findViewById(R.id.cursoButton)
-        val edicionButton: Button = findViewById(R.id.edicionButton)
+        //val edicionButton: Button = findViewById(R.id.edicionButton)
         val estudianteButton: Button = findViewById(R.id.estudianteButton)
         val horarioButton: Button = findViewById(R.id.horarioButton)
         val volverButton: Button = findViewById(R.id.volverButton)
@@ -31,12 +31,12 @@ class SecretarioActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        edicionButton.setOnClickListener {
+        /*edicionButton.setOnClickListener {
 
             val intent = Intent(this, EdicionActivity::class.java)
             startActivity(intent)
 
-        }
+        }*/
 
         horarioButton.setOnClickListener {
 

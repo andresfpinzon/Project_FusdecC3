@@ -1,54 +1,77 @@
-package models.secretario.edicion
+package com.example.fusdeckotlin.models.secretario.edicion
 
-import java.util.Date
+import com.google.gson.annotations.SerializedName
+import java.time.LocalDate
 
 class Edicion(
-    private val id: String,
-    private var tituloEdicion: String,
-    private var fechaInicioEdicion: Date,
-    private var fechaFinEdicion: Date,
-    private var estadoEdicion: Boolean = true,
-    private var cursoId: String,
-    private var horarios: List<String>,
-    private var estudiantes: List<String>
+    @SerializedName("_id") private val id: String,
+    @SerializedName("nombreEdicion") private var nombreEdicion: String,
+    @SerializedName("fechaInicio") private var fechaInicioString: String,
+    @SerializedName("fechaFin") private var fechaFinString: String,
+    @SerializedName("cursoId") private var cursoId: String,
+    @SerializedName("instructorId") private var instructorId: String,
+    @SerializedName("estadoEdicion") private var estadoEdicion: Boolean = true,
+    @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList()
 ) {
     // Getters
     fun getId(): String = id
-    fun getTituloEdicion(): String = tituloEdicion
-    fun getFechaInicioEdicion(): Date = fechaInicioEdicion
-    fun getFechaFinEdicion(): Date = fechaFinEdicion
-    fun getEstadoEdicion(): Boolean = estadoEdicion
+    fun getNombreEdicion(): String = nombreEdicion
+
+    fun getFechaInicio(): LocalDate {
+        return LocalDate.parse(fechaInicioString.substring(0, 10))
+    }
+
+    fun getFechaFin(): LocalDate {
+        return LocalDate.parse(fechaFinString.substring(0, 10))
+    }
+
     fun getCursoId(): String = cursoId
-    fun getHorarios(): List<String> = horarios
-    fun getEstudiantes(): List<String> = estudiantes
+    fun getInstructorId(): String = instructorId
+    fun getEstadoEdicion(): Boolean = estadoEdicion
+
+    fun getEstudiantesIds(): List<String> {
+        return estudiantes.map {
+            when (it) {
+                is String -> it
+                is Map<*, *> -> it["_id"] as? String ?: ""
+                else -> ""
+            }
+        }.filter { it.isNotEmpty() }
+    }
 
     // Setters
-    fun setTituloEdicion(titulo: String) {
-        this.tituloEdicion = titulo
+    fun setNombreEdicion(nombre: String) {
+        this.nombreEdicion = nombre
     }
 
-    fun setFechaInicioEdicion(fecha: Date) {
-        this.fechaInicioEdicion = fecha
+    fun setFechaInicio(fecha: LocalDate) {
+        this.fechaInicioString = fecha.toString()
     }
 
-    fun setFechaFinEdicion(fecha: Date) {
-        this.fechaFinEdicion = fecha
-    }
-
-    fun setEstadoEdicion(estado: Boolean) {
-        this.estadoEdicion = estado
+    fun setFechaFin(fecha: LocalDate) {
+        this.fechaFinString = fecha.toString()
     }
 
     fun setCursoId(cursoId: String) {
         this.cursoId = cursoId
     }
 
-    fun setHorarios(horarios: List<String>) {
-        this.horarios = horarios
+    fun setInstructorId(instructorId: String) {
+        this.instructorId = instructorId
     }
 
-    fun setEstudiantes(estudiantes: List<String>) {
-        this.estudiantes = estudiantes
+    fun setEstadoEdicion(estado: Boolean) {
+        this.estadoEdicion = estado
     }
 
+    fun setEstudiantesIds(estudiantesIds: List<String>) {
+        this.estudiantes = estudiantesIds
+    }
+
+    override fun toString(): String {
+        return "Edicion(id='$id', nombre='$nombreEdicion', " +
+                "fechaInicio=${getFechaInicio()}, fechaFin=${getFechaFin()}, " +
+                "cursoId='$cursoId', instructorId='$instructorId', " +
+                "estudiantes=${getEstudiantesIds().joinToString()})"
+    }
 }

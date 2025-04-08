@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.services.secretario.edicion
+/*package com.example.fusdeckotlin.services.secretario.edicion
 
 import models.secretario.edicion.Edicion
 import java.util.*
@@ -73,4 +73,4 @@ class EdicionServices {
             return edicion
         }
     }
-}
+}*/

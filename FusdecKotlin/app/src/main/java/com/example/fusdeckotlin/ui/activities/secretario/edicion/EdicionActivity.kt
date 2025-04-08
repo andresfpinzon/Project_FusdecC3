@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.activities.secretario.edicion
+/*package com.example.fusdeckotlin.ui.activities.secretario.edicion
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -182,4 +182,4 @@ class EdicionActivity : AppCompatActivity() {
         dialog.show()
     }
 
-}
+}*/

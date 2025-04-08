@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters.secretario.edicion
+/*package com.example.fusdeckotlin.ui.adapters.secretario.edicion
 
 import android.view.LayoutInflater
 import android.view.View
@@ -49,4 +49,4 @@ class EdicionAdapter (
         }
 
         override fun getItemCount(): Int = ediciones.size
-}
+}*/
