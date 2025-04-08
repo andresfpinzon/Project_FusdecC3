@@ -10,12 +10,12 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 
 class BrigadaAdapter(
-    private val brigadas: MutableList<Brigada>,
+    private var brigadas: List<Brigada>,
     private val onUpdateClick: (Brigada) -> Unit,
     private val onDeleteClick: (Brigada) -> Unit
 ) : RecyclerView.Adapter<BrigadaAdapter.BrigadaViewHolder>() {
 
-    private val originalBrigadas = brigadas.toMutableList()
+    private var originalBrigadas : List<Brigada> = brigadas
 
     class BrigadaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textIdBrigada: TextView = itemView.findViewById(R.id.textViewBrigadaId)
@@ -57,11 +57,12 @@ class BrigadaAdapter(
     }
 
     fun filter(query: String?) {
-        brigadas.clear()
-        if (query.isNullOrEmpty()) {
-            brigadas.addAll(originalBrigadas)
+        brigadas = if (query.isNullOrEmpty()) {
+            originalBrigadas
         } else {
-            brigadas.addAll(originalBrigadas.filter { it.getNombreBrigada().contains(query, ignoreCase = true) })
+            originalBrigadas.filter {
+                it.getNombreBrigada().contains(query, ignoreCase = true)
+            }
         }
         notifyDataSetChanged()
     }
@@ -69,8 +70,8 @@ class BrigadaAdapter(
     override fun getItemCount(): Int = brigadas.size
 
     fun actualizarLista(nuevasBrigadas: List<Brigada>) {
-        brigadas.clear()
-        brigadas.addAll(nuevasBrigadas)
+        brigadas = nuevasBrigadas
+        originalBrigadas = nuevasBrigadas
         notifyDataSetChanged()
     }
 }
