@@ -9,7 +9,7 @@ import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 import java.time.LocalDate
 
-class AsistenciaServicio {
+class AsistenciaServices {
 
     private val asistenciaApi: AsistenciaApi = RetrofitClient.asistenciaApi
 

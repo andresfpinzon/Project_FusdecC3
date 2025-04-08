@@ -1,32 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_height="match_parent"
               android:orientation="vertical"
               android:padding="16dp">
 
+    <!-- Título del formulario -->
     <TextView
             android:id="@+id/tituloFormulario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Formulario edicion"
+            android:text="Formulario edición"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginBottom="30dp"/>
 
+    <!-- Título de la edición -->
     <TextView
             android:id="@+id/edicionTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Título de la edición"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="1dp"/>
+            android:layout_marginBottom="4dp"/>
 
     <EditText
             android:id="@+id/tituloEdicion"
@@ -34,73 +33,63 @@
             android:layout_height="wrap_content"
             android:hint="Ingrese el título"
             android:inputType="text"
-            android:ems="10"
             android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="24dp"/>
 
+    <!-- Fecha de inicio -->
     <TextView
             android:id="@+id/edicionFechaInicio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Fecha de inicio"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="1dp"/>
-
+            android:layout_marginBottom="4dp"/>
 
     <EditText
             android:id="@+id/fechaInicioEdicion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha inicio (yyyy-MM-dd)"
-            android:inputType="text"
-            android:ems="10"
+            android:hint="Seleccione fecha (yyyy-MM-dd)"
+            android:inputType="none"
             android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:focusable="false"
+            android:clickable="true"
             android:layout_marginBottom="24dp"/>
 
+    <!-- Fecha de fin -->
     <TextView
             android:id="@+id/edicionFechaFin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Fecha de finalización"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="1dp"/>
+            android:layout_marginBottom="4dp"/>
 
     <EditText
             android:id="@+id/fechaFinEdicion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha fin (yyyy-MM-dd)"
-            android:inputType="text"
-            android:ems="10"
+            android:hint="Seleccione fecha (yyyy-MM-dd)"
+            android:inputType="none"
             android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:focusable="false"
+            android:clickable="true"
             android:layout_marginBottom="24dp"/>
 
+    <!-- Curso -->
     <TextView
             android:id="@+id/edicionCurso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Curso de la edicion"
-            android:textSize="18sp"
+            android:text="Curso de la edición"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="1dp"/>
-
+            android:layout_marginBottom="4dp"/>
 
     <EditText
             android:id="@+id/cursoId"
@@ -108,38 +97,65 @@
             android:layout_height="wrap_content"
             android:hint="ID del curso"
             android:inputType="text"
-            android:ems="10"
             android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="24dp"/>
+
+    <!-- Instructor -->
+    <TextView
+            android:id="@+id/edicionInstructor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Instructor asignado"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="4dp"/>
+
+    <EditText
+            android:id="@+id/instructorId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ID del instructor"
+            android:inputType="text"
+            android:gravity="center"
             android:layout_marginBottom="30dp"/>
 
-    <!-- faltan horarios y estudiantes -->
-
-    <Button
-            android:id="@+id/confirmarEdicionButton"
-            android:layout_width="200dp"
+    <!-- Botones -->
+    <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirmar"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="12dp"/>
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
 
-    <Button
-            android:id="@+id/cancelarEdicionButton"
-            android:layout_width="200dp"
+        <Button
+                android:id="@+id/confirmarEdicionButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Confirmar"
+                android:layout_marginEnd="8dp"/>
+
+        <Button
+                android:id="@+id/cancelarEdicionButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Cancelar"/>
+    </LinearLayout>
+
+    <!-- Lista de ediciones -->
+    <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancelar"
-            android:layout_gravity="center_horizontal"/>
+            android:text="Ediciones registradas"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"/>
 
-    <!-- Lista de Ediciones -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/edicionesRecyclerView"
-            android:layout_width="362dp"
-            android:layout_height="120dp"
-            app:layout_constraintTop_toBottomOf="@id/cancelarButton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"/>
-
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"/>
 </LinearLayout>

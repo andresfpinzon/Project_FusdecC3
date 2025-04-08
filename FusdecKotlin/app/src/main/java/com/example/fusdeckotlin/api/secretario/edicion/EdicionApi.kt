@@ -1,10 +1,8 @@
-/*package com.example.fusdeckotlin.api.secretario.edicion
+package com.example.fusdeckotlin.api.secretario.edicion
 
 import com.example.fusdeckotlin.dto.secretario.edicion.ActualizarEdicionRequest
 import com.example.fusdeckotlin.dto.secretario.edicion.CrearEdicionRequest
-import com.example.fusdeckotlin.dto.secretario.edicion.AgregarEstudianteRequest
 import com.example.fusdeckotlin.models.secretario.edicion.Edicion
-import models.secretario.edicion.Edicion
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -26,10 +24,4 @@ interface EdicionApi {
 
     @GET("api/ediciones/{id}")
     suspend fun obtenerEdicionPorId(@Path("id") id: String): Response<Edicion>
-
-    @POST("api/ediciones/{id}/estudiantes")
-    suspend fun agregarEstudianteAEdicion(
-        @Path("id") id: String,
-        @Body request: AgregarEstudianteRequest
-    ): Response<Edicion>
-}*/
+}

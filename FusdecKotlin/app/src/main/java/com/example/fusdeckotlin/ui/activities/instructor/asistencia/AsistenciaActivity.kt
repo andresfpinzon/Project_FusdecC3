@@ -3,7 +3,6 @@ package com.example.fusdeckotlin.ui.activities.instructor.asistencia
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -14,11 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.instructor.asistencia.AsistenciaAdapter
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
+import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.*
 
 class AsistenciaActivity : AppCompatActivity() {
@@ -31,7 +29,7 @@ class AsistenciaActivity : AppCompatActivity() {
     private lateinit var cancelarButton: Button
     private lateinit var asistenciasRecyclerView: RecyclerView
 
-    private val asistenciaServicio = AsistenciaServicio()
+    private val asistenciaServicio = AsistenciaServices()
     private lateinit var adapter: AsistenciaAdapter
 
     private var isEditing: Boolean = false
