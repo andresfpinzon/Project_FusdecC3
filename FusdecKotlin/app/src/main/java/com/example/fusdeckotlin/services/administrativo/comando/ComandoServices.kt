@@ -14,7 +14,7 @@ class ComandoServices {
 
     private val comandoApi: ComandoApi = RetrofitClient.comandoApi
 
-    suspend fun createBrigada(data: CreateComandoDto): Result<Comando>{
+    suspend fun createComando(data: CreateComandoDto): Result<Comando>{
         return try {
             val req = data
             val res = comandoApi.createComando(req)
@@ -24,7 +24,7 @@ class ComandoServices {
         }
     }
 
-    suspend fun getBrigadasActives(): Result<List<Comando>>{
+    suspend fun getComandoActives(): Result<List<Comando>>{
         return  try {
             val res = comandoApi.getComandos()
             handleListResponse(res) { it.filter {comando -> comando.getEstadoComando() == true}}
