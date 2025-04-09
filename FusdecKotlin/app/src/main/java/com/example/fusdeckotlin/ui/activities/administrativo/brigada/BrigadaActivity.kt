@@ -1,7 +1,6 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.brigada
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
@@ -33,7 +32,6 @@ class BrigadaActivity : AppCompatActivity() {
     private lateinit var searchView: SearchView
 
     private val brigadaServices = BrigadaServices()
-    private val brigadas = mutableListOf<Brigada>()
     private lateinit var adapter: BrigadaAdapter
 
     private var isEditing: Boolean = false
@@ -43,6 +41,13 @@ class BrigadaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_brigada)
 
+        initViews()
+        setupRecyclerView()
+        setupListeners()
+        cargarBrigadas()
+    }
+
+    private fun initViews() {
         nombreBrigadaEditText = findViewById(R.id.nombreBrigadaEditText)
         ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
         comandoIdEditText = findViewById(R.id.comandoIdEditText)
@@ -52,29 +57,24 @@ class BrigadaActivity : AppCompatActivity() {
         cancelarButton = findViewById(R.id.cancelarButton)
         brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
         searchView = findViewById(R.id.searchView)
+    }
 
+    private fun setupRecyclerView() {
         adapter = BrigadaAdapter(
-            brigadas,
+            emptyList(),
             ::onUpdateClick,
             ::onDeleteClick
         )
         brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
         brigadasRecyclerView.adapter = adapter
+    }
 
-        charginBrigadas()
-
-        confirmarButton.setOnClickListener {
-            guardarBrigada()
-        }
-
-        cancelarButton.setOnClickListener {
-            finish()
-        }
+    private fun setupListeners() {
+        confirmarButton.setOnClickListener { guardarBrigada() }
+        cancelarButton.setOnClickListener { finish() }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
+            override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 adapter.filter(newText)
@@ -83,16 +83,13 @@ class BrigadaActivity : AppCompatActivity() {
         })
     }
 
-    private fun generarIdUnico(): String = "BRIG-${System.currentTimeMillis()}"
-
-    private fun charginBrigadas(){
+    private fun cargarBrigadas() {
         lifecycleScope.launch {
             val result = brigadaServices.getBrigadasActives()
-            result.onSuccess { brigadas -> adapter.actualizarLista(brigadas) }. onFailure { error ->
-                Toast.makeText(
-                    this@BrigadaActivity, "Error al cargar las brigadas: ${error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            result.onSuccess { brigadas ->
+                adapter.actualizarLista(brigadas)
+            }.onFailure { error ->
+                showError("Error al cargar brigadas: ${error.message}")
             }
         }
     }
@@ -105,98 +102,78 @@ class BrigadaActivity : AppCompatActivity() {
         val unidades = unidadesEditText.text.toString().trim().split(",").map { it.trim() }
 
         if (nombreBrigada.isEmpty() || ubicacionBrigada.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+            showError("Por favor, complete todos los campos")
             return
         }
 
         lifecycleScope.launch {
             try {
-                val unidadesList = unidades
-                if (isEditing && currentBrigadaId != null){
-                    val udpateData = UpdateBrigadaDto(
-                        nombreBrigada = nombreBrigada,
-                        ubicacionBrigada = ubicacionBrigada,
-                        estadoBrigada = estadoBrigada,
-                        comandoId = comandoId,
-                        unidades = unidadesList
-                    )
-
-                    val result = brigadaServices.updateBrigada(currentBrigadaId!!, udpateData)
-                        .onSuccess {
-                            Toast.makeText(this@BrigadaActivity, "Brigada actualizada con exito", Toast.LENGTH_SHORT).show()
-                            resetEditingState()
-                            charginBrigadas()
-                        }.onFailure { error ->
-                            showError("Error al actualizar: ${error.message}")
-                        }
-
+                if (isEditing && currentBrigadaId != null) {
+                    actualizarBrigada(nombreBrigada, ubicacionBrigada, estadoBrigada, comandoId, unidades)
                 } else {
-                    val createData = CreateBrigadaDto(
-                        nombreBrigada = nombreBrigada,
-                        ubicacionBrigada = ubicacionBrigada,
-                        estadoBrigada = estadoBrigada,
-                        comandoId = comandoId,
-                        unidades = unidadesList
-                    )
-                    brigadaServices.createBrigada(createData)
-                        .onSuccess {
-                            Toast.makeText(this@BrigadaActivity, "Brigada creada", Toast.LENGTH_SHORT).show()
-                            resetEditingState()
-                            charginBrigadas()
-                        }.onFailure { error ->
-                            showError("Error al crear. ${error.message}")
-                        }
+                    crearBrigada(nombreBrigada, ubicacionBrigada, estadoBrigada, comandoId, unidades)
                 }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 showError("Error: ${e.message}")
             }
         }
-
-//        try {
-//            if (isEditing) {
-//                BrigadaServices.actualizarBrigada(
-//                    brigadas,
-//                    currentBrigadaId!!,
-//                    nombreBrigada,
-//                    ubicacionBrigada,
-//                    comandoId,
-//                    unidades,
-//                    estadoBrigada
-//                )
-//                Toast.makeText(this, "Brigada actualizada correctamente", Toast.LENGTH_SHORT).show()
-//                isEditing = false
-//                currentBrigadaId = null
-//            } else {
-//                val id = generarIdUnico()
-//                BrigadaServices.crearBrigada(
-//                    brigadas,
-//                    id,
-//                    nombreBrigada,
-//                    ubicacionBrigada,
-//                    estadoBrigada,
-//                    comandoId,
-//                    unidades
-//                )
-//                Toast.makeText(this, "Brigada creada correctamente", Toast.LENGTH_SHORT).show()
-//            }
-//            actualizarLista()
-//            limpiarFormulario()
-//        } catch (e: Exception) {
-//            Log.e("BrigadaActivity", "Error al guardar brigada", e)
-//            Toast.makeText(this, "Error al guardar brigada: ${e.message}", Toast.LENGTH_SHORT).show()
-//        }
     }
 
-    private fun  resetEditingState(){
+    private suspend fun actualizarBrigada(
+        nombre: String,
+        ubicacion: String,
+        estado: Boolean,
+        comandoId: String,
+        unidades: List<String>
+    ) {
+        val updateData = UpdateBrigadaDto(
+            nombreBrigada = nombre,
+            ubicacionBrigada = ubicacion,
+            estadoBrigada = estado,
+            comandoId = comandoId,
+            unidades = unidades
+        )
+
+        brigadaServices.updateBrigada(currentBrigadaId!!, updateData)
+            .onSuccess {
+                showSuccess("Brigada actualizada con éxito")
+                resetEditingState()
+                cargarBrigadas()
+            }.onFailure { error ->
+                showError("Error al actualizar: ${error.message}")
+            }
+    }
+
+    private suspend fun crearBrigada(
+        nombre: String,
+        ubicacion: String,
+        estado: Boolean,
+        comandoId: String,
+        unidades: List<String>
+    ) {
+        val createData = CreateBrigadaDto(
+            nombreBrigada = nombre,
+            ubicacionBrigada = ubicacion,
+            estadoBrigada = estado,
+            comandoId = comandoId,
+            unidades = unidades
+        )
+
+        brigadaServices.createBrigada(createData)
+            .onSuccess {
+                showSuccess("Brigada creada con éxito")
+                resetEditingState()
+                cargarBrigadas()
+            }.onFailure { error ->
+                showError("Error al crear: ${error.message}")
+            }
+    }
+
+    private fun resetEditingState() {
         isEditing = false
         currentBrigadaId = null
         limpiarFormulario()
     }
-
-    private fun showError(mess: String){
-        Toast.makeText(this, mess, Toast.LENGTH_SHORT).show()
-    }
-
 
     private fun limpiarFormulario() {
         nombreBrigadaEditText.text.clear()
@@ -204,8 +181,6 @@ class BrigadaActivity : AppCompatActivity() {
         comandoIdEditText.text.clear()
         unidadesEditText.text.clear()
         estadoSwitch.isChecked = false
-        isEditing = false
-        currentBrigadaId = null
     }
 
     private fun onUpdateClick(brigada: Brigada) {
@@ -214,43 +189,35 @@ class BrigadaActivity : AppCompatActivity() {
         nombreBrigadaEditText.setText(brigada.getNombreBrigada())
         ubicacionBrigadaEditText.setText(brigada.getUbicacionBrigada())
         comandoIdEditText.setText(brigada.getComandoId())
-
-        val unidadesIds = brigada.getUnidadesIds()
-        unidadesEditText.setText(unidadesIds.joinToString(", "))
+        unidadesEditText.setText(brigada.getUnidadesIds().joinToString(", "))
         estadoSwitch.isChecked = brigada.getEstadoBrigada()
     }
 
     private fun onDeleteClick(brigada: Brigada) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Eliminar brigada")
-        builder.setMessage("¿Estás seguro de que deseas eliminar esta brigada?")
-
-        builder.setPositiveButton("Sí") { _, _ ->
-            lifecycleScope.launch {
-                val result = brigadaServices.deleteBrigadaById(brigada.getId()!!)
-                result.onSuccess {
-                    Toast.makeText(this@BrigadaActivity, "Brigada eliminada", Toast.LENGTH_SHORT).show()
-                    charginBrigadas()
-                }. onFailure { error ->
-                    Toast.makeText(this@BrigadaActivity, error.message ?: "Error al eliminar", Toast.LENGTH_SHORT).show()
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar brigada")
+            .setMessage("¿Estás seguro de que deseas eliminar esta brigada?")
+            .setPositiveButton("Sí") { _, _ ->
+                lifecycleScope.launch {
+                    brigadaServices.deleteBrigadaById(brigada.getId()!!)
+                        .onSuccess {
+                            showSuccess("Brigada eliminada")
+                            cargarBrigadas()
+                        }
+                        .onFailure { error ->
+                            showError(error.message ?: "Error al eliminar")
+                        }
                 }
             }
-//            try {
-//                brigadaServices.deleteBrigadaById(brigada.getId())
-//                actualizarLista()
-//                Toast.makeText(this, "Brigada eliminada correctamente", Toast.LENGTH_SHORT).show()
-//            } catch (e: NoSuchElementException) {
-//                Toast.makeText(this, "Error deleting brigada: ${e.message}", Toast.LENGTH_SHORT).show()
-//            }
-        }
-
-        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-
-        val dialog = builder.create()
-        dialog.show()
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
-    private fun actualizarLista() {
-        adapter.actualizarLista(brigadaServices.getBrigadasActives())
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
