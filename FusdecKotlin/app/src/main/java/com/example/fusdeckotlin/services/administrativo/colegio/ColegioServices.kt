@@ -1,67 +1,96 @@
 package com.example.fusdeckotlin.services.administrativo.colegio
 
+import com.example.fusdeckotlin.api.administrativo.colegio.ColegioApi
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.administrativo.colegio.ActualizarColegioRequest
+import com.example.fusdeckotlin.dto.administrativo.colegio.CrearColegioRequest
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 
-class ColegioServices() {
+class ColegioServices {
 
-    companion object {
-        fun crearColegio(
-            colegios: MutableList<Colegio>,
-            id: String,
-            nombreColegio: String,
-            emailColegio: String,
-            estadoColegio: Boolean,
-            estudiantes: List<String>,
-            direccionColegio: String
-        ): Colegio {
-            if (nombreColegio.isBlank() || estudiantes.isEmpty() || emailColegio.isBlank() || direccionColegio.isBlank()) {
-                throw IllegalArgumentException("Faltan campos requeridos: nombreColegio, estudiantes, direccion")
-            }
+    private val colegioApi: ColegioApi = RetrofitClient.colegioApi
 
-            val nuevoColegio = Colegio(
-                id = id,
-                nombreColegio = nombreColegio,
-                emailColegio = emailColegio,
-                estadoColegio = estadoColegio,
-                estudiantes = estudiantes,
-                direccionColegio = direccionColegio
+    suspend fun crearColegio(
+        nombre: String,
+        email: String,
+        direccion: String,
+        estudiantes: List<String>
+    ): Result<Colegio> {
+        return try {
+            val request = CrearColegioRequest.from(
+                nombre = nombre,
+                email = email,
+                direccion = direccion,
+                estudiantes = estudiantes
             )
 
-            colegios.add(nuevoColegio)
-            return nuevoColegio
+            val response = colegioApi.crearColegio(request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun actualizarColegio(
-            colegios: MutableList<Colegio>,
-            id: String,
-            nombreColegio: String? = null,
-            emailColegio: String? = null,
-            estadoColegio: Boolean? = null,
-            estudiantes: List<String>? = null,
-            direccionColegio: String? = null
-        ): Colegio {
-            val colegio = colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
-
-            nombreColegio?.let { colegio.setNombreColegio(it) }
-            emailColegio?.let { colegio.setEmailColegio(it) }
-            estadoColegio?.let { colegio.setEstadoColegio(it) }
-            estudiantes?.let { colegio.setEstudiantes(it) }
-            direccionColegio?.let { colegio.setDireccionColegio(it) }
-
-            return colegio
+    suspend fun listarColegiosActivos(): Result<List<Colegio>> {
+        return try {
+            val response = colegioApi.listarColegiosActivos()
+            handleListResponse(response) { it.filter { colegio -> colegio.getEstadoColegio() } }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun listarColegiosActivos(colegios: List<Colegio>): List<Colegio> {
-            return colegios.filter { it.getEstadoColegio() }
+    suspend fun obtenerColegioPorId(id: String): Result<Colegio> {
+        return try {
+            val response = colegioApi.obtenerColegioPorId(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun obtenerColegioPorId(colegios: List<Colegio>, id: String): Colegio {
-            return colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
+    suspend fun actualizarColegio(
+        id: String,
+        nombre: String? = null,
+        email: String? = null,
+        direccion: String? = null,
+        estado: Boolean? = null,
+        estudiantes: List<String>? = null
+    ): Result<Colegio> {
+        return try {
+            val request = ActualizarColegioRequest.from(
+                nombre = nombre,
+                email = email,
+                direccion = direccion,
+                estado = estado,
+                estudiantes = estudiantes
+            )
+
+            val response = colegioApi.actualizarColegio(id, request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun desactivarColegio(colegios: MutableList<Colegio>, id: String) {
-            val colegio = colegios.find { it.getId() == id } ?: throw NoSuchElementException("Colegio no encontrado")
-            colegio.setEstadoColegio(false)
+    suspend fun desactivarColegio(id: String): Result<Colegio> {
+        return try {
+            val response = colegioApi.desactivarColegio(id)
+
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Respuesta vacía del servidor"))
+            } else {
+                when (response.code()) {
+                    404 -> Result.failure(Exception("Colegio no encontrado"))
+                    else -> Result.failure(Exception("Error del servidor: ${response.code()}"))
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
