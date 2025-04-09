@@ -6,12 +6,15 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.dto.administrativo.comando.CreateComandoDto
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
 import com.example.fusdeckotlin.services.administrativo.comando.ComandoServices
 import com.example.fusdeckotlin.ui.adapters.administrador.comandoAdapter.ComandoAdapter
+import kotlinx.coroutines.launch
 
 class ComandoActivity : AppCompatActivity() {
 
@@ -27,7 +30,7 @@ class ComandoActivity : AppCompatActivity() {
     private lateinit var searchViewComando: SearchView
     private lateinit var brigadaSpinner: Spinner
 
-    private val comandos = mutableListOf<Comando>()
+    private val comandoServices = ComandoServices()
     private lateinit var adapter: ComandoAdapter
 
     private var isEditing: Boolean = false
@@ -37,6 +40,30 @@ class ComandoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comando)
 
+        initViews()
+        setupRecycleView()
+        setupListeners()
+
+
+        // Configurar el Spinner con datos de brigadas
+        val brigadas = listOf("BRIG01", "BRIG02", "BRIG03", "BRIG04")
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brigadas)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        brigadaSpinner.adapter = spinnerAdapter
+    }
+
+    private fun charginComandos(){
+        lifecycleScope.launch {
+            val result = comandoServices.getComandoActives()
+            result.onSuccess {
+                comandos -> adapter.actualizarLista(comandos)
+            }.onFailure {
+                error -> showError("Error al cargar comandos: ${error.message}")
+            }
+        }
+    }
+
+    private fun initViews(){
         nombreComandoEditText = findViewById(R.id.nombreComandoEditText)
         ubicacionComandoEditText = findViewById(R.id.ubicacionComandoEditText)
         usuarioIdEditText = findViewById(R.id.usuarioIdEditText)
@@ -48,22 +75,22 @@ class ComandoActivity : AppCompatActivity() {
         comandosRecyclerView = findViewById(R.id.comandosRecyclerView)
         searchViewComando = findViewById(R.id.searchViewComando)
         brigadaSpinner = findViewById(R.id.brigadaSpinner)
-
+    }
+    private fun setupRecycleView(){
         adapter = ComandoAdapter(
-            comandos,
+            emptyList(),
             ::onUpdateClick,
             ::onDeleteClick
         )
+
         comandosRecyclerView.layoutManager = LinearLayoutManager(this)
         comandosRecyclerView.adapter = adapter
+    }
 
-        confirmarButton.setOnClickListener {
-            guardarComando()
-        }
+    private fun setupListeners(){
+        confirmarButton.setOnClickListener { guardarComando() }
 
-        cancelarButton.setOnClickListener {
-            finish()
-        }
+        cancelarButton.setOnClickListener { finish() }
 
         searchViewComando.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -75,15 +102,25 @@ class ComandoActivity : AppCompatActivity() {
                 return false
             }
         })
+    }
+    private fun generarIdComandoUnico(): String = "COMANDO-${System.currentTimeMillis()}"
 
-        // Configurar el Spinner con datos de brigadas
-        val brigadas = listOf("BRIG01", "BRIG02", "BRIG03", "BRIG04")
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brigadas)
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        brigadaSpinner.adapter = spinnerAdapter
+    private suspend fun createComando(data: CreateComandoDto){
+        comandoServices.createComando(data)
+            .onSuccess {
+                showSuccess("Comando creado con éxito")
+                resetEditingState()
+                charginComandos()
+            }. onFailure { error ->
+                showError("Error al crear: ${error.message}")
+            }
     }
 
-    private fun generarIdComandoUnico(): String = "COMANDO-${System.currentTimeMillis()}"
+    private fun resetEditingState(){
+        isEditing = false
+        currentComandoId = null
+        limpiarFormulario()
+    }
 
     private fun guardarComando() {
         val nombreComando = nombreComandoEditText.text.toString()
@@ -157,6 +194,27 @@ class ComandoActivity : AppCompatActivity() {
     }
 
     private fun onDeleteClick(comando: Comando) {
+
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar Comando")
+            .setMessage("¿Estas seguro de que deseas eliminar este comanod?")
+            .setPositiveButton("Si") { _, _ ->
+                lifecycleScope.launch {
+                    comandoServices.deleteComandoById(comando.getId()!!)
+                        .onFailure {
+                            showSuccess("Comando eliminado")
+                            charginComandos()
+                        }
+                        .onFailure { error ->
+                            showError(error.message ?: "Error al eliminar")
+                        }
+                }
+            }
+
+            .setNegativeButton("NO"){dialog, _ -> dialog.dismiss()}
+            .show()
+
+        /*
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Eliminar comando")
         builder.setMessage("¿Estás seguro de que deseas eliminar el comando?")
@@ -175,9 +233,19 @@ class ComandoActivity : AppCompatActivity() {
 
         val dialog = builder.create()
         dialog.show()
+        */
     }
 
     private fun actualizarListaComandos() {
-        adapter.actualizarLista(ComandoServices.listarComandosActivos(comandos))
+        adapter.actualizarLista(comandoServices.getComandoActives())
     }
+
+    private fun showError(me: String){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+    }
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
 }
