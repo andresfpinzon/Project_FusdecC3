@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.ui.adapters.instructor.calificacion
 
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.instructor.calificacion.Calificacion
 
-
-
-class CalificacionAdapter (
+class CalificacionAdapter(
     private var calificaciones: List<Calificacion>,
     private val onUpdateClick: (Calificacion) -> Unit,
     private val onDeleteClick: (Calificacion) -> Unit
 ) : RecyclerView.Adapter<CalificacionAdapter.CalificacionViewHolder>() {
+
     class CalificacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tituloTextView: TextView = itemView.findViewById(R.id.tituloTextView)
-        val aprodadoTextView: TextView = itemView.findViewById(R.id.aprobadoTextView)
+        val aprobadoTextView: TextView = itemView.findViewById(R.id.aprobadoTextView)
         val usuarioIdTextView: TextView = itemView.findViewById(R.id.usuarioIdTextView)
         val estudiantesTextView: TextView = itemView.findViewById(R.id.estudiantesTextView)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
@@ -35,9 +33,11 @@ class CalificacionAdapter (
     override fun onBindViewHolder(holder: CalificacionViewHolder, position: Int) {
         val calificacion = calificaciones[position]
         holder.tituloTextView.text = calificacion.getTituloCalificacion()
-        holder.aprodadoTextView.text = calificacion.getAprobado().toString()
+        holder.aprobadoTextView.text = if (calificacion.getAprobado()) "Aprobado" else "Reprobado"
         holder.usuarioIdTextView.text = calificacion.getUsuarioId()
-        holder.estudiantesTextView.text = calificacion.getEstudiantes().joinToString(". ")
+
+        // Mostrar solo los IDs de los estudiantes (lista de Strings)
+        holder.estudiantesTextView.text = calificacion.getEstudiantes().joinToString(", ")
 
         holder.updateButton.setOnClickListener { onUpdateClick(calificacion) }
         holder.deleteButton.setOnClickListener { onDeleteClick(calificacion) }
@@ -45,9 +45,8 @@ class CalificacionAdapter (
 
     override fun getItemCount(): Int = calificaciones.size
 
-    fun actualizarLista(nuevasCalificaciones: List<Calificacion>){
+    fun actualizarLista(nuevasCalificaciones: List<Calificacion>) {
         calificaciones = nuevasCalificaciones
         notifyDataSetChanged()
     }
-
 }

@@ -3,6 +3,7 @@ package com.example.fusdeckotlin.config.retrofit
 import com.example.fusdeckotlin.api.administrativo.colegio.ColegioApi
 import com.example.fusdeckotlin.api.auth.AuthApi
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
+import com.example.fusdeckotlin.api.instructor.calificacion.CalificacionApi
 import com.example.fusdeckotlin.api.secretario.curso.CursoApi
 import com.example.fusdeckotlin.api.secretario.edicion.EdicionApi
 import com.example.fusdeckotlin.api.secretario.estudiante.EstudianteApi
@@ -53,5 +54,7 @@ object RetrofitClient {
     val cursoApi: CursoApi by lazy { retrofit.create(CursoApi::class.java) }
     val edicionApi: EdicionApi by lazy { retrofit.create(EdicionApi::class.java) }
     val colegioApi: ColegioApi by lazy { retrofit.create(ColegioApi::class.java) }
+    val calificacionApi: CalificacionApi by lazy { retrofit.create(CalificacionApi::class.java) }
+
 
 }

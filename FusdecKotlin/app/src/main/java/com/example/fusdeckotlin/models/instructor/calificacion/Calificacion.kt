@@ -1,12 +1,15 @@
 package com.example.fusdeckotlin.models.instructor.calificacion
 
+import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.google.gson.annotations.SerializedName
+
 class Calificacion(
-    private val id: String,
-    private var tituloCalificacion: String,
-    private var aprobado: Boolean,
-    private var usuarioId: String,
-    private var estadoCalificacion: Boolean,
-    private var estudiantes: List<String>
+    @SerializedName("_id") private val id: String,
+    @SerializedName("tituloCalificacion") private var tituloCalificacion: String,
+    @SerializedName("aprobado") private var aprobado: Boolean,
+    @SerializedName("usuarioId") private var usuarioId: String,
+    @SerializedName("estadoCalificacion") private var estadoCalificacion: Boolean = true,
+    @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList()
 ) {
 
     // Getters
@@ -15,9 +18,54 @@ class Calificacion(
     fun getAprobado(): Boolean = aprobado
     fun getUsuarioId(): String = usuarioId
     fun getEstadoCalificacion(): Boolean = estadoCalificacion
-    fun getEstudiantes(): List<String> = estudiantes
 
-    // Setters
+    // Getter para lista de estudiantes como objetos
+    fun getEstudiantes(): List<Estudiante> {
+        return estudiantes.mapNotNull {
+            when (it) {
+                is Estudiante -> it
+                is String -> Estudiante(
+                    id = it, "", "", "", "", "", "", "",
+                    "", "", false, emptyList(), emptyList(), emptyList(), emptyList()
+                )
+                is Map<*, *> -> convertMapToEstudiante(it)
+                else -> null
+            }
+        }
+    }
+
+    // Getter para lista de IDs de estudiantes
+    fun getEstudiantesIds(): List<String> {
+        return estudiantes.map {
+            when (it) {
+                is Estudiante -> it.getId()
+                is String -> it
+                is Map<*, *> -> it["_id"] as? String ?: ""
+                else -> ""
+            }
+        }.filter { it.isNotEmpty() }
+    }
+
+    // Metodo para convertir Map a Estudiante
+    private fun convertMapToEstudiante(map: Map<*, *>): Estudiante {
+        return Estudiante(
+            id = map["_id"] as? String ?: "",
+            nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
+            apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
+            correoEstudiante = map["correoEstudiante"] as? String ?: "",
+            tipoDocumento = map["tipoDocumento"] as? String ?: "",
+            numeroDocumento = map["numeroDocumento"] as? String ?: "",
+            fechaNacimientoString = (map["fechaNacimiento"] as? String)?.substring(0, 10) ?: "",
+            generoEstudiante = map["generoEstudiante"] as? String ?: "",
+            unidadId = map["unidadId"] as? String ?: "",
+            colegioId = map["colegioId"] as? String ?: "",
+            estadoEstudiante = map["estadoEstudiante"] as? Boolean ?: false,
+            ediciones = map["ediciones"] as? List<Any> ?: emptyList(),
+            calificaciones = map["calificaciones"] as? List<Any> ?: emptyList(),
+            asistencias = map["asistencias"] as? List<Any> ?: emptyList(),
+            certificados = map["certificados"] as? List<Any> ?: emptyList()
+        )
+    }
 
     // Setters
     fun setTituloCalificacion(titulo: String) {
@@ -36,27 +84,13 @@ class Calificacion(
         this.estadoCalificacion = estado
     }
 
-    fun setEstudiantes(estudiantes: List<String>) {
+    // Setter para estudiantes (acepta tanto objetos como IDs)
+    fun setEstudiantes(estudiantes: List<Any>) {
         this.estudiantes = estudiantes
     }
 
-    companion object {
-        val calificacion1 = Calificacion(
-            id = "CAL01",
-            tituloCalificacion = "Servicio Social Aprobados",
-            aprobado = true,
-            usuarioId = "USR123456",
-            estadoCalificacion = true,
-            estudiantes = listOf("1", "2")
-        )
-
-        val calificacion2 = Calificacion(
-            id = "CAL02",
-            tituloCalificacion = "Servicio Social Reprobados",
-            aprobado = false,
-            usuarioId = "USR654321",
-            estadoCalificacion = true,
-            estudiantes = listOf("2", "3")
-        )
+    override fun toString(): String {
+        return "Calificacion(id='$id', titulo='$tituloCalificacion', " +
+                "aprobado=$aprobado, estado=${if (estadoCalificacion) "Activo" else "Inactivo"})"
     }
 }
