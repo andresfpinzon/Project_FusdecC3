@@ -1,16 +1,15 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.comando
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.dto.administrativo.comando.CreateComandoDto
+import com.example.fusdeckotlin.dto.administrativo.comando.UpdateComandoDto
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
 import com.example.fusdeckotlin.services.administrativo.comando.ComandoServices
 import com.example.fusdeckotlin.ui.adapters.administrador.comandoAdapter.ComandoAdapter
@@ -21,8 +20,6 @@ class ComandoActivity : AppCompatActivity() {
     private lateinit var nombreComandoEditText: EditText
     private lateinit var ubicacionComandoEditText: EditText
     private lateinit var usuarioIdEditText: EditText
-    private lateinit var comandosEditText: EditText
-    private lateinit var estudiantesEditText: EditText
     private lateinit var estadoSwitch: Switch
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
@@ -41,34 +38,16 @@ class ComandoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_comando)
 
         initViews()
-        setupRecycleView()
+        setupRecyclerView()
         setupListeners()
-
-
-        // Configurar el Spinner con datos de brigadas
-        val brigadas = listOf("BRIG01", "BRIG02", "BRIG03", "BRIG04")
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brigadas)
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        brigadaSpinner.adapter = spinnerAdapter
+        setupSpinner()
+        cargarComandos()
     }
 
-    private fun charginComandos(){
-        lifecycleScope.launch {
-            val result = comandoServices.getComandoActives()
-            result.onSuccess {
-                comandos -> adapter.actualizarLista(comandos)
-            }.onFailure {
-                error -> showError("Error al cargar comandos: ${error.message}")
-            }
-        }
-    }
-
-    private fun initViews(){
+    private fun initViews() {
         nombreComandoEditText = findViewById(R.id.nombreComandoEditText)
         ubicacionComandoEditText = findViewById(R.id.ubicacionComandoEditText)
         usuarioIdEditText = findViewById(R.id.usuarioIdEditText)
-        comandosEditText = findViewById(R.id.comandosEditText)
-        estudiantesEditText = findViewById(R.id.estudiantesEditText)
         estadoSwitch = findViewById(R.id.estadoComandoSwitch)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
@@ -76,26 +55,23 @@ class ComandoActivity : AppCompatActivity() {
         searchViewComando = findViewById(R.id.searchViewComando)
         brigadaSpinner = findViewById(R.id.brigadaSpinner)
     }
-    private fun setupRecycleView(){
+
+    private fun setupRecyclerView() {
         adapter = ComandoAdapter(
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick
         )
-
         comandosRecyclerView.layoutManager = LinearLayoutManager(this)
         comandosRecyclerView.adapter = adapter
     }
 
-    private fun setupListeners(){
+    private fun setupListeners() {
         confirmarButton.setOnClickListener { guardarComando() }
-
         cancelarButton.setOnClickListener { finish() }
 
         searchViewComando.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
+            override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 adapter.filter(newText)
@@ -103,80 +79,109 @@ class ComandoActivity : AppCompatActivity() {
             }
         })
     }
-    private fun generarIdComandoUnico(): String = "COMANDO-${System.currentTimeMillis()}"
 
-    private suspend fun createComando(data: CreateComandoDto){
-        comandoServices.createComando(data)
-            .onSuccess {
-                showSuccess("Comando creado con éxito")
-                resetEditingState()
-                charginComandos()
-            }. onFailure { error ->
-                showError("Error al crear: ${error.message}")
-            }
+    private fun setupSpinner() {
+        val brigadas = listOf("BRIG01", "BRIG02", "BRIG03", "BRIG04")
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brigadas)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        brigadaSpinner.adapter = spinnerAdapter
     }
 
-    private fun resetEditingState(){
-        isEditing = false
-        currentComandoId = null
-        limpiarFormulario()
+    private fun cargarComandos() {
+        lifecycleScope.launch {
+            val result = comandoServices.getComandoActives()
+            result.onSuccess { comandos ->
+                adapter.actualizarLista(comandos)
+            }.onFailure { error ->
+                showError("Error al cargar comandos: ${error.message}")
+            }
+        }
     }
 
     private fun guardarComando() {
-        val nombreComando = nombreComandoEditText.text.toString()
-        val ubicacionComando = ubicacionComandoEditText.text.toString()
-        val usuarioId = usuarioIdEditText.text.toString()
-        val comandos = comandosEditText.text.toString()
-        val estudiantes = estudiantesEditText.text.toString()
+        val nombreComando = nombreComandoEditText.text.toString().trim()
+        val ubicacionComando = ubicacionComandoEditText.text.toString().trim()
+        val fundacionId = usuarioIdEditText.text.toString().trim()
         val estadoComando = estadoSwitch.isChecked
         val brigadaSeleccionada = brigadaSpinner.selectedItem.toString()
 
-        if (nombreComando.isEmpty() || ubicacionComando.isEmpty() || usuarioId.isEmpty() || comandos.isEmpty() || estudiantes.isEmpty()) {
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+        if (nombreComando.isEmpty() || ubicacionComando.isEmpty() || fundacionId.isEmpty()) {
+            showError("Por favor, complete todos los campos obligatorios")
             return
         }
 
-        try {
-            if (isEditing) {
-                ComandoServices.actualizarComando(
-                    this.comandos,
-                    currentComandoId!!,
-                    nombreComando,
-                    estadoComando,
-                    ubicacionComando,
-                    usuarioId,
-                    listOf(brigadaSeleccionada)
-                )
-                Toast.makeText(this, "Comando actualizado correctamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-                currentComandoId = null
-            } else {
-                val id = generarIdComandoUnico()
-                ComandoServices.crearComando(
-                    this.comandos,
-                    id,
-                    nombreComando,
-                    estadoComando,
-                    ubicacionComando,
-                    usuarioId,
-                    listOf(brigadaSeleccionada)
-                )
-                Toast.makeText(this, "Comando creado correctamente", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            try {
+                if (isEditing && currentComandoId != null) {
+                    actualizarComando(nombreComando, ubicacionComando, fundacionId, estadoComando, brigadaSeleccionada)
+                } else {
+                    crearComando(nombreComando, ubicacionComando, fundacionId, brigadaSeleccionada)
+                }
+            } catch (e: Exception) {
+                showError("Error: ${e.message}")
             }
-            actualizarListaComandos()
-            limpiarFormulario()
-        } catch (e: Exception) {
-            Log.e("ComandoActivity", "Error al guardar el comando", e)
-            Toast.makeText(this, "Error al guardar el comando: ${e.message}", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private suspend fun actualizarComando(
+        nombre: String,
+        ubicacion: String,
+        fundacionId: String,
+        estado: Boolean,
+        brigada: String
+    ) {
+        val updateData = UpdateComandoDto(
+            nombreComando = nombre,
+            ubicacionComando = ubicacion,
+            fundacionId = fundacionId,
+            estadoComando = estado,
+            brigadas = listOf(brigada)
+        )
+
+        comandoServices.updateComando(currentComandoId!!, updateData)
+            .onSuccess {
+                showSuccess("Comando actualizado con éxito")
+                resetEditingState()
+                cargarComandos()
+            }.onFailure { error ->
+                showError("Error al actualizar: ${error.message}")
+            }
+    }
+
+    private suspend fun crearComando(
+        nombre: String,
+        ubicacion: String,
+        fundacionId: String,
+        brigada: String
+    ) {
+        val createData = CreateComandoDto(
+            nombreComando = nombre,
+            ubicacionComando = ubicacion,
+            fundacionId = fundacionId,
+            brigadas = listOf(brigada)
+        )
+                    // El estado no se incluye en CreateComandoDto según tu definición
+
+                    comandoServices.createComando(createData)
+                .onSuccess {
+                    showSuccess("Comando creado con éxito")
+                    resetEditingState()
+                    cargarComandos()
+                }.onFailure { error ->
+                    showError("Error al crear: ${error.message}")
+                }
+    }
+
+    private fun resetEditingState() {
+        isEditing = false
+        currentComandoId = null
+        limpiarFormulario()
     }
 
     private fun limpiarFormulario() {
         nombreComandoEditText.text.clear()
         ubicacionComandoEditText.text.clear()
         usuarioIdEditText.text.clear()
-        comandosEditText.text.clear()
-        estudiantesEditText.text.clear()
         estadoSwitch.isChecked = false
         brigadaSpinner.setSelection(0)
     }
@@ -187,65 +192,44 @@ class ComandoActivity : AppCompatActivity() {
         nombreComandoEditText.setText(comando.getNombreComando())
         ubicacionComandoEditText.setText(comando.getUbicacionComando())
         usuarioIdEditText.setText(comando.getFundacionId())
-        comandosEditText.setText(comando.getBrigadas().joinToString(", "))
         estadoSwitch.isChecked = comando.getEstadoComando()
-        val brigadaIndex = (brigadaSpinner.adapter as ArrayAdapter<String>).getPosition(comando.getBrigadas().firstOrNull())
+
+        // Obtener la primera brigada del comando (si existe)
+        val primeraBrigada = comando.getBrigadas().firstOrNull() ?: ""
+
+        // Buscar la posición en el spinner
+        val spinnerAdapter = brigadaSpinner.adapter as? ArrayAdapter<Any>
+        val brigadaIndex = spinnerAdapter?.getPosition(primeraBrigada) ?: 0
+
+        // Establecer la selección
         brigadaSpinner.setSelection(brigadaIndex)
     }
 
     private fun onDeleteClick(comando: Comando) {
-
         AlertDialog.Builder(this)
-            .setTitle("Eliminar Comando")
-            .setMessage("¿Estas seguro de que deseas eliminar este comanod?")
-            .setPositiveButton("Si") { _, _ ->
+            .setTitle("Eliminar comando")
+            .setMessage("¿Estás seguro de que deseas eliminar este comando?")
+            .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
                     comandoServices.deleteComandoById(comando.getId()!!)
-                        .onFailure {
+                        .onSuccess {
                             showSuccess("Comando eliminado")
-                            charginComandos()
+                            cargarComandos()
                         }
                         .onFailure { error ->
                             showError(error.message ?: "Error al eliminar")
                         }
                 }
             }
-
-            .setNegativeButton("NO"){dialog, _ -> dialog.dismiss()}
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
             .show()
-
-        /*
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Eliminar comando")
-        builder.setMessage("¿Estás seguro de que deseas eliminar el comando?")
-
-        builder.setPositiveButton("Sí") { _, _ ->
-            try {
-                ComandoServices.desactivarComando(this.comandos, comando.getId())
-                actualizarListaComandos()
-                Toast.makeText(this, "Comando eliminado correctamente", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, "Error al eliminar el comando: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-
-        val dialog = builder.create()
-        dialog.show()
-        */
     }
 
-    private fun actualizarListaComandos() {
-        adapter.actualizarLista(comandoServices.getComandoActives())
-    }
-
-    private fun showError(me: String){
+    private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
     }
+
     private fun showSuccess(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
 }

@@ -10,12 +10,12 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
 
 class ComandoAdapter(
-    private val comandos: MutableList<Comando>,
+    private var comandos: List<Comando>,
     private val onUpdateClick: (Comando) -> Unit,
     private val onDeleteClick: (Comando) -> Unit
 ) : RecyclerView.Adapter<ComandoAdapter.ComandoViewHolder>() {
 
-    private val originalComandos = comandos.toMutableList()
+    private var originalComandos : List<Comando> = comandos
 
     class ComandoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textIdComando: TextView = itemView.findViewById(R.id.textIdComando)
@@ -48,11 +48,11 @@ class ComandoAdapter(
     }
 
     fun filter(query: String?) {
-        comandos.clear()
-        if (query.isNullOrEmpty()) {
-            comandos.addAll(originalComandos)
+        comandos = if (query.isNullOrEmpty()) {
+            originalComandos
         } else {
-            comandos.addAll(originalComandos.filter { it.getNombreComando().contains(query, ignoreCase = true) })
+            originalComandos.filter {
+                it.getNombreComando().contains(query, ignoreCase = true) }
         }
         notifyDataSetChanged()
     }
@@ -60,8 +60,8 @@ class ComandoAdapter(
     override fun getItemCount(): Int = comandos.size
 
     fun actualizarLista(nuevosComandos: List<Comando>) {
-        comandos.clear()
-        comandos.addAll(nuevosComandos)
+        comandos = nuevosComandos
+        originalComandos = nuevosComandos
         notifyDataSetChanged()
     }
 }
