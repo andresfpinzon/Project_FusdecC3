@@ -12,7 +12,7 @@ data class Unidad(
     @SerializedName("brigadaId")
     private var brigadaId: String,
     @SerializedName("estadoUnidad")
-    private var estadoUnidad: Boolean,
+    private var estadoUnidad: Boolean = true,
     @SerializedName("usuarioId")
     private var usuarioId: String,
     @SerializedName("comandos")
