@@ -66,25 +66,57 @@ const Comandos = () => {
           })
         ]);
 
-        if (comandosRes.ok && fundacionesRes.ok) {
-          const [comandosData, fundacionesData] = await Promise.all([
-            comandosRes.json(),
-            fundacionesRes.json()
-          ]);
+        // Log response details
+        console.log("Comandos Response:", {
+          status: comandosRes.status,
+          statusText: comandosRes.statusText,
+          headers: Object.fromEntries(comandosRes.headers.entries())
+        });
 
-          // Inicializar las fundaciones asignadas con un objeto vacío
-          const initialAssigned = comandosData.reduce((acc, comando) => {
-            acc[comando._id] = { comandoId: comando._id, fundacionIds: [] };
-            return acc;
-          }, {});
-
-          setAssignedFundaciones(Object.values(initialAssigned));
-          setComandos(comandosData);
-          setFundaciones(fundacionesData);
+        if (!comandosRes.ok) {
+          const errorText = await comandosRes.text();
+          console.error("Comandos Fetch Error:", {
+            status: comandosRes.status,
+            statusText: comandosRes.statusText,
+            body: errorText
+          });
+          throw new Error(`Error fetching comandos: ${errorText}`);
         }
+
+        if (!fundacionesRes.ok) {
+          const errorText = await fundacionesRes.text();
+          console.error("Fundaciones Fetch Error:", {
+            status: fundacionesRes.status,
+            statusText: fundacionesRes.statusText,
+            body: errorText
+          });
+          throw new Error(`Error fetching fundaciones: ${errorText}`);
+        }
+
+        const [comandosData, fundacionesData] = await Promise.all([
+          comandosRes.json(),
+          fundacionesRes.json()
+        ]);
+
+        // Log fetched data
+        console.log("Comandos Data:", comandosData);
+        console.log("Fundaciones Data:", fundacionesData);
+
+        // Inicializar las fundaciones asignadas con un objeto vacío
+        const initialAssigned = comandosData.reduce((acc, comando) => {
+          acc[comando._id] = { comandoId: comando._id, fundacionIds: [] };
+          return acc;
+        }, {});
+
+        setAssignedFundaciones(Object.values(initialAssigned));
+        setComandos(comandosData);
+        setFundaciones(fundacionesData);
       } catch (error) {
-        console.error("Error al cargar datos:", error);
-        setErrorMessage("Error al cargar los datos. Por favor, inténtalo de nuevo.");
+        console.error("Error al cargar datos:", {
+          message: error.message,
+          stack: error.stack
+        });
+        setErrorMessage(`Error al cargar los datos: ${error.message}`);
         setOpenSnackbar(true);
       }
     };
@@ -97,10 +129,10 @@ const Comandos = () => {
       const response = await fetch(`http://localhost:3000/api/comandos/${comandoId}/fundaciones/${fundacionId}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
+            "Content-Type": "application/json",
+            "Authorization": token 
         }
-      });
+    });
 
       if (!response.ok) {
         const error = await response.json();
@@ -205,12 +237,12 @@ const Comandos = () => {
       setOpenSnackbar(true);
       return;
     }
-  
+
     const comandoData = {
       ...formValues,
       fundacionId: formValues.fundacionId, // Asegúrate de que esto esté correcto
     };
-  
+
     try {
       const response = await fetch("http://localhost:3000/api/comandos", {
         method: "POST",
@@ -220,7 +252,7 @@ const Comandos = () => {
         },
         body: JSON.stringify(comandoData),
       });
-  
+
       if (response.ok) {
         const nuevoComando = await response.json();
         setComandos([...comandos, nuevoComando]);
@@ -319,7 +351,12 @@ const Comandos = () => {
   };
 
   const handleInfoClick = (comando) => {
-    setInfoComando(comando);
+    setSelectedComando(comando);
+    
+    setInfoComando({
+      ...comando,
+      nombreFundacion: comando.fundacionId?.nombreFundacion || "Sin Fundación"
+    });
     setOpenInfoDialog(true);
   };
 
@@ -542,41 +579,9 @@ const Comandos = () => {
                 <History color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fundación:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}
+                  {infoComando.nombreFundacion}
                 </Typography>
               </Box>
-
-              {/* Brigadas Asignadas */}
-              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
-                Brigadas Asignadas
-              </Typography>
-              {infoComando.brigadas && infoComando.brigadas.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {infoComando.brigadas?.map((brigada) => (
-                    <Chip
-                      key={brigada._id}
-                      label={brigada.nombreBrigada || "Brigada no encontrada"}
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      sx={{ 
-                        borderRadius: '16px',
-                        fontSize: '1rem',
-                        maxWidth: '200px',
-                        width: '100%',
-                        color: 'black',
-                        '&:hover': {
-                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                        },
-                      }}
-                    />
-                  ))}
-                </Box>
-              ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  Sin brigadas asignadas
-                </Typography>
-              )}
             </div>
           )}
         </DialogContent>

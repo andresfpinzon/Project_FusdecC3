@@ -6,10 +6,27 @@ const Brigada = require('../models/brigada_model');
 // Controlador para listar unidades
 const listarUnidades = async (req, res) => {
     try {
-        const unidades = await Unidad.find(); // Asegúrate de que esto devuelva un array
+        const unidades = await Unidad.find()
+            .populate({
+                path: 'brigadaId',
+                model: 'Brigada',
+                select: 'nombreBrigada _id'
+            })
+            .populate({
+                path: 'usuarioId',
+                select: 'nombreUsuario'
+            });
+        
+        // Log unidades with their brigade details
+        console.log("Unidades con detalles de brigada:", unidades.map(u => ({
+            nombreUnidad: u.nombreUnidad,
+            brigadaId: u.brigadaId?._id,
+            nombreBrigada: u.brigadaId?.nombreBrigada || 'Sin brigada asignada'
+        })));
+
         res.json(unidades);
     } catch (error) {
-        console.error('Error al cargar las unidades:', error); // Agrega esto para depuración
+        console.error('Error al cargar las unidades:', error);
         res.status(500).json({ error: 'Error al cargar las unidades' });
     }
 };

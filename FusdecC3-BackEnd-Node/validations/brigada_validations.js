@@ -2,43 +2,32 @@ const Joi = require('@hapi/joi');
 
 const brigadaSchemaValidation = Joi.object({
   nombreBrigada: Joi.string()
+    .trim()
     .min(3)
-    .max(100)
+    .max(50)
     .required()
     .messages({
-      'string.base': 'El nombre de la brigada debe ser un texto',
-      'string.empty': 'El nombre de la brigada no puede estar vacío',
       'string.min': 'El nombre de la brigada debe tener al menos 3 caracteres',
-      'string.max': 'El nombre de la brigada no puede exceder los 100 caracteres',
-      'any.required': 'El nombre de la brigada es un campo requerido',
+      'string.max': 'El nombre de la brigada no puede tener más de 50 caracteres',
+      'any.required': 'El nombre de la brigada es obligatorio'
     }),
-
-  ubicacionBrigada: Joi.string()
-    .min(3)
-    .max(1000)
-    .required()
-    .messages({
-      'string.base': 'La ubicación de la brigada debe ser un texto',
-      'string.empty': 'La ubicación de la brigada no puede estar vacía',
-      'string.min': 'La ubicación de la brigada debe tener al menos 3 caracteres',
-      'string.max': 'La ubicación de la brigada no puede exceder los 200 caracteres',
-      'any.required': 'La ubicación de la brigada es un campo requerido',
-    }),
-
-  estadoBrigada: Joi.boolean()
-    .default(true)
-    .messages({
-      'boolean.base': 'El estado de la brigada debe ser un booleano',
-    }),
-
+  
   comandoId: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
+    .trim()
     .required()
     .messages({
-      'string.base': 'El comandoId debe ser un texto',
-      'string.empty': 'El comandoId no puede estar vacío',
-      'string.pattern.base': 'El comandoId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
-      'any.required': 'El comandoId es un campo requerido',
+      'any.required': 'El comando es obligatorio'
+    }),
+  
+  estadoBrigada: Joi.boolean()
+    .optional()
+    .default(true),
+
+  horario: Joi.string()
+    .valid('mañana', 'tarde')
+    .default('mañana')
+    .messages({
+      'any.only': 'El horario debe ser "mañana" o "tarde"'
     }),
 
   unidades: Joi.array()
@@ -50,4 +39,4 @@ const brigadaSchemaValidation = Joi.object({
     }),
 });
 
-module.exports = brigadaSchemaValidation; // Asegúrate de que se esté exportando
+module.exports = brigadaSchemaValidation; 

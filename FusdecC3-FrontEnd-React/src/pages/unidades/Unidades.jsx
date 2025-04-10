@@ -41,25 +41,33 @@ const Unidades = () => {
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/unidades?populate=estudiantes', {
+      const response = await fetch('http://localhost:3000/api/unidades', {
         headers: {
           'Authorization': localStorage.getItem('token') || '',
         },
       });
       if (!response.ok) throw new Error('Error al obtener unidades');
       const data = await response.json();
-
-      // Condicion que verifica si el arreglo de unidades está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay unidades registradas.");
-        setOpenSnackbar(true);
-        setUnidades([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setUnidades(data);
-      }
+      
+      // Improved logging and filtering
+      const unidadesConBrigada = data.filter(unidad => unidad.brigadaId);
+      const unidadesSinBrigada = data.filter(unidad => !unidad.brigadaId);
+      
+      console.log("Unidades con brigada:", unidadesConBrigada.map(u => ({
+        nombreUnidad: u.nombreUnidad,
+        brigadaId: u.brigadaId?._id,
+        nombreBrigada: u.brigadaId?.nombreBrigada
+      })));
+      
+      console.log("Unidades sin brigada:", unidadesSinBrigada.map(u => ({
+        nombreUnidad: u.nombreUnidad
+      })));
+      
+      setUnidades(data);
+      setIsLoading(false);
     } catch (error) {
-      setError('Error al obtener unidades');
-    } finally {
+      console.error('Error al obtener unidades:', error);
+      setError(error.message);
       setIsLoading(false);
     }
   };
@@ -76,8 +84,11 @@ const Unidades = () => {
 
       // Condicion que verifica si el arreglo de brigadas está vacío
       if (data.length === 0) {
-        setErrorMessage("No hay brigadas registradas.");
-        setOpenSnackbar(true);
+        setSnackbar({
+          open: true,
+          message: "No hay brigadas registradas.",
+          severity: 'warning'
+        });
         setBrigadas([]); // esto mantiene el estado vacío para evitar errores
       } else {
         setBrigadas(data);
@@ -91,24 +102,19 @@ const Unidades = () => {
     try {
       const response = await fetch('http://localhost:3000/api/usuarios', {
         headers: {
-          'Authorization': localStorage.getItem('token')
-        }
+          'Authorization': localStorage.getItem('token') || '',
+        },
       });
-      if (response.ok) {
-        const data = await response.json();
-        //setUsuarios(data);
-      }
-      
-      // Condicion que verifica si el arreglo de usuarios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay usuarios registrados.");
-        setOpenSnackbar(true);
-        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setUsuarios(data);
-      }
+      if (!response.ok) throw new Error('Error al obtener usuarios');
+      const data = await response.json();
+      setUsuarios(data.data || data);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
+      setSnackbar({
+        open: true,
+        message: 'Error al cargar usuarios',
+        severity: 'error'
+      });
     }
   };
 
@@ -159,7 +165,11 @@ const Unidades = () => {
         throw new Error(errorData.error || 'Error al guardar la unidad');
       }
 
+      const updatedUnidad = await response.json();
+      
+      // Fetch updated unidades to ensure latest data
       await fetchUnidades();
+      
       setFormValues({ nombreUnidad: '', brigadaId: '', estadoUnidad: true });
       setSelectedUnidad(null);
       setShowForm(false);
@@ -206,10 +216,10 @@ const Unidades = () => {
   const handleEdit = (unidad) => {
     setSelectedUnidad(unidad);
     setFormValues({
-      nombreUnidad: unidad.nombreUnidad,
-      brigadaId: unidad.brigadaId._id,
-      estadoUnidad: unidad.estadoUnidad,
-      usuarioId: unidad.usuarioId?._id || ''
+      nombreUnidad: unidad.nombreUnidad || '',
+      brigadaId: unidad.brigadaId?._id || unidad.brigadaId || '',
+      estadoUnidad: unidad.estadoUnidad || true,
+      usuarioId: unidad.usuarioId?._id || unidad.usuarioId || ''
     });
     setShowForm(true);
   };
@@ -406,7 +416,7 @@ const Unidades = () => {
                             {unidad.estadoUnidad ? 'Activo' : 'Inactivo'}
                           </span>
                         </div>
-                        <p><i className="fas fa-flag"></i> {unidad.brigadaId?.nombreBrigada || 'Sin brigada asignada'}</p>
+                        <p><i className="fas fa-flag"></i> {unidad.brigada?.nombreBrigada || unidad.brigadaId?.nombreBrigada || 'Sin brigada asignada'}</p>
                         <div className="unit-actions">
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
@@ -442,7 +452,7 @@ const Unidades = () => {
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Brigada:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedUnidad.brigadaId?.nombreBrigada || "Sin brigada asignada"}
+                  {selectedUnidad.brigada?.nombreBrigada || selectedUnidad.brigadaId?.nombreBrigada || "Sin brigada asignada"}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
@@ -461,7 +471,7 @@ const Unidades = () => {
                 mb: 1 
               }}>
                 <Person sx={{ mr: 1 }} color="primary" />
-                Estudiantes Asignados
+                Estudiantes Asignados ({selectedUnidad.estudiantes?.length || 0})
               </Typography>
               {selectedUnidad.estudiantes && selectedUnidad.estudiantes.length > 0 ? (
                 <Box sx={{ 
@@ -477,7 +487,7 @@ const Unidades = () => {
                   {selectedUnidad.estudiantes.map((estudiante) => (
                     <Chip
                       key={estudiante._id}
-                      label={`${estudiante.nombreEstudiante} ${estudiante.apellidoEstudiante}`}
+                      label={`${estudiante.nombreEstudiante || ''} ${estudiante.apellidoEstudiante || ''}`}
                       color="primary"
                       variant="outlined"
                       size="small"
@@ -486,17 +496,25 @@ const Unidades = () => {
                         borderRadius: '16px',
                         fontSize: '0.9rem',
                         maxWidth: '100%',
-                        color: 'black',
+                        color: '#1d526eff',
+                        backgroundColor: '#fff',
+                        border: '1px solid #1d526eff',
                         '&:hover': {
-                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                          backgroundColor: '#1d526e11',
                         },
                       }}
                     />
                   ))}
                 </Box>
               ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  Sin estudiantes asignados
+                <Typography variant="body2" color="text.secondary" sx={{ 
+                  fontStyle: 'italic',
+                  backgroundColor: '#f5f5f5',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  No hay estudiantes asignados a esta unidad
                 </Typography>
               )}
             </div>
@@ -528,4 +546,3 @@ const Unidades = () => {
 };
 
 export default Unidades;
-

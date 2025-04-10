@@ -1,17 +1,27 @@
 const Calificacion = require("../models/calificacion_model");
 const Estudiante = require("../models/estudiante_model");
+const mongoose = require('mongoose');
 
 // Función asíncrona para crear una calificación
 async function crearCalificacion(body) {
   try {
-   
-  // Crear una nueva calificación
-  let calificacion = new Calificacion({
-    tituloCalificacion: body.tituloCalificacion,
-    aprobado: body.aprobado,
-    usuarioId: body.usuarioId,
-    estadoCalificacion: body.estadoCalificacion,
-    estudiantes: body.estudiantes || [], // Array de estudiantes
+    // Validar que los estudiantes sean ObjectIds válidos
+    if (body.estudiantes && body.estudiantes.length > 0) {
+      body.estudiantes = body.estudiantes.map(id => {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+          throw new Error(`ID de estudiante inválido: ${id}`);
+        }
+        return id;
+      });
+    }
+
+    // Crear una nueva calificación
+    let calificacion = new Calificacion({
+      tituloCalificacion: body.tituloCalificacion,
+      aprobado: body.aprobado,
+      usuarioId: body.usuarioId,
+      estadoCalificacion: body.estadoCalificacion,
+      estudiantes: body.estudiantes || [], // Array de estudiantes
 });
 
 // Guardar la calificación en la base de datos
@@ -35,53 +45,76 @@ return calificacion;
 // Función asíncrona para actualizar calificación
 async function actualizarCalificacion(id, body) {
   try {
-  // Buscar la calificación por ID
-  let calificacion = await Calificacion.findById(id);
-  if (!calificacion) {
+    // Buscar la calificación por ID
+    let calificacion = await Calificacion.findById(id);
+    if (!calificacion) {
       throw new Error('Calificación no encontrada');
-  }
+    }
 
-  // Verificar si ya existe una calificación con el mismo título, excluyendo el curso actual
-  const calificacionExistente = await Curso.findOne({
-    tituloCalificacion: body.tituloCalificacion,
-    _id: { $ne: id }, // Excluir el curso actual
-  });
+    // Verificar si ya existe una calificación con el mismo título, excluyendo la calificación actual
+    const calificacionExistente = await Calificacion.findOne({
+      tituloCalificacion: body.tituloCalificacion,
+      _id: { $ne: id }
+    });
 
-  
+    if (calificacionExistente) {
+      throw new Error('Ya existe una calificación con este título');
+    }
 
-  // Obtener la lista de estudiantes originales
-  const estudiantesOriginales = calificacion.estudiantes;
+    // Validar que los estudiantes sean ObjectIds válidos
+    if (body.estudiantes) {
+      body.estudiantes = body.estudiantes.map(id => {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+          throw new Error(`ID de estudiante inválido: ${id}`);
+        }
+        return id;
+      });
+    }
 
-  // Actualizar los campos de la calificación
-  calificacion.tituloCalificacion = body.tituloCalificacion || calificacion.tituloCalificacion;
-  calificacion.aprobado = body.aprobado || calificacion.aprobado;
-  calificacion.usuarioId = body.usuarioId || calificacion.usuarioId;
-  calificacion.estadoCalificacion = body.estadoCalificacion || calificacion.estadoCalificacion;
-  calificacion.estudiantes = body.estudiantes || calificacion.estudiantes;
+    // Obtener la lista de estudiantes originales
+    const estudiantesOriginales = calificacion.estudiantes.map(id => id.toString());
 
-  // Guardar los cambios de la calificación
-  calificacion = await calificacion.save();
+    // Actualizar los campos de la calificación
+    calificacion.tituloCalificacion = body.tituloCalificacion;
+    calificacion.aprobado = body.aprobado;
+    calificacion.usuarioId = body.usuarioId;
+    calificacion.estadoCalificacion = body.estadoCalificacion;
+    calificacion.estudiantes = body.estudiantes;
 
-  // Remover el ID de la calificación de los estudiantes originales
-  await Estudiante.updateMany(
-      { _id: { $in: estudiantesOriginales } },
-      { $pull: { calificaciones: calificacion._id } }
-  );
+    // Guardar los cambios de la calificación
+    calificacion = await calificacion.save();
 
-  // Agregar el ID de la calificación a los nuevos estudiantes
-  if (body.estudiantes && body.estudiantes.length > 0) {
-      await Estudiante.updateMany(
-          { _id: { $in: body.estudiantes } },
-          { $push: { calificaciones: calificacion._id } }
+    // Actualizar las referencias en los estudiantes
+    if (body.estudiantes) {
+      // Remover referencias de estudiantes que ya no están en la lista
+      const estudiantesEliminados = estudiantesOriginales.filter(
+        id => !body.estudiantes.includes(id)
       );
-  }
-  return calificacion;  
+      if (estudiantesEliminados.length > 0) {
+        await Estudiante.updateMany(
+          { _id: { $in: estudiantesEliminados } },
+          { $pull: { calificaciones: calificacion._id } }
+        );
+      }
+
+      // Agregar referencias a nuevos estudiantes
+      const estudiantesNuevos = body.estudiantes.filter(
+        id => !estudiantesOriginales.includes(id)
+      );
+      if (estudiantesNuevos.length > 0) {
+        await Estudiante.updateMany(
+          { _id: { $in: estudiantesNuevos } },
+          { $push: { calificaciones: calificacion._id } }
+        );
+      }
+    }
+
+    return calificacion;
   } catch (error) {
-   console.error("Error al actualizar la calificación:", error);
-    throw error; 
+    console.error("Error al actualizar la calificación:", error);
+    throw error;
   }
 }
-
 
 // Función asíncrona para inactivar calificaciones
 async function desactivarCalificacion(id) {

@@ -114,6 +114,11 @@ const obtenerColegiosPorId = async (req, res) => {
     res.json(colegio);
   } catch (err) {
     console.error("Error al buscar colegio:", err);
+    if (err.message === 'ID de colegio inválido') {
+      return res.status(400).json({
+        error: 'El ID del colegio proporcionado no es válido'
+      });
+    }
     res.status(500).json({ 
       error: "Error interno del servidor al buscar el colegio" 
     });

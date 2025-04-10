@@ -5,12 +5,22 @@ const comandoSchemaValidation = require('../validations/comando_validations');
 const listarComandos = async (_req, res) => {
     try {
         const comandos = await logic.listarComandos();
+        
         if (comandos.length === 0) {
             return res.status(204).send(); // 204 No Content
         }
+        
+        // Log commands with their foundation details
+        console.log("Comandos con detalles de fundación:", comandos.map(c => ({
+            nombreComando: c.nombreComando,
+            fundacionId: c.fundacionId?._id,
+            nombreFundacion: c.fundacionId?.nombreFundacion || 'Sin fundación asignada'
+        })));
+
         res.json(comandos);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+    } catch (error) {
+        console.error('Error al cargar los comandos:', error);
+        res.status(500).json({ error: 'Error al cargar los comandos', details: error.message });
     }
 };
 
@@ -53,12 +63,32 @@ const desactivarComando = async (req, res) => {
 
 // Controlador para obtener un comando por su ID
 const obtenerComandoPorId = async (req, res) => {
-    const { id } = req.params;
     try {
-        const comando = await logic.buscarComandoPorId(id);
+        const comando = await Comando.findById(req.params.id)
+            .populate({
+                path: 'fundacionId',
+                select: 'nombreFundacion' // Mostrar solo el nombre de la fundación
+            })
+            .populate({
+                path: 'brigadas',
+                select: 'nombreBrigada' // Mostrar solo el nombre de las brigadas
+            });
+        
+        if (!comando) {
+            return res.status(404).json({ error: 'Comando no encontrado' });
+        }
+
+        // Log command details
+        console.log("Detalles del comando:", {
+            nombreComando: comando.nombreComando,
+            fundacionId: comando.fundacionId?._id,
+            nombreFundacion: comando.fundacionId?.nombreFundacion || 'Sin fundación asignada'
+        });
+
         res.json(comando);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor al buscar el comando', details: err.message });
+    } catch (error) {
+        console.error('Error al obtener el comando:', error);
+        res.status(500).json({ error: 'Error al obtener el comando' });
     }
 };
 

@@ -1,599 +1,369 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import {
-  Container,
-  TextField,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Switch,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  Snackbar,
-  Alert,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Checkbox,
-  ListItemText,
-  TablePagination
-} from "@mui/material";
-
-import { Edit, Delete, Info, School, DateRange, EventAvailable, ToggleOn, Class, Grade } from "@mui/icons-material";
+import React, { useState, useEffect } from 'react';
+import { 
+    Container, 
+    Typography, 
+    TextField, 
+    Button, 
+    Grid, 
+    Paper, 
+    TableContainer, 
+    Table, 
+    TableHead, 
+    TableRow, 
+    TableCell, 
+    TableBody, 
+    IconButton, 
+    Dialog, 
+    DialogTitle, 
+    DialogContent, 
+    DialogActions,
+    Snackbar,
+    Alert
+} from '@mui/material';
+import { Edit, Delete, Close } from '@mui/icons-material';
 
 const token = localStorage.getItem("token");
 
 const Ediciones = () => {
-  const [ediciones, setEdiciones] = useState([]);
-  const [cursos, setCursos] = useState([]);
-  const [horarios, setHorarios] = useState([]);
-  const [selectedEdicion, setSelectedEdicion] = useState(null);
-  const [formValues, setFormValues] = useState({
-    tituloEdicion: "",
-    fechaInicioEdicion: "",
-    fechaFinEdicion: "",
-    estadoEdicion: true,
-    cursoId: "",
-    horarios: [],
-    estudiantes: [],
-  });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [edicionToDelete, setEdicionToDelete] = useState(null);
-  const [openInfoDialog, setOpenInfoDialog] = useState(false);
-  const [infoEdicion, setInfoEdicion] = useState(null);
-
-  // Paginación y búsqueda
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const fetchEdiciones = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/ediciones",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
+    const [ediciones, setEdiciones] = useState([]);
+    const [cursos, setCursos] = useState([]);
+    const [selectedEdicion, setSelectedEdicion] = useState(null);
+    const [formValues, setFormValues] = useState({
+        tituloEdicion: '',
+        fechaInicioEdicion: '',
+        fechaFinEdicion: '',
+        estadoEdicion: true,
+        cursoId: '',
     });
-      if (!response.ok) throw new Error("Error al obtener ediciones");
-      const data = await response.json();
+    const [openDialog, setOpenDialog] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-      // Condicion que verifica si el arreglo de ediciones está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay ediciones registradas.");
-        setOpenSnackbar(true);
-        setEdiciones([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setEdiciones(data);
-      }
-    } catch (error) {
-      console.error("Error al obtener ediciones:", error);
-      setErrorMessage("Error al obtener ediciones");
-      setOpenSnackbar(true);
-    }
-  };
+    // Fetch cursos and ediciones on component mount
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch cursos
+                const cursosResponse = await fetch('http://localhost:3000/api/cursos',{
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token 
+                    }
+                });
+                if (cursosResponse.ok) {
+                    const cursosData = await cursosResponse.json();
+                    setCursos(cursosData);
+                }
 
-  const fetchCursos = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/cursos",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener cursos");
-      const data = await response.json();
+                // Fetch ediciones
+                const edicionesResponse = await fetch('http://localhost:3000/api/ediciones',{
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token 
+                    }
+                });
+                if (edicionesResponse.ok) {
+                    const edicionesData = await edicionesResponse.json();
+                    setEdiciones(edicionesData);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setSnackbarMessage('Error al cargar datos');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
+            }
+        };
 
-      // Condicion que verifica si el arreglo de cursos está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay cursos registrados.");
-        setOpenSnackbar(true);
-        setCursos([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setCursos(data);
-      }
-    } catch (error) {
-      console.error("Error al obtener cursos:", error);
-      setErrorMessage("Error al obtener cursos");
-      setOpenSnackbar(true);
-    }
-  };
+        fetchData();
+    }, []);
 
-  const fetchHorarios = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/horarios",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener horarios");
-      const data = await response.json();
+    // Handle input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
-      // Condicion que verifica si el arreglo de horarios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay horarios registrados.");
-        setOpenSnackbar(true);
-        setHorarios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setHorarios(data);
-      }
-    } catch (error) {
-      console.error("Error al obtener horarios:", error);
-      setErrorMessage("Error al obtener horarios");
-      setOpenSnackbar(true);
-    }
-  };
+    // Submit form to create or update edition
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        try {
+            const edicionData = {
+                tituloEdicion: formValues.tituloEdicion,
+                cursoId: formValues.cursoId,
+                fechaInicioEdicion: formValues.fechaInicioEdicion,
+                fechaFinEdicion: formValues.fechaFinEdicion,
+                estadoEdicion: formValues.estadoEdicion,
+            };
 
-  useEffect(() => {
-    fetchEdiciones();
-    fetchCursos();
-    fetchHorarios();
-  }, []);
-
-  // Filtrar usuarios según el término de búsqueda
-  const filteredEdiciones = ediciones.filter((edicion) =>
-    edicion.tituloEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    edicion.fechaFinEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    edicion.fechaInicioEdicion.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Cambiar página
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  // Cambiar filas por página
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-  
-  const handleError = (message) => {
-    setErrorMessage(message);
-    setOpenSnackbar(true);
-  };
-
-  const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSwitchChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.checked,
-    });
-  };
-
-  const handleHorarioChange = (e) => {
-    const { target: { value } } = e;
-    setFormValues({
-      ...formValues,
-      horarios: typeof value === "string" ? value.split(",") : value,
-    });
-  };
-
-  const handleCreateEdicion = async () => {
-    try {
-        const response = await fetch("http://localhost:3000/api/ediciones", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token 
-            },
-            body: JSON.stringify(formValues),
-        });
-
-        // Maneja la respuesta
-        if (response.ok) {
-            const nuevaEdicion = await response.json();
-            setEdiciones([...ediciones, nuevaEdicion]);
-            setFormValues({
-              tituloEdicion: "",
-              fechaInicioEdicion: "",
-              fechaFinEdicion: "",
-              estadoEdicion: true,
-              cursoId: "",
-              horarios: [],
-              estudiantes: [],
+            const url = selectedEdicion 
+                ? `http://localhost:3000/api/ediciones/${selectedEdicion._id}` 
+                : 'http://localhost:3000/api/ediciones';
+            
+            const method = selectedEdicion ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token 
+                },
+                body: JSON.stringify(edicionData)
             });
 
-            // Muestra un mensaje de éxito (similar a handleCreateAsistencia)
-            setSuccessMessage("Edición creada exitosamente.");
-            setOpenSnackbar(true);
-        } else {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Error al crear edicion");
-        }
-    } catch (error) {
-        handleError("Error al crear edicion", error);
-        setErrorMessage(error.message);
-        setOpenSnackbar(true);
-    }
-  };
-
-const handleUpdateEdicion = async () => {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-        },
-        
-        body: JSON.stringify(formValues),
-      }
-      
-    );
-    console.log(formValues);
-
-    if (response.ok) {
-      const updatedEdicion = await response.json();
-      const updatedEdiciones = ediciones.map((edicion) =>
-        edicion._id === updatedEdicion._id ? updatedEdicion : edicion
-      );
-      setEdiciones(updatedEdiciones);
-      setSelectedEdicion(null);
-      setFormValues({
-        tituloEdicion: "",
-        fechaInicioEdicion: "",
-        fechaFinEdicion: "",
-        estadoEdicion: true,
-        cursoId: "",
-        horarios: [],
-        estudiantes: [],
-      });
-
-      // Mostrar mensaje de éxito
-      setSuccessMessage("La edición se actualizó correctamente");
-      setOpenSnackbar(true); 
-    } else {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Error al actualizar edición");
-    }
-  } catch (error) {
-    console.error("Error al actualizar edición:", error);
-    setErrorMessage(error.message);
-    setOpenSnackbar(true);
-  }
-};
-
-
-  const handleDeleteEdicion = async () => {
-    if (!edicionToDelete) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/ediciones/${edicionToDelete._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-        }
-      );
-
-      if (response.ok) {
-        setEdiciones(ediciones.filter((edicion) => edicion._id !== edicionToDelete._id));
-        handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
-
-        // Mostrar mensaje de éxito
-        setSuccessMessage("La edición se eliminó correctamente");
-        setOpenSnackbar(true);
-
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar edicion");
-      }
-    } catch (error) {
-      handleError("Error al eliminar edicion", error);
-    }
-  };
-
-  const handleEditClick = (edicion) => {
-    setSelectedEdicion(edicion);
-    setFormValues({
-      tituloEdicion: edicion.tituloEdicion,
-      fechaInicioEdicion: edicion.fechaInicioEdicion,
-      fechaFinEdicion: edicion.fechaFinEdicion,
-      estadoEdicion: edicion.estadoEdicion,
-      cursoId: edicion.cursoId?._id || "",
-      horarios: edicion.horarios.map((horario) => horario._id),
-    });
-  };
-
-  const handleDeleteClick = (edicion) => {
-    setEdicionToDelete(edicion);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleInfoClick = async (edicion) => {
-    const response = await fetch(`http://localhost:3000/api/ediciones/${edicion._id}`,{
-      method: "GET",
-      headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-      }
-  });
-    const data = await response.json();
-    setInfoEdicion(data);
-    setOpenInfoDialog(true);
-  };
-
-  const handleCloseInfoDialog = () => {
-    setOpenInfoDialog(false);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setEdicionToDelete(null);
-  };
-
-  return (
-    <Container>
-      <h1>Gestión de Ediciones:</h1>
-      <form noValidate autoComplete="off">
-        <TextField
-          label="Título de la Edición"
-          name="tituloEdicion"
-          value={formValues.tituloEdicion}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Fecha de inicio"
-          type="date"
-          name="fechaInicioEdicion"
-          value={formValues.fechaInicioEdicion}
-          onChange={handleInputChange}
-          sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
-        />
-        <br /><br />
-        <TextField
-          label="Fecha de Fin"
-          type="date"
-          name="fechaFinEdicion"
-          value={formValues.fechaFinEdicion}
-          onChange={handleInputChange}
-          sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
-        />
-
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Curso</InputLabel>
-          <Select
-            name="cursoId"
-            value={formValues.cursoId}
-            onChange={handleInputChange}
-            input={<OutlinedInput label="Curso" />}
-          >
-            {cursos.map((curso) => (
-              <MenuItem key={curso._id} value={curso._id}>
-                {curso.nombreCurso}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Horarios</InputLabel>
-          <Select
-            multiple
-            value={formValues.horarios}
-            onChange={handleHorarioChange}
-            input={<OutlinedInput label="Horarios" />}
-            renderValue={(selected) =>
-              horarios
-                .filter((hor) => selected.includes(hor._id))
-                .map((ho) => ho.tituloHorario)
-                .join(", ")
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Error al guardar la edición');
             }
-          >
-            {horarios.map((hor) => (
-              <MenuItem key={hor._id} value={hor._id}>
-                <Checkbox checked={formValues.horarios.indexOf(hor._id) > -1} />
-                <ListItemText primary={hor.tituloHorario} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
 
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estadoEdicion}
-            onChange={handleSwitchChange}
-            name="estadoEdicion"
-            color="primary"
-          />
-          Estado Activo
-        </Box>
-        
-        <Box marginTop={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={selectedEdicion ? handleUpdateEdicion : handleCreateEdicion}
-          >
-            {selectedEdicion? "Actualizar Edicion" : "Crear Edicion"}
-          </Button>
-        </Box>
-      </form>
+            // Refresh ediciones list
+            const updatedEdicionesResponse = await fetch('http://localhost:3000/api/ediciones',{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token 
+                }
+            });
+            const updatedEdiciones = await updatedEdicionesResponse.json();
+            setEdiciones(updatedEdiciones);
 
-      {/* Busqueda */}
-      <TextField
-        label="Buscar ediciones"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+            // Reset form and close dialog
+            setFormValues({
+                tituloEdicion: '',
+                fechaInicioEdicion: '',
+                fechaFinEdicion: '',
+                estadoEdicion: true,
+                cursoId: '',
+            });
+            setSelectedEdicion(null);
+            setOpenDialog(false);
 
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-            <TableCell>Título</TableCell>
-              <TableCell>Fecha Inicio</TableCell>
-              <TableCell>Fecha Fin</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {filteredEdiciones
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((edicion) => (
-              <TableRow key={edicion._id}>
-                <TableCell>{edicion.tituloEdicion}</TableCell>
-                <TableCell>{edicion.fechaInicioEdicion}</TableCell>
-                <TableCell>{edicion.fechaFinEdicion}</TableCell>
-                <TableCell>
-                  {edicion.estadoEdicion ? "Activa" : "Inactiva"}
-                </TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(edicion)}>
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleInfoClick(edicion)} color="primary">
-                    <Info />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(edicion)}
-                    color="secondary"
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            // Show success message
+            setSnackbarMessage(selectedEdicion 
+                ? 'Edición actualizada exitosamente' 
+                : 'Edición creada exitosamente');
+            setSnackbarSeverity('success');
+            setOpenSnackbar(true);
 
-        {/* Paginación */}
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredEdiciones.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        } catch (error) {
+            console.error('Error:', error);
+            setSnackbarMessage(error.message);
+            setSnackbarSeverity('error');
+            setOpenSnackbar(true);
+        }
+    };
 
-      </TableContainer>
+    // Edit an existing edition
+    const handleEdit = (edicion) => {
+        setSelectedEdicion(edicion);
+        setFormValues({
+            tituloEdicion: edicion.tituloEdicion,
+            fechaInicioEdicion: edicion.fechaInicioEdicion,
+            fechaFinEdicion: edicion.fechaFinEdicion,
+            estadoEdicion: edicion.estadoEdicion,
+            cursoId: edicion.cursoId?._id || '',
+        });
+        setOpenDialog(true);
+    };
 
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Edición</DialogTitle>
-        <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {edicionToDelete?.tituloEdicion}?</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteEdicion} color="secondary">Eliminar</Button>
-        </DialogActions>
-      </Dialog>
+    // Delete an edition (soft delete)
+    const handleDelete = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/ediciones/${id}`,{
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token 
+                }
+            });
 
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-          Información de la Edición
-        </DialogTitle>
-        <DialogContent dividers sx={{ padding: '20px' }}>
-          {infoEdicion && (
-            <div>
-              {/* Título */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Class color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.tituloEdicion || "Título no disponible"}</Typography>
-              </Box>
-              
-              {/* Fecha de Inicio */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <DateRange color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Inicio:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaInicioEdicion || "Fecha no disponible"}</Typography>
-              </Box>
-              
-              {/* Fecha de Finalización */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <EventAvailable color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Finalización:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaFinEdicion || "Fecha no disponible"}</Typography>
-              </Box>
-              
-              {/* Estado */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <ToggleOn color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.estadoEdicion ? "Activa" : "Inactiva"}</Typography>
-              </Box>
-              
-              {/* Curso */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Curso:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.cursoId?.nombreCurso || "Curso no encontrado"}</Typography>
-              </Box>
+            if (!response.ok) {
+                throw new Error('Error al eliminar la edición');
+            }
 
-              {/* Horarios */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Grade color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Horarios:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoEdicion.horarios?.map((horario) => horario.tituloHorario).join(", ") || "Sin horarios"}
-                </Typography>
-              </Box>
-              
-              {/* Estudiantes */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Grade color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoEdicion.estudiantes?.map((estudiante) => estudiante.nombreEstudiante).join(", ") || "Sin estudiantes"}
-                </Typography>
-              </Box>
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
+            // Refresh ediciones list
+            const updatedEdicionesResponse = await fetch('http://localhost:3000/api/ediciones',{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token 
+                }
+            });
+            const updatedEdiciones = await updatedEdicionesResponse.json();
+            setEdiciones(updatedEdiciones);
 
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
-        </Alert>
-      </Snackbar>
-    </Container>
-  );
+            // Show success message
+            setSnackbarMessage('Edición eliminada exitosamente');
+            setSnackbarSeverity('success');
+            setOpenSnackbar(true);
+
+        } catch (error) {
+            console.error('Error:', error);
+            setSnackbarMessage(error.message);
+            setSnackbarSeverity('error');
+            setOpenSnackbar(true);
+        }
+    };
+
+    return (
+        <Container>
+            <Typography variant="h4" gutterBottom>
+                Gestión de Ediciones
+            </Typography>
+
+            <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={() => {
+                    setSelectedEdicion(null);
+                    setFormValues({
+                        tituloEdicion: '',
+                        fechaInicioEdicion: '',
+                        fechaFinEdicion: '',
+                        estadoEdicion: true,
+                        cursoId: '',
+                    });
+                    setOpenDialog(true);
+                }}
+            >
+                Crear Nueva Edición
+            </Button>
+
+            <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Título</TableCell>
+                            <TableCell>Curso</TableCell>
+                            <TableCell>Fecha Inicio</TableCell>
+                            <TableCell>Fecha Fin</TableCell>
+                            <TableCell>Estado</TableCell>
+                            <TableCell>Acciones</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {ediciones.map((edicion) => (
+                            <TableRow key={edicion._id}>
+                                <TableCell>{edicion.tituloEdicion}</TableCell>
+                                <TableCell>{edicion.cursoId?.nombreCurso || 'Sin Curso'}</TableCell>
+                                <TableCell>{edicion.fechaInicioEdicion ? new Date(edicion.fechaInicioEdicion).toLocaleDateString() : 'N/A'}</TableCell>
+                                <TableCell>{edicion.fechaFinEdicion ? new Date(edicion.fechaFinEdicion).toLocaleDateString() : 'N/A'}</TableCell>
+                                <TableCell>{edicion.estadoEdicion ? 'Activo' : 'Inactivo'}</TableCell>
+                                <TableCell>
+                                    <IconButton onClick={() => handleEdit(edicion)}>
+                                        <Edit />
+                                    </IconButton>
+                                    <IconButton onClick={() => handleDelete(edicion._id)}>
+                                        <Delete />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                <DialogTitle>
+                    {selectedEdicion ? 'Editar Edición' : 'Crear Nueva Edición'}
+                    <IconButton 
+                        onClick={() => setOpenDialog(false)} 
+                        style={{ position: 'absolute', right: 8, top: 8 }}
+                    >
+                        <Close />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <form onSubmit={handleSubmit}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Título de la Edición"
+                                    name="tituloEdicion"
+                                    value={formValues.tituloEdicion}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Curso"
+                                    name="cursoId"
+                                    select
+                                    value={formValues.cursoId || ''}
+                                    onChange={handleInputChange}
+                                    required
+                                    SelectProps={{ native: true }}
+                                >
+                                    <option value="">Seleccionar Curso</option>
+                                    {cursos.map((curso) => (
+                                        <option key={curso._id} value={curso._id}>
+                                            {curso.nombreCurso}
+                                        </option>
+                                    ))}
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Fecha de Inicio"
+                                    type="date"
+                                    name="fechaInicioEdicion"
+                                    value={formValues.fechaInicioEdicion}
+                                    onChange={handleInputChange}
+                                    InputLabelProps={{ shrink: true }}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Fecha de Fin"
+                                    type="date"
+                                    name="fechaFinEdicion"
+                                    value={formValues.fechaFinEdicion}
+                                    onChange={handleInputChange}
+                                    InputLabelProps={{ shrink: true }}
+                                    required
+                                />
+                            </Grid>
+                        </Grid>
+                    </form>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)} color="secondary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleSubmit} color="primary" variant="contained">
+                        {selectedEdicion ? 'Actualizar' : 'Crear'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={6000} 
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert 
+                    onClose={() => setOpenSnackbar(false)} 
+                    severity={snackbarSeverity}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+        </Container>
+    );
 };
 
 export default Ediciones;

@@ -48,7 +48,7 @@ const edicionSchemaValidation = Joi.object({
 
   horarios: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
-    .required()
+    .optional()
     .messages({
       'array.base': 'Horarios debe ser un array',
       'string.pattern.base': 'Cada horario debe ser un id válido (24 caracteres hexadecimales)',

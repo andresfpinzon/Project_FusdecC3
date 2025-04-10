@@ -102,9 +102,33 @@ async function desactivarEdicion(id) {
 async function listarEdicionesActivas() {
   try {
     let ediciones = await Edicion.find({ estadoEdicion: true })
-    .populate('cursoId')
-    .populate('horarios')
-    .populate('estudiantes');
+      .populate({
+        path: 'cursoId',
+        select: '-__v',
+        options: { allowEmptyReference: true }
+      })
+      .populate({
+        path: 'horarios',
+        select: 'diaHorario horaInicio horaFin estadoHorario -_id',
+        match: { estadoHorario: true },
+        options: { allowEmptyReference: true }
+      })
+      .populate({
+        path: 'estudiantes',
+        select: '-__v',
+        options: { allowEmptyReference: true }
+      });
+    
+    // Filter out null populated fields
+    ediciones = ediciones.map(edicion => {
+      return {
+        ...edicion.toObject(),
+        horarios: edicion.horarios?.filter(h => h) || [],
+        estudiantes: edicion.estudiantes?.filter(e => e) || [],
+        cursoId: edicion.cursoId || null
+      };
+    });
+    
     return ediciones;
   } catch (error) {
     console.error('Error al listar las ediciones (edicion_logic):', error);

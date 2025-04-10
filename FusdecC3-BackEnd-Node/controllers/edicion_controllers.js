@@ -81,12 +81,16 @@ const desactivarEdicion = async (req, res) => {
 const listarEdicionesActivas = async (req, res) => {
   try {
     const edicionesActivas = await logic.listarEdicionesActivas();
-    if (edicionesActivas.length === 0) {
+    if (!edicionesActivas || edicionesActivas.length === 0) {
       return res.status(204).send(); // 204 No Content
     }
     res.json(edicionesActivas);
   } catch (err) {
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error('Error al listar ediciones:', err);
+    res.status(500).json({ 
+      error: "Error interno del servidor",
+      message: err.message || 'Error desconocido al listar ediciones'
+    });
   }
 };
 

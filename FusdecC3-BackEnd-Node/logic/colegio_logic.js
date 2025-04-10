@@ -1,5 +1,6 @@
 const Colegio = require("../models/colegio_model");
 const Estudiante = require('../models/estudiante_model');
+const mongoose = require('mongoose'); // Add this line to import mongoose
 
 // Función asíncrona para crear colegios
 async function crearColegio(body) {
@@ -71,8 +72,11 @@ async function listarColegios() {
 // Función asíncrona para buscar un colegios por su ID
 async function buscarColegiosPorId(id) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('ID de colegio inválido');
+    }
     const colegio = await Colegio.findById(id)
-    .populate('estudiantes');
+      .populate('estudiantes');
     if (!colegio) {
       throw new Error(`Colegio con ID ${id} no encontrado`);
     }

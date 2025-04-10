@@ -195,38 +195,60 @@ const Calificaciones = () => {
 
   const handleCreateCalificacion = async () => {
     try {
-        const response = await fetch("http://localhost:3000/api/calificaciones", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token 
-            },
-            body: JSON.stringify(formValues),
-        });
+      // Validate required fields
+      if (!formValues.tituloCalificacion) {
+        setErrorMessage("El título de la calificación es obligatorio");
+        setOpenSnackbar(true);
+        return;
+      }
 
-        // Maneja la respuesta
-        if (response.ok) {
-            const nuevaCalificacion = await response.json();
-            setCalificaciones([...calificaciones, nuevaCalificacion]);
+      // Ensure estudiantes is an array of valid IDs
+      const estudiantes = formValues.estudiantes?.map(est => 
+        typeof est === 'object' ? est._id : est
+      ).filter(Boolean) || [];
 
-          // Muestra un mensaje de éxito
-          setSuccessMessage("calificación creada exitosamente.");
-          setOpenSnackbar(true);
-
-            setFormValues({
-              tituloCalificacion: "",
-              aprobado: true,
-              usuarioId: formValues.usuarioId,
-              estudiantes: [],
-              estadoCalificacion: true,
-            });
-            console.log('Calificación creada exitosamente:', nuevaCalificacion);
-        } else {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Error al crear calificación");
+      const response = await fetch(
+        "http://localhost:3000/api/calificaciones",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+          },
+          body: JSON.stringify({
+            tituloCalificacion: formValues.tituloCalificacion,
+            aprobado: Boolean(formValues.aprobado),
+            usuarioId: formValues.usuarioId,
+            estadoCalificacion: Boolean(formValues.estadoCalificacion),
+            estudiantes
+          })
         }
+      );
+
+      // Maneja la respuesta
+      if (response.ok) {
+        const nuevaCalificacion = await response.json();
+        setCalificaciones([...calificaciones, nuevaCalificacion]);
+
+        // Muestra un mensaje de éxito
+        setErrorMessage("Calificación creada exitosamente");
+        setOpenSnackbar(true);
+
+        setFormValues({
+          tituloCalificacion: "",
+          aprobado: true,
+          usuarioId: formValues.usuarioId,
+          estudiantes: [],
+          estadoCalificacion: true,
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al crear calificación");
+      }
     } catch (error) {
-        handleError("Error al crear calificación", error);
+      console.error("Error al crear calificación:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
     }
   };
 
@@ -234,6 +256,18 @@ const Calificaciones = () => {
     if (!selectedCalificacion) return;
 
     try {
+      // Validate required fields
+      if (!formValues.tituloCalificacion) {
+        setErrorMessage("El título de la calificación es obligatorio");
+        setOpenSnackbar(true);
+        return;
+      }
+
+      // Ensure estudiantes is an array of valid IDs
+      const estudiantes = formValues.estudiantes?.map(est => 
+        typeof est === 'object' ? est._id : est
+      ).filter(Boolean) || [];
+
       const response = await fetch(
         `http://localhost:3000/api/calificaciones/${selectedCalificacion._id}`,
         {
@@ -242,7 +276,13 @@ const Calificaciones = () => {
             "Content-Type": "application/json",
             "Authorization": token 
           },
-          body: JSON.stringify(formValues),
+          body: JSON.stringify({
+            tituloCalificacion: formValues.tituloCalificacion,
+            aprobado: Boolean(formValues.aprobado),
+            usuarioId: formValues.usuarioId,
+            estadoCalificacion: Boolean(formValues.estadoCalificacion),
+            estudiantes
+          })
         }
       );
 
@@ -259,18 +299,18 @@ const Calificaciones = () => {
           aprobado: true,
           usuarioId: "",
           estudiantes: [],
-          estadoCalificacion: true,
+          estadoCalificacion: true
         });
-
-        // Mostrar mensaje de éxito
-        setSuccessMessage("La calificación se actualizó correctamente");
-        setOpenSnackbar(true); 
+        setErrorMessage("Calificación actualizada exitosamente");
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar calificación");
+        throw new Error(errorData.error || "Error al actualizar la calificación");
       }
     } catch (error) {
-      handleError("Error al actualizar calificación", error);
+      console.error("Error al actualizar calificación:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
     }
   };
 
@@ -294,7 +334,7 @@ const Calificaciones = () => {
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
 
         // Mostrar mensaje de éxito
-        setSuccessMessage("La calificación se eliminó correctamente");
+        setErrorMessage("La calificación se eliminó correctamente");
         setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
@@ -310,18 +350,20 @@ const Calificaciones = () => {
     setFormValues({
       tituloCalificacion: calificacion.tituloCalificacion,
       aprobado: calificacion.aprobado,
-      usuarioId: calificacion.usuarioId,
-      estudiantes: calificacion.estudiantes || [],
+      usuarioId: calificacion.usuarioId?._id || calificacion.usuarioId,
+      estudiantes: calificacion.estudiantes?.map(est => est._id || est) || [],
       estadoCalificacion: calificacion.estadoCalificacion,
     });
   };
   
   const handleEstudianteChange = (e) => {
     const { target: { value } } = e;
-    setFormValues({
-      ...formValues,
-      estudiantes: typeof value === "string" ? value.split(",") : value,
-    });
+    // Ensure we're always working with an array of IDs
+    const selectedIds = typeof value === 'string' ? value.split(',') : value;
+    setFormValues(prev => ({
+      ...prev,
+      estudiantes: selectedIds
+    }));
   };
 
   const handleDeleteClick = (calificacion) => {
@@ -377,21 +419,21 @@ const Calificaciones = () => {
           <InputLabel>Estudiantes</InputLabel>
           <Select
             multiple
-            value={formValues.estudiantes}
+            value={formValues.estudiantes || []}
             onChange={handleEstudianteChange}
             input={<OutlinedInput label="Estudiantes" />}
-            renderValue={(selected) =>
-              estudiantes
-                .filter((estudiante) => selected.includes(estudiante._id))
-                .map((estudiante) => estudiante.nombreEstudiante)
-                .join(", ")
-            }
+            renderValue={(selected) => {
+              // Map through the selected IDs and find the corresponding estudiante objects
+              return estudiantes
+                .filter(est => selected.includes(est._id))
+                .map(est => `${est.nombreEstudiante} ${est.apellidoEstudiante}`)
+                .join(", ");
+            }}
           >
-            
             {estudiantes.map((estudiante) => (
               <MenuItem key={estudiante._id} value={estudiante._id}>
-                <Checkbox checked={formValues.estudiantes.indexOf(estudiante._id) > -1} />
-                <ListItemText primary={estudiante.nombreEstudiante} />
+                <Checkbox checked={formValues.estudiantes?.includes(estudiante._id)} />
+                <ListItemText primary={`${estudiante.nombreEstudiante} ${estudiante.apellidoEstudiante}`} />
               </MenuItem>
             ))}
           </Select>

@@ -457,5 +457,39 @@ router.post('/:id/calificaciones', verifyJWT, verifyRole(['Instructor','Secretar
  */
 router.post('/:id/ediciones', verifyJWT, verifyRole(['Instructor','Secretario','Root']), estudianteController.agregarEdicionAEstudiante);
 
+/**
+ * @swagger
+ * /api/estudiantes/buscar/{documento}:
+ *   get:
+ *     tags:
+ *       - Estudiantes
+ *     summary: Buscar estudiante por número de documento
+ *     description: Busca un estudiante específico por su número de documento.
+ *     parameters:
+ *       - in: path
+ *         name: documento
+ *         required: true
+ *         description: Número de documento del estudiante a buscar.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Estudiante encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Estudiante'
+ *       404:
+ *         description: Estudiante no encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error.
+ */
+router.get('/buscar/:documento', verifyJWT, verifyRole(['Administrativo','Instructor','Secretario','Root']), estudianteController.buscarPorDocumento);
 
 module.exports = router;

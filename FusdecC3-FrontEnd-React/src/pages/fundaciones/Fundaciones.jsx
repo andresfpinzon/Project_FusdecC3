@@ -28,27 +28,27 @@ import {
   InputLabel,
   Chip,
   Box
-} from "@mui/material";
+} from "@mui/material"; 
 import { Edit, Info, Delete } from "@mui/icons-material";
 
-const token = localStorage.getItem("token");
+ const token = localStorage.getItem("token");
 
-export default function Fundaciones() {
+ export default function Fundaciones() {
   const [fundaciones, setFundaciones] = useState([]);
   const [comandos, setComandos] = useState([]);
   const [selectedFundacion, setSelectedFundacion] = useState(null);
   const [formValues, setFormValues] = useState({
-    nombreFundacion: "",
+    nombreFundacion: "", 
     estadoFundacion: true
   });
-
+ 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [infoFundacion, setInfoFundacion] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
+  
   // Paginación
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -76,11 +76,11 @@ export default function Fundaciones() {
           setFundaciones(fundacionesData);
           setComandos(comandosData);
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error al cargar datos:", error);
         setErrorMessage("Error al cargar los datos. Por favor, inténtalo de nuevo.");
         setOpenSnackbar(true);
-      }
+    }
     };
 
     fetchData();
@@ -116,7 +116,7 @@ export default function Fundaciones() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token
+            "Authorization": token 
         },
         body: JSON.stringify({
           nombreFundacion: formValues.nombreFundacion.trim(),
@@ -129,11 +129,11 @@ export default function Fundaciones() {
         throw new Error(error.message || "Error al crear la fundación");
       }
 
-      const nuevaFundacion = await response.json();
-      setFundaciones([...fundaciones, nuevaFundacion]);
-      clearForm();
+        const nuevaFundacion = await response.json();
+        setFundaciones([...fundaciones, nuevaFundacion]);
+        clearForm();
       setSuccessMessage("Fundación creada exitosamente!");
-      setErrorMessage(null);
+        setErrorMessage(null);
     } catch (error) {
       console.error("Error al crear fundación:", error);
       setErrorMessage(error.message);
@@ -157,10 +157,10 @@ export default function Fundaciones() {
       };
 
       const response = await fetch(`http://localhost:3000/api/fundaciones/${selectedFundacion._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
         },
         body: JSON.stringify(dataToSend)
       });
@@ -174,9 +174,9 @@ export default function Fundaciones() {
       setFundaciones(fundaciones.map(f => 
         f._id === selectedFundacion._id ? updatedFundacion : f
       ));
-      clearForm();
-      setSuccessMessage("Fundación actualizada exitosamente!");
-      setErrorMessage(null);
+        clearForm();
+        setSuccessMessage("Fundación actualizada exitosamente!");
+        setErrorMessage(null);
     } catch (error) {
       console.error("Error al actualizar fundación:", error);
       setErrorMessage(error.message);
@@ -191,22 +191,22 @@ export default function Fundaciones() {
 
     try {
       const response = await fetch(`http://localhost:3000/api/fundaciones/${selectedFundacion._id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
-        }
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+          }
       });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Error al eliminar la fundación");
-      }
+        }
 
       setFundaciones(fundaciones.filter(f => f._id !== selectedFundacion._id));
-      handleCloseDeleteDialog();
-      setSuccessMessage("Fundación eliminada exitosamente!");
-      setErrorMessage(null);
+        handleCloseDeleteDialog();
+        setSuccessMessage("Fundación eliminada exitosamente!");
+        setErrorMessage(null);
     } catch (error) {
       console.error("Error al eliminar fundación:", error);
       setErrorMessage(error.message);
@@ -406,12 +406,12 @@ export default function Fundaciones() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
+          <TextField
                   fullWidth
                   label="Nombre de la Fundación"
-                  name="nombreFundacion"
-                  value={formValues.nombreFundacion}
-                  onChange={handleInputChange}
+            name="nombreFundacion"
+            value={formValues.nombreFundacion}
+            onChange={handleInputChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -419,7 +419,7 @@ export default function Fundaciones() {
                   <InputLabel>Estado</InputLabel>
                   <Select
                     label="Estado"
-                    name="estadoFundacion"
+              name="estadoFundacion"
                     value={formValues.estadoFundacion}
                     onChange={handleInputChange}
                   >
@@ -429,29 +429,29 @@ export default function Fundaciones() {
                 </FormControl>
               </Grid>
             </Grid>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={selectedFundacion ? handleUpdateFundacion : handleCreateFundacion}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={selectedFundacion ? handleUpdateFundacion : handleCreateFundacion}
               sx={{ mt: 2, mb: 2 }}
-            >
+          >
               {selectedFundacion ? "Actualizar Fundación" : "Crear Fundación"}
-            </Button>
+          </Button>
 
             <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Estado</TableCell>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Estado</TableCell>
                     <TableCell>Comandos Asignados</TableCell>
-                    <TableCell>Acciones</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
+                  <TableCell>Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                   {paginatedFundaciones.map((fundacion) => (
-                    <TableRow key={fundacion._id}>
-                      <TableCell>{fundacion.nombreFundacion}</TableCell>
+                  <TableRow key={fundacion._id}>
+                    <TableCell>{fundacion.nombreFundacion}</TableCell>
                       <TableCell>
                         <Switch
                           checked={fundacion.estadoFundacion}
@@ -476,29 +476,29 @@ export default function Fundaciones() {
                           })}
                         </Box>
                       </TableCell>
-                      <TableCell>
+                    <TableCell>
                         <IconButton onClick={() => handleOpenInfoDialog(fundacion)}>
                           <Info />
                         </IconButton>
                         <IconButton onClick={() => handleEdit(fundacion)}>
-                          <Edit />
-                        </IconButton>
+                        <Edit />
+                      </IconButton>
                         <IconButton onClick={handleOpenDeleteDialog}>
-                          <Delete />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
               count={filteredFundaciones.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
+            rowsPerPage={rowsPerPage}
+            page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
@@ -548,7 +548,7 @@ export default function Fundaciones() {
               <Typography variant="body1" color="textSecondary">
                 No hay comandos asignados
               </Typography>
-            )}
+          )}
           </Grid>
         </DialogContent>
         <DialogActions>

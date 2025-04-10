@@ -35,6 +35,7 @@ async function crearEstudiante(body) {
         generoEstudiante: body.generoEstudiante,
         unidadId: body.unidadId,
         colegioId: body.colegioId,
+        curso: body.curso || '', 
         estadoEstudiante: body.estadoEstudiante,
         ediciones: body.ediciones || [],
         calificaciones: body.calificaciones || [],
@@ -114,6 +115,7 @@ async function actualizarEstudiante(id, body) {
     estudiante.unidadId = body.unidadId || estudiante.unidadId;
     estudiante.colegioId = body.colegioId || estudiante.colegioId;
     estudiante.ediciones = body.ediciones || estudiante.ediciones;
+    estudiante.curso = body.curso || estudiante.curso;
 
     // Guardar los cambios en el estudiante
     estudiante = await estudiante.save();

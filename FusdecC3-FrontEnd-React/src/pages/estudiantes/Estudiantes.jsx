@@ -31,7 +31,10 @@ import {
   TablePagination
 } from "@mui/material";
 import { Edit, Delete, Info, Person, Description, CreditCard, Cake, Email, School, ToggleOn, CheckCircle, Cancel, Star, ConfirmationNumber } from "@mui/icons-material";
+import { format } from 'date-fns'; // Import date-fns for date formatting
+import { isValidObjectId } from '../../utils/validation';
 
+// Estado para almacenar el token JWT
 const token = localStorage.getItem("token");
 
 const Estudiantes = () => {
@@ -46,15 +49,17 @@ const Estudiantes = () => {
     numeroDocumento: "",
     correoEstudiante: "",
     tipoDocumento: "",
-    fechaNacimiento: "",
+    fechaNacimiento: "", // Keep as string to match input type
     generoEstudiante: "",
     unidadId: "",
     colegioId: "",
     estadoEstudiante: true,
     ediciones: [],
+    curso: "",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null); // Add success message state
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [estudianteToDelete, setEstudianteToDelete] = useState(null);
@@ -156,28 +161,52 @@ const Estudiantes = () => {
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones",{
+      const response = await fetch("http://localhost:3000/api/ediciones", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener ediciones");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de ediciones está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay ediciones registradas.");
-        setOpenSnackbar(true);
-        setEdiciones([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setEdiciones(data);
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || "Error al obtener ediciones");
       }
+      const data = await response.json();
+      setEdiciones(data); // Guarda las ediciones en el estado
     } catch (error) {
       console.error("Error al obtener ediciones:", error);
-      setErrorMessage("Error al obtener ediciones");
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
+    }
+  };
+
+  // Manejar cambios en los campos del formulario
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Special handling for IDs to validate format
+    if (name === 'colegioId' || name === 'unidadId') {
+      if (value && !isValidObjectId(value)) {
+        setErrorMessage(`El ID seleccionado para ${name === 'colegioId' ? 'colegio' : 'unidad'} no es válido`);
+        setOpenSnackbar(true);
+        return;
+      }
+    }
+    
+    // Special handling for date to ensure correct format
+    if (name === 'fechaNacimiento') {
+      // Convert to ISO format, but only if it's a valid date
+      const formattedDate = value ? new Date(value).toISOString() : '';
+      setFormValues(prev => ({
+        ...prev,
+        [name]: formattedDate
+      }));
+    } else {
+      setFormValues(prev => ({
+        ...prev,
+        [name]: value
+      }));
     }
   };
 
@@ -201,13 +230,6 @@ const Estudiantes = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
   };
 
   const handleSwitchChange = (e) => {
@@ -257,6 +279,7 @@ const Estudiantes = () => {
           colegioId: "",
           estadoEstudiante: true,
           ediciones: [],
+          curso: "", 
         });
       } else {
         const errorData = await response.json();
@@ -271,44 +294,62 @@ const Estudiantes = () => {
 
   const handleUpdateEstudiante = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/estudiantes/${selectedEstudiante._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
-
-      if (response.ok) {
-        await fetchEstudiantes()
-        setSelectedEstudiante(null);
-        setFormValues({
-          nombreEstudiante: "",
-          apellidoEstudiante: "",
-          numeroDocumento: "",
-          correoEstudiante: "",
-          tipoDocumento: "",
-          fechaNacimiento: "",
-          generoEstudiante: "",
-          unidadId: "",
-          colegioId: "",
-          estadoEstudiante: true,
-          ediciones: [],
-        });
-
-        // Mostrar mensaje de éxito
-        setSuccessMessage("El estudiante se actualizó correctamente");
-        setOpenSnackbar(true); 
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar estudiante");
+      // Validate required fields
+      if (!formValues.nombreEstudiante || !formValues.apellidoEstudiante) {
+        setErrorMessage("Por favor complete los campos obligatorios");
+        setOpenSnackbar(true);
+        return;
       }
+
+      // Prepare data for submission
+      const estudianteData = {
+        ...formValues,
+        // Ensure correct date format
+        fechaNacimiento: formValues.fechaNacimiento 
+          ? format(new Date(formValues.fechaNacimiento), 'yyyy-MM-dd') 
+          : null,
+        curso: formValues.curso || '' // Explicitly include curso with fallback
+      };
+
+      const response = await fetch(`http://localhost:3000/api/estudiantes/${selectedEstudiante._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify(estudianteData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al actualizar estudiante');
+      }
+
+      // Success handling
+      setSuccessMessage("Estudiante actualizado exitosamente");
+      setOpenSnackbar(true);
+      
+      // Refresh estudiantes list
+      fetchEstudiantes();
+      
+      // Reset form
+      setFormValues({
+        nombreEstudiante: "",
+        apellidoEstudiante: "",
+        numeroDocumento: "",
+        correoEstudiante: "",
+        tipoDocumento: "",
+        fechaNacimiento: "",
+        generoEstudiante: "",
+        unidadId: "",
+        colegioId: "",
+        estadoEstudiante: true,
+        ediciones: [],
+        curso: "",
+      });
+      setSelectedEstudiante(null);
     } catch (error) {
-      console.error("Error al actualizar estudiante:", error);
+      console.error('Error al actualizar estudiante:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
@@ -360,6 +401,7 @@ const Estudiantes = () => {
       colegioId: estudiante.colegioId?._id || "", 
       estadoEstudiante: estudiante.estadoEstudiante,
       ediciones: estudiante.ediciones.map((edicion) => edicion._id),
+      curso: estudiante.curso, 
     });
   };
 
@@ -399,7 +441,7 @@ const Estudiantes = () => {
           label="Nombre"
           name="nombreEstudiante"
           value={formValues.nombreEstudiante}
-          onChange={handleInputChange}
+          onChange={handleChange}
           fullWidth
           margin="normal"
         />
@@ -407,54 +449,69 @@ const Estudiantes = () => {
           label="Apellido"
           name="apellidoEstudiante"
           value={formValues.apellidoEstudiante}
-          onChange={handleInputChange}
+          onChange={handleChange}
           fullWidth
           margin="normal"
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Curso"
+          name="curso"
+          value={formValues.curso}
+          onChange={handleChange}
+          variant="outlined"
+        />
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Número de Documento"
+          name="numeroDocumento"
+          value={formValues.numeroDocumento}
+          onChange={handleChange}
         />
         <FormControl fullWidth margin="normal">
           <InputLabel>Tipo de Documento</InputLabel>
           <Select
             name="tipoDocumento"
             value={formValues.tipoDocumento}
-            onChange={handleInputChange}
+            onChange={handleChange}
             input={<OutlinedInput label="Tipo de Documento" />}
           >
-            <MenuItem value="T.I">T.I</MenuItem>
-            <MenuItem value="C.C">C.C</MenuItem>
+            <MenuItem value="C.C">Cédula de Ciudadanía (C.C)</MenuItem>
+            <MenuItem value="T.I">Tarjeta de Identidad (T.I)</MenuItem>
+            <MenuItem value="Otro">Otro</MenuItem>
           </Select>
         </FormControl>
         <TextField
-          label="Número de Documento"
-          name="numeroDocumento"
-          value={formValues.numeroDocumento}
-          onChange={handleInputChange}
           fullWidth
           margin="normal"
-        />
-        <TextField
           label="Correo Electrónico"
           name="correoEstudiante"
           value={formValues.correoEstudiante}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
+          onChange={handleChange}
         />
         <TextField
           label="Fecha de Nacimiento"
           type="date"
           name="fechaNacimiento"
-          value={formValues.fechaNacimiento}
-          onChange={handleInputChange}
+          value={formValues.fechaNacimiento ? 
+            format(new Date(formValues.fechaNacimiento), 'yyyy-MM-dd') : 
+            ''
+          }
+          onChange={handleChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
           fullWidth
           margin="normal"
-          InputLabelProps={{ shrink: true }}
         />
         <FormControl fullWidth margin="normal">
           <InputLabel>Género</InputLabel>
           <Select
             name="generoEstudiante"
             value={formValues.generoEstudiante}
-            onChange={handleInputChange}
+            onChange={handleChange}
             input={<OutlinedInput label="Género" />}
           >
             <MenuItem value="Masculino">Masculino</MenuItem>
@@ -466,7 +523,7 @@ const Estudiantes = () => {
           <Select
             name="unidadId"
             value={formValues.unidadId}
-            onChange={handleInputChange}
+            onChange={handleChange}
             input={<OutlinedInput label="Unidad" />}
           >
             {unidades.map((unidad) => (
@@ -481,7 +538,7 @@ const Estudiantes = () => {
           <Select
             name="colegioId"
             value={formValues.colegioId}
-            onChange={handleInputChange}
+            onChange={handleChange}
             input={<OutlinedInput label="Colegio" />}
           >
             {colegios.map((colegio) => (
@@ -722,6 +779,11 @@ const Estudiantes = () => {
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
         <Alert onClose={() => setOpenSnackbar(false)} severity="error">
           {errorMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={!!successMessage} autoHideDuration={6000} onClose={() => setSuccessMessage(null)}>
+        <Alert onClose={() => setSuccessMessage(null)} severity="success">
+          {successMessage}
         </Alert>
       </Snackbar>
     </Container>

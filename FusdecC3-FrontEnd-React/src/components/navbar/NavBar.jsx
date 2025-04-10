@@ -38,18 +38,58 @@ export default function Navbar() {
   const rutasPermitidas = obtenerRutasPermitidas(isAuthenticated, roles);
 
   const drawer = (
-    <Box>
+    <Box 
+      sx={{ 
+        width: 250, 
+        height: '100%', 
+        backgroundColor: '#f0f0f0',
+        boxShadow: '2px 0 5px rgba(0,0,0,0.1)'
+      }}
+    >
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          p: 2,
+          backgroundColor: '#1976d2',
+          color: 'white'
+        }}
+      >
+        <img 
+          src={logoFusdec} 
+          alt="FUSDEC Logo" 
+          style={{ height: 50, marginRight: 10 }} 
+        />
+        <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>FUSDEC</span>
+      </Box>
       <List>
         {rutasPermitidas
           .filter(ruta => ruta.nombre !== 'Más Información' && ruta.nombre !== 'Home')
           .map((ruta, index) => (
             <React.Fragment key={ruta.nombre}>
               <ListItem 
-                button 
+                button={true.toString()} 
                 className="listItem"
-                onClick={() => navigate(normalizeText(ruta.ruta))}
+                onClick={() => {
+                  navigate(normalizeText(ruta.ruta));
+                  setDrawerOpen(false);
+                }}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                    borderLeft: '4px solid #1976d2'
+                  },
+                  transition: 'all 0.3s ease'
+                }}
               >
-                <ListItemIcon className="listItemIcon">
+                <ListItemIcon 
+                  className="listItemIcon"
+                  sx={{ 
+                    color: '#1976d2', 
+                    minWidth: 40 
+                  }}
+                >
                   {ruta.icon}
                 </ListItemIcon>
                 <ListItemText 
@@ -57,6 +97,7 @@ export default function Navbar() {
                   primaryTypographyProps={{ 
                     style: { 
                       color: '#1976d2',
+                      fontWeight: 500
                     }
                   }}
                 />
@@ -127,14 +168,10 @@ export default function Navbar() {
               </Button>
             ) : (
               <Button 
-                color="inherit" 
-                onClick={handleLogout} 
-                style={{ 
-                  backgroundColor: '#F44336',
-                  color: '#fff',
-                  borderRadius: '5px',
-                  padding: '8px',
-                }}
+                button={true.toString()} 
+                variant="contained" 
+                color="primary" 
+                onClick={handleLogout}
               >
                 <LogoutIcon />
               </Button>
@@ -147,6 +184,14 @@ export default function Navbar() {
           anchor="left"
           open={drawerOpen}
           onClose={handleDrawerToggle}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: 250,
+              boxSizing: 'border-box',
+              backgroundColor: '#f0f0f0',
+              borderRight: '1px solid rgba(0, 0, 0, 0.12)'
+            }
+          }}
         >
           {drawer}
         </Drawer>

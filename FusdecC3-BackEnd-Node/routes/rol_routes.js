@@ -35,7 +35,19 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *         description: Error interno del servidor.
  */
 
-// Obtener los roles del enum
+// Ruta para obtener roles del enum
 router.get('/enum', verifyJWT, verifyRole(['Root', 'Administrador']), rolController.obtenerRolesEnum);
+
+// Ruta para listar roles
+router.get('/', verifyJWT, verifyRole(['Root', 'Administrador']), rolController.listarRoles);
+
+// Ruta para crear un rol
+router.post('/', verifyJWT, verifyRole(['Root', 'Administrador']), rolController.crearRol);
+
+// Ruta para actualizar un rol
+router.put('/:id', verifyJWT, verifyRole(['Root', 'Administrador']), rolController.actualizarRol);
+
+// Ruta para eliminar (desactivar) un rol
+router.delete('/:id', verifyJWT, verifyRole(['Root', 'Administrador']), rolController.eliminarRol);
 
 module.exports = router;

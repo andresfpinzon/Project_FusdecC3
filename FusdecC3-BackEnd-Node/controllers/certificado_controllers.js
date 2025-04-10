@@ -125,12 +125,18 @@ const desactivarCertificado = async (req, res) => {
 const obtenerCertificadoPorId = async (req, res) => {
     const { id } = req.params;
     try {
+        // Validate if id is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'ID de certificado inválido' });
+        }
+
         const certificado = await logic.buscarCertificadoPorId(id);
         if (!certificado) {
             return res.status(404).json({ error: `Certificado con ID ${id} no encontrado` });
         }
         res.json(certificado);
     } catch (err) {
+        console.error('Error al buscar certificado:', err);
         res.status(500).json({ error: 'Error interno del servidor al buscar el certificado', details: err.message });
     }
 };

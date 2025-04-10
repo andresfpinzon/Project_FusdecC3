@@ -37,11 +37,34 @@ export const AuthProvider = ({ children }) => {
 
   const checkTokenValidity = (token) => {
     try {
-      const decodedToken = JSON.parse(atob(token.split(".")[1])); // Decodificar el payload del token
-      const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
-      return decodedToken.exp > currentTime; // Comparar con el tiempo de expiración
+      // More robust token validation
+      if (!token) return false;
+
+      // Check basic token structure
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) {
+        console.error('Invalid token format');
+        return false;
+      }
+
+      // Attempt to decode payload
+      const base64Url = tokenParts[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const payload = JSON.parse(window.atob(base64));
+
+      // Check expiration
+      const currentTime = Math.floor(Date.now() / 1000);
+      const isValid = payload.exp > currentTime;
+
+      if (!isValid) {
+        console.warn('Token has expired');
+        logout(); // Automatically logout if token is expired
+      }
+
+      return isValid;
     } catch (error) {
-      console.error("Error al verificar el token:", error);
+      console.error("Token validation error:", error);
+      logout(); // Logout on any token parsing error
       return false;
     }
   };
@@ -66,4 +89,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-

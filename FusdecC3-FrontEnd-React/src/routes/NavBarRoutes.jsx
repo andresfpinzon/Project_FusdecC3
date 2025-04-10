@@ -6,10 +6,9 @@ import Home from "../pages/home/Home";
 import Cursos from "../pages/cursos/Cursos";
 import Usuarios from "../pages/usuarios/Usuarios";
 import Ediciones from "../pages/ediciones/Ediciones";
-import Horarios from "../pages/horarios/Horarios";
 import MasInformacion from "../pages/masinformacion/MasInformacion";
 import Roles from "../pages/roles/Roles";
-import Estudiantes from "../pages/estudiantes/Estudiantes"
+import Estudiantes from "../pages/estudiantes/Estudiantes";
 import Asistencias from "../pages/asistencias/Asistencias";
 import Login from "../pages/login/Login";
 import Auditorias from "../pages/auditorias/Auditorias";
@@ -20,9 +19,8 @@ import Unidades from "../pages/unidades/Unidades";
 import Calificaciones from "../pages/calificaciones/Calificaciones";
 import Colegios from "../pages/colegios/Colegios";
 import Fundaciones from "../pages/fundaciones/Fundaciones";
+import VerificarCertificado from "../pages/certificados/VerificarCertificado";
 import ProtectedRoute from "../components/protectedRoute/ProtectedRoute";
-
-
 
 const NavbarRoutes = () => {
   return (
@@ -31,6 +29,7 @@ const NavbarRoutes = () => {
       <Route path="/home" element={<Home />} />
       <Route path="/masinformacion" element={<MasInformacion />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/verificar-certificado" element={<VerificarCertificado />} />
       {/* Rutas Protegidas */}
       <Route path="/fundaciones" element={<ProtectedRoute element={Fundaciones} allowedRoles={["Administrativo","Root"]} />} />
       <Route path="/auditorias" element={<ProtectedRoute element={Auditorias} allowedRoles={["Administrativo","Root"]} />} />
@@ -40,7 +39,6 @@ const NavbarRoutes = () => {
       <Route path="/comandos" element={<ProtectedRoute element={Comandos} allowedRoles={["Administrativo","Root"]} />} />
       <Route path="/cursos" element={<ProtectedRoute element={Cursos} allowedRoles={["Secretario", "Administrativo","Root"]} />} />
       <Route path="/ediciones" element={<ProtectedRoute element={Ediciones} allowedRoles={["Secretario","Root"]} />} />
-      <Route path="/horarios" element={<ProtectedRoute element={Horarios} allowedRoles={["Secretario","Root"]} />} />
       <Route path="/unidades" element={<ProtectedRoute element={Unidades} allowedRoles={["Administrativo","Root"]} />} />
       <Route path="/usuarios" element={<ProtectedRoute element={Usuarios} allowedRoles={["Administrativo","Root"]} />} />
       <Route path="/roles" element={<ProtectedRoute element={Roles} allowedRoles={["Administrativo","Root"]} />} />
@@ -50,6 +48,5 @@ const NavbarRoutes = () => {
     </Routes>
   );
 };
-
 
 export default NavbarRoutes;

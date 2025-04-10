@@ -6,19 +6,19 @@ const unidadSchemaValidation = require('../validations/unidad_validations');
 // Función asíncrona para crear unidades
 async function crearUnidad(data) {
     try {
-    const nuevaUnidad = new Unidad(data);
-    await nuevaUnidad.save();
+        const nuevaUnidad = new Unidad(data);
+        await nuevaUnidad.save();
 
-    // Actualizar brigada con la nueva unidad
-    if (body.brigadaId) {
-        await Brigada.findByIdAndUpdate(
-            body.brigadaId,
-            { $push: { unidades: nuevaUnidad._id } },
-            { new: true } // Retorna el documento actualizado
-        );
-    }
+        // Actualizar brigada con la nueva unidad
+        if (data.brigadaId) {
+            await Brigada.findByIdAndUpdate(
+                data.brigadaId,
+                { $push: { unidades: nuevaUnidad._id } },
+                { new: true } // Retorna el documento actualizado
+            );
+        }
 
-    return nuevaUnidad;   
+        return nuevaUnidad;   
     } catch (error) {
         console.error('Error al crear la unidad (unidad_logic):', error);    
         throw error;
@@ -28,10 +28,20 @@ async function crearUnidad(data) {
 // Función asíncrona para listar unidades
 async function listarUnidades() {
     try {
-    return await Unidad.find()
-    .populate('brigadaId') // Asegúrate de que esto esté poblado
-    .populate('usuarioId') // Asegúrate de que esto esté poblado
-    .populate('estudiantes'); // Asegúrate de que esto esté poblado
+        return await Unidad.find()
+            .populate({
+                path: 'brigadaId',
+                model: 'Brigada',
+                select: 'nombreBrigada _id'
+            })
+            .populate({
+                path: 'usuarioId',
+                select: 'nombreUsuario apellidoUsuario'
+            })
+            .populate({
+                path: 'estudiantes',
+                select: 'nombreEstudiante apellidoEstudiante'
+            });
     } catch (error) {
         console.error('Error al listar las unidades (unidad_logic):', error);
         throw error;
@@ -111,10 +121,20 @@ async function desactivarUnidad(id) {
 // Función asíncrona para buscar una unidad por su ID
 async function buscarUnidadPorId(id) {
     try {
-    return await Unidad.findById(id)
-    .populate('brigadaId') // Poblamos la brigada
-    .populate('usuarioId') // Poblamos el usuario
-    .populate('estudiantes'); // Poblamos los estudiantes   
+        return await Unidad.findById(id)
+            .populate({
+                path: 'brigadaId',
+                model: 'Brigada',
+                select: 'nombreBrigada _id'
+            })
+            .populate({
+                path: 'usuarioId',
+                select: 'nombreUsuario apellidoUsuario'
+            })
+            .populate({
+                path: 'estudiantes',
+                select: 'nombreEstudiante apellidoEstudiante'
+            });
     } catch (error) {
         console.error('Error al buscar la unidad por ID (unidad_logic):', error);
         throw error;
@@ -126,9 +146,15 @@ async function buscarUnidadesPorBrigadaId(brigadaId) {
     try {
      
     const unidades = await Unidad.find({ brigadaId })
-    .populate('brigadaId')
-    .populate('usuarioId')
-    .populate('estudiantes');
+    .populate({
+        path: 'brigadaId',
+        model: 'Brigada',
+        select: 'nombreBrigada _id'
+    })
+    .populate({
+        path: 'usuarioId',
+        select: 'nombreUsuario'
+    });
     if (unidades.length === 0) {
         throw new Error(`No se encontraron unidades para la brigada con ID ${brigadaId}`);
     }
@@ -144,9 +170,15 @@ async function buscarUnidadesPorUsuarioId(usuarioId) {
     try {
         
     const unidades = await Unidad.find({ usuarioId })
-    .populate('brigadaId')
-    .populate('usuarioId')
-    .populate('estudiantes');
+    .populate({
+        path: 'brigadaId',
+        model: 'Brigada',
+        select: 'nombreBrigada _id'
+    })
+    .populate({
+        path: 'usuarioId',
+        select: 'nombreUsuario'
+    });
     if (unidades.length === 0) {
         throw new Error(`No se encontraron unidades para el usuario con ID ${usuarioId}`);
     }
@@ -157,6 +189,25 @@ async function buscarUnidadesPorUsuarioId(usuarioId) {
     }
 }
 
+// Función para buscar unidades por brigada
+async function listarUnidadesPorBrigada(brigadaId) {
+    try {
+        return await Unidad.find({ brigadaId })
+            .populate({
+                path: 'brigadaId',
+                model: 'Brigada',
+                select: 'nombreBrigada _id'
+            })
+            .populate({
+                path: 'usuarioId',
+                select: 'nombreUsuario'
+            });
+    } catch (error) {
+        console.error('Error al listar unidades por brigada:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     crearUnidad,
     listarUnidades,
@@ -164,5 +215,6 @@ module.exports = {
     buscarUnidadesPorBrigadaId,
     buscarUnidadesPorUsuarioId,
     editarUnidad,
-    desactivarUnidad 
+    desactivarUnidad,
+    listarUnidadesPorBrigada
 };

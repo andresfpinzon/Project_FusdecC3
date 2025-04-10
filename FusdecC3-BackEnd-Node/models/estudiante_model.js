@@ -45,6 +45,10 @@ const EstudianteSchema = new Schema({
     ref: "Colegio",
     required: true,
   },
+  curso: {
+    type: String,
+    required: false,
+  },
   estadoEstudiante: {
     type: Boolean,
     default: true,
@@ -81,4 +85,3 @@ const EstudianteSchema = new Schema({
 
 const Estudiante = mongoose.model("Estudiante", EstudianteSchema);
 module.exports = Estudiante;
-

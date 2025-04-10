@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('./config/db_config');
 const corsMiddleware = require('./config/cors_config'); 
+const loadModels = require('./config/models_loader');
 const loadRoutes = require('./routes/routesLoader');
 
 // Importar la configuración de Swagger
@@ -16,6 +17,9 @@ app.use(express.json());
 
 // Aplicar middleware de CORS
 app.use(corsMiddleware); 
+
+// Cargar todos los modelos antes de las rutas
+loadModels();
 
 // Configuración de Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));

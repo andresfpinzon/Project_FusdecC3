@@ -27,6 +27,7 @@ const crearEstudiante = async (req, res) => {
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
     colegioId: body.colegioId,
+    curso: body.curso || '',
     estadoEstudiante: body.estadoEstudiante,
     ediciones: body.ediciones || [],
     calificaciones: body.calificaciones || [],
@@ -64,6 +65,7 @@ const actualizarEstudiante = async (req, res) => {
     generoEstudiante: body.generoEstudiante,
     unidadId: body.unidadId,
     colegioId: body.colegioId,
+    curso: body.curso || '',
     estadoEstudiante: body.estadoEstudiante,
     ediciones: body.ediciones || [],
     calificaciones: body.calificaciones || [],
@@ -186,15 +188,39 @@ const agregarEdicionAEstudiante = async (req, res) => {
 };
 
 
+// Controlador para buscar estudiante por número de documento
+const buscarPorDocumento = async (req, res) => {
+    try {
+        const { documento } = req.params;
+        
+        const estudiante = await logic.buscarPorDocumento(documento);
+
+        if (!estudiante) {
+            return res.status(404).json({
+                message: 'Estudiante no encontrado'
+            });
+        }
+
+        res.json(estudiante);
+    } catch (error) {
+        console.error('Error al buscar estudiante:', error);
+        res.status(500).json({
+            message: 'Error al buscar estudiante',
+            error: error.message
+        });
+    }
+};
+
 // Exportar los controladores adicionales
 module.exports = {
-  listarEstudiantes,
-  crearEstudiante,
-  actualizarEstudiante,
-  desactivarEstudiante,
-  obtenerEstudiantePorId,
-  agregarAsistenciaAEstudiante,
-  agregarCertificadoAEstudiante,
-  agregarCalificacionAEstudiante,
-  agregarEdicionAEstudiante
+    listarEstudiantes,
+    crearEstudiante,
+    actualizarEstudiante,
+    desactivarEstudiante,
+    obtenerEstudiantePorId,
+    agregarAsistenciaAEstudiante,
+    agregarCertificadoAEstudiante,
+    agregarCalificacionAEstudiante,
+    agregarEdicionAEstudiante,
+    buscarPorDocumento  // Add the new controller to exports
 };

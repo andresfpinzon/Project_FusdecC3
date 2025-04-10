@@ -50,34 +50,29 @@ const Roles = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/roles",{
+      const response = await fetch("http://localhost:3000/api/roles", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
+          "Content-Type": "application/json",
+          "Authorization": token,
+        },
+      });
       if (!response.ok) throw new Error("Error al obtener roles");
       const data = await response.json();
-
-      // Condicion que verifica si el arreglo de estudiantes está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay roles registrados.");
-        setOpenSnackbar(true);
-        setRoles([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setRoles(data);
-      }
+      setRoles(data); // Guarda los roles en el estado
     } catch (error) {
       console.error("Error al obtener roles:", error);
-      setErrorMessage("Error al obtener roles");
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
   
-  const filteredRoles = roles.filter((rol) =>
-    rol.nombreRol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredRoles = roles.filter((rol) => {
+    // Verificación segura para evitar errores
+    if (!rol || !rol.nombreRol) return false;
+    
+    return rol.nombreRol.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

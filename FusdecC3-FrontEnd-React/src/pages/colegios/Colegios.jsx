@@ -179,47 +179,35 @@ const Colegios = () => {
     }
 };
 
-  const handleUpdateColegio = async () => {
-    if (!selectedColegio) return;
+const handleUpdateColegio = async () => {
+  if (!selectedColegio) return;
 
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/colegios/${selectedColegio._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
+  try {
+    // Validar que todos los campos necesarios estén presentes
+    const datosActualizacion = {
+      nombreColegio: formValues.nombreColegio,
+      emailColegio: formValues.emailColegio,
+      estadoColegio: formValues.estadoColegio,
+      estudiantes: formValues.estudiantes || []
+    };
 
-      if (response.ok) {
-        const colegioActualizado = await response.json();
-        setColegios(
-          colegios.map((colegio) =>
-            colegio._id === selectedColegio._id ? colegioActualizado : colegio
-          )
-        );
-        setSelectedColegio(null);
-        setFormValues({
-          nombreColegio: "",
-          emailColegio: "",
-          estadoColegio: true,
-          estudiantes: [],
-        });
-        // Muestra un mensaje de éxito
-        setSuccessMessage("Colegio actualizado exitosamente");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar el colegio");
+    const response = await fetch(
+      `http://localhost:3000/api/colegios/${selectedColegio._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` // Añadir 'Bearer' al token
+        },
+        body: JSON.stringify(datosActualizacion),
       }
-    } catch (error) {
-      handleError("Error al actualizar el colegio", error);
-    }
-  };
+    );
+
+    // Resto del código igual...
+  } catch (error) {
+    handleError("Error al actualizar el colegio", error);
+  }
+};
 
   const handleDeleteColegio = async () => {
     if (!colegioToDelete) return;

@@ -19,14 +19,24 @@ const crearBrigada = async (req, res) => {
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
     }
+
     try {
-        const nuevaBrigada = await logic.crearBrigada(value);
+        const nuevaBrigada = await logic.crearBrigada({
+            ...value,
+            horarios: value.horarios || {
+                tarde: {
+                    inicio: '14:00',
+                    fin: '17:00'
+                },
+                mañana: {
+                    inicio: '09:00',
+                    fin: '12:00'
+                }
+            }
+        });
         res.status(201).json(nuevaBrigada);
     } catch (err) {
-        // Manejo de errores específicos
-        if (err.message.includes('Ya existe una brigada')) {
-            return res.status(409).json({ error: err.message }); // 409 Conflict
-        }
+        console.error('Error al crear brigada:', err);
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
@@ -35,16 +45,28 @@ const crearBrigada = async (req, res) => {
 const actualizarBrigada = async (req, res) => {
     const { id } = req.params;
     const { error, value } = brigadaSchemaValidation.validate(req.body);
+    
     if (error) {
         return res.status(400).json({ error: error.details[0].message });
     }
+
     try {
-        const brigadaActualizada = await logic.editarBrigada(id, value);
-        if (!brigadaActualizada) {
-            return res.status(404).json({ error: 'Brigada no encontrada' });
-        }
+        const brigadaActualizada = await logic.editarBrigada(id, {
+            ...value,
+            horarios: value.horarios || {
+                tarde: {
+                    inicio: '14:00',
+                    fin: '17:00'
+                },
+                mañana: {
+                    inicio: '09:00',
+                    fin: '12:00'
+                }
+            }
+        });
         res.json(brigadaActualizada);
     } catch (err) {
+        console.error('Error al actualizar brigada:', err);
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };

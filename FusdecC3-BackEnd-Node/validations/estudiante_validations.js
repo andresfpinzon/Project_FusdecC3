@@ -86,6 +86,12 @@ const estudianteSchemaValidation = Joi.object({
       'any.required': 'El ID del colegio es un campo requerido',
     }),
 
+  curso: Joi.string()
+    .optional()
+    .messages({
+      'string.base': 'El curso debe ser un texto',
+    }),
+
   estadoEstudiante: Joi.boolean()
     .default(true)
     .messages({

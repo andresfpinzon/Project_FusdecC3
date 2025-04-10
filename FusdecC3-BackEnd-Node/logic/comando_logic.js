@@ -2,11 +2,41 @@ const Comando = require('../models/comando_model');
 const comandoSchemaValidation = require('../validations/comando_validations');
 
 // Función para listar comandos
-const listarComandos = async () => {
+async function listarComandos() {
     try {
-    return await Comando.find().populate('fundacionId').populate('brigadas');
+        const comandos = await Comando.find()
+            .populate({
+                path: 'fundacionId',
+                select: 'nombreFundacion _id' // Mostrar el nombre y el ID de la fundación
+            })
+            .populate({
+                path: 'brigadas',
+                select: 'nombreBrigada _id' // Mostrar el nombre y el ID de las brigadas
+            });
+        
+        // Log detailed information about each command
+        console.log("Comandos encontrados:", comandos.map(comando => ({
+            _id: comando._id,
+            nombreComando: comando.nombreComando,
+            estadoComando: comando.estadoComando,
+            ubicacionComando: comando.ubicacionComando,
+            fundacion: comando.fundacionId ? {
+                _id: comando.fundacionId._id,
+                nombreFundacion: comando.fundacionId.nombreFundacion
+            } : null,
+            brigadas: comando.brigadas.map(brigada => ({
+                _id: brigada._id,
+                nombreBrigada: brigada.nombreBrigada
+            }))
+        })));
+
+        return comandos;
     } catch (error) {
-        console.error('Error al listar los comandos (comando_logic):', error);
+        console.error('Error detallado al listar los comandos:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
         throw error;
     }
 };
@@ -65,16 +95,20 @@ const desactivarComando = async (id) => {
 };
 
 // Función para buscar un comando por su ID
-const buscarComandoPorId = async (id) => {
+async function buscarComandoPorId(id) {
     try {
         
-    const comando = await Comando.findById(id).populate('fundacionId').populate('brigadas');
-    if (!comando) {
-        throw new Error(`Comando con ID ${id} no encontrado`);
-    }
-    return comando;
+    return await Comando.findById(id)
+        .populate({
+            path: 'fundacionId',
+            select: 'nombreFundacion' // Mostrar solo el nombre de la fundación
+        })
+        .populate({
+            path: 'brigadas',
+            select: 'nombreBrigada' // Mostrar solo el nombre de las brigadas
+        });
     } catch (error) {
-        console.error('Error al buscar el comando (comando_logic):', error);
+        console.error('Error al buscar comando por ID:', error);
         throw error;
     }
 };

@@ -30,8 +30,9 @@ const EdicionSchema = new Schema(
     },
     horarios: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Horario",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Horario',
+        required: false
       },
     ],    
     estudiantes: [
