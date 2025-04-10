@@ -1,20 +1,19 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.unidad
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Switch
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.ui.adapters.administrador.unidadAdapter.UnidadAdapter
-import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
+import com.example.fusdeckotlin.dto.administrativo.unidad.CreateUnidadDto
+import com.example.fusdeckotlin.dto.administrativo.unidad.UpdateUnidadDto
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
+import com.example.fusdeckotlin.ui.adapters.administrador.unidadAdapter.UnidadAdapter
+import kotlinx.coroutines.launch
 
 class UnidadActivity : AppCompatActivity() {
 
@@ -29,7 +28,7 @@ class UnidadActivity : AppCompatActivity() {
     private lateinit var unidadesRecyclerView: RecyclerView
     private lateinit var searchViewUnidad: SearchView
 
-    private val unidades = mutableListOf<Unidad>()
+    private val unidadServices = UnidadServices()
     private lateinit var adapter: UnidadAdapter
 
     private var isEditing: Boolean = false
@@ -39,6 +38,13 @@ class UnidadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_unidad)
 
+        initViews()
+        setupRecyclerView()
+        setupListeners()
+        cargarUnidades()
+    }
+
+    private fun initViews() {
         nombreUnidadEditText = findViewById(R.id.nombreUnidadEditText)
         brigadaUnidadEditText = findViewById(R.id.brigadaUnidadEditText)
         usuarioIdEditText = findViewById(R.id.usuarioIdEditText)
@@ -49,28 +55,24 @@ class UnidadActivity : AppCompatActivity() {
         cancelarButton = findViewById(R.id.cancelarButton)
         unidadesRecyclerView = findViewById(R.id.unidadesRecyclerView)
         searchViewUnidad = findViewById(R.id.searchViewUnidad)
+    }
 
+    private fun setupRecyclerView() {
         adapter = UnidadAdapter(
-            unidades,
+            emptyList(),
             ::onUpdateClick,
             ::onDeleteClick
         )
         unidadesRecyclerView.layoutManager = LinearLayoutManager(this)
         unidadesRecyclerView.adapter = adapter
+    }
 
-        confirmarButton.setOnClickListener {
-            guardarUnidad()
-        }
-
-        cancelarButton.setOnClickListener {
-            finish()
-        }
+    private fun setupListeners() {
+        confirmarButton.setOnClickListener { guardarUnidad() }
+        cancelarButton.setOnClickListener { finish() }
 
         searchViewUnidad.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
+            override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
                 adapter.filter(newText)
                 return false
@@ -78,56 +80,100 @@ class UnidadActivity : AppCompatActivity() {
         })
     }
 
-    private fun generarIdUnidadUnico(): String = "UNIDAD-${System.currentTimeMillis()}"
+    private fun cargarUnidades() {
+        lifecycleScope.launch {
+            val result = unidadServices.getUnidadActives()
+            result.onSuccess { unidades ->
+                adapter.actualizarLista(unidades)
+            }.onFailure { error ->
+                showError("Error al cargar unidades: ${error.message}")
+            }
+        }
+    }
 
     private fun guardarUnidad() {
         val nombreUnidad = nombreUnidadEditText.text.toString().trim()
-        val brigadaUnidad = brigadaUnidadEditText.text.toString().trim()
+        val brigadaId = brigadaUnidadEditText.text.toString().trim()
         val usuarioId = usuarioIdEditText.text.toString().trim()
         val comandos = comandosEditText.text.toString().trim().split(",").map { it.trim() }
         val estudiantes = estudiantesEditText.text.toString().trim().split(",").map { it.trim() }
         val estadoUnidad = estadoSwitch.isChecked
 
-        if (nombreUnidad.isEmpty() || brigadaUnidad.isEmpty() || usuarioId.isEmpty() || comandos.isEmpty() || estudiantes.isEmpty()) {
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+        if (nombreUnidad.isEmpty() || brigadaId.isEmpty() || usuarioId.isEmpty() || comandos.isEmpty() || estudiantes.isEmpty()) {
+            showError("Por favor, complete todos los campos")
             return
         }
 
-        try {
-            if (isEditing) {
-                UnidadServices.actualizarUnidad(
-                    unidades,
-                    currentUnidadId!!,
-                    nombreUnidad,
-                    brigadaUnidad,
-                    estadoUnidad,
-                    usuarioId,
-                    comandos,
-                    estudiantes
-                )
-                Toast.makeText(this, "Unidad actualizada correctamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-                currentUnidadId = null
-            } else {
-                val id = generarIdUnidadUnico()
-                UnidadServices.crearUnidad(
-                    unidades,
-                    id,
-                    nombreUnidad,
-                    brigadaUnidad,
-                    estadoUnidad,
-                    usuarioId,
-                    comandos,
-                    estudiantes
-                )
-                Toast.makeText(this, "Unidad creada correctamente", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            try {
+                if (isEditing && currentUnidadId != null) {
+                    actualizarUnidad(nombreUnidad, brigadaId, usuarioId, comandos, estudiantes, estadoUnidad)
+                } else {
+                    crearUnidad(nombreUnidad, brigadaId, usuarioId, comandos, estudiantes, estadoUnidad)
+                }
+            } catch (e: Exception) {
+                showError("Error: ${e.message}")
             }
-            actualizarLista()
-            limpiarFormulario()
-        } catch (e: Exception) {
-            Log.e("UnidadActivity", "Error al guardar unidad", e)
-            Toast.makeText(this, "Error al guardar unidad: ${e.message}", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private suspend fun actualizarUnidad(
+        nombre: String,
+        brigadaId: String,
+        usuarioId: String,
+        comandos: List<String>,
+        estudiantes: List<String>,
+        estado: Boolean
+    ) {
+        val updateData = UpdateUnidadDto(
+            nombreUnidad = nombre,
+            brigadaId = brigadaId,
+            usuarioId = usuarioId,
+            comandos = comandos,
+            estudiantes = estudiantes,
+            estadoUnidad = estado
+        )
+
+        unidadServices.updateUnidadServices(currentUnidadId!!, updateData)
+            .onSuccess {
+                showSuccess("Unidad actualizada con éxito")
+                resetEditingState()
+                cargarUnidades()
+            }.onFailure { error ->
+                showError("Error al actualizar: ${error.message}")
+            }
+    }
+
+    private suspend fun crearUnidad(
+        nombre: String,
+        brigadaId: String,
+        usuarioId: String,
+        comandos: List<String>,
+        estudiantes: List<String>,
+        estado: Boolean
+    ) {
+        val createData = CreateUnidadDto(
+            nombreUnidad = nombre,
+            brigadaId = brigadaId,
+            usuarioId = usuarioId,
+            comandos = comandos,
+            estudiantes = estudiantes,
+        )
+
+        unidadServices.createUnidadServices(createData)
+            .onSuccess {
+                showSuccess("Unidad creada con éxito")
+                resetEditingState()
+                cargarUnidades()
+            }.onFailure { error ->
+                showError("Error al crear: ${error.message}")
+            }
+    }
+
+    private fun resetEditingState() {
+        isEditing = false
+        currentUnidadId = null
+        limpiarFormulario()
     }
 
     private fun limpiarFormulario() {
@@ -137,8 +183,6 @@ class UnidadActivity : AppCompatActivity() {
         comandosEditText.text.clear()
         estudiantesEditText.text.clear()
         estadoSwitch.isChecked = false
-        isEditing = false
-        currentUnidadId = null
     }
 
     private fun onUpdateClick(unidad: Unidad) {
@@ -153,27 +197,30 @@ class UnidadActivity : AppCompatActivity() {
     }
 
     private fun onDeleteClick(unidad: Unidad) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Eliminar unidad")
-        builder.setMessage("¿Estás seguro de que deseas eliminar esta unidad?")
-
-        builder.setPositiveButton("Sí") { _, _ ->
-            try {
-                UnidadServices.desactivarUnidad(unidades, unidad.getId())
-                actualizarLista()
-                Toast.makeText(this, "Unidad eliminada correctamente", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, "Error deleting unidad: ${e.message}", Toast.LENGTH_SHORT).show()
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar unidad")
+            .setMessage("¿Estás seguro de que deseas eliminar esta unidad?")
+            .setPositiveButton("Sí") { _, _ ->
+                lifecycleScope.launch {
+                    unidadServices.deleteUnidadById(unidad.getId()!!)
+                        .onSuccess {
+                            showSuccess("Unidad eliminada")
+                            cargarUnidades()
+                        }
+                        .onFailure { error ->
+                            showError(error.message ?: "Error al eliminar")
+                        }
+                }
             }
-        }
-
-        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-
-        val dialog = builder.create()
-        dialog.show()
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
-    private fun actualizarLista() {
-        adapter.actualizarLista(UnidadServices.listarUnidadesActivas(unidades))
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

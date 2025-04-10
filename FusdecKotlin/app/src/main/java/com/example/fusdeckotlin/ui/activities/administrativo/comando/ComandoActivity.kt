@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.comando
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -148,6 +149,7 @@ class ComandoActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private suspend fun crearComando(
         nombre: String,
         ubicacion: String,

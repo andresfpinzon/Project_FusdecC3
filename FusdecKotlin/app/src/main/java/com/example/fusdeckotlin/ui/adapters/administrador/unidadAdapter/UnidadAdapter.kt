@@ -10,12 +10,12 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 
 class UnidadAdapter(
-    private val unidades: MutableList<Unidad>,
+    private var unidades: List<Unidad>,
     private val onUpdateClick: (Unidad) -> Unit,
     private val onDeleteClick: (Unidad) -> Unit
 ) : RecyclerView.Adapter<UnidadAdapter.UnidadViewHolder>() {
 
-    private val originalUnidades = unidades.toMutableList()
+    private var originalUnidades: List<Unidad> = unidades
 
     class UnidadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textIdUnidad: TextView = itemView.findViewById(R.id.textViewUnidadId)
@@ -44,11 +44,10 @@ class UnidadAdapter(
     }
 
     fun filter(query: String?) {
-        unidades.clear()
-        if (query.isNullOrEmpty()) {
-            unidades.addAll(originalUnidades)
+        unidades = if (query.isNullOrEmpty()) {
+            originalUnidades
         } else {
-            unidades.addAll(originalUnidades.filter { it.getNombreUnidad().contains(query, ignoreCase = true) })
+            originalUnidades.filter { it.getNombreUnidad().contains(query, ignoreCase = true) }
         }
         notifyDataSetChanged()
     }
@@ -56,10 +55,8 @@ class UnidadAdapter(
     override fun getItemCount(): Int = unidades.size
 
     fun actualizarLista(nuevasUnidades: List<Unidad>) {
-        unidades.clear()
-        unidades.addAll(nuevasUnidades)
-        originalUnidades.clear()
-        originalUnidades.addAll(nuevasUnidades)
+        unidades = nuevasUnidades
+        originalUnidades = nuevasUnidades
         notifyDataSetChanged()
     }
 }
