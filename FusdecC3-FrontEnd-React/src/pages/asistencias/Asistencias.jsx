@@ -24,6 +24,7 @@ import {
   Snackbar,
   Switch,
   IconButton,
+  Chip,
 } from "@mui/material"
 import SaveIcon from "@mui/icons-material/Save"
 import HistoryIcon from "@mui/icons-material/History"
@@ -33,6 +34,8 @@ import Add from "@mui/icons-material/Add"
 import CheckCircle from "@mui/icons-material/CheckCircle"
 import Cancel from "@mui/icons-material/Cancel"
 import Person from "@mui/icons-material/Person"
+import Assignment from "@mui/icons-material/Assignment"
+import Group from "@mui/icons-material/Group"
 
 const AsistenciaCheck = ({ isPresent, onToggle }) => {
   return (
@@ -82,6 +85,8 @@ const Asistencias = () => {
   const [attendanceHistory, setAttendanceHistory] = useState([])
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
   const [userId, setUserId] = useState(null)
+  const [openInfoDialog, setOpenInfoDialog] = useState(false)
+  const [selectedAsistencia, setSelectedAsistencia] = useState(null)
 
   // Efecto para cargar datos iniciales
   useEffect(() => {
@@ -145,23 +150,15 @@ const Asistencias = () => {
   // Función para guardar la asistencia
   const handleSaveAttendance = async () => {
     try {
-      const presentStudents = Object.entries(attendance).filter(([_, present]) => present).map(([id]) => id);
-      const absentStudents = Object.entries(attendance).filter(([_, present]) => !present).map(([id]) => id);
+      const presentStudents = Object.entries(attendance)
+        .filter(([_, present]) => present)
+        .map(([id]) => id);
 
-      // Usar la fecha actual del sistema
-      const date = new Date();
-      date.setHours(0, 0, 0, 0);
-
-      // Formatear la fecha para Colombia
-      const formattedDate = date.toLocaleString('es-CO', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      });
+      console.log('Estudiantes presentes:', presentStudents); // Para depuración
 
       const attendanceData = {
-        tituloAsistencia: `Asistencia ${formattedDate}`,
-        fechaAsistencia: date.toISOString(),
+        tituloAsistencia: `Asistencia ${selectedDate}`,
+        fechaAsistencia: new Date(selectedDate).toISOString(),
         usuarioId: userId,
         estudiantes: presentStudents,
         estadoAsistencia: true
@@ -171,7 +168,7 @@ const Asistencias = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": token,
         },
         body: JSON.stringify(attendanceData),
       });
@@ -228,6 +225,82 @@ const Asistencias = () => {
     student.apellidoEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.documentoEstudiante?.includes(searchTerm),
   )
+
+  const handleOpenInfoDialog = async (asistencia) => {
+    try {
+      // Verificar que tengamos estudiantes para procesar
+      if (!asistencia.estudiantes || asistencia.estudiantes.length === 0) {
+        setSelectedAsistencia({
+          ...asistencia,
+          fecha: asistencia.fechaAsistencia,
+          estudiantes: []
+        });
+        setOpenInfoDialog(true);
+        return;
+      }
+
+      console.log('IDs de estudiantes:', asistencia.estudiantes); // Para depuración
+
+      // Obtener los detalles de los estudiantes
+      const estudiantesPromises = asistencia.estudiantes.map(async (estudianteId) => {
+        try {
+          // Asegurarnos de que estamos usando el ID correcto
+          const id = typeof estudianteId === 'object' ? estudianteId._id : estudianteId;
+          
+          const response = await fetch(`http://localhost:3000/api/estudiantes/${id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": token, // Quitamos el 'Bearer' ya que puede estar causando problemas
+            },
+          });
+
+          if (!response.ok) {
+            console.error(`Error en la respuesta para estudiante ${id}:`, response.status);
+            return null;
+          }
+
+          const estudiante = await response.json();
+          return {
+            _id: estudiante._id,
+            nombreEstudiante: estudiante.nombreEstudiante,
+            apellidoEstudiante: estudiante.apellidoEstudiante,
+            numeroDocumento: estudiante.numeroDocumento,
+            presente: true
+          };
+        } catch (error) {
+          console.error(`Error al procesar estudiante:`, error);
+          return null;
+        }
+      });
+
+      // Esperar todas las promesas y filtrar los nulls
+      const estudiantes = (await Promise.all(estudiantesPromises))
+        .filter(estudiante => estudiante !== null);
+
+      console.log('Estudiantes obtenidos:', estudiantes); // Para depuración
+
+      // Actualizar el estado con los estudiantes obtenidos
+      setSelectedAsistencia({
+        ...asistencia,
+        fecha: asistencia.fechaAsistencia,
+        estudiantes: estudiantes
+      });
+      
+      setOpenInfoDialog(true);
+    } catch (error) {
+      console.error('Error al obtener detalles de estudiantes:', error);
+      setSnackbar({
+        open: true,
+        message: "Error al obtener detalles de los estudiantes",
+        severity: "error"
+      });
+    }
+  };
+
+  const handleCloseInfoDialog = () => {
+    setSelectedAsistencia(null)
+    setOpenInfoDialog(false)
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -305,6 +378,7 @@ const Asistencias = () => {
                   <TableCell>Título</TableCell>
                   <TableCell align="center">Presentes</TableCell>
                   <TableCell>Realizado por</TableCell>
+                  <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -314,6 +388,14 @@ const Asistencias = () => {
                     <TableCell>{record.tituloAsistencia}</TableCell>
                     <TableCell align="center">{record.estudiantes?.length || 0}</TableCell>
                     <TableCell>{record.usuarioNombre}</TableCell>
+                    <TableCell>
+                      <IconButton 
+                        onClick={() => handleOpenInfoDialog(record)}
+                        color="primary"
+                      >
+                        <Info />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -322,6 +404,153 @@ const Asistencias = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenHistory(false)}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
+          Historial de Asistencia
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          {selectedAsistencia && (
+            <div>
+              {/* Información de la Asistencia */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <Assignment color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {new Date(selectedAsistencia.fecha).toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </Typography>
+              </Box>
+
+              {/* Nombres de los estudiantes en chips */}
+              <Box sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: 1,
+                mb: 2,
+                p: 2,
+                backgroundColor: '#f8f9fa',
+                borderRadius: '8px'
+              }}>
+                {selectedAsistencia.estudiantes && selectedAsistencia.estudiantes.length > 0 ? (
+                  selectedAsistencia.estudiantes.map((estudiante) => (
+                    <Chip
+                      key={estudiante._id}
+                      icon={<Person />}
+                      label={`${estudiante.nombreEstudiante || ''} ${estudiante.apellidoEstudiante || ''}`}
+                      color="primary"
+                      variant="outlined"
+                      sx={{
+                        '& .MuiChip-icon': {
+                          color: '#1d526eff'
+                        }
+                      }}
+                    />
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No hay estudiantes registrados en esta asistencia
+                  </Typography>
+                )}
+              </Box>
+
+              {/* Lista detallada de Estudiantes */}
+              <Typography variant="h6" sx={{ 
+                fontWeight: 'bold', 
+                display: 'flex', 
+                alignItems: 'center', 
+                mt: 2, 
+                mb: 1 
+              }}>
+                <Group sx={{ mr: 1 }} color="primary" />
+                Detalles de Asistencia
+              </Typography>
+
+              <Box sx={{ 
+                maxHeight: '300px', 
+                overflowY: 'auto',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                p: 2
+              }}>
+                {selectedAsistencia.estudiantes?.map((estudiante) => (
+                  <Box 
+                    key={estudiante._id}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      backgroundColor: 'white',
+                      mb: 1,
+                      p: 2,
+                      borderRadius: '8px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      '&:hover': {
+                        transform: 'translateX(4px)',
+                        transition: 'all 0.3s ease',
+                        backgroundColor: '#f8f9fa'
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Person sx={{ mr: 2, color: '#1d526eff' }} />
+                      <Box>
+                        <Typography variant="body1" sx={{ fontWeight: '500' }}>
+                          {estudiante.nombreEstudiante} {estudiante.apellidoEstudiante}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          ID: {estudiante.numeroDocumento}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Chip
+                      label="Presente"
+                      color="success"
+                      size="small"
+                      sx={{ ml: 2 }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+
+              {/* Resumen de Asistencia */}
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-around', 
+                mt: 2,
+                p: 2,
+                backgroundColor: '#f8f9fa',
+                borderRadius: '8px'
+              }}>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography variant="h6" color="success.main">
+                    {selectedAsistencia.estudiantes?.length || 0}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">Total de Presentes</Typography>
+                </Box>
+              </Box>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={handleCloseInfoDialog} 
+            variant="contained" 
+            sx={{ 
+              backgroundColor: '#1d526eff',
+              '&:hover': {
+                backgroundColor: '#16405a'
+              }
+            }}
+          >
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 

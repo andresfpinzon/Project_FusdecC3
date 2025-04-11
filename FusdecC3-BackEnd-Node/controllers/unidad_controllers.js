@@ -17,13 +17,6 @@ const listarUnidades = async (req, res) => {
                 select: 'nombreUsuario'
             });
         
-        // Log unidades with their brigade details
-        console.log("Unidades con detalles de brigada:", unidades.map(u => ({
-            nombreUnidad: u.nombreUnidad,
-            brigadaId: u.brigadaId?._id,
-            nombreBrigada: u.brigadaId?.nombreBrigada || 'Sin brigada asignada'
-        })));
-
         res.json(unidades);
     } catch (error) {
         console.error('Error al cargar las unidades:', error);

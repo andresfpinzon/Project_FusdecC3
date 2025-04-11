@@ -47,14 +47,6 @@ const Brigadas = () => {
         unidades: brigade.unidades || []
       }));
 
-      console.log("Brigadas con sus comandos:", validatedBrigades.map(b => ({
-        nombreBrigada: b.nombreBrigada,
-        comandoId: b.comandoId?._id,
-        comando: b.comandoId?.nombreComando || 'Sin comando'
-      })));
-
-      console.log("Detalles completos de las brigadas:", validatedBrigades);
-
       // Condicion que verifica si el arreglo de brigadas está vacío
       if (data.length === 0) {
         setErrorMessage("No hay brigadas registradas.");

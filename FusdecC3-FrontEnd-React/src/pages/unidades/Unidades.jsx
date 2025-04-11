@@ -32,11 +32,15 @@ const Unidades = () => {
     message: '',
     severity: 'info' // 'error', 'warning', 'info', 'success'
   });
+  const [estudiantes, setEstudiantes] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     fetchUnidades();
     fetchBrigadas();
     fetchUsuarios();
+    fetchEstudiantes();
   }, []);
 
   const fetchUnidades = async () => {
@@ -49,21 +53,21 @@ const Unidades = () => {
       if (!response.ok) throw new Error('Error al obtener unidades');
       const data = await response.json();
       
-      // Improved logging and filtering
-      const unidadesConBrigada = data.filter(unidad => unidad.brigadaId);
-      const unidadesSinBrigada = data.filter(unidad => !unidad.brigadaId);
+      // Obtener estudiantes para cada unidad
+      const unidadesConEstudiantes = await Promise.all(data.map(async (unidad) => {
+        const estudiantesResponse = await fetch(`http://localhost:3000/api/estudiantes?unidadId=${unidad._id}`, {
+          headers: {
+            'Authorization': localStorage.getItem('token') || '',
+          },
+        });
+        const estudiantes = await estudiantesResponse.json();
+        return {
+          ...unidad,
+          estudiantes: estudiantes
+        };
+      }));
       
-      console.log("Unidades con brigada:", unidadesConBrigada.map(u => ({
-        nombreUnidad: u.nombreUnidad,
-        brigadaId: u.brigadaId?._id,
-        nombreBrigada: u.brigadaId?.nombreBrigada
-      })));
-      
-      console.log("Unidades sin brigada:", unidadesSinBrigada.map(u => ({
-        nombreUnidad: u.nombreUnidad
-      })));
-      
-      setUnidades(data);
+      setUnidades(unidadesConEstudiantes);
       setIsLoading(false);
     } catch (error) {
       console.error('Error al obtener unidades:', error);
@@ -115,6 +119,27 @@ const Unidades = () => {
         message: 'Error al cargar usuarios',
         severity: 'error'
       });
+    }
+  };
+
+  const fetchEstudiantes = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/estudiantes", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": localStorage.getItem('token') || '',
+        },
+      });
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
+      const data = await response.json();
+      // Asegurarnos de que tenemos toda la información del estudiante, incluyendo el colegio
+      console.log('Datos de estudiantes:', data); // Para depuración
+      setEstudiantes(data);
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
     }
   };
 
@@ -484,26 +509,58 @@ const Unidades = () => {
                   backgroundColor: '#f5f5f5',
                   borderRadius: '8px'
                 }}>
-                  {selectedUnidad.estudiantes.map((estudiante) => (
-                    <Chip
-                      key={estudiante._id}
-                      label={`${estudiante.nombreEstudiante || ''} ${estudiante.apellidoEstudiante || ''}`}
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      icon={<Person />}
+                  {selectedUnidad.estudiantes?.map((estudiante) => (
+                    <Box 
+                      key={estudiante._id} 
+                      className="estudiante-card"
                       sx={{ 
-                        borderRadius: '16px',
-                        fontSize: '0.9rem',
-                        maxWidth: '100%',
-                        color: '#1d526eff',
-                        backgroundColor: '#fff',
-                        border: '1px solid #1d526eff',
-                        '&:hover': {
-                          backgroundColor: '#1d526e11',
-                        },
+                        display: 'flex', 
+                        alignItems: 'flex-start', 
+                        justifyContent: 'space-between',
+                        padding: '12px',
+                        borderBottom: '1px solid #e0e0e0',
+                        '&:last-child': { borderBottom: 'none' },
+                        backgroundColor: 'white',
+                        borderRadius: '4px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
                       }}
-                    />
+                    >
+                      <Box sx={{ 
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        gap: '8px',
+                        flex: 1
+                      }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Person sx={{ mr: 2, color: '#1d526eff' }} />
+                          <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                            {estudiante.nombreEstudiante} {estudiante.apellidoEstudiante}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          ml: 4,
+                          backgroundColor: '#f8f9fa',
+                          padding: '4px 8px',
+                          borderRadius: '4px'
+                        }}>
+                          <LocationOn sx={{ mr: 1, fontSize: '0.9rem', color: '#666' }} />
+                          <Typography variant="body2" color="text.secondary">
+                            Colegio: {estudiante.nombreColegio || 'No asignado'}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Chip
+                        label={`ID: ${estudiante.numeroDocumento || 'N/A'}`}
+                        size="small"
+                        sx={{ 
+                          backgroundColor: '#e3f2fd',
+                          color: '#1976d2',
+                          ml: 2
+                        }}
+                      />
+                    </Box>
                   ))}
                 </Box>
               ) : (
