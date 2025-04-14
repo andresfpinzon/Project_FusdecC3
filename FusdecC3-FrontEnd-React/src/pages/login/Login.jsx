@@ -39,7 +39,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/autenticaciones/login", {
+      const response = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formValues),
@@ -49,11 +49,18 @@ const Login = () => {
         const data = await response.json();
         const { token } = data;
 
-        // Decodificar payload del token
-        const payload = JSON.parse(atob(token.split(".")[1]));
+       // Decodificar payload del token
+      const payload = JSON.parse(atob(token.split(".")[1]));
 
-        // Llamar la función `login` del contexto
-        login(token, payload.roles);
+      // Convertir roles a formato sin "ROLE_"
+      const rolesNormalizados = payload.roles.map((rol) => {
+        const sinPrefijo = rol.replace("ROLE_", "");
+        return sinPrefijo.charAt(0).toUpperCase() + sinPrefijo.slice(1).toLowerCase();
+      });
+      
+
+      // Llamar la función `login` del contexto
+      login(token, rolesNormalizados);
 
         navigate("/home", { replace: true });
       } else {
@@ -145,7 +152,6 @@ const Login = () => {
 };
 
 export default Login;
-
 
 
 
