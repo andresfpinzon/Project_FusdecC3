@@ -18,7 +18,7 @@ data class Usuario(
     @SerializedName("roles")
     private var roles: List<String>,
     @SerializedName("estadoUsuario")
-    private var estadoUsuario: Boolean,
+    private var estadoUsuario: Boolean = true,
     @SerializedName("")
     private val creadoEn: String = obtenerFechaActual()
 ) {
