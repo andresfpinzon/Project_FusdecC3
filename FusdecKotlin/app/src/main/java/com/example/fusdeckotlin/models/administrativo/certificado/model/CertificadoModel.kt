@@ -1,14 +1,23 @@
 package models.administrativo.c
+import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class CertificadoModel(
-    private val id: String = generarId(),
+    @SerializedName("_id")
+    private val id: String? = null,
+    @SerializedName("fechaEmision")
     private val fechaEmision: String = obtenerFechaActual(),
+    @SerializedName("usuarioId")
     private val usuarioId: String,
+    @SerializedName("usuarioId")
     private val cursoId: String,
+    @SerializedName("estudianteId")
     private val estudianteId: String,
+    @SerializedName("nombreEmisorCertificado")
     private var nombreEmisorCertificado: String,
+    @SerializedName("codigoVerificacion")
     private val codigoVerificacion: String = generarCodigoVerificacion(),
+    @SerializedName("estadoCertificado")
     private var estadoCertificado: Boolean = true
 ) {
 
@@ -16,7 +25,7 @@ data class CertificadoModel(
      * Getters
      * */
 
-    fun getIdCertificado(): String = id
+    fun getIdCertificado(): String = id.toString()
 
     fun getFechaEmisio(): String = fechaEmision
 
