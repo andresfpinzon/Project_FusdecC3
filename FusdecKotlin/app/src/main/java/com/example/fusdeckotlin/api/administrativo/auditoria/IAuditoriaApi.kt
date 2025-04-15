@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.api.administrativo.auditoria
 
+import com.example.fusdeckotlin.dto.administrativo.auditoria.CreateAuditoriaDto
 import models.administrativo.auditoria.model.AuditoriaModel
 import retrofit2.http.*
 import retrofit2.Response
@@ -10,7 +11,7 @@ interface IAuditoriaApi {
     suspend fun getAuditorias(): Response<List<AuditoriaModel>>
 
     @POST("api/auditorias")
-    suspend fun createAuditoria(): Response<AuditoriaModel>
+    suspend fun createAuditoria(data: CreateAuditoriaDto): Response<AuditoriaModel>
 
     @GET("api/auditorias/{id}")
     suspend fun getAuditoriaById(@Path("id") id: String): Response<AuditoriaModel>
