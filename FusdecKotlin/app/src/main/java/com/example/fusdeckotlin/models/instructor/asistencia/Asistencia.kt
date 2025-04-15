@@ -37,7 +37,7 @@ class Asistencia(
     fun getEstudiantesIds(): List<String> {
         return estudiantes.map {
             when (it) {
-                is Estudiante -> it.getId()
+                is Estudiante -> it.getId() ?: ""
                 is String -> it
                 is Map<*, *> -> it["_id"] as? String ?: ""
                 else -> ""
