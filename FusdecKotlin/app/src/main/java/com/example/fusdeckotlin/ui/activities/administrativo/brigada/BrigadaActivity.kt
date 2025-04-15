@@ -3,20 +3,19 @@ package com.example.fusdeckotlin.ui.activities.administrativo.brigada
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.dto.administrativo.brigada.CreateBrigadaDto
 import com.example.fusdeckotlin.dto.administrativo.brigada.UpdateBrigadaDto
-import com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter.BrigadaAdapter
-import com.example.fusdeckotlin.services.administrativo.brigada.BrigadaServices
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import com.example.fusdeckotlin.services.administrativo.brigada.BrigadaServices
+import com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter.BrigadaAdapter
 import kotlinx.coroutines.launch
 
 class BrigadaActivity : AppCompatActivity() {
@@ -25,7 +24,6 @@ class BrigadaActivity : AppCompatActivity() {
     private lateinit var ubicacionBrigadaEditText: EditText
     private lateinit var comandoIdEditText: EditText
     private lateinit var unidadesEditText: EditText
-    private lateinit var estadoSwitch: Switch
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var brigadasRecyclerView: RecyclerView
@@ -36,6 +34,7 @@ class BrigadaActivity : AppCompatActivity() {
 
     private var isEditing: Boolean = false
     private var currentBrigadaId: String? = null
+    private var brigadasOriginales: List<Brigada> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +43,7 @@ class BrigadaActivity : AppCompatActivity() {
         initViews()
         setupRecyclerView()
         setupListeners()
+        setupSearchView()
         cargarBrigadas()
     }
 
@@ -52,7 +52,6 @@ class BrigadaActivity : AppCompatActivity() {
         ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
         comandoIdEditText = findViewById(R.id.comandoIdEditText)
         unidadesEditText = findViewById(R.id.unidadesEditText)
-        estadoSwitch = findViewById(R.id.estadoSwitch)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
         brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
@@ -72,36 +71,63 @@ class BrigadaActivity : AppCompatActivity() {
     private fun setupListeners() {
         confirmarButton.setOnClickListener { guardarBrigada() }
         cancelarButton.setOnClickListener { finish() }
+    }
 
+    private fun setupSearchView() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText)
-                return false
+                filtrarBrigadas(newText.orEmpty())
+                return true
             }
         })
     }
 
+    private fun filtrarBrigadas(textoBusqueda: String) {
+        val texto = textoBusqueda.lowercase().trim()
+        adapter.actualizarLista(
+            if (texto.isEmpty()) brigadasOriginales
+            else brigadasOriginales.filter {
+                it.getNombreBrigada().lowercase().contains(texto) ||
+                        it.getUbicacionBrigada().lowercase().contains(texto) ||
+                        it.getComandoId().lowercase().contains(texto)
+            }
+        )
+    }
+
     private fun cargarBrigadas() {
         lifecycleScope.launch {
-            val result = brigadaServices.getBrigadasActives()
-            result.onSuccess { brigadas ->
-                adapter.actualizarLista(brigadas)
-            }.onFailure { error ->
-                showError("Error al cargar brigadas: ${error.message}")
+            try {
+                val result = brigadaServices.getBrigadasActives()
+                result.onSuccess { brigadas ->
+                    brigadasOriginales = brigadas
+                    runOnUiThread {
+                        adapter.actualizarLista(brigadas)
+                        if (brigadas.isEmpty()) {
+                            showInfo("No hay brigadas registradas")
+                        }
+                    }
+                }.onFailure { error ->
+                    runOnUiThread {
+                        showError("Error al cargar brigadas: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    showError("Error inesperado: ${e.message}")
+                }
             }
         }
     }
 
     private fun guardarBrigada() {
-        val nombreBrigada = nombreBrigadaEditText.text.toString().trim()
-        val ubicacionBrigada = ubicacionBrigadaEditText.text.toString().trim()
-        val estadoBrigada = estadoSwitch.isChecked
+        val nombre = nombreBrigadaEditText.text.toString().trim()
+        val ubicacion = ubicacionBrigadaEditText.text.toString().trim()
         val comandoId = comandoIdEditText.text.toString().trim()
         val unidades = unidadesEditText.text.toString().trim().split(",").map { it.trim() }
 
-        if (nombreBrigada.isEmpty() || ubicacionBrigada.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
+        if (nombre.isEmpty() || ubicacion.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
             showError("Por favor, complete todos los campos")
             return
         }
@@ -109,9 +135,9 @@ class BrigadaActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 if (isEditing && currentBrigadaId != null) {
-                    actualizarBrigada(nombreBrigada, ubicacionBrigada, estadoBrigada, comandoId, unidades)
+                    actualizarBrigada(nombre, ubicacion, comandoId, unidades)
                 } else {
-                    crearBrigada(nombreBrigada, ubicacionBrigada, estadoBrigada, comandoId, unidades)
+                    crearBrigada(nombre, ubicacion, comandoId, unidades)
                 }
             } catch (e: Exception) {
                 showError("Error: ${e.message}")
@@ -122,50 +148,57 @@ class BrigadaActivity : AppCompatActivity() {
     private suspend fun actualizarBrigada(
         nombre: String,
         ubicacion: String,
-        estado: Boolean,
         comandoId: String,
         unidades: List<String>
     ) {
         val updateData = UpdateBrigadaDto(
             nombreBrigada = nombre,
             ubicacionBrigada = ubicacion,
-            estadoBrigada = estado,
+            estadoBrigada = true,
             comandoId = comandoId,
             unidades = unidades
         )
 
         brigadaServices.updateBrigada(currentBrigadaId!!, updateData)
             .onSuccess {
-                showSuccess("Brigada actualizada con éxito")
-                resetEditingState()
-                cargarBrigadas()
+                runOnUiThread {
+                    showSuccess("Brigada actualizada con éxito")
+                    resetEditingState()
+                    cargarBrigadas()
+                    searchView.setQuery("", false)
+                }
             }.onFailure { error ->
-                showError("Error al actualizar: ${error.message}")
+                runOnUiThread {
+                    showError("Error al actualizar: ${error.message}")
+                }
             }
     }
 
     private suspend fun crearBrigada(
         nombre: String,
         ubicacion: String,
-        estado: Boolean,
         comandoId: String,
         unidades: List<String>
     ) {
         val createData = CreateBrigadaDto(
             nombreBrigada = nombre,
             ubicacionBrigada = ubicacion,
-            estadoBrigada = estado,
             comandoId = comandoId,
             unidades = unidades
         )
 
         brigadaServices.createBrigada(createData)
             .onSuccess {
-                showSuccess("Brigada creada con éxito")
-                resetEditingState()
-                cargarBrigadas()
+                runOnUiThread {
+                    showSuccess("Brigada creada con éxito")
+                    resetEditingState()
+                    cargarBrigadas()
+                    searchView.setQuery("", false)
+                }
             }.onFailure { error ->
-                showError("Error al crear: ${error.message}")
+                runOnUiThread {
+                    showError("Error al crear: ${error.message}")
+                }
             }
     }
 
@@ -180,7 +213,6 @@ class BrigadaActivity : AppCompatActivity() {
         ubicacionBrigadaEditText.text.clear()
         comandoIdEditText.text.clear()
         unidadesEditText.text.clear()
-        estadoSwitch.isChecked = false
     }
 
     private fun onUpdateClick(brigada: Brigada) {
@@ -190,7 +222,6 @@ class BrigadaActivity : AppCompatActivity() {
         ubicacionBrigadaEditText.setText(brigada.getUbicacionBrigada())
         comandoIdEditText.setText(brigada.getComandoId())
         unidadesEditText.setText(brigada.getUnidadesIds().joinToString(", "))
-        estadoSwitch.isChecked = brigada.getEstadoBrigada()
     }
 
     private fun onDeleteClick(brigada: Brigada) {
@@ -201,11 +232,16 @@ class BrigadaActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     brigadaServices.deleteBrigadaById(brigada.getId()!!)
                         .onSuccess {
-                            showSuccess("Brigada eliminada")
-                            cargarBrigadas()
+                            runOnUiThread {
+                                showSuccess("Brigada eliminada")
+                                cargarBrigadas()
+                                searchView.setQuery("", false)
+                            }
                         }
                         .onFailure { error ->
-                            showError(error.message ?: "Error al eliminar")
+                            runOnUiThread {
+                                showError(error.message ?: "Error al eliminar")
+                            }
                         }
                 }
             }
@@ -219,5 +255,9 @@ class BrigadaActivity : AppCompatActivity() {
 
     private fun showSuccess(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showInfo(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
