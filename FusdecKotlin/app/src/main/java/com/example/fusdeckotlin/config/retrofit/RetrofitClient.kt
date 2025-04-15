@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.config.retrofit
 
+import com.example.fusdeckotlin.api.administrativo.auditoria.IAuditoriaApi
 import com.example.fusdeckotlin.api.administrativo.brigada.BrigadaApi
 import com.example.fusdeckotlin.api.administrativo.comando.ComandoApi
 import com.example.fusdeckotlin.api.administrativo.unidad.UnidadApi
@@ -13,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 object RetrofitClient {
     private const val BASE_URL = "http://10.0.2.2:3000/"
@@ -55,5 +57,6 @@ object RetrofitClient {
     val comandoApi: ComandoApi by lazy {retrofit.create(ComandoApi::class.java)}
     val unidadApi : UnidadApi by lazy { retrofit.create(UnidadApi::class.java)}
     val userApi : IUserApi by lazy { retrofit.create(IUserApi::class.java) }
+    val auditoriaApi : IAuditoriaApi by lazy {retrofit.create(IAuditoriaApi::class.java)}
 
 }
