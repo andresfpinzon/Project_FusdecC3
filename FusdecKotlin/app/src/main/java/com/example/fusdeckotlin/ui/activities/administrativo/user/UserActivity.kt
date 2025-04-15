@@ -10,7 +10,7 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
 import com.example.fusdeckotlin.ui.adapters.administrador.userAdapter.UserAdapter
 import com.google.android.material.textfield.TextInputEditText
-import models.administrativo.user.model.UsuarioNOUse
+import models.administrativo.user.model.Usuario
 
 class UserActivity : AppCompatActivity()  {
 
@@ -24,7 +24,7 @@ class UserActivity : AppCompatActivity()  {
     private lateinit var cancelarButton: Button
     private lateinit var userRecyclerView: RecyclerView
 
-    private val users = mutableListOf<UsuarioNOUse>() // Lista vacía al principio, actualizada por el servicio
+    private val users = mutableListOf<Usuario>() // Lista vacía al principio, actualizada por el servicio
 
     private lateinit var adapter : UserAdapter
 
@@ -73,7 +73,7 @@ class UserActivity : AppCompatActivity()  {
         }
 
         // Crear un nuevo usuario
-        val nuevoUsuarioNOUse = UsuarioNOUse(
+        val nuevoUsuario = Usuario(
             nombreUsuario = nombreUsuario,
             apellidoUsuario = apellidoUsuario,
             numeroDocumento = numeroDocumento,
@@ -84,7 +84,7 @@ class UserActivity : AppCompatActivity()  {
         )
 
         // Usamos el servicio para crear el usuario
-        val usuarioCreado = UsuarioServices.createusuario(users, nuevoUsuarioNOUse)
+        val usuarioCreado = UsuarioServices.createusuario(users, nuevoUsuario)
 
         // Actualizamos la UI con el nuevo usuario
         adapter.notifyDataSetChanged()
@@ -103,22 +103,22 @@ class UserActivity : AppCompatActivity()  {
         role.text?.clear()
     }
 
-    private fun onUpdateClick(usuarioNOUse: UsuarioNOUse) {
+    private fun onUpdateClick(usuario: Usuario) {
         // Aquí puedes implementar la lógica para actualizar un usuario
-        nombre.setText(usuarioNOUse.getNombreUsuario())
-        apellidos.setText(usuarioNOUse.getApellidoUsuario())
-        documento.setText(usuarioNOUse.getNumeroDocumento())
-        correo.setText(usuarioNOUse.getCorreo())
-        password.setText(usuarioNOUse.getPassword())
-        role.setText(usuarioNOUse.getRoles().joinToString(", "))
+        nombre.setText(usuario.getNombreUsuario())
+        apellidos.setText(usuario.getApellidoUsuario())
+        documento.setText(usuario.getNumeroDocumento())
+        correo.setText(usuario.getCorreo())
+        password.setText(usuario.getPassword())
+        role.setText(usuario.getRoles().joinToString(", "))
 
         // Eliminar el usuario de la lista temporal y actualizar
-        users.remove(usuarioNOUse)
+        users.remove(usuario)
         adapter.notifyDataSetChanged()
     }
 
-    private fun onDeleteClick(usuarioNOUse: UsuarioNOUse) {
-        val isRemoved = UsuarioServices.removeUserByNit(usuarioNOUse.getNumeroDocumento(), users)
+    private fun onDeleteClick(usuario: Usuario) {
+        val isRemoved = UsuarioServices.removeUserByNit(usuario.getNumeroDocumento(), users)
 
         if (isRemoved) {
             Toast.makeText(this, "Usuario eliminado", Toast.LENGTH_SHORT).show()

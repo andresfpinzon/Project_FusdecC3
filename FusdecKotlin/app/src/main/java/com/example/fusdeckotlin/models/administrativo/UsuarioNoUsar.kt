@@ -1,6 +1,6 @@
 package models.administrativo
 
-class Usuario(
+class UsuarioNoUsar(
     val nombreUsuario: String,
     val apellidoUsuario: String,
     val numeroDocumento: String,
@@ -11,7 +11,7 @@ class Usuario(
     val creadoEn: String
 ) {
     companion object {
-        val administrador = Usuario(
+        val administrador = UsuarioNoUsar(
             nombreUsuario = "Carlos",
             apellidoUsuario = "Gómez",
             numeroDocumento = "9876543210",
@@ -22,7 +22,7 @@ class Usuario(
             creadoEn = "2023-01-01"
         )
 
-        val secretario = Usuario(
+        val secretario = UsuarioNoUsar(
             nombreUsuario = "Ana",
             apellidoUsuario = "Pérez",
             numeroDocumento = "1234567890",
@@ -33,7 +33,7 @@ class Usuario(
             creadoEn = "2023-01-02"
         )
 
-        val instructor = Usuario(
+        val instructor = UsuarioNoUsar(
             nombreUsuario = "Luis",
             apellidoUsuario = "Martínez",
             numeroDocumento = "5555555555",

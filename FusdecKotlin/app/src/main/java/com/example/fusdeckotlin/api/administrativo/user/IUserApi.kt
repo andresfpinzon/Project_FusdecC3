@@ -1,6 +1,6 @@
 package com.example.fusdeckotlin.api.administrativo.user
 
-import models.administrativo.Usuario
+import models.administrativo.user.model.Usuario
 import retrofit2.http.*
 import retrofit2.Response
 

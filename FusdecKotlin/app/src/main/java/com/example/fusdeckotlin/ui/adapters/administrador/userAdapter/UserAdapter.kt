@@ -7,11 +7,11 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.administrativo.user.model.UsuarioNOUse
+import models.administrativo.user.model.Usuario
 class UserAdapter(
-    private val users: MutableList<UsuarioNOUse>,
-    private val onUpdateClick: (UsuarioNOUse) -> Unit,
-    private val onDeleteClick: (UsuarioNOUse) -> Unit
+    private val users: MutableList<Usuario>,
+    private val onUpdateClick: (Usuario) -> Unit,
+    private val onDeleteClick: (Usuario) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,7 +27,7 @@ class UserAdapter(
         private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
 
-        fun bind(user: UsuarioNOUse) {
+        fun bind(user: Usuario) {
             // Vincular datos a los TextView
             textIdUser.text = "ID: ${user.getUserId()}"
             textNombres.text = "Nombres: ${user.getNombreUsuario()}"

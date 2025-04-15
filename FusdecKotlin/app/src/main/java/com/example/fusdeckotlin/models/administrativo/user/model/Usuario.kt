@@ -2,7 +2,7 @@ package models.administrativo.user.model
 
 import com.google.gson.annotations.SerializedName
 
-data class UsuarioNOUse(
+data class Usuario(
     @SerializedName("_id")
     private val id : String? = null,
     @SerializedName("nombreUsuario")
@@ -73,7 +73,7 @@ data class UsuarioNOUse(
 
 
     companion object{
-        val administrador = UsuarioNOUse(
+        val administrador = Usuario(
             nombreUsuario = "Carlos",
             apellidoUsuario = "Gómez",
             numeroDocumento = "9876543210",
@@ -84,7 +84,7 @@ data class UsuarioNOUse(
             creadoEn = "2023-01-01"
         )
 
-        val secretario = UsuarioNOUse(
+        val secretario = Usuario(
             nombreUsuario = "Ana",
             apellidoUsuario = "Pérez",
             numeroDocumento = "1234567890",
@@ -95,7 +95,7 @@ data class UsuarioNOUse(
             creadoEn = "2023-01-02"
         )
 
-        val instructor = UsuarioNOUse(
+        val instructor = Usuario(
             nombreUsuario = "Luis",
             apellidoUsuario = "Martínez",
             numeroDocumento = "5555555555",

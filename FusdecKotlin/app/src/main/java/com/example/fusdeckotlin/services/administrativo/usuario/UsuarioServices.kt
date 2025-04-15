@@ -1,12 +1,12 @@
 package com.example.fusdeckotlin.services.administrativo.usuario
 
-import models.administrativo.user.model.UsuarioNOUse
+import models.administrativo.user.model.Usuario
 
 class UsuarioServices {
     companion object{
 
-        fun createusuario(usersDB: MutableList<UsuarioNOUse>, user: UsuarioNOUse): UsuarioNOUse{
-            val newUser = UsuarioNOUse(
+        fun createusuario(usersDB: MutableList<Usuario>, user: Usuario): Usuario{
+            val newUser = Usuario(
                 nombreUsuario = user.getNombreUsuario(),
                 apellidoUsuario = user.getApellidoUsuario(),
                 numeroDocumento = user.getNumeroDocumento(),
@@ -22,7 +22,7 @@ class UsuarioServices {
         }
 
 
-        fun updateUser(usersDB: MutableList<UsuarioNOUse>, id: String, updateUser: UsuarioNOUse ): UsuarioNOUse{
+        fun updateUser(usersDB: MutableList<Usuario>, id: String, updateUser: Usuario ): Usuario{
             val existeUser = usersDB.find { it.getUserId() == id }
                 ?: throw NoSuchElementException("Usuario no encontrado")
 
@@ -36,17 +36,17 @@ class UsuarioServices {
         }
 
 
-        fun getAllUsersActive(usersDB: MutableList<UsuarioNOUse>): List<UsuarioNOUse>{
+        fun getAllUsersActive(usersDB: MutableList<Usuario>): List<Usuario>{
             return usersDB.filter { it.getEstadoUsuario() }
         }
 
 
-        fun getUserByNit(nit: String, usersDB: MutableList<UsuarioNOUse>): UsuarioNOUse?{
+        fun getUserByNit(nit: String, usersDB: MutableList<Usuario>): Usuario?{
             return usersDB.first { it.getNumeroDocumento() == nit }
         }
 
 
-        fun removeUserByNit(nit: String, usersDB: MutableList<UsuarioNOUse>): Boolean{
+        fun removeUserByNit(nit: String, usersDB: MutableList<Usuario>): Boolean{
             val user = usersDB.find { it.getNumeroDocumento() == nit }
 
             return if (user != null){
@@ -57,7 +57,7 @@ class UsuarioServices {
         }
 
 
-        fun toggleStateUser(nit: String, usersDB: MutableList<UsuarioNOUse>): Boolean{
+        fun toggleStateUser(nit: String, usersDB: MutableList<Usuario>): Boolean{
             val user = usersDB.find { it.getNumeroDocumento() == nit }
 
             return  if ( user != null){
