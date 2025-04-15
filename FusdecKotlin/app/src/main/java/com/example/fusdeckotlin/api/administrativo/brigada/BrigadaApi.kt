@@ -3,6 +3,7 @@ package com.example.fusdeckotlin.api.administrativo.brigada
 import com.example.fusdeckotlin.dto.administrativo.brigada.CreateBrigadaDto
 import com.example.fusdeckotlin.dto.administrativo.brigada.UpdateBrigadaDto
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import retrofit2.http.*
 import retrofit2.Response
 import retrofit2.http.*
 

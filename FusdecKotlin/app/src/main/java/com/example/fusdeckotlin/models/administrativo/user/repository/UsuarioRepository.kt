@@ -1,13 +1,13 @@
 package models.administrativo.user.repository
 
-import models.administrativo.user.model.Usuario
+import models.administrativo.user.model.UsuarioNOUse
 
 interface UsuarioRepository {
-    fun crear(usuario: Usuario): Usuario
-    fun obtenerPorId(id: String): Usuario?
-    fun obtenerTodos(): List<Usuario>
-    fun actualizar(id: String, usuario: Usuario): Usuario?
+    fun crear(usuarioNOUse: UsuarioNOUse): UsuarioNOUse
+    fun obtenerPorId(id: String): UsuarioNOUse?
+    fun obtenerTodos(): List<UsuarioNOUse>
+    fun actualizar(id: String, usuarioNOUse: UsuarioNOUse): UsuarioNOUse?
     fun eliminar(id: String): Boolean
-    fun buscarPorCorreo(correo: String): Usuario?
-    fun buscarPorNumeroDocumento(numeroDocumento: String): Usuario?
+    fun buscarPorCorreo(correo: String): UsuarioNOUse?
+    fun buscarPorNumeroDocumento(numeroDocumento: String): UsuarioNOUse?
 }
