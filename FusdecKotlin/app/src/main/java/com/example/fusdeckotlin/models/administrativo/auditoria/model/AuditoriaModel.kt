@@ -1,19 +1,25 @@
 package models.administrativo.auditoria.model
 
+import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 data class AuditoriaModel(
-    private val _id: String = generarId(),
+    @SerializedName("_id")
+    private val _id: String? = null,
+    @SerializedName("fechaAuditoria")
     private val fechaAuditoria: String = obtenerFechaActual(),
+    @SerializedName("nombreEmisor")
     private val nombreEmisor: String,
-    private val certificadoId: String = generarIdCertificado(),
+    @SerializedName("certificadoId")
+    private val certificadoId: String,
+    @SerializedName("estadoAuditoria")
     private var estadoAuditoria: Boolean = true
 ) {
 
     fun getNombreEmisorAuditoria(): String = nombreEmisor
-    fun getIdAuditoria() : String = _id
+    fun getIdAuditoria() : String = _id.toString()
     fun getFechaAuditoria() : String = fechaAuditoria
     fun getCertificadoAuditoria(): String = certificadoId
     fun getEstadoAuditoria(): Boolean = estadoAuditoria
