@@ -82,24 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/usuarioIdTextView" />
 
-    <TextView
-            android:id="@+id/comandosTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comandos"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
-            android:layout_marginTop="16dp" />
 
-    <EditText
-            android:id="@+id/comandosEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="IDs separados por comas"
-            android:inputType="text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/comandosTextView" />
 
     <TextView
             android:id="@+id/estudiantesTextView"
@@ -107,7 +90,7 @@
             android:layout_height="wrap_content"
             android:text="Estudiantes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/comandosEditText"
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
             android:layout_marginTop="16dp" />
 
     <EditText

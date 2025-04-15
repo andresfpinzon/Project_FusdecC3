@@ -49,7 +49,7 @@ class UserAdapter(
         holder.textPassword.text = "Contraseña: ${user.getPassword()}"
         holder.textRol.text = "Roles: ${formatRoles(user.getRoles())}"
         holder.textEstado.text = "Estado: ${user.getEstadoUsuario()}"
-        holder.textCreadoEn.text = "Creado: ${formatDate(user.getCreadoEn().substring(0,8))}"
+        holder.textCreadoEn.text = "Creado: ${formatDate(user.getCreadoEn())}"
 
         // Configurar los listeners de los botones
         holder.updateButton.setOnClickListener { onUpdateClick(user) }
