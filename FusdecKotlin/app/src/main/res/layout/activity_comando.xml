@@ -1,91 +1,175 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:padding="16dp"
         tools:context=".ui.activities.administrativo.comando.ComandoActivity">
 
+    <!-- Formulario de Comando -->
+    <TextView
+            android:id="@+id/nombreComandoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del Comando"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
             android:id="@+id/nombreComandoEditText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Nombre del Comando"
-            android:inputType="text" />
+            android:hint="Ingrese el nombre"
+            android:inputType="text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nombreComandoTextView" />
+
+    <TextView
+            android:id="@+id/brigadaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brigada"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nombreComandoEditText"
+            android:layout_marginTop="16dp" />
 
     <Spinner
             android:id="@+id/brigadaSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/brigadaTextView" />
+
+    <TextView
+            android:id="@+id/ubicacionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubicación"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/brigadaSpinner"
+            android:layout_marginTop="16dp" />
 
     <EditText
             android:id="@+id/ubicacionComandoEditText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Ubicación del Comando"
-            android:inputType="text" />
+            android:hint="Ingrese la ubicación"
+            android:inputType="text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ubicacionTextView" />
+
+    <TextView
+            android:id="@+id/usuarioIdTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID Usuario"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ubicacionComandoEditText"
+            android:layout_marginTop="16dp" />
 
     <EditText
             android:id="@+id/usuarioIdEditText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="ID del Usuario"
-            android:inputType="text" />
+            android:hint="Ingrese ID de usuario"
+            android:inputType="text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdTextView" />
+
+    <TextView
+            android:id="@+id/comandosTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comandos"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
+            android:layout_marginTop="16dp" />
 
     <EditText
             android:id="@+id/comandosEditText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Comandos (separados por comas)"
-            android:inputType="text" />
+            android:hint="IDs separados por comas"
+            android:inputType="text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/comandosTextView" />
+
+    <TextView
+            android:id="@+id/estudiantesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estudiantes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/comandosEditText"
+            android:layout_marginTop="16dp" />
 
     <EditText
             android:id="@+id/estudiantesEditText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Estudiantes (separados por comas)"
-            android:inputType="text" />
+            android:hint="IDs separados por comas"
+            android:inputType="text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesTextView" />
 
     <Switch
             android:id="@+id/estadoComandoSwitch"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Estado Activo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
             android:layout_marginTop="16dp" />
 
-    <LinearLayout
-            android:layout_width="match_parent"
+    <Button
+            android:id="@+id/confirmarButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:text="Confirmar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cancelarButton"
+            app:layout_constraintTop_toBottomOf="@id/estadoComandoSwitch"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp" />
 
-        <Button
-                android:id="@+id/confirmarButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Confirmar" />
+    <Button
+            android:id="@+id/cancelarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            app:layout_constraintStart_toEndOf="@id/confirmarButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/estadoComandoSwitch"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp" />
 
-        <Button
-                android:id="@+id/cancelarButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cancelar" />
-    </LinearLayout>
-
+    <!-- Buscador y Lista de Comandos -->
     <androidx.appcompat.widget.SearchView
             android:id="@+id/searchViewComando"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:queryHint="Buscar comando"
-            android:layout_marginTop="16dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/confirmarButton"
+            android:layout_marginTop="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comandosRecyclerView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="16dp"/>
-</LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/searchViewComando"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

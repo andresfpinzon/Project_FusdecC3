@@ -1,10 +1,10 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.comando
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView // Importación CORRECTA
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class ComandoActivity : AppCompatActivity() {
 
+    // Views
     private lateinit var nombreComandoEditText: EditText
     private lateinit var ubicacionComandoEditText: EditText
     private lateinit var usuarioIdEditText: EditText
@@ -25,14 +26,17 @@ class ComandoActivity : AppCompatActivity() {
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var comandosRecyclerView: RecyclerView
-    private lateinit var searchViewComando: SearchView
+    private lateinit var searchView: SearchView
     private lateinit var brigadaSpinner: Spinner
 
+    // Services & Adapter
     private val comandoServices = ComandoServices()
     private lateinit var adapter: ComandoAdapter
 
-    private var isEditing: Boolean = false
+    // State
+    private var isEditing = false
     private var currentComandoId: String? = null
+    private var comandosOriginales: List<Comando> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +45,6 @@ class ComandoActivity : AppCompatActivity() {
         initViews()
         setupRecyclerView()
         setupListeners()
-        setupSpinner()
         cargarComandos()
     }
 
@@ -53,8 +56,14 @@ class ComandoActivity : AppCompatActivity() {
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
         comandosRecyclerView = findViewById(R.id.comandosRecyclerView)
-        searchViewComando = findViewById(R.id.searchViewComando)
+        searchView = findViewById(R.id.searchViewComando)
         brigadaSpinner = findViewById(R.id.brigadaSpinner)
+
+        // Configuración básica del spinner con datos estáticos
+        val brigadas = listOf("BRIG01", "BRIG02", "BRIG03") // Datos de ejemplo
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brigadas)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        brigadaSpinner.adapter = spinnerAdapter
     }
 
     private fun setupRecyclerView() {
@@ -63,60 +72,79 @@ class ComandoActivity : AppCompatActivity() {
             ::onUpdateClick,
             ::onDeleteClick
         )
-        comandosRecyclerView.layoutManager = LinearLayoutManager(this)
-        comandosRecyclerView.adapter = adapter
+        comandosRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@ComandoActivity)
+            adapter = this@ComandoActivity.adapter
+        }
     }
 
     private fun setupListeners() {
         confirmarButton.setOnClickListener { guardarComando() }
         cancelarButton.setOnClickListener { finish() }
 
-        searchViewComando.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText)
-                return false
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?) = false
+            override fun onQueryTextChange(newText: String?) = true.also {
+                filtrarComandos(newText.orEmpty())
             }
         })
     }
 
-    private fun setupSpinner() {
-        val brigadas = listOf("BRIG01", "BRIG02", "BRIG03", "BRIG04")
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brigadas)
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        brigadaSpinner.adapter = spinnerAdapter
-    }
-
     private fun cargarComandos() {
         lifecycleScope.launch {
-            val result = comandoServices.getComandoActives()
-            result.onSuccess { comandos ->
-                adapter.actualizarLista(comandos)
-            }.onFailure { error ->
-                showError("Error al cargar comandos: ${error.message}")
+            try {
+                val result = comandoServices.getComandoActives()
+                result.onSuccess { comandos ->
+                    comandosOriginales = comandos
+                    runOnUiThread {
+                        adapter.actualizarLista(comandos)
+                        if (comandos.isEmpty()) {
+                            showInfo("No hay comandos registrados")
+                        }
+                    }
+                }.onFailure { error ->
+                    runOnUiThread {
+                        showError("Error al cargar comandos: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    showError("Error inesperado: ${e.message}")
+                }
             }
         }
     }
 
-    private fun guardarComando() {
-        val nombreComando = nombreComandoEditText.text.toString().trim()
-        val ubicacionComando = ubicacionComandoEditText.text.toString().trim()
-        val fundacionId = usuarioIdEditText.text.toString().trim()
-        val estadoComando = estadoSwitch.isChecked
-        val brigadaSeleccionada = brigadaSpinner.selectedItem.toString()
+    private fun filtrarComandos(query: String) {
+        val texto = query.lowercase().trim()
+        adapter.actualizarLista(
+            if (texto.isEmpty()) comandosOriginales
+            else comandosOriginales.filter {
+                it.getNombreComando().lowercase().contains(texto) ||
+                        it.getUbicacionComando().lowercase().contains(texto) ||
+                        it.getFundacionId().lowercase().contains(texto)
+            }
+        )
+    }
 
-        if (nombreComando.isEmpty() || ubicacionComando.isEmpty() || fundacionId.isEmpty()) {
-            showError("Por favor, complete todos los campos obligatorios")
+    private fun guardarComando() {
+        val nombre = nombreComandoEditText.text.toString().trim()
+        val ubicacion = ubicacionComandoEditText.text.toString().trim()
+        val fundacionId = usuarioIdEditText.text.toString().trim()
+        val estado = estadoSwitch.isChecked
+        val brigada = brigadaSpinner.selectedItem.toString()
+
+        if (nombre.isEmpty() || ubicacion.isEmpty() || fundacionId.isEmpty()) {
+            showError("Complete todos los campos obligatorios")
             return
         }
 
         lifecycleScope.launch {
             try {
                 if (isEditing && currentComandoId != null) {
-                    actualizarComando(nombreComando, ubicacionComando, fundacionId, estadoComando, brigadaSeleccionada)
+                    actualizarComando(nombre, ubicacion, fundacionId, estado, brigada)
                 } else {
-                    crearComando(nombreComando, ubicacionComando, fundacionId, brigadaSeleccionada)
+                    crearComando(nombre, ubicacion, fundacionId, brigada)
                 }
             } catch (e: Exception) {
                 showError("Error: ${e.message}")
@@ -141,15 +169,16 @@ class ComandoActivity : AppCompatActivity() {
 
         comandoServices.updateComando(currentComandoId!!, updateData)
             .onSuccess {
-                showSuccess("Comando actualizado con éxito")
-                resetEditingState()
-                cargarComandos()
+                runOnUiThread {
+                    showSuccess("Comando actualizado")
+                    resetForm()
+                    cargarComandos()
+                }
             }.onFailure { error ->
                 showError("Error al actualizar: ${error.message}")
             }
     }
 
-    @SuppressLint("SuspiciousIndentation")
     private suspend fun crearComando(
         nombre: String,
         ubicacion: String,
@@ -162,30 +191,28 @@ class ComandoActivity : AppCompatActivity() {
             fundacionId = fundacionId,
             brigadas = listOf(brigada)
         )
-                    // El estado no se incluye en CreateComandoDto según tu definición
 
-                    comandoServices.createComando(createData)
-                .onSuccess {
-                    showSuccess("Comando creado con éxito")
-                    resetEditingState()
+        comandoServices.createComando(createData)
+            .onSuccess {
+                runOnUiThread {
+                    showSuccess("Comando creado")
+                    resetForm()
                     cargarComandos()
-                }.onFailure { error ->
-                    showError("Error al crear: ${error.message}")
                 }
+            }.onFailure { error ->
+                showError("Error al crear: ${error.message}")
+            }
     }
 
-    private fun resetEditingState() {
+    private fun resetForm() {
         isEditing = false
         currentComandoId = null
-        limpiarFormulario()
-    }
-
-    private fun limpiarFormulario() {
         nombreComandoEditText.text.clear()
         ubicacionComandoEditText.text.clear()
         usuarioIdEditText.text.clear()
         estadoSwitch.isChecked = false
         brigadaSpinner.setSelection(0)
+        searchView.setQuery("", false)
     }
 
     private fun onUpdateClick(comando: Comando) {
@@ -196,34 +223,37 @@ class ComandoActivity : AppCompatActivity() {
         usuarioIdEditText.setText(comando.getFundacionId())
         estadoSwitch.isChecked = comando.getEstadoComando()
 
-        // Obtener la primera brigada del comando (si existe)
-        val primeraBrigada = comando.getBrigadas().firstOrNull() ?: ""
-
-        // Buscar la posición en el spinner
-        val spinnerAdapter = brigadaSpinner.adapter as? ArrayAdapter<Any>
-        val brigadaIndex = spinnerAdapter?.getPosition(primeraBrigada) ?: 0
-
-        // Establecer la selección
-        brigadaSpinner.setSelection(brigadaIndex)
+        // Seleccionar la brigada en el spinner
+        comando.getBrigadas().firstOrNull()?.let { brigada ->
+            val spinnerAdapter = brigadaSpinner.adapter as? ArrayAdapter<*>
+            val position = spinnerAdapter?.let { adapter ->
+                (0 until adapter.count).indexOfFirst { i ->
+                    adapter.getItem(i) == brigada
+                }.takeIf { it >= 0 } ?: 0
+            } ?: 0
+            brigadaSpinner.setSelection(position)
+        }
     }
 
     private fun onDeleteClick(comando: Comando) {
         AlertDialog.Builder(this)
             .setTitle("Eliminar comando")
-            .setMessage("¿Estás seguro de que deseas eliminar este comando?")
+            .setMessage("¿Confirmas que deseas eliminar este comando?")
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
                     comandoServices.deleteComandoById(comando.getId()!!)
                         .onSuccess {
-                            showSuccess("Comando eliminado")
-                            cargarComandos()
+                            runOnUiThread {
+                                showSuccess("Comando eliminado")
+                                cargarComandos()
+                            }
                         }
                         .onFailure { error ->
-                            showError(error.message ?: "Error al eliminar")
+                            showError("Error al eliminar: ${error.message}")
                         }
                 }
             }
-            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton("No", null)
             .show()
     }
 
@@ -233,5 +263,9 @@ class ComandoActivity : AppCompatActivity() {
 
     private fun showSuccess(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showInfo(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
