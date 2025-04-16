@@ -41,7 +41,18 @@ class ComandoAdapter(
         holder.textUbicacion.text = comando.getUbicacionComando()
         holder.textEstado.text = if (comando.getEstadoComando()) "Activo" else "Inactivo"
         holder.textFundacionId.text = comando.getFundacionId()
-        holder.textBrigadas.text = comando.getBrigadas().joinToString(", ")
+        holder.textBrigadas.text = when {
+            comando.getBrigadas().isNotEmpty() &&
+                    comando.getBrigadas().first().getNombreBrigada().isNotEmpty() -> {
+                        "Brigadas: " + comando.getBrigadas()
+                            .take(3)
+                            .joinToString(", ") {it.getNombreBrigada()} +
+                                if(comando.getBrigadas().size > 3) "..." else ""
+                    }
+
+            else -> "Brigadas:  ${comando.getBrigadasIds().size}"
+        }
+
 
         holder.updateButton.setOnClickListener { onUpdateClick(comando) }
         holder.deleteButton.setOnClickListener { onDeleteClick(comando) }
