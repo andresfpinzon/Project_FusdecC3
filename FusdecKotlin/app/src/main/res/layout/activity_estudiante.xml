@@ -49,19 +49,6 @@
                     android:hint="Apellido del estudiante"/>
 
             <TextView
-                    android:id="@+id/correoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Correo"
-                    android:layout_marginTop="16dp"/>
-
-            <EditText
-                    android:id="@+id/correoEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Correo del estudiante"/>
-
-            <TextView
                     android:id="@+id/tipoDocumentoTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

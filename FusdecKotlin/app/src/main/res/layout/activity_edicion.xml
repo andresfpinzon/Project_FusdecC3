@@ -100,26 +100,6 @@
             android:gravity="center"
             android:layout_marginBottom="24dp"/>
 
-    <!-- Instructor -->
-    <TextView
-            android:id="@+id/edicionInstructor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Instructor asignado"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="4dp"/>
-
-    <EditText
-            android:id="@+id/instructorId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="ID del instructor"
-            android:inputType="text"
-            android:gravity="center"
-            android:layout_marginBottom="30dp"/>
-
     <!-- Botones -->
     <LinearLayout
             android:layout_width="match_parent"

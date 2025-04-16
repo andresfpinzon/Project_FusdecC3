@@ -9,9 +9,6 @@ data class ActualizarColegioRequest(
     @SerializedName("emailColegio")
     val email: String? = null,
 
-    @SerializedName("direccionColegio")
-    val direccion: String? = null,
-
     @SerializedName("estadoColegio")
     val estado: Boolean? = null,
 
@@ -22,14 +19,12 @@ data class ActualizarColegioRequest(
         fun from(
             nombre: String? = null,
             email: String? = null,
-            direccion: String? = null,
             estado: Boolean? = null,
             estudiantes: List<String>? = null
         ): ActualizarColegioRequest {
             return ActualizarColegioRequest(
                 nombre = nombre,
                 email = email,
-                direccion = direccion,
                 estado = estado,
                 estudiantes = estudiantes
             )

@@ -1,16 +1,16 @@
 package com.example.fusdeckotlin.models.secretario.edicion
 
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.example.fusdeckotlin.models.secretario.curso.Curso
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
 class Edicion(
     @SerializedName("_id") private val id: String,
-    @SerializedName("nombreEdicion") private var nombreEdicion: String,
-    @SerializedName("fechaInicio") private var fechaInicioString: String,
-    @SerializedName("fechaFin") private var fechaFinString: String,
-    @SerializedName("cursoId") private var cursoId: String,
-    @SerializedName("instructorId") private var instructorId: String,
+    @SerializedName("tituloEdicion") private var nombreEdicion: String,
+    @SerializedName("fechaInicioEdicion") private var fechaInicioString: String,
+    @SerializedName("fechaFinEdicion") private var fechaFinString: String,
+    @SerializedName("cursoId") private var cursoId: Any,
     @SerializedName("estadoEdicion") private var estadoEdicion: Boolean = true,
     @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList()
 ) {
@@ -18,12 +18,72 @@ class Edicion(
     fun getId(): String = id
     fun getNombreEdicion(): String = nombreEdicion
 
-    fun getFechaInicio(): LocalDate = LocalDate.parse(fechaInicioString.substring(0, 10))
-    fun getFechaFin(): LocalDate = LocalDate.parse(fechaFinString.substring(0, 10))
+    // Getters modificados para manejar valores nulos
+    fun getFechaInicio(): LocalDate {
+        return fechaInicioString?.takeIf { it.isNotBlank() }?.let {
+            try {
+                LocalDate.parse(it.substring(0, 10))
+            } catch (e: Exception) {
+                LocalDate.now()
+            }
+        } ?: LocalDate.now() // Valor por defecto si es null o vacío
+    }
 
-    fun getCursoId(): String = cursoId
-    fun getInstructorId(): String = instructorId
+    fun getFechaFin(): LocalDate {
+        return fechaFinString?.takeIf { it.isNotBlank() }?.let {
+            try {
+                LocalDate.parse(it.substring(0, 10))
+            } catch (e: Exception) {
+                LocalDate.now().plusMonths(1) // Valor por defecto si es null o vacío
+            }
+        } ?: LocalDate.now().plusMonths(1)
+    }
+
     fun getEstadoEdicion(): Boolean = estadoEdicion
+
+    // Obtener solo el ID del curso
+    fun getCursoId(): String {
+        return when(cursoId) {
+            is String -> cursoId as String
+            is Curso -> (cursoId as Curso).getId()
+            is Map<*, *> -> (cursoId as Map<*, *>)["_id"] as? String ?: ""
+            else -> ""
+        }
+    }
+
+    // Obtener objeto Curso completo (puede ser un objeto vacío si solo tenemos el ID)
+    fun getCurso(): Curso {
+        return when(cursoId) {
+            is Curso -> cursoId as Curso
+            is String -> crearCursoVacio(cursoId as String)
+            is Map<*, *> -> convertMapToCurso(cursoId as Map<*, *>)
+            else -> crearCursoVacio("")
+        }
+    }
+
+    private fun crearCursoVacio(id: String): Curso {
+        return Curso(
+            id = id,
+            nombreCurso = "",
+            descripcionCurso = "",
+            intensidadHorariaCurso = "",
+            estadoCurso = true,
+            fundacionId = "",
+            ediciones = emptyList()
+        )
+    }
+
+    private fun convertMapToCurso(map: Map<*, *>): Curso {
+        return Curso(
+            id = map["_id"] as? String ?: "",
+            nombreCurso = map["nombreCurso"] as? String ?: "",
+            descripcionCurso = map["descripcionCurso"] as? String ?: "",
+            intensidadHorariaCurso = map["intensidadHorariaCurso"] as? String ?: "",
+            estadoCurso = map["estadoCurso"] as? Boolean ?: true,
+            fundacionId = map["fundacionId"] as? String ?: "",
+            ediciones = map["ediciones"] as? List<Any> ?: emptyList()
+        )
+    }
 
     // Obtener estudiantes como objetos completos
     fun getEstudiantes(): List<Estudiante> {
@@ -55,7 +115,6 @@ class Edicion(
             id = id,
             nombreEstudiante = "",
             apellidoEstudiante = "",
-            correoEstudiante = "",
             tipoDocumento = "",
             numeroDocumento = "",
             fechaNacimientoString = LocalDate.now().toString(),
@@ -76,7 +135,6 @@ class Edicion(
             id = map["_id"] as? String ?: "",
             nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
             apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
-            correoEstudiante = map["correoEstudiante"] as? String ?: "",
             tipoDocumento = map["tipoDocumento"] as? String ?: "",
             numeroDocumento = map["numeroDocumento"] as? String ?: "",
             fechaNacimientoString = (map["fechaNacimiento"] as? String)?.take(10) ?: LocalDate.now().toString(),
@@ -106,10 +164,6 @@ class Edicion(
 
     fun setCursoId(cursoId: String) {
         this.cursoId = cursoId
-    }
-
-    fun setInstructorId(instructorId: String) {
-        this.instructorId = instructorId
     }
 
     fun setEstadoEdicion(estado: Boolean) {

@@ -35,7 +35,19 @@ class ColegioAdapter(
         holder.idTextView.text = colegio.getId()
         holder.nombreTextView.text = colegio.getNombreColegio()
         holder.emailTextView.text = colegio.getEmailColegio()
-        holder.estudiantesTextView.text = colegio.getEstudiantes().joinToString(", ")
+        // Mostrar información de estudiantes según lo disponible
+        holder.estudiantesTextView.text = when {
+            // Si tenemos objetos completos de estudiantes, mostrar nombres
+            colegio.getEstudiantes().isNotEmpty() &&
+                    colegio.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                colegio.getEstudiantes()
+                    .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+            }
+            // Si solo tenemos ID, mostrarlos directamente
+            else -> {
+                colegio.getEstudiantesIds().joinToString(", ")
+            }
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(colegio) }
         holder.deleteButton.setOnClickListener { onDeleteClick(colegio) }

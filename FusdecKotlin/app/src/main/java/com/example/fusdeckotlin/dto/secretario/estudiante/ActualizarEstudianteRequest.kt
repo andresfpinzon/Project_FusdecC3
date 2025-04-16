@@ -13,6 +13,9 @@ data class ActualizarEstudianteRequest(
     @SerializedName("tipoDocumento")
     val tipoDocumento: String? = null,
 
+    @SerializedName("numeroDocumento")
+    val numeroDocumento: String? = null,
+
     @SerializedName("fechaNacimiento")
     val fechaNacimiento: String? = null,  // Formato: "YYYY-MM-DD"
 
@@ -45,6 +48,7 @@ data class ActualizarEstudianteRequest(
             nombreEstudiante: String? = null,
             apellidoEstudiante: String? = null,
             tipoDocumento: String? = null,
+            numeroDocumento: String? = null,
             fechaNacimiento: LocalDate? = null,
             generoEstudiante: String? = null,
             unidadId: String? = null,
@@ -59,6 +63,7 @@ data class ActualizarEstudianteRequest(
                 nombreEstudiante = nombreEstudiante,
                 apellidoEstudiante = apellidoEstudiante,
                 tipoDocumento = tipoDocumento,
+                numeroDocumento = numeroDocumento,
                 fechaNacimiento = fechaNacimiento?.toString(),
                 generoEstudiante = generoEstudiante,
                 unidadId = unidadId,

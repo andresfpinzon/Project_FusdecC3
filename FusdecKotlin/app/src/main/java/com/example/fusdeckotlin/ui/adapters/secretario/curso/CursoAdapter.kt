@@ -37,10 +37,28 @@ class CursoAdapter(
         holder.nombreTextView.text = curso.getNombreCurso()
         holder.descripcionTextView.text = curso.getDescripcionCurso()
         holder.intensidadHorariaTextView.text = curso.getIntensidadHorariaCurso()
-        holder.fundacionTextView.text = curso.getFundacionId()
+        // Mostrar información de la fundación según lo disponible
+        holder.fundacionTextView.text = when {
+            // Si tenemos el objeto Fundacion completo con nombre
+            curso.getFundacion().getNombreFundacion().isNotEmpty() ->
+                curso.getFundacion().getNombreFundacion()
+            // Si solo tenemos el ID
+            else -> "Fundación ID: ${curso.getFundacionId()}"
+        }
 
-        // Mostrar información de ediciones
-        holder.edicionesTextView.text = curso.getEdiciones().joinToString(", ")
+        // Mostrar información de ediciones según lo disponible
+        holder.edicionesTextView.text = when {
+            // Si tenemos objetos completos de ediciones, mostrar títulos
+            curso.getEdiciones().isNotEmpty() &&
+                    curso.getEdiciones().first().getNombreEdicion().isNotEmpty() -> {
+                "Ediciones: " + curso.getEdiciones()
+                    .take(3) // Mostrar solo las primeras 3 para no saturar
+                    .joinToString(", ") { it.getNombreEdicion() } +
+                        if (curso.getEdiciones().size > 3) "..." else ""
+            }
+            // Si solo tenemos ID
+            else -> "Ediciones: ${curso.getEdicionesIds().size}"
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(curso) }
         holder.deleteButton.setOnClickListener { onDeleteClick(curso) }

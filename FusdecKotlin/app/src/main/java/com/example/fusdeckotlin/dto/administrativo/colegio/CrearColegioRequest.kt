@@ -9,9 +9,6 @@ data class CrearColegioRequest(
     @SerializedName("emailColegio")
     val email: String,
 
-    @SerializedName("direccionColegio")
-    val direccion: String,
-
     @SerializedName("estadoColegio")
     val estado: Boolean = true,
 
@@ -22,14 +19,12 @@ data class CrearColegioRequest(
         fun from(
             nombre: String,
             email: String,
-            direccion: String,
             estudiantes: List<String> = emptyList(),
             estado: Boolean = true
         ): CrearColegioRequest {
             return CrearColegioRequest(
                 nombre = nombre,
                 email = email,
-                direccion = direccion,
                 estado = estado,
                 estudiantes = estudiantes
             )

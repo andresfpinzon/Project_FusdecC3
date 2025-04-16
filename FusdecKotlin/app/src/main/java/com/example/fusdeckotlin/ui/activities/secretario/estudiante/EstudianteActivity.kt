@@ -23,7 +23,6 @@ class EstudianteActivity : AppCompatActivity() {
 
     private lateinit var nombreEditText: EditText
     private lateinit var apellidoEditText: EditText
-    private lateinit var correoEditText: EditText
     private lateinit var tipoDocumentoEditText: EditText
     private lateinit var numeroDocumentoEditText: EditText
     private lateinit var fechaNacimientoEditText: EditText
@@ -47,7 +46,6 @@ class EstudianteActivity : AppCompatActivity() {
         // Inicializar vistas
         nombreEditText = findViewById(R.id.nombreEditText)
         apellidoEditText = findViewById(R.id.apellidoEditText)
-        correoEditText = findViewById(R.id.correoEditText)
         tipoDocumentoEditText = findViewById(R.id.tipoDocumentoEditText)
         numeroDocumentoEditText = findViewById(R.id.numeroDocumentoEditText)
         fechaNacimientoEditText = findViewById(R.id.fechaNacimientoEditText)
@@ -113,7 +111,6 @@ class EstudianteActivity : AppCompatActivity() {
     private fun guardarEstudiante() {
         val nombre = nombreEditText.text.toString().trim()
         val apellido = apellidoEditText.text.toString().trim()
-        val correo = correoEditText.text.toString().trim()
         val tipoDocumento = tipoDocumentoEditText.text.toString().trim()
         val numeroDocumento = numeroDocumentoEditText.text.toString().trim()
         val fechaNacimientoStr = fechaNacimientoEditText.text.toString().trim()
@@ -121,7 +118,7 @@ class EstudianteActivity : AppCompatActivity() {
         val unidadId = unidadIdEditText.text.toString().trim()
         val colegioId = colegioIdEditText.text.toString().trim()
 
-        if (nombre.isEmpty() || apellido.isEmpty() || correo.isEmpty() || tipoDocumento.isEmpty() ||
+        if (nombre.isEmpty() || apellido.isEmpty() || tipoDocumento.isEmpty() ||
             numeroDocumento.isEmpty() || fechaNacimientoStr.isEmpty() || genero.isEmpty() ||
             unidadId.isEmpty() || colegioId.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
@@ -138,6 +135,7 @@ class EstudianteActivity : AppCompatActivity() {
                         nombre,
                         apellido,
                         tipoDocumento,
+                        numeroDocumento,
                         fechaNacimiento,
                         genero,
                         unidadId,
@@ -154,7 +152,6 @@ class EstudianteActivity : AppCompatActivity() {
                     estudianteServicio.crearEstudiante(
                         nombre,
                         apellido,
-                        correo,
                         tipoDocumento,
                         numeroDocumento,
                         fechaNacimiento,
@@ -188,7 +185,6 @@ class EstudianteActivity : AppCompatActivity() {
     private fun limpiarFormulario() {
         nombreEditText.text.clear()
         apellidoEditText.text.clear()
-        correoEditText.text.clear()
         tipoDocumentoEditText.text.clear()
         numeroDocumentoEditText.text.clear()
         fechaNacimientoEditText.text.clear()
@@ -202,7 +198,6 @@ class EstudianteActivity : AppCompatActivity() {
         currentEstudianteId = estudiante.getId()
         nombreEditText.setText(estudiante.getNombreEstudiante())
         apellidoEditText.setText(estudiante.getApellidoEstudiante())
-        correoEditText.setText(estudiante.getCorreoEstudiante())
         tipoDocumentoEditText.setText(estudiante.getTipoDocumento())
         numeroDocumentoEditText.setText(estudiante.getNumeroDocumento())
         fechaNacimientoEditText.setText(

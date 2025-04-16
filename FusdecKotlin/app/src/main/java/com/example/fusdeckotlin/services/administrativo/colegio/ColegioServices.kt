@@ -15,14 +15,12 @@ class ColegioServices {
     suspend fun crearColegio(
         nombre: String,
         email: String,
-        direccion: String,
         estudiantes: List<String>
     ): Result<Colegio> {
         return try {
             val request = CrearColegioRequest.from(
                 nombre = nombre,
                 email = email,
-                direccion = direccion,
                 estudiantes = estudiantes
             )
 
@@ -55,7 +53,6 @@ class ColegioServices {
         id: String,
         nombre: String? = null,
         email: String? = null,
-        direccion: String? = null,
         estado: Boolean? = null,
         estudiantes: List<String>? = null
     ): Result<Colegio> {
@@ -63,7 +60,6 @@ class ColegioServices {
             val request = ActualizarColegioRequest.from(
                 nombre = nombre,
                 email = email,
-                direccion = direccion,
                 estado = estado,
                 estudiantes = estudiantes
             )

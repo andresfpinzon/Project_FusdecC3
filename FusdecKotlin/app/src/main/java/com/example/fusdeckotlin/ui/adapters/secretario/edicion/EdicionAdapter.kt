@@ -38,7 +38,13 @@ class EdicionAdapter(
         holder.nombreTextView.text = edicion.getNombreEdicion()
         holder.fechaInicioTextView.text = edicion.getFechaInicio().format(dateFormatter)
         holder.fechaFinTextView.text = edicion.getFechaFin().format(dateFormatter)
-        holder.cursoTextView.text = edicion.getCursoId()
+        holder.cursoTextView.text = when {
+            // Si tenemos el objeto Curso completo con nombre
+            edicion.getCurso().getNombreCurso().isNotEmpty() ->
+                edicion.getCurso().getNombreCurso()
+            // Si solo tenemos el ID
+            else -> edicion.getCursoId()
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(edicion) }
         holder.deleteButton.setOnClickListener { onDeleteClick(edicion) }

@@ -21,11 +21,10 @@ import java.util.*
 
 class EdicionActivity : AppCompatActivity() {
 
-    private lateinit var nombreEditText: EditText
+    private lateinit var tituloEditText: EditText
     private lateinit var fechaInicioEditText: EditText
     private lateinit var fechaFinEditText: EditText
     private lateinit var cursoIdEditText: EditText
-    private lateinit var instructorIdEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var edicionesRecyclerView: RecyclerView
@@ -41,11 +40,10 @@ class EdicionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edicion)
 
         // Inicializar vistas
-        nombreEditText = findViewById(R.id.tituloEdicion)
+        tituloEditText = findViewById(R.id.tituloEdicion)
         fechaInicioEditText = findViewById(R.id.fechaInicioEdicion)
         fechaFinEditText = findViewById(R.id.fechaFinEdicion)
         cursoIdEditText = findViewById(R.id.cursoId)
-        instructorIdEditText = findViewById(R.id.instructorId)
         confirmarButton = findViewById(R.id.confirmarEdicionButton)
         cancelarButton = findViewById(R.id.cancelarEdicionButton)
         edicionesRecyclerView = findViewById(R.id.edicionesRecyclerView)
@@ -104,13 +102,12 @@ class EdicionActivity : AppCompatActivity() {
     }
 
     private fun guardarEdicion() {
-        val nombre = nombreEditText.text.toString().trim()
+        val titulo = tituloEditText.text.toString().trim()
         val fechaInicioStr = fechaInicioEditText.text.toString().trim()
         val fechaFinStr = fechaFinEditText.text.toString().trim()
         val cursoId = cursoIdEditText.text.toString().trim()
-        val instructorId = instructorIdEditText.text.toString().trim()
 
-        if (nombre.isEmpty() || fechaInicioStr.isEmpty() || fechaFinStr.isEmpty() || cursoId.isEmpty() || instructorId.isEmpty()) {
+        if (titulo.isEmpty() || fechaInicioStr.isEmpty() || fechaFinStr.isEmpty() || cursoId.isEmpty() ) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
@@ -123,10 +120,10 @@ class EdicionActivity : AppCompatActivity() {
                 if (isEditing && currentEdicionId != null) {
                     edicionServicio.actualizarEdicion(
                         currentEdicionId!!,
-                        nombre,
+                        titulo,
                         fechaInicio,
                         fechaFin,
-                        instructorId,
+                        cursoId,
                         true
                     ).onSuccess {
                         Toast.makeText(this@EdicionActivity, "Edición actualizada", Toast.LENGTH_SHORT).show()
@@ -141,11 +138,10 @@ class EdicionActivity : AppCompatActivity() {
                     }
                 } else {
                     edicionServicio.crearEdicion(
-                        nombre,
+                        titulo,
                         fechaInicio,
                         fechaFin,
                         cursoId,
-                        instructorId
                     ).onSuccess {
                         Toast.makeText(this@EdicionActivity, "Edición creada", Toast.LENGTH_SHORT).show()
                         resetEditingState()
@@ -175,21 +171,19 @@ class EdicionActivity : AppCompatActivity() {
     }
 
     private fun limpiarFormulario() {
-        nombreEditText.text.clear()
+        tituloEditText.text.clear()
         fechaInicioEditText.text.clear()
         fechaFinEditText.text.clear()
         cursoIdEditText.text.clear()
-        instructorIdEditText.text.clear()
     }
 
     private fun onUpdateClick(edicion: Edicion) {
         isEditing = true
         currentEdicionId = edicion.getId()
-        nombreEditText.setText(edicion.getNombreEdicion())
+        tituloEditText.setText(edicion.getNombreEdicion())
         fechaInicioEditText.setText(edicion.getFechaInicio().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
         fechaFinEditText.setText(edicion.getFechaFin().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
         cursoIdEditText.setText(edicion.getCursoId())
-        instructorIdEditText.setText(edicion.getInstructorId())
     }
 
     private fun onDeleteClick(edicion: Edicion) {

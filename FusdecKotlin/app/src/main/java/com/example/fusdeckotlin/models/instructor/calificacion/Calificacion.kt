@@ -26,7 +26,7 @@ class Calificacion(
                 is Estudiante -> it
                 is String -> Estudiante(
                     id = it, "", "", "", "", "", "", "",
-                    "", "", false, emptyList(), emptyList(), emptyList(), emptyList()
+                    "", false, emptyList(), emptyList(), emptyList(), emptyList()
                 )
                 is Map<*, *> -> convertMapToEstudiante(it)
                 else -> null
@@ -52,7 +52,6 @@ class Calificacion(
             id = map["_id"] as? String ?: "",
             nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
             apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
-            correoEstudiante = map["correoEstudiante"] as? String ?: "",
             tipoDocumento = map["tipoDocumento"] as? String ?: "",
             numeroDocumento = map["numeroDocumento"] as? String ?: "",
             fechaNacimientoString = (map["fechaNacimiento"] as? String)?.substring(0, 10) ?: "",
@@ -84,7 +83,7 @@ class Calificacion(
         this.estadoCalificacion = estado
     }
 
-    // Setter para estudiantes (acepta tanto objetos como IDs)
+    // Setter para estudiantes (acepta tanto objetos como ID)
     fun setEstudiantes(estudiantes: List<Any>) {
         this.estudiantes = estudiantes
     }

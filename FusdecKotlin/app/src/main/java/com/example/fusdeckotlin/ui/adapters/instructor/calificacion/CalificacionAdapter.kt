@@ -36,8 +36,19 @@ class CalificacionAdapter(
         holder.aprobadoTextView.text = if (calificacion.getAprobado()) "Aprobado" else "Reprobado"
         holder.usuarioIdTextView.text = calificacion.getUsuarioId()
 
-        // Mostrar solo los IDs de los estudiantes (lista de Strings)
-        holder.estudiantesTextView.text = calificacion.getEstudiantes().joinToString(", ")
+        // Mostrar información de estudiantes según lo disponible
+        holder.estudiantesTextView.text = when {
+            // Si tenemos objetos completos de estudiantes, mostrar nombres
+            calificacion.getEstudiantes().isNotEmpty() &&
+                    calificacion.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                calificacion.getEstudiantes()
+                    .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+            }
+            // Si solo tenemos ID, mostrarlos directamente
+            else -> {
+                calificacion.getEstudiantesIds().joinToString(", ")
+            }
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(calificacion) }
         holder.deleteButton.setOnClickListener { onDeleteClick(calificacion) }

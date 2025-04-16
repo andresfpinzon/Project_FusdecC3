@@ -163,7 +163,7 @@ class CursoActivity : AppCompatActivity() {
         fundacionId.setText(curso.getFundacionId())
 
         // Mostrar ediciones como lista separada por comas
-        val edicionesIds = curso.getEdiciones()
+        val edicionesIds = curso.getEdicionesIds()
         edicionesCurso.setText(edicionesIds.joinToString(", "))
     }
 

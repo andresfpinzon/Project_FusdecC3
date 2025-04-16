@@ -10,9 +10,6 @@ data class CrearEstudianteRequest(
     @SerializedName("apellidoEstudiante")
     val apellidoEstudiante: String,
 
-    @SerializedName("correoEstudiante")
-    val correoEstudiante: String,
-
     @SerializedName("tipoDocumento")
     val tipoDocumento: String,
 
@@ -50,7 +47,6 @@ data class CrearEstudianteRequest(
         fun from(
             nombreEstudiante: String,
             apellidoEstudiante: String,
-            correoEstudiante: String,
             tipoDocumento: String,
             numeroDocumento: String,
             fechaNacimiento: LocalDate,
@@ -66,7 +62,6 @@ data class CrearEstudianteRequest(
             return CrearEstudianteRequest(
                 nombreEstudiante = nombreEstudiante,
                 apellidoEstudiante = apellidoEstudiante,
-                correoEstudiante = correoEstudiante,
                 tipoDocumento = tipoDocumento,
                 numeroDocumento = numeroDocumento,
                 fechaNacimiento = fechaNacimiento.toString(),

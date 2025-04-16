@@ -16,7 +16,6 @@ Asistencia(
     // Getters
     fun getId(): String = id
     fun getTituloAsistencia(): String = tituloAsistencia
-
     fun getFechaAsistencia(): LocalDate {
         return LocalDate.parse(fechaAsistenciaString.substring(0, 10))
     }
@@ -28,7 +27,7 @@ Asistencia(
         return estudiantes.mapNotNull {
             when (it) {
                 is Estudiante -> it
-                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "", "", false, emptyList(), emptyList(), emptyList(), emptyList())
+                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "", false, emptyList(), emptyList(), emptyList(), emptyList())
                 is Map<*, *> -> convertMapToEstudiante(it)
                 else -> null
             }
@@ -51,7 +50,6 @@ Asistencia(
             id = map["_id"] as? String ?: "",
             nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
             apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
-            correoEstudiante = map["correoEstudiante"] as? String ?: "",
             tipoDocumento = map["tipoDocumento"] as? String ?: "",
             numeroDocumento = map["numeroDocumento"] as? String ?: "",
             fechaNacimientoString = (map["fechaNacimiento"] as? String)?.substring(0, 10) ?: "",

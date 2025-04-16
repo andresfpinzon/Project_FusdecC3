@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
 data class ActualizarEdicionRequest(
-    @SerializedName("nombreEdicion")
+    @SerializedName("tituloEdicion")
     val nombre: String? = null,
 
-    @SerializedName("fechaInicio")
+    @SerializedName("fechaInicioEdicion")
     val fechaInicio: String? = null,  // Formato: "YYYY-MM-DD"
 
-    @SerializedName("fechaFin")
+    @SerializedName("fechaFinEdicion")
     val fechaFin: String? = null,     // Formato: "YYYY-MM-DD"
 
-    @SerializedName("instructorId")
-    val instructorId: String? = null,
+    @SerializedName("cursoId")
+    val cursoId: String? = null,
 
     @SerializedName("estadoEdicion")
     val estado: Boolean? = null,
@@ -27,7 +27,7 @@ data class ActualizarEdicionRequest(
             nombre: String? = null,
             fechaInicio: LocalDate? = null,
             fechaFin: LocalDate? = null,
-            instructorId: String? = null,
+            cursoId: String? = null,
             estado: Boolean? = null,
             estudiantes: List<String>? = null
         ): ActualizarEdicionRequest {
@@ -35,7 +35,7 @@ data class ActualizarEdicionRequest(
                 nombre = nombre,
                 fechaInicio = fechaInicio?.toString(),
                 fechaFin = fechaFin?.toString(),
-                instructorId = instructorId,
+                cursoId = cursoId,
                 estado = estado,
                 estudiantes = estudiantes
             )

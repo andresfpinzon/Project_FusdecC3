@@ -18,7 +18,6 @@ class EdicionServices {
         fechaInicio: LocalDate,
         fechaFin: LocalDate,
         cursoId: String,
-        instructorId: String,
         estudiantes: List<String> = emptyList()
     ): Result<Edicion> {
         return try {
@@ -27,7 +26,6 @@ class EdicionServices {
                 fechaInicio = fechaInicio,
                 fechaFin = fechaFin,
                 cursoId = cursoId,
-                instructorId = instructorId,
                 estudiantes = estudiantes
             )
 
@@ -61,7 +59,7 @@ class EdicionServices {
         nombre: String? = null,
         fechaInicio: LocalDate? = null,
         fechaFin: LocalDate? = null,
-        instructorId: String? = null,
+        cursoId: String? = null,
         estado: Boolean? = null,
         estudiantes: List<String>? = null
     ): Result<Edicion> {
@@ -70,7 +68,7 @@ class EdicionServices {
                 nombre = nombre,
                 fechaInicio = fechaInicio,
                 fechaFin = fechaFin,
-                instructorId = instructorId,
+                cursoId = cursoId,
                 estado = estado,
                 estudiantes = estudiantes
             )

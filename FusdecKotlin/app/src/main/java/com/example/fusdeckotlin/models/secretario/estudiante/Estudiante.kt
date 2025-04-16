@@ -11,7 +11,6 @@ class Estudiante(
     @SerializedName("_id") private val id: String,
     @SerializedName("nombreEstudiante") private var nombreEstudiante: String,
     @SerializedName("apellidoEstudiante") private var apellidoEstudiante: String,
-    @SerializedName("correoEstudiante") private val correoEstudiante: String,
     @SerializedName("tipoDocumento") private var tipoDocumento: String,
     @SerializedName("numeroDocumento") private val numeroDocumento: String,
     @SerializedName("fechaNacimiento") private var fechaNacimientoString: String,
@@ -28,7 +27,6 @@ class Estudiante(
     fun getId(): String = id
     fun getNombreEstudiante(): String = nombreEstudiante
     fun getApellidoEstudiante(): String = apellidoEstudiante
-    fun getCorreoEstudiante(): String = correoEstudiante
     fun getTipoDocumento(): String = tipoDocumento
     fun getNumeroDocumento(): String = numeroDocumento
 
@@ -43,23 +41,26 @@ class Estudiante(
 
     // Getters para relaciones (versión objetos completos)
     fun getEdicionesObjects(): List<Edicion> {
-        return ediciones.mapNotNull {
-            when (it) {
-                is Edicion -> it
-                is String -> Edicion(
-                    it,
-                    "",
-                    LocalDate.now().toString(),
-                    LocalDate.now().toString(),
-                    "",
-                    "",
-                    false,
-                    emptyList()
-                )
-                is Map<*, *> -> convertMapToEdicion(it)
+        return ediciones.mapNotNull { item ->
+            when (item) {
+                is Edicion -> item
+                is String -> createDefaultEdicion(item)
+                is Map<*, *> -> convertMapToEdicion(item)
                 else -> null
             }
         }
+    }
+
+    private fun createDefaultEdicion(id: String): Edicion {
+        return Edicion(
+            id = id,
+            nombreEdicion = "",
+            fechaInicioString = LocalDate.now().toString(),
+            fechaFinString = LocalDate.now().toString(),
+            cursoId = "",
+            estadoEdicion = true,
+            estudiantes = emptyList()
+        )
     }
 
     fun getCalificaciones(): List<Calificacion> {
@@ -158,7 +159,6 @@ class Estudiante(
             fechaInicioString = (map["fechaInicio"] as? String)?.substring(0, 10) ?: LocalDate.now().toString(),
             fechaFinString = (map["fechaFin"] as? String)?.substring(0, 10) ?: LocalDate.now().toString(),
             cursoId = map["cursoId"] as? String ?: "",
-            instructorId = map["instructorId"] as? String ?: "",
             estadoEdicion = map["estadoEdicion"] as? Boolean ?: false,
             estudiantes = map["estudiantes"] as? List<Any> ?: emptyList()
         )

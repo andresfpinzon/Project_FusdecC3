@@ -19,7 +19,6 @@ class ColegioActivity : AppCompatActivity() {
 
     private lateinit var nombreEditText: EditText
     private lateinit var emailEditText: EditText
-    private lateinit var direccionEditText: EditText
     private lateinit var estudiantesEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
@@ -38,7 +37,6 @@ class ColegioActivity : AppCompatActivity() {
         // Inicializar vistas
         nombreEditText = findViewById(R.id.nombreColegioEditText)
         emailEditText = findViewById(R.id.emailColegioEditText)
-        direccionEditText = findViewById(R.id.direccionColegioEditText)
         estudiantesEditText = findViewById(R.id.estudiantesEditText)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
@@ -77,10 +75,9 @@ class ColegioActivity : AppCompatActivity() {
     private fun guardarColegio() {
         val nombre = nombreEditText.text.toString().trim()
         val email = emailEditText.text.toString().trim()
-        val direccion = direccionEditText.text.toString().trim()
         val estudiantes = estudiantesEditText.text.toString().trim()
 
-        if (nombre.isEmpty() || email.isEmpty() || direccion.isEmpty() || estudiantes.isEmpty()) {
+        if (nombre.isEmpty() || email.isEmpty() || estudiantes.isEmpty()) {
             showError("Por favor, complete todos los campos")
             return
         }
@@ -94,7 +91,6 @@ class ColegioActivity : AppCompatActivity() {
                         currentColegioId!!,
                         nombre,
                         email,
-                        direccion,
                         true,
                         estudiantesList
                     ).onSuccess {
@@ -108,7 +104,6 @@ class ColegioActivity : AppCompatActivity() {
                     colegioServicio.crearColegio(
                         nombre,
                         email,
-                        direccion,
                         estudiantesList
                     ).onSuccess {
                         showSuccess("Colegio creado")
@@ -141,7 +136,6 @@ class ColegioActivity : AppCompatActivity() {
     private fun limpiarFormulario() {
         nombreEditText.text.clear()
         emailEditText.text.clear()
-        direccionEditText.text.clear()
         estudiantesEditText.text.clear()
     }
 
@@ -150,8 +144,7 @@ class ColegioActivity : AppCompatActivity() {
         currentColegioId = colegio.getId()
         nombreEditText.setText(colegio.getNombreColegio())
         emailEditText.setText(colegio.getEmailColegio())
-        direccionEditText.setText(colegio.getDireccionColegio())
-        estudiantesEditText.setText(colegio.getEstudiantes().joinToString(", "))
+        estudiantesEditText.setText(colegio.getEstudiantesIds().joinToString(", "))
     }
 
     private fun onDeleteClick(colegio: Colegio) {

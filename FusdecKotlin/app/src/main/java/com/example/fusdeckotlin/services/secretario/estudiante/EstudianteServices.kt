@@ -16,7 +16,6 @@ class EstudianteServices {
     suspend fun crearEstudiante(
         nombreEstudiante: String,
         apellidoEstudiante: String,
-        correoEstudiante: String,
         tipoDocumento: String,
         numeroDocumento: String,
         fechaNacimiento: LocalDate,
@@ -28,7 +27,6 @@ class EstudianteServices {
             val request = CrearEstudianteRequest.from(
                 nombreEstudiante = nombreEstudiante,
                 apellidoEstudiante = apellidoEstudiante,
-                correoEstudiante = correoEstudiante,
                 tipoDocumento = tipoDocumento,
                 numeroDocumento = numeroDocumento,
                 fechaNacimiento = fechaNacimiento,
@@ -67,6 +65,7 @@ class EstudianteServices {
         nombreEstudiante: String? = null,
         apellidoEstudiante: String? = null,
         tipoDocumento: String? = null,
+        numeroDocumento: String? = null,
         fechaNacimiento: LocalDate? = null,
         generoEstudiante: String? = null,
         unidadId: String? = null,
@@ -82,6 +81,7 @@ class EstudianteServices {
                 nombreEstudiante = nombreEstudiante,
                 apellidoEstudiante = apellidoEstudiante,
                 tipoDocumento = tipoDocumento,
+                numeroDocumento = numeroDocumento,
                 fechaNacimiento = fechaNacimiento,
                 generoEstudiante = generoEstudiante,
                 unidadId = unidadId,

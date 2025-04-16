@@ -19,7 +19,6 @@ class EstudianteAdapter(
     class EstudianteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreTextView)
         val apellidoTextView: TextView = itemView.findViewById(R.id.apellidoTextView)
-        val correoTextView: TextView = itemView.findViewById(R.id.correoTextView)
         val tipoDocumentoTextView: TextView = itemView.findViewById(R.id.tipoDocumentoTextView)
         val numeroDocumentoTextView: TextView = itemView.findViewById(R.id.numeroDocumentoTextView)
         val fechaNacimientoTextView: TextView = itemView.findViewById(R.id.fechaNacimientoTextView)
@@ -43,7 +42,6 @@ class EstudianteAdapter(
 
         holder.nombreTextView.text = estudiante.getNombreEstudiante()
         holder.apellidoTextView.text = estudiante.getApellidoEstudiante()
-        holder.correoTextView.text = estudiante.getCorreoEstudiante()
         holder.tipoDocumentoTextView.text = estudiante.getTipoDocumento()
         holder.numeroDocumentoTextView.text = estudiante.getNumeroDocumento()
         holder.fechaNacimientoTextView.text = estudiante.getFechaNacimiento().format(formatter)

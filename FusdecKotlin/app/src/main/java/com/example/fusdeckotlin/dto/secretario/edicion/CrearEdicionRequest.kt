@@ -4,20 +4,17 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
 data class CrearEdicionRequest(
-    @SerializedName("nombreEdicion")
+    @SerializedName("tituloEdicion")
     val nombre: String,
 
-    @SerializedName("fechaInicio")
+    @SerializedName("fechaInicioEdicion")
     val fechaInicio: String,  // Formato: "YYYY-MM-DD"
 
-    @SerializedName("fechaFin")
+    @SerializedName("fechaFinEdicion")
     val fechaFin: String,     // Formato: "YYYY-MM-DD"
 
     @SerializedName("cursoId")
     val cursoId: String,
-
-    @SerializedName("instructorId")
-    val instructorId: String,
 
     @SerializedName("estadoEdicion")
     val estado: Boolean = true,
@@ -31,7 +28,6 @@ data class CrearEdicionRequest(
             fechaInicio: LocalDate,
             fechaFin: LocalDate,
             cursoId: String,
-            instructorId: String,
             estudiantes: List<String> = emptyList()
         ): CrearEdicionRequest {
             return CrearEdicionRequest(
@@ -39,7 +35,6 @@ data class CrearEdicionRequest(
                 fechaInicio = fechaInicio.toString(),
                 fechaFin = fechaFin.toString(),
                 cursoId = cursoId,
-                instructorId = instructorId,
                 estado = true,
                 estudiantes = estudiantes
             )
