@@ -40,7 +40,13 @@ class ComandoAdapter(
         holder.textNombre.text = comando.getNombreComando()
         holder.textUbicacion.text = comando.getUbicacionComando()
         holder.textEstado.text = if (comando.getEstadoComando()) "Activo" else "Inactivo"
-        holder.textFundacionId.text = comando.getFundacionId()
+        holder.textFundacionId.text = when {
+            // Si tenemos el objeto Fundacion completo con nombre
+            comando.getFundacionObject().getNombreFundacion().isNotEmpty() ->
+                comando.getFundacionObject().getNombreFundacion()
+            // Si solo tenemos el ID
+            else -> "Fundación ID: ${comando.getFundacionId()}"
+        }
         holder.textBrigadas.text = when {
             comando.getBrigadas().isNotEmpty() &&
                     comando.getBrigadas().first().getNombreBrigada().isNotEmpty() -> {
