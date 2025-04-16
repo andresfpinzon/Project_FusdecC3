@@ -34,11 +34,23 @@ class AsistenciaAdapter(
     override fun onBindViewHolder(holder: AsistenciaViewHolder, position: Int) {
         val asistencia = asistencias[position]
         holder.tituloTextView.text = asistencia.getTituloAsistencia()
-        // Formatear fecha para mostrar (dd/MM/yyyy)
         holder.fechaTextView.text = asistencia.getFechaAsistencia()
             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         holder.usuarioIdTextView.text = asistencia.getUsuarioId()
-        holder.estudiantesTextView.text = asistencia.getEstudiantes().joinToString(", ")
+
+        // Mostrar información de estudiantes según lo disponible
+        holder.estudiantesTextView.text = when {
+            // Si tenemos objetos completos de estudiantes, mostrar nombres
+            asistencia.getEstudiantes().isNotEmpty() &&
+                    asistencia.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                asistencia.getEstudiantes()
+                    .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+            }
+            // Si solo tenemos ID, mostrarlos directamente
+            else -> {
+                asistencia.getEstudiantesIds().joinToString(", ")
+            }
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(asistencia) }
         holder.deleteButton.setOnClickListener { onDeleteClick(asistencia) }
@@ -51,4 +63,3 @@ class AsistenciaAdapter(
         notifyDataSetChanged()
     }
 }
-

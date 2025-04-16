@@ -7,46 +7,53 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.secretario.edicion.Edicion
+import com.example.fusdeckotlin.models.secretario.edicion.Edicion
+import java.time.format.DateTimeFormatter
 
-class EdicionAdapter (
-    private val ediciones: MutableList<Edicion>,
+class EdicionAdapter(
+    private var ediciones: List<Edicion>,
     private val onUpdateClick: (Edicion) -> Unit,
     private val onDeleteClick: (Edicion) -> Unit
 ) : RecyclerView.Adapter<EdicionAdapter.EdicionViewHolder>() {
 
-    inner class EdicionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tituloEdicion: TextView = itemView.findViewById(R.id.tituloEdicion)
-        private val fechaInicioEdicion: TextView = itemView.findViewById(R.id.fechaInicioEdicion)
-        private val fechaFinEdicion: TextView = itemView.findViewById(R.id.fechaFinEdicion)
-        private val cursoId: TextView = itemView.findViewById(R.id.cursoId)
-        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
-        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+    class EdicionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nombreTextView: TextView = itemView.findViewById(R.id.tituloEdicion)
+        val fechaInicioTextView: TextView = itemView.findViewById(R.id.fechaInicioEdicion)
+        val fechaFinTextView: TextView = itemView.findViewById(R.id.fechaFinEdicion)
+        val cursoTextView: TextView = itemView.findViewById(R.id.cursoId)
+        val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+    }
 
-            fun bind(edicion: Edicion) {
-                tituloEdicion.text = edicion.getTituloEdicion()
-                fechaInicioEdicion.text = edicion.getFechaInicioEdicion().toString()
-                fechaFinEdicion.text = edicion.getFechaFinEdicion().toString()
-                cursoId.text = edicion.getCursoId()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EdicionViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_edicion, parent, false)
+        return EdicionViewHolder(view)
+    }
 
-                updateButton.setOnClickListener {
-                    onUpdateClick(edicion)
-                }
+    override fun onBindViewHolder(holder: EdicionViewHolder, position: Int) {
+        val edicion = ediciones[position]
+        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-                deleteButton.setOnClickListener {
-                    onDeleteClick(edicion)
-                }
-            }
+        holder.nombreTextView.text = edicion.getNombreEdicion()
+        holder.fechaInicioTextView.text = edicion.getFechaInicio().format(dateFormatter)
+        holder.fechaFinTextView.text = edicion.getFechaFin().format(dateFormatter)
+        holder.cursoTextView.text = when {
+            // Si tenemos el objeto Curso completo con nombre
+            edicion.getCurso().getNombreCurso().isNotEmpty() ->
+                edicion.getCurso().getNombreCurso()
+            // Si solo tenemos el ID
+            else -> edicion.getCursoId()
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EdicionViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_edicion, parent, false)
-            return EdicionViewHolder(view)
-        }
+        holder.updateButton.setOnClickListener { onUpdateClick(edicion) }
+        holder.deleteButton.setOnClickListener { onDeleteClick(edicion) }
+    }
 
-        override fun onBindViewHolder(holder: EdicionViewHolder, position: Int) {
-            holder.bind(ediciones[position])
-        }
+    override fun getItemCount(): Int = ediciones.size
 
-        override fun getItemCount(): Int = ediciones.size
+    fun actualizarLista(nuevasEdiciones: List<Edicion>) {
+        ediciones = nuevasEdiciones
+        notifyDataSetChanged()
+    }
 }

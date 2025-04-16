@@ -7,41 +7,67 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.secretario.curso.Curso
+import com.example.fusdeckotlin.models.secretario.curso.Curso
 
 class CursoAdapter(
-    private val cursos: MutableList<Curso>,
+    private var cursos: List<Curso>,
     private val onUpdateClick: (Curso) -> Unit,
     private val onDeleteClick: (Curso) -> Unit
 ) : RecyclerView.Adapter<CursoAdapter.CursoViewHolder>() {
 
-    inner class CursoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val nombreCurso: TextView = itemView.findViewById(R.id.tituloCurso)
-        private val descripcionCurso: TextView = itemView.findViewById(R.id.descripcionCurso)
-        private val intensidadHorariaCurso: TextView = itemView.findViewById(R.id.intensidadHorariaCurso)
-        private val fundacionId: TextView = itemView.findViewById(R.id.fundacionId)
-        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
-        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
-
-        fun bind(curso: Curso) {
-            nombreCurso.text = curso.getNombreCurso()
-            descripcionCurso.text = curso.getDescripcionCurso()
-            intensidadHorariaCurso.text = curso.getIntensidadHorariaCurso()
-            fundacionId.text = curso.getFundacionId()
-
-            updateButton.setOnClickListener { onUpdateClick(curso) }
-            deleteButton.setOnClickListener { onDeleteClick(curso) }
-        }
+    class CursoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nombreTextView: TextView = itemView.findViewById(R.id.tituloCurso)
+        val descripcionTextView: TextView = itemView.findViewById(R.id.descripcionCurso)
+        val intensidadHorariaTextView: TextView = itemView.findViewById(R.id.intensidadHorariaCurso)
+        val fundacionTextView: TextView = itemView.findViewById(R.id.fundacionId)
+        val edicionesTextView: TextView = itemView.findViewById(R.id.edicionesCurso)
+        val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CursoViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_curso, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_curso, parent, false)
         return CursoViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CursoViewHolder, position: Int) {
-        holder.bind(cursos[position])
+        val curso = cursos[position]
+
+        holder.nombreTextView.text = curso.getNombreCurso()
+        holder.descripcionTextView.text = curso.getDescripcionCurso()
+        holder.intensidadHorariaTextView.text = curso.getIntensidadHorariaCurso()
+        // Mostrar información de la fundación según lo disponible
+        holder.fundacionTextView.text = when {
+            // Si tenemos el objeto Fundacion completo con nombre
+            curso.getFundacion().getNombreFundacion().isNotEmpty() ->
+                curso.getFundacion().getNombreFundacion()
+            // Si solo tenemos el ID
+            else -> "Fundación ID: ${curso.getFundacionId()}"
+        }
+
+        // Mostrar información de ediciones según lo disponible
+        holder.edicionesTextView.text = when {
+            // Si tenemos objetos completos de ediciones, mostrar títulos
+            curso.getEdiciones().isNotEmpty() &&
+                    curso.getEdiciones().first().getNombreEdicion().isNotEmpty() -> {
+                "Ediciones: " + curso.getEdiciones()
+                    .take(3) // Mostrar solo las primeras 3 para no saturar
+                    .joinToString(", ") { it.getNombreEdicion() } +
+                        if (curso.getEdiciones().size > 3) "..." else ""
+            }
+            // Si solo tenemos ID
+            else -> "Ediciones: ${curso.getEdicionesIds().size}"
+        }
+
+        holder.updateButton.setOnClickListener { onUpdateClick(curso) }
+        holder.deleteButton.setOnClickListener { onDeleteClick(curso) }
     }
 
     override fun getItemCount(): Int = cursos.size
+
+    fun actualizarLista(nuevosCursos: List<Curso>) {
+        cursos = nuevosCursos
+        notifyDataSetChanged()
+    }
 }

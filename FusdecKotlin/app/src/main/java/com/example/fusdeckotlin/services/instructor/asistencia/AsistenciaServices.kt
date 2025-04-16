@@ -2,12 +2,14 @@ package com.example.fusdeckotlin.services.instructor.asistencia
 
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.instructor.asistencia.ActualizarAsistenciaRequest
 import com.example.fusdeckotlin.dto.instructor.asistencia.CrearAsistenciaRequest
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 import java.time.LocalDate
-import retrofit2.Response
 
-class AsistenciaServicio {
+class AsistenciaServices {
 
     private val asistenciaApi: AsistenciaApi = RetrofitClient.asistenciaApi
 
@@ -56,25 +58,18 @@ class AsistenciaServicio {
         fechaAsistencia: LocalDate? = null,
         usuarioId: String? = null,
         estadoAsistencia: Boolean? = null,
-        estudiantes: List<String>? = null
+        estudiantesIds: List<String>? = null
     ): Result<Asistencia> {
         return try {
+            val request = ActualizarAsistenciaRequest.from(
+                titulo = tituloAsistencia,
+                fecha = fechaAsistencia,
+                usuarioId = usuarioId,
+                estado = estadoAsistencia,
+                estudiantes = estudiantesIds
+            )
 
-            val currentResponse = asistenciaApi.obtenerAsistenciaPorId(id)
-            if (!currentResponse.isSuccessful || currentResponse.body() == null) {
-                return Result.failure(Exception("Asistencia no encontrada"))
-            }
-
-            val asistenciaActual = currentResponse.body()!!
-
-
-            tituloAsistencia?.let { asistenciaActual.setTituloAsistencia(it) }
-            fechaAsistencia?.let { asistenciaActual.setFechaAsistencia(it) }
-            usuarioId?.let { asistenciaActual.setUsuarioId(it) }
-            estadoAsistencia?.let { asistenciaActual.setEstadoAsistencia(it) }
-            estudiantes?.let { asistenciaActual.setEstudiantes(it) }
-
-            val response = asistenciaApi.actualizarAsistencia(id, asistenciaActual)
+            val response = asistenciaApi.actualizarAsistencia(id, request)
             handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -100,26 +95,5 @@ class AsistenciaServicio {
         }
     }
 
-    private fun <T> handleResponse(response: Response<T>): Result<T> {
-        return if (response.isSuccessful) {
-            response.body()?.let {
-                Result.success(it)
-            } ?: Result.failure(Exception("Respuesta vacía del servidor"))
-        } else {
-            Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
-        }
-    }
 
-    private fun <T> handleListResponse(
-        response: Response<List<T>>,
-        transform: (List<T>) -> List<T> = { it }
-    ): Result<List<T>> {
-        return if (response.isSuccessful) {
-            response.body()?.let {
-                Result.success(transform(it))
-            } ?: Result.failure(Exception("Respuesta vacía del servidor"))
-        } else {
-            Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
-        }
-    }
 }

@@ -21,7 +21,6 @@ async function crearEdicion(body) {
     fechaFinEdicion: body.fechaFinEdicion,
     estadoEdicion: body.estadoEdicion,
     cursoId: body.cursoId,
-    horarios: body.horarios || [],
     estudiantes: body.estudiantes || [],
   });
 
@@ -63,7 +62,6 @@ async function actualizarEdicion(id, body) {
         fechaInicioEdicion: body.fechaInicioEdicion,
         fechaFinEdicion: body.fechaFinEdicion,
         cursoId: body.cursoId,
-        horarios: body.horarios,
         estudiantes: body.estudiantes,
       },
     },
@@ -102,33 +100,8 @@ async function desactivarEdicion(id) {
 async function listarEdicionesActivas() {
   try {
     let ediciones = await Edicion.find({ estadoEdicion: true })
-      .populate({
-        path: 'cursoId',
-        select: '-__v',
-        options: { allowEmptyReference: true }
-      })
-      .populate({
-        path: 'horarios',
-        select: 'diaHorario horaInicio horaFin estadoHorario -_id',
-        match: { estadoHorario: true },
-        options: { allowEmptyReference: true }
-      })
-      .populate({
-        path: 'estudiantes',
-        select: '-__v',
-        options: { allowEmptyReference: true }
-      });
-    
-    // Filter out null populated fields
-    ediciones = ediciones.map(edicion => {
-      return {
-        ...edicion.toObject(),
-        horarios: edicion.horarios?.filter(h => h) || [],
-        estudiantes: edicion.estudiantes?.filter(e => e) || [],
-        cursoId: edicion.cursoId || null
-      };
-    });
-    
+    .populate('cursoId')
+    .populate('estudiantes');
     return ediciones;
   } catch (error) {
     console.error('Error al listar las ediciones (edicion_logic):', error);
@@ -141,7 +114,6 @@ async function buscarEdicionPorId(id) {
   try {
     const edicion = await Edicion.findById(id)
     .populate('cursoId')
-    .populate('horarios')
     .populate('estudiantes');
     if (!edicion) {
       throw new Error(`Edición con ID ${id} no encontrado`);

@@ -20,7 +20,6 @@ const crearEdicion = async (req, res) => {
     fechaFinEdicion: body.fechaFinEdicion,
     estadoEdicion: body.estadoEdicion,
     cursoId: body.cursoId,
-    horarios: body.horarios,
     estudiantes: body.estudiantes,
   });
   if (error) {
@@ -46,7 +45,6 @@ const actualizarEdicion = async (req, res) => {
     fechaInicioEdicion: body.fechaInicioEdicion,
     fechaFinEdicion: body.fechaFinEdicion,
     cursoId: body.cursoId,
-    horarios: body.horarios,
     estudiantes: body.estudiantes,
   });
   if (error) {

@@ -28,13 +28,6 @@ const EdicionSchema = new Schema(
       ref: "Curso",
       default: null, // permite que el curso en la edición sea opcional
     },
-    horarios: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Horario',
-        required: false
-      },
-    ],    
     estudiantes: [
       {
         type: Schema.Types.ObjectId,

@@ -10,53 +10,53 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
 
 class ColegioAdapter(
-    private val colegios: MutableList<Colegio>,
+    private var colegios: List<Colegio>,
     private val onUpdateClick: (Colegio) -> Unit,
     private val onDeleteClick: (Colegio) -> Unit
 ) : RecyclerView.Adapter<ColegioAdapter.ColegioViewHolder>() {
 
-    private val originalColegios = colegios.toMutableList()
-
-    inner class ColegioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textIdColegio: TextView = itemView.findViewById(R.id.textViewColegioId)
-        val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
-        val textEmail: TextView = itemView.findViewById(R.id.textViewEmail)
-        val textEstudiantes: TextView = itemView.findViewById(R.id.textViewEstudiantes)
+    class ColegioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val idTextView: TextView = itemView.findViewById(R.id.textViewColegioId)
+        val nombreTextView: TextView = itemView.findViewById(R.id.textViewNombre)
+        val emailTextView: TextView = itemView.findViewById(R.id.textViewEmail)
+        val estudiantesTextView: TextView = itemView.findViewById(R.id.textViewEstudiantes)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColegioViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_colegio, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_colegio, parent, false)
         return ColegioViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ColegioViewHolder, position: Int) {
         val colegio = colegios[position]
-        holder.textIdColegio.text = colegio.getId()
-        holder.textNombre.text = colegio.getNombreColegio()
-        holder.textEmail.text = colegio.getEmailColegio()
-        holder.textEstudiantes.text = colegio.getEstudiantes().joinToString(", ")
+        holder.idTextView.text = colegio.getId()
+        holder.nombreTextView.text = colegio.getNombreColegio()
+        holder.emailTextView.text = colegio.getEmailColegio()
+        // Mostrar información de estudiantes según lo disponible
+        holder.estudiantesTextView.text = when {
+            // Si tenemos objetos completos de estudiantes, mostrar nombres
+            colegio.getEstudiantes().isNotEmpty() &&
+                    colegio.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                colegio.getEstudiantes()
+                    .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+            }
+            // Si solo tenemos ID, mostrarlos directamente
+            else -> {
+                colegio.getEstudiantesIds().joinToString(", ")
+            }
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(colegio) }
         holder.deleteButton.setOnClickListener { onDeleteClick(colegio) }
     }
 
-    fun filter(query: String?) {
-        colegios.clear()
-        if (query.isNullOrEmpty()) {
-            colegios.addAll(originalColegios)
-        } else {
-            colegios.addAll(originalColegios.filter { it.getNombreColegio().contains(query, ignoreCase = true) })
-        }
-        notifyDataSetChanged()
-    }
-
     override fun getItemCount(): Int = colegios.size
 
     fun actualizarLista(nuevosColegios: List<Colegio>) {
-        colegios.clear()
-        colegios.addAll(nuevosColegios)
+        colegios = nuevosColegios
         notifyDataSetChanged()
     }
 }

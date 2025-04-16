@@ -1,76 +1,91 @@
 package com.example.fusdeckotlin.services.secretario.edicion
 
-import models.secretario.edicion.Edicion
-import java.util.*
+import com.example.fusdeckotlin.api.secretario.edicion.EdicionApi
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.secretario.edicion.ActualizarEdicionRequest
+import com.example.fusdeckotlin.dto.secretario.edicion.CrearEdicionRequest
+import com.example.fusdeckotlin.models.secretario.edicion.Edicion
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
+import java.time.LocalDate
 
 class EdicionServices {
 
-    companion object {
+    private val edicionApi: EdicionApi = RetrofitClient.edicionApi
 
-        fun crearEdicion(
-            ediciones: MutableList<Edicion>,
-            id: String = UUID.randomUUID().toString(),
-            tituloEdicion: String,
-            fechaInicioEdicion: Date,
-            fechaFinEdicion: Date,
-            cursoId: String,
-            estadoEdicion: Boolean = true,
-            horarios: List<String> = emptyList(),
-            estudiantes: List<String> = emptyList()
-        ): Edicion {
-            if (tituloEdicion.isBlank() || cursoId.isBlank()) {
-                throw IllegalArgumentException("El título y el curso ID son obligatorios")
-            }
-
-            val nuevaEdicion = Edicion(
-                id = id,
-                tituloEdicion = tituloEdicion,
-                fechaInicioEdicion = fechaInicioEdicion,
-                fechaFinEdicion = fechaFinEdicion,
-                estadoEdicion = estadoEdicion,
+    suspend fun crearEdicion(
+        nombre: String,
+        fechaInicio: LocalDate,
+        fechaFin: LocalDate,
+        cursoId: String,
+        estudiantes: List<String> = emptyList()
+    ): Result<Edicion> {
+        return try {
+            val request = CrearEdicionRequest.from(
+                nombre = nombre,
+                fechaInicio = fechaInicio,
+                fechaFin = fechaFin,
                 cursoId = cursoId,
-                horarios = horarios,
                 estudiantes = estudiantes
             )
 
-            ediciones.add(nuevaEdicion)
-            return nuevaEdicion
+            val response = edicionApi.crearEdicion(request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun listarEdicionesActivas(ediciones: List<Edicion>): List<Edicion> {
-            return ediciones.filter { it.getEstadoEdicion() }
+    suspend fun listarEdicionesActivas(): Result<List<Edicion>> {
+        return try {
+            val response = edicionApi.listarEdicionesActivas()
+            handleListResponse(response) { it.filter { edicion -> edicion.getEstadoEdicion() } }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun obtenerEdicionPorId(ediciones: List<Edicion>, id: String): Edicion {
-            return ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edicion no encontrada")
+    suspend fun obtenerEdicionPorId(id: String): Result<Edicion> {
+        return try {
+            val response = edicionApi.obtenerEdicionPorId(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun actualizarEdicion(
-            ediciones: MutableList<Edicion>,
-            id: String,
-            tituloEdicion: String? = null,
-            fechaInicioEdicion: Date? = null,
-            fechaFinEdicion: Date? = null,
-            estadoEdicion: Boolean? = null,
-            cursoId: String? = null,
-            horarios: List<String>? = null,
-            estudiantes: List<String>? = null
-        ): Edicion {
-            val edicion = ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edicion no encontrada")
+    suspend fun actualizarEdicion(
+        id: String,
+        nombre: String? = null,
+        fechaInicio: LocalDate? = null,
+        fechaFin: LocalDate? = null,
+        cursoId: String? = null,
+        estado: Boolean? = null,
+        estudiantes: List<String>? = null
+    ): Result<Edicion> {
+        return try {
+            val request = ActualizarEdicionRequest.from(
+                nombre = nombre,
+                fechaInicio = fechaInicio,
+                fechaFin = fechaFin,
+                cursoId = cursoId,
+                estado = estado,
+                estudiantes = estudiantes
+            )
 
-            tituloEdicion?.let { edicion.setTituloEdicion(it) }
-            fechaInicioEdicion?.let { edicion.setFechaInicioEdicion(it) }
-            fechaFinEdicion?.let { edicion.setFechaFinEdicion(it) }
-            estadoEdicion?.let { edicion.setEstadoEdicion(it) }
-            cursoId?.let { edicion.setCursoId(it) }
-
-            return edicion
+            val response = edicionApi.actualizarEdicion(id, request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun desactivarEdicion(ediciones: MutableList<Edicion>, id: String): Edicion {
-            val edicion = ediciones.find { it.getId() == id } ?: throw NoSuchElementException("Edición no encontrada")
-            edicion.setEstadoEdicion(false)
-            return edicion
+    suspend fun desactivarEdicion(id: String): Result<Edicion> {
+        return try {
+            val response = edicionApi.desactivarEdicion(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

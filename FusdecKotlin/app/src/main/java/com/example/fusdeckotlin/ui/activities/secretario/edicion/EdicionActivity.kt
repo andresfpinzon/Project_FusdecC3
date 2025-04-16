@@ -7,179 +7,211 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.secretario.edicion.Edicion
 import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
 import com.example.fusdeckotlin.ui.adapters.secretario.edicion.EdicionAdapter
-import models.secretario.edicion.Edicion
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class EdicionActivity : AppCompatActivity() {
 
-    private lateinit var tituloEdicion: EditText
-    private lateinit var fechaInicioEdicion: EditText
-    private lateinit var fechaFinEdicion: EditText
-    private lateinit var cursoId: EditText
-    private lateinit var confirmarEdicionButton: Button
-    private lateinit var cancelarEdicionButton: Button
+    private lateinit var tituloEditText: EditText
+    private lateinit var fechaInicioEditText: EditText
+    private lateinit var fechaFinEditText: EditText
+    private lateinit var cursoIdEditText: EditText
+    private lateinit var confirmarButton: Button
+    private lateinit var cancelarButton: Button
     private lateinit var edicionesRecyclerView: RecyclerView
 
-    private val ediciones = mutableListOf<Edicion>(Edicion.edicion1, Edicion.edicion2, Edicion.edicion3)
+    private val edicionServicio = EdicionServices()
     private lateinit var adapter: EdicionAdapter
 
     private var isEditing: Boolean = false
     private var currentEdicionId: String? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edicion)
 
-        tituloEdicion = findViewById(R.id.tituloEdicion)
-        fechaInicioEdicion = findViewById(R.id.fechaInicioEdicion)
-        fechaFinEdicion = findViewById(R.id.fechaFinEdicion)
-        cursoId = findViewById(R.id.cursoId)
-        confirmarEdicionButton = findViewById(R.id.confirmarEdicionButton)
-        cancelarEdicionButton = findViewById(R.id.cancelarEdicionButton)
+        // Inicializar vistas
+        tituloEditText = findViewById(R.id.tituloEdicion)
+        fechaInicioEditText = findViewById(R.id.fechaInicioEdicion)
+        fechaFinEditText = findViewById(R.id.fechaFinEdicion)
+        cursoIdEditText = findViewById(R.id.cursoId)
+        confirmarButton = findViewById(R.id.confirmarEdicionButton)
+        cancelarButton = findViewById(R.id.cancelarEdicionButton)
         edicionesRecyclerView = findViewById(R.id.edicionesRecyclerView)
 
         // Configurar RecyclerView
-        adapter = EdicionAdapter(ediciones, ::onUpdateClick, ::onDeleteClick)
+        adapter = EdicionAdapter(
+            emptyList(),
+            ::onUpdateClick,
+            ::onDeleteClick
+        )
         edicionesRecyclerView.layoutManager = LinearLayoutManager(this)
         edicionesRecyclerView.adapter = adapter
 
-        // Configurar selector de fecha
-        fechaInicioEdicion.setOnClickListener {
-            mostrarDatePicker(true)
-        }
+        // Cargar ediciones al iniciar
+        cargarEdiciones()
 
-        fechaFinEdicion.setOnClickListener {
-            mostrarDatePicker(false)
-        }
+        // Configurar DatePickers
+        fechaInicioEditText.setOnClickListener { mostrarDatePicker(fechaInicioEditText) }
+        fechaFinEditText.setOnClickListener { mostrarDatePicker(fechaFinEditText) }
 
-        confirmarEdicionButton.setOnClickListener {
-            guardarEdicion()
-        }
+        // Botón confirmar
+        confirmarButton.setOnClickListener { guardarEdicion() }
 
-        cancelarEdicionButton.setOnClickListener {
-            finish() // Cierra la Activity sin guardar datos
+        // Botón cancelar
+        cancelarButton.setOnClickListener { finish() }
+    }
+
+    private fun cargarEdiciones() {
+        lifecycleScope.launch {
+            val result = edicionServicio.listarEdicionesActivas()
+            result.onSuccess { ediciones ->
+                adapter.actualizarLista(ediciones)
+            }.onFailure { error ->
+                Toast.makeText(
+                    this@EdicionActivity,
+                    "Error al cargar ediciones: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
-    private fun mostrarDatePicker(isFechaInicio: Boolean) {
+    private fun mostrarDatePicker(editText: EditText) {
         val calendar = Calendar.getInstance()
         val datePicker = DatePickerDialog(
             this,
             { _, year, month, dayOfMonth ->
-                val selectedDate = Calendar.getInstance()
-                selectedDate.set(year, month, dayOfMonth)
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                if (isFechaInicio) {
-                    fechaInicioEdicion.setText(dateFormat.format(selectedDate.time))
-                } else {
-                    fechaFinEdicion.setText(dateFormat.format(selectedDate.time))
-                }
+                val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                editText.setText(selectedDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
         datePicker.show()
-        }
-
-    private fun generarIdUnico(): String {
-        // Generar un ID único
-        return "ASIS${ediciones.size + 1}"
     }
 
     private fun guardarEdicion() {
-        val titulo = tituloEdicion.text.toString().trim()
-        val fechaInicio = fechaInicioEdicion.text.toString().trim()
-        val fechaFin = fechaFinEdicion.text.toString().trim()
-        val curso = cursoId.text.toString().trim()
+        val titulo = tituloEditText.text.toString().trim()
+        val fechaInicioStr = fechaInicioEditText.text.toString().trim()
+        val fechaFinStr = fechaFinEditText.text.toString().trim()
+        val cursoId = cursoIdEditText.text.toString().trim()
 
-        if (titulo.isEmpty() || fechaInicio.isEmpty() || fechaFin.isEmpty() || curso.isEmpty()) {
+        if (titulo.isEmpty() || fechaInicioStr.isEmpty() || fechaFinStr.isEmpty() || cursoId.isEmpty() ) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
 
-        try {
-            if (isEditing) {
-                // Actualizar la edicion existente
-                EdicionServices.actualizarEdicion(
-                    ediciones,
-                     currentEdicionId!!,
-                    titulo,
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaInicio)!!,
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaFin)!!,
-                    true,
-                    curso
-                )
-                Toast.makeText(this, "Edicion actualizada exitosamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-                currentEdicionId = null
-            } else {
-                // Crear una nueva edicion
-                val id = generarIdUnico()
-                val nuevaEdicion = EdicionServices.crearEdicion(
-                    ediciones,
-                    id,
-                    titulo,
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaInicio)!!,
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(fechaFin)!!,
-                    curso,
-                    true
-                )
-                Toast.makeText(this, "Asistencia guardada exitosamente", Toast.LENGTH_SHORT).show()
-            }
+        lifecycleScope.launch {
+            try {
+                val fechaInicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+                val fechaFin = LocalDate.parse(fechaFinStr, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
-            adapter.notifyDataSetChanged()
-            limpiarFormulario()
-        } catch (e: IllegalArgumentException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+                if (isEditing && currentEdicionId != null) {
+                    edicionServicio.actualizarEdicion(
+                        currentEdicionId!!,
+                        titulo,
+                        fechaInicio,
+                        fechaFin,
+                        cursoId,
+                        true
+                    ).onSuccess {
+                        Toast.makeText(this@EdicionActivity, "Edición actualizada", Toast.LENGTH_SHORT).show()
+                        resetEditingState()
+                        cargarEdiciones()
+                    }.onFailure { error ->
+                        Toast.makeText(
+                            this@EdicionActivity,
+                            "Error al actualizar: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    edicionServicio.crearEdicion(
+                        titulo,
+                        fechaInicio,
+                        fechaFin,
+                        cursoId,
+                    ).onSuccess {
+                        Toast.makeText(this@EdicionActivity, "Edición creada", Toast.LENGTH_SHORT).show()
+                        resetEditingState()
+                        cargarEdiciones()
+                    }.onFailure { error ->
+                        Toast.makeText(
+                            this@EdicionActivity,
+                            "Error al crear: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@EdicionActivity,
+                    "Error en fechas: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
+    private fun resetEditingState() {
+        isEditing = false
+        currentEdicionId = null
+        limpiarFormulario()
+    }
+
     private fun limpiarFormulario() {
-        tituloEdicion.text.clear()
-        fechaInicioEdicion.text.clear()
-        fechaFinEdicion.text.clear()
-        cursoId.text.clear()
+        tituloEditText.text.clear()
+        fechaInicioEditText.text.clear()
+        fechaFinEditText.text.clear()
+        cursoIdEditText.text.clear()
     }
 
     private fun onUpdateClick(edicion: Edicion) {
         isEditing = true
         currentEdicionId = edicion.getId()
-        tituloEdicion.setText(edicion.getTituloEdicion())
-        fechaInicioEdicion.setText(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(edicion.getFechaInicioEdicion()))
-        fechaInicioEdicion.setText(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(edicion.getFechaFinEdicion()))
-        cursoId.setText(edicion.getCursoId())
+        tituloEditText.setText(edicion.getNombreEdicion())
+        fechaInicioEditText.setText(edicion.getFechaInicio().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+        fechaFinEditText.setText(edicion.getFechaFin().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
+        cursoIdEditText.setText(edicion.getCursoId())
     }
 
     private fun onDeleteClick(edicion: Edicion) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Confirmar eliminación")
-        builder.setMessage("¿Estás seguro de que deseas eliminar esta edicion?")
+        builder.setTitle("Confirmar desactivación")
+        builder.setMessage("¿Estás seguro de que deseas desactivar esta edición?")
 
         builder.setPositiveButton("Sí") { _, _ ->
-            try {
-                EdicionServices.desactivarEdicion(ediciones, edicion.getId())
-                ediciones.remove(edicion)
-                adapter.notifyDataSetChanged()
-                Toast.makeText(this, "Edicion eliminada", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val result = edicionServicio.desactivarEdicion(edicion.getId())
+                result.onSuccess {
+                    Toast.makeText(
+                        this@EdicionActivity,
+                        "Edición desactivada",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    cargarEdiciones()
+                }.onFailure { error ->
+                    Toast.makeText(
+                        this@EdicionActivity,
+                        error.message ?: "Error al desactivar",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
-        builder.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val dialog = builder.create()
-        dialog.show()
+        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+        builder.create().show()
     }
-
 }

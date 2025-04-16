@@ -1,27 +1,70 @@
 package com.example.fusdeckotlin.models.administrativo.unidad
 
-data class Unidad(
-    private val id: String,
-    private var nombreUnidad: String,
-    private var brigadaId: String,
-    private var estadoUnidad: Boolean,
-    private var usuarioId: String,
-    private var comandos: List<String>,
-    private var estudiantes: List<String>
+import com.google.gson.annotations.SerializedName
+
+class Unidad(
+    @SerializedName("_id") private val id: String,
+    @SerializedName("nombreUnidad") private var nombreUnidad: String,
+    @SerializedName("brigadaId") private var brigadaId: Any, // String o Brigada
+    @SerializedName("estadoUnidad") private var estadoUnidad: Boolean = true,
+    @SerializedName("usuarioId") private var usuarioId: Any, // String o Usuario
+    @SerializedName("comandos") private var comandos: List<Any> = emptyList(), // String o Comando
+    @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList() // String o Estudiante
 ) {
+    // Getters básicos
     fun getId() = id
     fun getNombreUnidad() = nombreUnidad
-    fun getBrigadaId() = brigadaId
     fun getEstadoUnidad() = estadoUnidad
-    fun getUsuarioId() = usuarioId
-    fun getComandos() = comandos
-    fun getEstudiantes() = estudiantes
 
+    // Manejo flexible de relaciones
+    fun getBrigadaId(): String {
+        return when(brigadaId) {
+            is String -> brigadaId as String
+            else -> "" // Implementar lógica si recibe objeto Brigada
+        }
+    }
+
+    fun getUsuarioId(): String {
+        return when(usuarioId) {
+            is String -> usuarioId as String
+            else -> ""
+        }
+    }
+
+    fun getComandos(): List<String> {
+        return comandos.map {
+            when(it) {
+                is String -> it
+                else -> ""
+            }
+        }.filter { it.isNotEmpty() }
+    }
+
+    fun getEstudiantes(): List<String> {
+        return estudiantes.map {
+            when(it) {
+                is String -> it
+                else -> ""
+            }
+        }.filter { it.isNotEmpty() }
+    }
+
+    // Versiones que devuelven objetos completos
+    fun getBrigada(): Any = brigadaId
+    fun getUsuario(): Any = usuarioId
+    fun getComandosObjects(): List<Any> = comandos
+    fun getEstudiantesObjects(): List<Any> = estudiantes
+
+    // Setters
     fun setNombreUnidad(nombre: String) {
         nombreUnidad = nombre
     }
 
     fun setBrigadaId(brigada: String) {
+        brigadaId = brigada
+    }
+
+    fun setBrigada(brigada: Any) {
         brigadaId = brigada
     }
 
@@ -33,7 +76,15 @@ data class Unidad(
         usuarioId = usuario
     }
 
+    fun setUsuario(usuario: Any) {
+        usuarioId = usuario
+    }
+
     fun setComandos(comandos: List<String>) {
+        this.comandos = comandos
+    }
+
+    fun setComandosObjects(comandos: List<Any>) {
         this.comandos = comandos
     }
 
@@ -41,25 +92,19 @@ data class Unidad(
         this.estudiantes = estudiantes
     }
 
-    companion object {
-        val unidad1 = Unidad(
-            id = "UNI01",
-            nombreUnidad = "Unidad 1",
-            brigadaId = "BRIG01",
-            estadoUnidad = true,
-            usuarioId = "USU01",
-            comandos = listOf("COM01", "COM02"),
-            estudiantes = listOf("andres", "ramiro")
-        )
+    fun setEstudiantesObjects(estudiantes: List<Any>) {
+        this.estudiantes = estudiantes
+    }
 
-        val unidad2 = Unidad(
-            id = "UNI02",
-            nombreUnidad = "Unidad 2",
-            brigadaId = "BRIG02",
+    companion object {
+        fun createDefault() = Unidad(
+            id = "",
+            nombreUnidad = "",
+            brigadaId = "",
             estadoUnidad = true,
-            usuarioId = "USU02",
-            comandos = listOf("COM03", "COM04"),
-            estudiantes = listOf("andres", "ramiros")
+            usuarioId = "",
+            comandos = emptyList(),
+            estudiantes = emptyList()
         )
     }
 }

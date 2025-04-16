@@ -24,21 +24,12 @@
             android:layout_marginTop="8dp" />
 
     <TextView
-            android:id="@+id/correoTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Correo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/apellidoTextView"
-            android:layout_marginTop="8dp" />
-
-    <TextView
             android:id="@+id/tipoDocumentoTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Tipo de Documento"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/correoTextView"
+            app:layout_constraintTop_toBottomOf="@id/apellidoTextView"
             android:layout_marginTop="8dp" />
 
     <TextView

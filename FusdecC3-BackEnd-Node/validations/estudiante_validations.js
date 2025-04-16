@@ -24,15 +24,6 @@ const estudianteSchemaValidation = Joi.object({
       'string.max': 'El apellido del estudiante no puede exceder los 100 caracteres',
       'any.required': 'El apellido del estudiante es un campo requerido',
     }),
-  
-  correoEstudiante: Joi.string()
-    .email()
-    .required()
-    .messages({
-      'string.email': 'El correo debe ser un correo electrónico válido',
-      'string.empty': 'El correo no puede estar vacío',
-      'any.required': 'El correo es un campo requerido',
-    }),
 
   tipoDocumento: Joi.string()
     .valid('C.C', 'T.I', 'Otro')  

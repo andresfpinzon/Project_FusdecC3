@@ -14,11 +14,6 @@ const EstudianteSchema = new Schema({
     type: String,
     required: true,
   },
-  correoEstudiante: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   tipoDocumento: {
     type: String,
     required: true,

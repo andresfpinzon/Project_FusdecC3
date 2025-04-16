@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.api.instructor.asistencia
 
+import com.example.fusdeckotlin.dto.instructor.asistencia.ActualizarAsistenciaRequest
 import com.example.fusdeckotlin.dto.instructor.asistencia.CrearAsistenciaRequest
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import retrofit2.Response
@@ -15,7 +16,7 @@ interface AsistenciaApi {
     @PUT("api/asistencias/{id}")
     suspend fun actualizarAsistencia(
         @Path("id") id: String,
-        @Body asistencia: Asistencia
+        @Body request: ActualizarAsistenciaRequest
     ): Response<Asistencia>
 
     @DELETE("api/asistencias/{id}")

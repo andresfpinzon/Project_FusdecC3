@@ -7,13 +7,14 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.instructor.calificacion.Calificacion
-import com.example.fusdeckotlin.services.instructor.calificacion.CalificacionServicio
+import com.example.fusdeckotlin.services.instructor.calificacion.CalificacionServices
 import com.example.fusdeckotlin.ui.adapters.instructor.calificacion.CalificacionAdapter
-import java.util.*
+import kotlinx.coroutines.launch
 
 class CalificacionActivity : AppCompatActivity() {
 
@@ -25,7 +26,7 @@ class CalificacionActivity : AppCompatActivity() {
     private lateinit var cancelarButton: Button
     private lateinit var calificacionesRecyclerView: RecyclerView
 
-    private val calificaciones = mutableListOf(Calificacion.calificacion1, Calificacion.calificacion2)
+    private val calificacionServicio = CalificacionServices()
     private lateinit var adapter: CalificacionAdapter
 
     private var isEditing: Boolean = false
@@ -44,32 +45,46 @@ class CalificacionActivity : AppCompatActivity() {
         cancelarButton = findViewById(R.id.cancelarButton)
         calificacionesRecyclerView = findViewById(R.id.calificacionesRecyclerView)
 
-        // Configurar RecyclerView con asistencias activas
+        // Configurar RecyclerView
         adapter = CalificacionAdapter(
-            CalificacionServicio.listarCalificacionesActivas(calificaciones),
+            emptyList(),
             ::onUpdateClick,
             ::onDeleteClick
         )
         calificacionesRecyclerView.layoutManager = LinearLayoutManager(this)
         calificacionesRecyclerView.adapter = adapter
 
-        // Configurar un listener para manejar los cambios en el estado del Switch
+        // Cargar calificaciones al iniciar
+        cargarCalificaciones()
+
+        // Configurar Switch
         aprobadoSwitch.setOnCheckedChangeListener { _, isChecked ->
             aprobadoSwitch.text = if (isChecked) "Aprobado" else "Reprobado"
         }
-
 
         // Botón confirmar
         confirmarButton.setOnClickListener { guardarCalificacion() }
 
         // Botón cancelar
         cancelarButton.setOnClickListener { finish() }
-
     }
 
-    private fun generarIdUnico(): String = "CAL${calificaciones.size + 1}"
+    private fun cargarCalificaciones() {
+        lifecycleScope.launch {
+            val result = calificacionServicio.listarCalificacionesActivas()
+            result.onSuccess { calificaciones ->
+                adapter.actualizarLista(calificaciones)
+            }.onFailure { error ->
+                Toast.makeText(
+                    this@CalificacionActivity,
+                    "Error al cargar calificaciones: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
-    private fun guardarCalificacion(){
+    private fun guardarCalificacion() {
         val titulo = tituloEditText.text.toString().trim()
         val aprobado = aprobadoSwitch.isChecked
         val usuarioId = usuarioIdEditText.text.toString().trim()
@@ -80,48 +95,58 @@ class CalificacionActivity : AppCompatActivity() {
             return
         }
 
-        try {
-            if (isEditing){
+        lifecycleScope.launch {
+            try {
+                val estudiantesList = estudiantes.split(",").map { it.trim() }
 
-                // Actualizar la calificacion existente
-                CalificacionServicio.actualizarCalificacion(
-                    calificaciones,
-                    currentCalificacionId!!,
-                    titulo,
-                    aprobado,
-                    usuarioId,
-                    true,
-                    estudiantes.split(",")
-                )
-                Toast.makeText(this, "Calificacion actualizada exitosamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-                currentCalificacionId = null
-
-            }else {
-                // Crear nueva calificacion
-
-                val  id = generarIdUnico()
-
-                CalificacionServicio.crearCalificacion(
-                    calificaciones,
-                    id,
-                    titulo,
-                    aprobado,
-                    usuarioId,
-                    true,
-                    estudiantes.split(",")
-                )
-                Toast.makeText(this, "Calificacion guardada exitosamente", Toast.LENGTH_SHORT).show()
+                if (isEditing && currentCalificacionId != null) {
+                    calificacionServicio.actualizarCalificacion(
+                        currentCalificacionId!!,
+                        titulo,
+                        aprobado,
+                        usuarioId,
+                        true,
+                        estudiantesList
+                    ).onSuccess {
+                        Toast.makeText(this@CalificacionActivity, "Calificación actualizada", Toast.LENGTH_SHORT).show()
+                        resetEditingState()
+                        cargarCalificaciones()
+                    }.onFailure { error ->
+                        showError("Error al actualizar: ${error.message}")
+                    }
+                } else {
+                    calificacionServicio.crearCalificacion(
+                        titulo,
+                        aprobado,
+                        usuarioId,
+                        estudiantesList
+                    ).onSuccess {
+                        Toast.makeText(this@CalificacionActivity, "Calificación creada", Toast.LENGTH_SHORT).show()
+                        resetEditingState()
+                        cargarCalificaciones()
+                    }.onFailure { error ->
+                        showError("Error al crear: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                showError("Error: ${e.message}")
             }
-            actualizarLista()
-            limpiarFormulario()
-        } catch (e: IllegalArgumentException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun resetEditingState() {
+        isEditing = false
+        currentCalificacionId = null
+        limpiarFormulario()
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun limpiarFormulario() {
         tituloEditText.text.clear()
+        aprobadoSwitch.isChecked = false
         usuarioIdEditText.text.clear()
         estudiantesEditText.text.clear()
     }
@@ -132,28 +157,38 @@ class CalificacionActivity : AppCompatActivity() {
         tituloEditText.setText(calificacion.getTituloCalificacion())
         aprobadoSwitch.isChecked = calificacion.getAprobado()
         usuarioIdEditText.setText(calificacion.getUsuarioId())
-        estudiantesEditText.setText(calificacion.getEstudiantes().joinToString(", "))
+
+        // Usar getEstudiantesIds() para obtener los ID
+        val estudiantesIds = calificacion.getEstudiantesIds()
+        estudiantesEditText.setText(estudiantesIds.joinToString(", "))
     }
 
-    private fun onDeleteClick(calificacion: Calificacion){
+    private fun onDeleteClick(calificacion: Calificacion) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Confirmar eliminación")
-        builder.setMessage("¿Estás seguro de que deseas eliminar esta asistencia?")
+        builder.setMessage("¿Estás seguro de que deseas eliminar esta calificación?")
 
         builder.setPositiveButton("Sí") { _, _ ->
-            try {
-                CalificacionServicio.desactivarCalificacion(calificaciones, calificacion.getId())
-                actualizarLista()
-                Toast.makeText(this, "Calificacion eliminada", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val result = calificacionServicio.desactivarCalificacion(calificacion.getId())
+                result.onSuccess {
+                    Toast.makeText(
+                        this@CalificacionActivity,
+                        "Calificación eliminada",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    cargarCalificaciones()
+                }.onFailure { error ->
+                    Toast.makeText(
+                        this@CalificacionActivity,
+                        error.message ?: "Error al eliminar",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
+
         builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
-    private fun actualizarLista() {
-        adapter.actualizarLista(CalificacionServicio.listarCalificacionesActivas(calificaciones))
-    }
-
 }

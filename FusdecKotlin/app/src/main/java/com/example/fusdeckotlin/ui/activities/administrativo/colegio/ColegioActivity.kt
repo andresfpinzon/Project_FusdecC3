@@ -3,31 +3,28 @@ package com.example.fusdeckotlin.ui.activities.administrativo.colegio
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.ui.adapters.administrador.colegioAdapter.ColegioAdapter
-import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
+import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
+import com.example.fusdeckotlin.ui.adapters.administrador.colegioAdapter.ColegioAdapter
+import kotlinx.coroutines.launch
 
 class ColegioActivity : AppCompatActivity() {
 
-    private lateinit var nombreColegioEditText: EditText
-    private lateinit var emailColegioEditText: EditText
+    private lateinit var nombreEditText: EditText
+    private lateinit var emailEditText: EditText
     private lateinit var estudiantesEditText: EditText
-    private lateinit var direccionColegioEditText: EditText
-    private lateinit var estadoColegioswitch: Switch
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var colegiosRecyclerView: RecyclerView
-    private lateinit var searchView: SearchView
 
-    private val colegios = mutableListOf(Colegio.colegio1, Colegio.colegio2)
+    private val colegioServicio = ColegioServices()
     private lateinit var adapter: ColegioAdapter
 
     private var isEditing: Boolean = false
@@ -37,142 +34,137 @@ class ColegioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_colegio)
 
-        nombreColegioEditText = findViewById(R.id.nombreColegioEditText)
-        emailColegioEditText = findViewById(R.id.emailColegioEditText)
+        // Inicializar vistas
+        nombreEditText = findViewById(R.id.nombreColegioEditText)
+        emailEditText = findViewById(R.id.emailColegioEditText)
         estudiantesEditText = findViewById(R.id.estudiantesEditText)
-        direccionColegioEditText = findViewById(R.id.direccionColegioEditText)
-        estadoColegioswitch = findViewById(R.id.estadoColegioSwitch)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
         colegiosRecyclerView = findViewById(R.id.colegiosRecyclerView)
-        searchView = findViewById(R.id.searchViewColegio)
-
 
         // Configurar RecyclerView
         adapter = ColegioAdapter(
-            colegios,
+            emptyList(),
             ::onUpdateClick,
             ::onDeleteClick
         )
         colegiosRecyclerView.layoutManager = LinearLayoutManager(this)
         colegiosRecyclerView.adapter = adapter
 
+        // Cargar colegios al iniciar
+        cargarColegios()
+
         // Botón confirmar
-        confirmarButton.setOnClickListener {
-            guardarColegio()
-        }
+        confirmarButton.setOnClickListener { guardarColegio() }
 
         // Botón cancelar
-        cancelarButton.setOnClickListener {
-            finish()
-        }
-
-        // Configurar SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                adapter.filter(query)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText)
-                return true
-            }
-        })
+        cancelarButton.setOnClickListener { finish() }
     }
 
-    private fun generarIdUnico(): String = "col-${colegios.size + 1}"
+    private fun cargarColegios() {
+        lifecycleScope.launch {
+            val result = colegioServicio.listarColegiosActivos()
+            result.onSuccess { colegios ->
+                adapter.actualizarLista(colegios)
+            }.onFailure { error ->
+                showError("Error al cargar colegios: ${error.message}")
+            }
+        }
+    }
 
     private fun guardarColegio() {
-        val nombreColegio = nombreColegioEditText.text.toString().trim()
-        val emailColegio = emailColegioEditText.text.toString().trim()
+        val nombre = nombreEditText.text.toString().trim()
+        val email = emailEditText.text.toString().trim()
         val estudiantes = estudiantesEditText.text.toString().trim()
-        val direccionColegio = direccionColegioEditText.text.toString().trim()
-        val estadoColegio = estadoColegioswitch.isChecked
 
-        if (nombreColegio.isEmpty() || emailColegio.isEmpty() || estudiantes.isEmpty() || direccionColegio.isEmpty()) {
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+        if (nombre.isEmpty() || email.isEmpty() || estudiantes.isEmpty()) {
+            showError("Por favor, complete todos los campos")
             return
         }
 
-        try {
-            if (isEditing) {
-                ColegioServices.actualizarColegio(
-                    colegios,
-                    currentColegioId!!,
-                    nombreColegio,
-                    emailColegio,
-                    estadoColegio,
-                    estudiantes.split(","),
-                    direccionColegio
-                )
-                Toast.makeText(this, "Colegio actualizado correctamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-            } else {
-                val id = generarIdUnico()
-                ColegioServices.crearColegio(
-                    colegios,
-                    id,
-                    nombreColegio,
-                    emailColegio,
-                    estadoColegio,
-                    estudiantes.split(","),
-                    direccionColegio
-                )
-                Toast.makeText(this, "Colegio creado correctamente", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            try {
+                val estudiantesList = estudiantes.split(",").map { it.trim() }
+
+                if (isEditing && currentColegioId != null) {
+                    colegioServicio.actualizarColegio(
+                        currentColegioId!!,
+                        nombre,
+                        email,
+                        true,
+                        estudiantesList
+                    ).onSuccess {
+                        showSuccess("Colegio actualizado")
+                        resetEditingState()
+                        cargarColegios()
+                    }.onFailure { error ->
+                        showError("Error al actualizar: ${error.message}")
+                    }
+                } else {
+                    colegioServicio.crearColegio(
+                        nombre,
+                        email,
+                        estudiantesList
+                    ).onSuccess {
+                        showSuccess("Colegio creado")
+                        resetEditingState()
+                        cargarColegios()
+                    }.onFailure { error ->
+                        showError("Error al crear: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                showError("Error: ${e.message}")
             }
-            actualizarLista()
-            limpiarFormulario()
-        } catch (e: IllegalArgumentException) {
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun limpiarFormulario() {
-        nombreColegioEditText.text.clear()
-        emailColegioEditText.text.clear()
-        estudiantesEditText.text.clear()
-        direccionColegioEditText.text.clear()
-        estadoColegioswitch.isChecked = false
-
+    private fun resetEditingState() {
         isEditing = false
         currentColegioId = null
+        limpiarFormulario()
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun limpiarFormulario() {
+        nombreEditText.text.clear()
+        emailEditText.text.clear()
+        estudiantesEditText.text.clear()
     }
 
     private fun onUpdateClick(colegio: Colegio) {
         isEditing = true
         currentColegioId = colegio.getId()
-        nombreColegioEditText.setText(colegio.getNombreColegio())
-        emailColegioEditText.setText(colegio.getEmailColegio())
-        estudiantesEditText.setText(colegio.getEstudiantes().joinToString(", "))
-        direccionColegioEditText.setText(colegio.getDireccionColegio())
-        estadoColegioswitch.isChecked = colegio.getEstadoColegio()
+        nombreEditText.setText(colegio.getNombreColegio())
+        emailEditText.setText(colegio.getEmailColegio())
+        estudiantesEditText.setText(colegio.getEstudiantesIds().joinToString(", "))
     }
 
     private fun onDeleteClick(colegio: Colegio) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Eliminar colegio")
+        builder.setTitle("Confirmar eliminación")
         builder.setMessage("¿Estás seguro de que deseas eliminar este colegio?")
 
         builder.setPositiveButton("Sí") { _, _ ->
-            try {
-                ColegioServices.desactivarColegio(colegios, colegio.getId())
-                actualizarLista()
-                adapter.notifyDataSetChanged()
-                Toast.makeText(this, "Colegio eliminado correctamente", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val result = colegioServicio.desactivarColegio(colegio.getId())
+                result.onSuccess {
+                    showSuccess("Colegio eliminado")
+                    cargarColegios()
+                }.onFailure { error ->
+                    showError(error.message ?: "Error al eliminar")
+                }
             }
         }
 
         builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
-
-    private fun actualizarLista() {
-        adapter.actualizarLista(ColegioServices.listarColegiosActivos(colegios))
-        adapter.notifyDataSetChanged()
+        builder.create().show()
     }
 }

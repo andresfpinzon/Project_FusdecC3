@@ -3,7 +3,6 @@ package com.example.fusdeckotlin.ui.activities.instructor.asistencia
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -14,11 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.adapters.instructor.asistencia.AsistenciaAdapter
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServicio
+import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.*
 
 class AsistenciaActivity : AppCompatActivity() {
@@ -31,7 +29,7 @@ class AsistenciaActivity : AppCompatActivity() {
     private lateinit var cancelarButton: Button
     private lateinit var asistenciasRecyclerView: RecyclerView
 
-    private val asistenciaServicio = AsistenciaServicio()
+    private val asistenciaServicio = AsistenciaServices()
     private lateinit var adapter: AsistenciaAdapter
 
     private var isEditing: Boolean = false
@@ -119,65 +117,40 @@ class AsistenciaActivity : AppCompatActivity() {
                 val estudiantesList = estudiantes.split(",").map { it.trim() }
 
                 if (isEditing && currentAsistenciaId != null) {
-                    // VERIFICACIÓN EXTRA PARA EVITAR CREACIONES DUPLICADAS
-                    if (currentAsistenciaId.isNullOrEmpty()) {
-                        Toast.makeText(
-                            this@AsistenciaActivity,
-                            "Error: ID de asistencia no válido",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@launch
-                    }
-
-                    val result = asistenciaServicio.actualizarAsistencia(
+                    asistenciaServicio.actualizarAsistencia(
                         currentAsistenciaId!!,
                         titulo,
                         fecha,
                         usuarioId,
                         true,
                         estudiantesList
-                    )
-
-                    result.onSuccess {
-                        Toast.makeText(
-                            this@AsistenciaActivity,
-                            "Asistencia actualizada exitosamente",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    ).onSuccess {
+                        Toast.makeText(this@AsistenciaActivity, "Asistencia actualizada", Toast.LENGTH_SHORT).show()
                         resetEditingState()
                         cargarAsistencias()
                     }.onFailure { error ->
                         showError("Error al actualizar: ${error.message}")
-                        Log.e("AsistenciaActivity", "Error actualizando", error)
                     }
                 } else {
-                    val result = asistenciaServicio.crearAsistencia(
+                    asistenciaServicio.crearAsistencia(
                         titulo,
                         fecha,
                         usuarioId,
                         estudiantesList
-                    )
-
-                    result.onSuccess {
-                        Toast.makeText(
-                            this@AsistenciaActivity,
-                            "Asistencia creada exitosamente",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    ).onSuccess {
+                        Toast.makeText(this@AsistenciaActivity, "Asistencia creada", Toast.LENGTH_SHORT).show()
                         resetEditingState()
                         cargarAsistencias()
                     }.onFailure { error ->
                         showError("Error al crear: ${error.message}")
-                        Log.e("AsistenciaActivity", "Error creando", error)
                     }
                 }
-            } catch (e: DateTimeParseException) {
-                showError("Formato de fecha inválido. Use AAAA/MM/DD")
             } catch (e: Exception) {
-                showError("Error inesperado: ${e.message}")
+                showError("Error: ${e.message}")
             }
         }
     }
+
 
     private fun resetEditingState() {
         isEditing = false
@@ -203,7 +176,10 @@ class AsistenciaActivity : AppCompatActivity() {
         fechaEditText.setText(asistencia.getFechaAsistencia()
             .format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
         usuarioIdEditText.setText(asistencia.getUsuarioId())
-        estudiantesEditText.setText(asistencia.getEstudiantes().joinToString(", "))
+
+        // Usar getEstudiantesIds() para obtener los ID
+        val estudiantesIds = asistencia.getEstudiantesIds()
+        estudiantesEditText.setText(estudiantesIds.joinToString(", "))
     }
 
     private fun onDeleteClick(asistencia: Asistencia) {
