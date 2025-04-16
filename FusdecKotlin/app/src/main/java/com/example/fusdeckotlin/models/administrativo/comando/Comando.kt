@@ -14,7 +14,7 @@ data class Comando(
     @SerializedName("ubicacionComando")
     private var ubicacionComando: String,
     @SerializedName("fundacionid")
-    private var fundacionId: String,
+    private var fundacionId: Any,
     @SerializedName("brigadas")
     private var brigadas: List<Any> = emptyList()
 ) {
@@ -30,7 +30,7 @@ data class Comando(
             else -> ""
         }
     }
-    fun getFundacion(): Fundacion {
+    fun getFundacionObject(): Fundacion {
         return when(fundacionId) {
             is Fundacion -> fundacionId as Fundacion
             is String -> crearFundacionVacia(fundacionId as String)
