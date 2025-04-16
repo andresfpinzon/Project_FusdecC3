@@ -10,7 +10,7 @@ import com.example.fusdeckotlin.R
 import models.administrativo.c.CertificadoModel
 
 class CertificateAdapter(
-    private val certificates: MutableList<CertificadoModel>,
+    private var certificates: List<CertificadoModel>,
     private val onUpdateClick: (CertificadoModel) -> Unit,
     private val onDeleteClick: (CertificadoModel) -> Unit
 ) : RecyclerView.Adapter<CertificateAdapter.CertificateViewHolder>() {
@@ -61,5 +61,10 @@ class CertificateAdapter(
     }
 
     override fun getItemCount(): Int = certificates.size
+
+    fun updateList(newList: List<CertificadoModel>) {
+        certificates = newList
+        notifyDataSetChanged()
+    }
 
 }
