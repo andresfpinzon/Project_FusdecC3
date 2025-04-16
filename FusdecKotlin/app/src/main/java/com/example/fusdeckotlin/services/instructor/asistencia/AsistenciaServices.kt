@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.services.instructor.asistencia
 
-import android.util.Log
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
 import com.example.fusdeckotlin.dto.instructor.asistencia.ActualizarAsistenciaRequest
@@ -9,9 +8,8 @@ import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 import java.time.LocalDate
-import retrofit2.Response
 
-class AsistenciaServicio {
+class AsistenciaServices {
 
     private val asistenciaApi: AsistenciaApi = RetrofitClient.asistenciaApi
 

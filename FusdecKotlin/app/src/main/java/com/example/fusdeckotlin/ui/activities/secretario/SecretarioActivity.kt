@@ -3,12 +3,12 @@ package com.example.fusdeckotlin.ui.activities.secretario
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.activities.secretario.curso.CursoActivity
 import com.example.fusdeckotlin.ui.activities.secretario.edicion.EdicionActivity
+import com.example.fusdeckotlin.ui.activities.secretario.estudiante.EstudianteActivity
 import com.example.fusdeckotlin.ui.activities.secretario.horario.HorarioActivity
 
 class SecretarioActivity : AppCompatActivity() {
@@ -34,6 +34,13 @@ class SecretarioActivity : AppCompatActivity() {
         edicionButton.setOnClickListener {
 
             val intent = Intent(this, EdicionActivity::class.java)
+            startActivity(intent)
+
+        }
+
+        estudianteButton.setOnClickListener {
+
+            val intent = Intent(this, EstudianteActivity::class.java)
             startActivity(intent)
 
         }

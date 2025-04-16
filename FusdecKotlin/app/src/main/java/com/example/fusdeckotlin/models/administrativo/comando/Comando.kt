@@ -43,9 +43,9 @@ data class Comando(
         this.brigadas = brigadas
     }
 
-    
+
     fun getBrigadas(): List<Brigada>{
-        return  brigadas.mapNotNull { 
+        return  brigadas.mapNotNull {
             when(it){
                 is Brigada -> it
                 is String -> Brigada(id = it, "", "", true, "", emptyList())
@@ -64,7 +64,7 @@ data class Comando(
             }
         }
     }
-    
+
     fun convertMapToBrigadas(map: Map<*,*>): Brigada{
         return Brigada(
             id = map["_id"] as? String ?: "",

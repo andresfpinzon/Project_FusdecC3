@@ -46,14 +46,6 @@ const edicionSchemaValidation = Joi.object({
       'string.pattern.base': 'El cursoId debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)',
   }),
 
-  horarios: Joi.array()
-    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
-    .required()
-    .messages({
-      'array.base': 'Horarios debe ser un array',
-      'string.pattern.base': 'Cada horario debe ser un id válido (24 caracteres hexadecimales)',
-    }),
-
   estudiantes: Joi.array()
     .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
     .optional()

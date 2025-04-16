@@ -27,13 +27,7 @@ const EdicionSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Curso",
       default: null, // permite que el curso en la edición sea opcional
-    },
-    horarios: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Horario",
-      },
-    ],    
+    }, 
     estudiantes: [
       {
         type: Schema.Types.ObjectId,

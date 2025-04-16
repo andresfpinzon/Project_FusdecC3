@@ -87,7 +87,7 @@ data class Unidad(
         return estudiantes.mapNotNull {
             when (it) {
                 is Estudiante -> it
-                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "", "", true, emptyList(), emptyList(),
+                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "",  true, emptyList(), emptyList(),
                     emptyList(), emptyList())
                 is Map<*,*> -> convertMapToEstudiantes(it)
                 else -> null
@@ -111,7 +111,6 @@ data class Unidad(
             id = map["_id"] as? String ?: "",
             nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
             apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
-            correoEstudiante = map["correoEstudiante"] as? String ?: "",
             tipoDocumento = map["tipoDocumento"] as? String ?: "",
             numeroDocumento = map["numeroDocumento"] as? String ?: "",
             fechaNacimientoString = map["fecaNacimineto"] as? String ?: "",
