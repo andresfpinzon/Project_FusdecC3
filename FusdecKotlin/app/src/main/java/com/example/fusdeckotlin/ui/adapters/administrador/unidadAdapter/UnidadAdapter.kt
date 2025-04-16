@@ -21,6 +21,8 @@ class UnidadAdapter(
         val textIdUnidad: TextView = itemView.findViewById(R.id.textViewUnidadId)
         val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
         val textBrigada: TextView = itemView.findViewById(R.id.textViewBrigada)
+        val txtUser: TextView = itemView.findViewById(R.id.textViewUserId)
+        val txtComando: TextView = itemView.findViewById(R.id.textViewComandosUnidad)
         val textEstudiantes: TextView = itemView.findViewById(R.id.textViewEstudiantes)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
@@ -36,8 +38,36 @@ class UnidadAdapter(
         val unidad = unidades[position]
         holder.textIdUnidad.text = unidad.getId()
         holder.textNombre.text = unidad.getNombreUnidad()
-        holder.textBrigada.text = unidad.getBrigadaId()
-        holder.textEstudiantes.text = unidad.getEstudiantes().joinToString(", ")
+        holder.textBrigada.text = when {
+            unidad.getBrigadaObject().getNombreBrigada().isNotEmpty() ->
+                unidad.getBrigadaObject().getNombreBrigada()
+            else -> "Brigada: ${unidad.getBrigadaId()}"
+        }
+        holder.txtUser.text = when {
+            unidad.getUserObject().getNombreUsuario().isNotEmpty() ->
+                unidad.getUserObject().getNombreUsuario()
+            else -> "Usuario ID: ${unidad.getUsuarioId()}"
+        }
+        holder.txtComando.text = when {
+            unidad.getComandos().isNotEmpty() &&
+                    unidad.getComandos().first().getNombreComando().isNotEmpty() -> {
+                "Comandos: " + unidad.getComandos()
+                    .take(3)
+                    .joinToString(", ") {it.getNombreComando()} +
+                        if(unidad.getComandos().size > 3) "..." else ""
+            }
+            else -> "Estudiantes: ${unidad.getEstudiantesByIds().size}"
+        }
+        holder.textEstudiantes.text = when {
+            unidad.getEstudiantes().isNotEmpty() &&
+                    unidad.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                        "Estudiantes: " + unidad.getEstudiantes()
+                            .take(3)
+                            .joinToString(", ") {it.getNombreEstudiante()} +
+                                if(unidad.getEstudiantes().size > 3) "..." else ""
+                    }
+            else -> "Estudiantes: ${unidad.getEstudiantesByIds().size}"
+        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(unidad) }
         holder.deleteButton.setOnClickListener { onDeleteClick(unidad) }

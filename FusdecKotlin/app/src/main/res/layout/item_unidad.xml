@@ -43,12 +43,38 @@
             tools:text="Brigada: Brigada 1"/>
 
     <TextView
+            android:id="@+id/textViewUserId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Usuario"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewBrigada"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginEnd="8dp"
+            tools:text="Usuario: Usuario1"
+    />
+
+    <TextView
+            android:id="@+id/textViewComandosUnidad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Comando"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewUserId"
+            app:layout_constraintEnd_toStartOf="@+id/updateButton"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginEnd="8dp"
+            tools:text="Comando: Comando1"
+    />
+
+    <TextView
             android:id="@+id/textViewEstudiantes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Estudiantes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewBrigada"
+            app:layout_constraintTop_toBottomOf="@id/textViewComandosUnidad"
             app:layout_constraintEnd_toStartOf="@+id/updateButton"
             app:layout_constraintHorizontal_bias="0"
             android:layout_marginEnd="8dp"
