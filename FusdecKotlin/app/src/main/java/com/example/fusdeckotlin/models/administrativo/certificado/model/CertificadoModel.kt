@@ -1,5 +1,8 @@
 package models.administrativo.c
+import com.example.fusdeckotlin.models.secretario.curso.Curso
+import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
+import models.administrativo.user.model.Usuario
 import java.util.*
 
 data class CertificadoModel(
@@ -8,11 +11,11 @@ data class CertificadoModel(
     @SerializedName("fechaEmision")
     private val fechaEmision: String = obtenerFechaActual(),
     @SerializedName("usuarioId")
-    private val usuarioId: String,
+    private val usuarioId: Any,
     @SerializedName("usuarioId")
-    private val cursoId: String,
+    private val cursoId: Any,
     @SerializedName("estudianteId")
-    private val estudianteId: String,
+    private val estudianteId: Any,
     @SerializedName("nombreEmisorCertificado")
     private var nombreEmisorCertificado: String,
     @SerializedName("codigoVerificacion")
@@ -29,11 +32,32 @@ data class CertificadoModel(
 
     fun getFechaEmisio(): String = fechaEmision
 
-    fun getUsuarioId(): String = usuarioId
+    fun getUsuarioId(): String {
+        return  when(usuarioId) {
+            is String -> usuarioId as String
+            is Usuario -> (usuarioId as Usuario).getUserId() ?: ""
+            is Map<*, *> -> (usuarioId as Map<*, *>)["_id"] as? String ?: ""
+            else -> ""
+        }
+    }
 
-    fun getCursoId(): String = cursoId
+    fun getCursoId(): String {
+        return  when(cursoId) {
+            is String -> cursoId as String
+            is Curso -> (cursoId as Curso).getId() ?: ""
+            is Map<*, *> -> (cursoId as Map<*, *>)["_id"] as? String ?: ""
+            else -> ""
+        }
+    }
 
-    fun getEstudianteId(): String = estudianteId
+    fun getEstudianteId(): String{
+        return  when(estudianteId) {
+            is String -> estudianteId as String
+            is Estudiante -> (estudianteId as Estudiante).getId() ?: ""
+            is Map<*, *> -> (estudianteId as Map<*, *>)["_id"] as? String ?: ""
+            else -> ""
+        }
+    }
 
     fun getNombreEmisor(): String = nombreEmisorCertificado
 
