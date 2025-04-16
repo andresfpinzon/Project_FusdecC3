@@ -15,50 +15,67 @@ class CertificateAdapter(
     private val onDeleteClick: (CertificadoModel) -> Unit
 ) : RecyclerView.Adapter<CertificateAdapter.CertificateViewHolder>() {
 
-    inner class CertificateViewHolder(item: View) : RecyclerView.ViewHolder(item){
-        private val textViewCertificateId : TextView = item.findViewById(R.id.textViewCertificateIdC)
-        private val textViewFecha : TextView = item.findViewById(R.id.textViewFechaC)
-        private val textViewUsuario : TextView = item.findViewById(R.id.textViewUsuarioC)
-        private val textViewCurso : TextView = item.findViewById(R.id.textViewCursoC)
-        private val textViewEstudiante : TextView = item.findViewById(R.id.textViewEstudianteC)
-        private val textViewEmisor : TextView = item.findViewById(R.id.textViewNombreEmisorC)
-        private val textViewCodeVerify : TextView = item.findViewById(R.id.textViewCodeVerifyC)
-        private val textViewState : TextView = item.findViewById(R.id.textViewEstadoC)
+     class CertificateViewHolder(item: View) : RecyclerView.ViewHolder(item){
+         val textViewCertificateId : TextView = item.findViewById(R.id.textViewCertificateIdC)
+         val textViewFecha : TextView = item.findViewById(R.id.textViewFechaC)
+         val textViewUsuario : TextView = item.findViewById(R.id.textViewUsuarioC)
+         val textViewCurso : TextView = item.findViewById(R.id.textViewCursoC)
+         val textViewEstudiante : TextView = item.findViewById(R.id.textViewEstudianteC)
+         val textViewEmisor : TextView = item.findViewById(R.id.textViewNombreEmisorC)
+         val textViewCodeVerify : TextView = item.findViewById(R.id.textViewCodeVerifyC)
+         val textViewState : TextView = item.findViewById(R.id.textViewEstadoC)
 
-        private val updateButton: ImageButton = itemView.findViewById(R.id.updateButtonC)
-        private val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButtonC)
+         val updateButton: ImageButton = itemView.findViewById(R.id.updateButtonC)
+         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButtonC)
 
-
-        fun bind(certificate : CertificadoModel){
-            textViewCertificateId.text = "ID: ${certificate.getIdCertificado()}"
-            textViewFecha.text = "Fecha-Emision: ${certificate.getFechaEmisio()}"
-            textViewUsuario.text = "Usuario: ${certificate.getUsuarioId()}"
-            textViewCurso.text = "Curso: ${certificate.getCursoId()}"
-            textViewEstudiante.text = "Estudiante: ${certificate.getEstudianteId()}"
-            textViewEmisor.text = "Emisor: ${certificate.getNombreEmisor()}"
-            textViewCodeVerify.text = "Código de verficación: ${certificate.getCodigoVerificacion()}"
-            textViewState.text = "Estado: ${certificate.getEstadoCertificado()}"
-
-            updateButton.setOnClickListener{
-                onUpdateClick(certificate)
-            }
-
-            deleteButton.setOnClickListener {
-                onDeleteClick(certificate)
-            }
-
-        }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CertificateViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_certificate, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_certificate, parent, false)
         return CertificateViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CertificateViewHolder, position: Int) {
-        holder.bind(certificates[position])
+        val certificate = certificates[position]
+
+        holder.textViewCertificateId.text = "ID: ${certificate.getIdCertificado()}"
+        holder.textViewFecha.text = "Fecha-Emision: ${certificate.getFechaEmisio()}"
+        holder.textViewUsuario.text = when {
+            // Si tenemos el objeto Fundacion completo con nombre
+            certificate.getUserObject().getNombreUsuario().isNotEmpty() ->
+                certificate.getUserObject().getNombreUsuario()
+            // Si solo tenemos el ID
+            else -> "Estudiante ID: ${certificate.getUsuarioId()}"
+        }
+        holder.textViewCurso.text = when {
+            // Si tenemos el objeto Fundacion completo con nombre
+            certificate.getCursoObject().getNombreCurso().isNotEmpty() ->
+                certificate.getCursoObject().getNombreCurso()
+            // Si solo tenemos el ID
+            else -> "Curso ID: ${certificate.getCursoId()}"
+        }
+        holder.textViewEstudiante.text = when {
+            // Si tenemos el objeto Fundacion completo con nombre
+            certificate.getEstudentObject().getNombreEstudiante().isNotEmpty() ->
+                certificate.getEstudentObject().getNombreEstudiante()
+            // Si solo tenemos el ID
+            else -> "Estudiante ID: ${certificate.getEstudianteId()}"
+        }
+        holder.textViewEmisor.text = "Emisor: ${certificate.getNombreEmisor()}"
+        holder.textViewCodeVerify.text = "Código de verficación: ${certificate.getCodigoVerificacion()}"
+        holder.textViewState.text = "Estado: ${certificate.getEstadoCertificado()}"
+
+        holder.updateButton.setOnClickListener{
+            onUpdateClick(certificate)
+        }
+
+        holder.deleteButton.setOnClickListener {
+            onDeleteClick(certificate)
+        }
     }
+
 
     override fun getItemCount(): Int = certificates.size
 
