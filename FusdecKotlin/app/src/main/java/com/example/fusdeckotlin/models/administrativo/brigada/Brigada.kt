@@ -14,7 +14,7 @@ data class Brigada(
     @SerializedName("estadoBrigada")
     private var estadoBrigada: Boolean = true,
     @SerializedName("comandoId")
-    private var comandoId: String,
+    private var comandoId: Any,
     @SerializedName("unidades")
     private var unidades: List<Any> = emptyList()
 ) {
@@ -23,7 +23,47 @@ data class Brigada(
     fun getNombreBrigada() = nombreBrigada
     fun getUbicacionBrigada() = ubicacionBrigada
     fun getEstadoBrigada() = estadoBrigada
-    fun getComandoId() = comandoId
+
+    fun getComandoId(): String {
+        return when(comandoId) {
+            is String -> comandoId as String
+            is Comando -> (comandoId as Comando).getId() ?: ""
+            is Map<*, *> -> (comandoId as Map<*, *>)["_id"] as? String ?: ""
+            else -> ""
+        }
+    }
+
+    // Obtener objeto Comando completo
+    fun getComando(): Comando {
+        return when(comandoId) {
+            is Comando -> comandoId as Comando
+            is String -> crearComandoVacio(comandoId as String)
+            is Map<*, *> -> convertMapToComando(comandoId as Map<*, *>)
+            else -> crearComandoVacio("")
+        }
+    }
+
+    private fun crearComandoVacio(id: String): Comando {
+        return Comando(
+            id = id,
+            nombreComando = "",
+            estadoComando = true,
+            ubicacionComando = "",
+            fundacionId = "",
+            brigadas = emptyList()
+        )
+    }
+
+    private fun convertMapToComando(map: Map<*, *>): Comando {
+        return Comando(
+            id = map["_id"] as? String ?: "",
+            nombreComando = map["nombreComando"] as? String ?: "",
+            estadoComando = map["estadoComando"] as? Boolean ?: true,
+            ubicacionComando = map["ubicacionComando"] as? String ?: "",
+            fundacionId = map["fundacionId"] as? String ?: "",
+            brigadas = map["brigadas"] as? List<Any> ?: emptyList()
+        )
+    }
 
     // Getters para manejar referencias
 
@@ -87,9 +127,5 @@ data class Brigada(
             estudiantes = map["estudiantes"] as? List<String> ?: emptyList()
         )
     }
-
-
-
-
 
 }

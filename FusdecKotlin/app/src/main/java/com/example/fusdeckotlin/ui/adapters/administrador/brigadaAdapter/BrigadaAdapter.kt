@@ -38,7 +38,16 @@ class BrigadaAdapter(
         holder.textIdBrigada.text = brigada.getId()
         holder.textNombre.text = brigada.getNombreBrigada()
         holder.textUbicacion.text = brigada.getUbicacionBrigada()
-        holder.textComandoId.text = brigada.getComandoId()
+
+        // Mostrar información del comando según lo disponible
+        holder.textComandoId.text = when {
+            // Si tenemos el objeto Comando completo con nombre
+            brigada.getComando().getNombreComando().isNotEmpty() ->
+                brigada.getComando().getNombreComando()
+            // Si solo tenemos el ID
+            else -> "Comando ID: ${brigada.getComandoId()}"
+        }
+
         holder.textUnidades.text = when {
             brigada.getUnidades().isNotEmpty() &&
                     brigada.getUnidades().first().getNombreUnidad().isNotEmpty() -> {
