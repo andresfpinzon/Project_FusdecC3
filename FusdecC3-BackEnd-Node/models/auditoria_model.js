@@ -19,6 +19,10 @@ const AuditoriaSchema = new Schema({
         required: true,
         ref: "Certificado",
     },
+    certificadoInfo: { 
+        type: Object,
+        default: null 
+    },
     estadoAuditoria: {
         type: Boolean,
         default: true,

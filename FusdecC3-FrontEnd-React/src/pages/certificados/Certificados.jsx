@@ -79,7 +79,6 @@ const Certificados = () => {
 
         fetchEstudiantes();
       } catch (error) {
-        console.error("Error al validar token:", error);
         // No redirigir automáticamente, solo mostrar mensaje
         setOpenSnackbar(true);
         setMessage("Hubo un problema con su sesión. Por favor, inicie sesión nuevamente.");
@@ -322,6 +321,15 @@ const Certificados = () => {
           throw new Error("No se pudo obtener un curso por defecto");
         }
 
+        // --- Mejorar estructura de estudianteInfo ---
+        const estudianteInfo = {
+          nombreEstudiante: estudianteSeleccionado.nombreEstudiante || formValues.nombreEstudiante,
+          identificacion: estudianteSeleccionado.numeroDocumento || formValues.identificacion,
+          tipoDocumento: estudianteSeleccionado.tipoDocumento || formValues.tipoDocumento,
+          generoEstudiante: estudianteSeleccionado.generoEstudiante || formValues.generoEstudiante,
+          colegio: estudianteSeleccionado.colegio || formValues.colegio
+        };
+
         // Create certificate
         const certificadoData = {
           estudianteId: estudianteId,
@@ -331,13 +339,7 @@ const Certificados = () => {
           usuarioId: decodedToken.id,
           estadoCertificado: true,
           nombreEmisorCertificado: nombreEmisor,
-          estudianteInfo: {
-            nombreEstudiante: estudianteSeleccionado.nombreEstudiante,
-            identificacion: estudianteSeleccionado.identificacion,
-            tipoDocumento: estudianteSeleccionado.tipoDocumento,
-            generoEstudiante: estudianteSeleccionado.generoEstudiante,
-            colegio: estudianteSeleccionado.colegio
-          }
+          estudianteInfo // <-- aquí se envía toda la info completa
         };
 
         console.log("Enviando certificado:", certificadoData); // Debug log
@@ -359,7 +361,7 @@ const Certificados = () => {
         const certificado = await response.json();
         console.log("Certificado creado:", certificado); // Debug log
 
-        // Create audit
+        // --- Crear auditoría automáticamente ---
         const auditData = {
           fechaAuditoria: new Date().toISOString(),
           nombreEmisor: nombreEmisor,

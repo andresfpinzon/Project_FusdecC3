@@ -5,12 +5,13 @@ const Certificado = require('../models/certificado_model');
 
 const listarAuditorias = async (req, res) => {
     try {
-        const auditorias = await Auditoria.find().populate('certificadoId', 'codigoVerificacion');
-        const auditoriasConCodigo = auditorias.map(auditoria => ({
-            ...auditoria.toObject(),
-            codigoVerificacion: auditoria.certificadoId ? auditoria.certificadoId.codigoVerificacion : "No disponible"
+        const auditorias = await logic.listarAuditorias();
+        const auditoriasConInfo = auditorias.map(auditoria => ({
+            ...auditoria,
+            codigoVerificacion: auditoria.certificadoId ? auditoria.certificadoId.codigoVerificacion : "No disponible",
+            certificadoInfo: auditoria.certificadoInfo || null
         }));
-        res.json(auditoriasConCodigo);
+        res.json(auditoriasConInfo);
     } catch (error) {
         console.error("Error al listar auditorías:", error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -26,10 +27,26 @@ const crearAuditoria = async (req, res) => {
     }
 
     try {
-        const nuevaAuditoria = await logic.crearAuditoria(value);
-        res.status(201).json(nuevaAuditoria);  // 201 Created
+        // Obtener información del certificado
+        const certificado = await Certificado.findById(value.certificadoId).lean();
+        if (!certificado) {
+            return res.status(404).json({ error: 'Certificado no encontrado' });
+        }
+
+        // Agregar la información del certificado al crear la auditoría
+        const dataToCreate = {
+            ...value,
+            certificadoInfo: {
+                codigoVerificacion: certificado.codigoVerificacion,
+                // Agregar otros campos relevantes del certificado que necesites
+            }
+        };
+
+        const nuevaAuditoria = await logic.crearAuditoria(dataToCreate);
+        res.status(201).json(nuevaAuditoria);
     } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor', details: err.message });
+        console.error("Error al crear auditoría:", err);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
@@ -49,34 +66,35 @@ const actualizarAuditoria = async (req, res) => {
         }
         res.json(auditoriaActualizada);
     } catch (err) {
+        console.error("Error al actualizar auditoría:", err);
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
 
 // Controlador para obtener una auditoría por su ID
 const obtenerAuditoriaPorId = async (req, res) => {
-    const { id } = req.params;
     try {
-        const auditoria = await logic.buscarAuditoriaPorId(id);
+        const auditoria = await logic.buscarAuditoriaPorId(req.params.id);
         if (!auditoria) {
-            return res.status(404).json({ error: `Auditoría con ID ${id} no encontrada` });
+            return res.status(404).json({ error: 'Auditoría no encontrada' });
         }
         res.json(auditoria);
-    } catch (err) {
-        res.status(500).json({ error: 'Error interno del servidor al buscar la auditoría', details: err.message });
+    } catch (error) {
+        console.error("Error al obtener auditoría:", error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
 // Controlador para desactivar una auditoría
 const desactivarAuditoria = async (req, res) => {
-    const { id } = req.params;
     try {
-        const auditoriaDesactivada = await logic.desactivarAuditoria(id);
-        if (!auditoriaDesactivada) {
-            return res.status(404).json({ error: 'Auditoría no encontrada' });
+        const auditoria = await logic.desactivarAuditoria(req.params.id);
+        res.json(auditoria);
+    } catch (error) {
+        console.error("Error al desactivar auditoría:", error);
+        if (error.message.includes('no encontrada')) {
+            return res.status(404).json({ error: error.message });
         }
-        res.json(auditoriaDesactivada);
-    } catch (err) {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -88,6 +106,7 @@ const obtenerAuditoriasPorCertificado = async (req, res) => {
         const auditorias = await Auditoria.find({ certificadoId });
         res.json(auditorias);
     } catch (err) {
+        console.error("Error al obtener auditorías por certificado:", err);
         res.status(500).json({ error: 'Error interno del servidor', details: err.message });
     }
 };
