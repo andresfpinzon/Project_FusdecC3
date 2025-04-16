@@ -8,7 +8,7 @@ class Colegio(
     @SerializedName("nombreColegio") private var nombreColegio: String,
     @SerializedName("emailColegio") private var emailColegio: String,
     @SerializedName("estadoColegio") private var estadoColegio: Boolean,
-    @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList(),
+    @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList()
 ) {
     // Getters básicos
     fun getId(): String = id
@@ -22,7 +22,15 @@ class Colegio(
             when (it) {
                 is Estudiante -> it
                 is String -> Estudiante(
-                    id = it, "", "", "", "", "", "", "", "", true, emptyList(), emptyList(), emptyList(), emptyList()
+                    numeroDocumento = it,
+                    nombre = "",
+                    apellido = "",
+                    tipoDocumento = "",
+                    genero = "",
+                    unidad = "",
+                    colegio = "",
+                    grado = "",
+                    estado = true
                 )
                 is Map<*, *> -> convertMapToEstudiante(it)
                 else -> null
@@ -30,59 +38,36 @@ class Colegio(
         }
     }
 
-    // Getter para IDs de estudiantes
-    fun getEstudiantesIds(): List<String> {
+    // Getter para números de documento de estudiantes
+    fun getEstudiantesDocumentos(): List<String> {
         return estudiantes.map {
             when (it) {
-                is Estudiante -> it.getId()
+                is Estudiante -> it.getNumeroDocumento()
                 is String -> it
-                is Map<*, *> -> it["_id"] as? String ?: ""
+                is Map<*, *> -> it["numeroDocumento"] as? String ?: ""
                 else -> ""
             }
         }.filter { it.isNotEmpty() }
     }
 
-    // Metodo de conversión de mapa a Estudiante
+
     private fun convertMapToEstudiante(map: Map<*, *>): Estudiante {
         return Estudiante(
-            id = map["_id"] as? String ?: "",
-            nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
-            apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
-            tipoDocumento = map["tipoDocumento"] as? String ?: "",
             numeroDocumento = map["numeroDocumento"] as? String ?: "",
-            fechaNacimientoString = (map["fechaNacimiento"] as? String)?.substring(0, 10) ?: "",
-            generoEstudiante = map["generoEstudiante"] as? String ?: "",
-            unidadId = map["unidadId"] as? String ?: "",
-            colegioId = map["colegioId"] as? String ?: "",
-            estadoEstudiante = map["estadoEstudiante"] as? Boolean ?: false,
-            ediciones = map["ediciones"] as? List<String> ?: emptyList(),
-            calificaciones = map["calificaciones"] as? List<String> ?: emptyList(),
-            asistencias = map["asistencias"] as? List<String> ?: emptyList(),
-            certificados = map["certificados"] as? List<String> ?: emptyList()
+            nombre = map["nombre"] as? String ?: "",
+            apellido = map["apellido"] as? String ?: "",
+            tipoDocumento = map["tipoDocumento"] as? String ?: "",
+            genero = map["genero"] as? String ?: "",
+            unidad = map["unidad"] as? String ?: "",
+            colegio = map["colegio"] as? String ?: "",
+            grado = map["grado"] as? String ?: "",
+            estado = map["estado"] as? Boolean ?: false
         )
     }
-
-    // Setters
-    fun setNombreColegio(nombre: String) {
-        nombreColegio = nombre
-    }
-
-    fun setEmailColegio(email: String) {
-        emailColegio = email
-    }
-
-    fun setEstadoColegio(estado: Boolean) {
-        estadoColegio = estado
-    }
-
-    fun setEstudiantes(estudiantes: List<Estudiante>) {
-        this.estudiantes = estudiantes
-    }
-
 
     override fun toString(): String {
         return "Colegio(id='$id', nombre='$nombreColegio', email='$emailColegio', " +
                 "estado=${if (estadoColegio) "Activo" else "Inactivo"}, " +
-                "estudiantes=${estudiantes.joinToString()})"
+                "estudiantes=${estudiantes.size})"
     }
 }

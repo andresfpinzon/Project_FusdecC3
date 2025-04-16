@@ -16,4 +16,6 @@
     <string name="yes_button_description">Sí</string>
     <string name="no_button_description">No</string>
     <string name="ok_button_description">Aceptar</string>
+    <string name="estado_activo">ACTIVO</string>
+    <string name="estado_inactivo">INACTIVO</string>
 </resources>

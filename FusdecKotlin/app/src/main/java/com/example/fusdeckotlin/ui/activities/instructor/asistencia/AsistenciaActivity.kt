@@ -178,7 +178,7 @@ class AsistenciaActivity : AppCompatActivity() {
         usuarioIdEditText.setText(asistencia.getUsuarioId())
 
         // Usar getEstudiantesIds() para obtener los ID
-        val estudiantesIds = asistencia.getEstudiantesIds()
+        val estudiantesIds = asistencia.getEstudiantesDocumentos()
         estudiantesEditText.setText(estudiantesIds.joinToString(", "))
     }
 

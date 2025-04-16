@@ -1,110 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/white">
 
-    <TextView
-            android:id="@+id/nombreTextView"
-            android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nombre"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:padding="16dp">
 
-    <TextView
-            android:id="@+id/apellidoTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Apellido"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nombreTextView"
-            android:layout_marginTop="8dp" />
+        <!-- Encabezado con nombre y botones -->
+        <LinearLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-            android:id="@+id/tipoDocumentoTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Tipo de Documento"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/apellidoTextView"
-            android:layout_marginTop="8dp" />
+            <TextView
+                    android:id="@+id/nombreTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textColor="@color/primaryColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
 
-    <TextView
-            android:id="@+id/numeroDocumentoTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Número de Documento"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tipoDocumentoTextView"
-            android:layout_marginTop="8dp" />
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-    <TextView
-            android:id="@+id/fechaNacimientoTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Fecha de Nacimiento"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/numeroDocumentoTextView"
-            android:layout_marginTop="8dp" />
+                <ImageButton
+                        android:id="@+id/updateButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_edit"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/update_button_description"
+                        android:tint="@color/primaryColor"/>
 
-    <TextView
-            android:id="@+id/generoTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Género"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fechaNacimientoTextView"
-            android:layout_marginTop="8dp" />
+                <ImageButton
+                        android:id="@+id/deleteButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_delete"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/delete_button_description"
+                        android:tint="@color/red"
+                        android:layout_marginStart="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
 
-    <TextView
-            android:id="@+id/unidadIdTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Unidad ID"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/generoTextView"
-            android:layout_marginTop="8dp" />
+        <!-- Primera línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-    <TextView
-            android:id="@+id/colegioIdTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Colegio ID"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/unidadIdTextView"
-            android:layout_marginTop="8dp" />
+            <TextView
+                    android:id="@+id/tipoDocumentoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NUM:"
+                    android:textColor="@color/textSecondary"/>
 
-    <TextView
-            android:id="@+id/estadoTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Estado"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/colegioIdTextView"
-            android:layout_marginTop="8dp" />
+            <TextView
+                    android:id="@+id/numeroDocumentoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"
+                    android:textStyle="bold"/>
 
-    <ImageButton
-            android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_refresh_24"
-            android:contentDescription="@string/update_button_description"
-            app:layout_constraintEnd_toStartOf="@id/deleteButton"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp" />
+            <View
+                    android:layout_width="1dp"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@color/dividerColor"/>
 
-    <ImageButton
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_delete_24"
-            android:contentDescription="@string/delete_button_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <TextView
+                    android:id="@+id/generoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Segunda línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine1">
+
+            <TextView
+                    android:id="@+id/unidadTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Unidad:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/unidadValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+
+            <View
+                    android:layout_width="1dp"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@color/dividerColor"/>
+
+            <TextView
+                    android:id="@+id/colegioTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Colegio:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/colegioValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+        </LinearLayout>
+
+        <!-- Tercera línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine2">
+
+            <TextView
+                    android:id="@+id/gradoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Grado:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/gradoValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+            <TextView
+                    android:id="@+id/estadoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_estado_activo"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

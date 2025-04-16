@@ -144,7 +144,7 @@ class ColegioActivity : AppCompatActivity() {
         currentColegioId = colegio.getId()
         nombreEditText.setText(colegio.getNombreColegio())
         emailEditText.setText(colegio.getEmailColegio())
-        estudiantesEditText.setText(colegio.getEstudiantesIds().joinToString(", "))
+        estudiantesEditText.setText(colegio.getEstudiantesDocumentos().joinToString(", "))
     }
 
     private fun onDeleteClick(colegio: Colegio) {

@@ -40,13 +40,13 @@ class CalificacionAdapter(
         holder.estudiantesTextView.text = when {
             // Si tenemos objetos completos de estudiantes, mostrar nombres
             calificacion.getEstudiantes().isNotEmpty() &&
-                    calificacion.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                    calificacion.getEstudiantes().first().getNombre().isNotEmpty() -> {
                 calificacion.getEstudiantes()
-                    .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+                    .joinToString(", ") { "${it.getNombre()} ${it.getApellido()}" }
             }
             // Si solo tenemos ID, mostrarlos directamente
             else -> {
-                calificacion.getEstudiantesIds().joinToString(", ")
+                calificacion.getEstudiantesDocumentos().joinToString(", ")
             }
         }
 

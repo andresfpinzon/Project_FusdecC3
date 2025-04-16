@@ -159,7 +159,7 @@ class CalificacionActivity : AppCompatActivity() {
         usuarioIdEditText.setText(calificacion.getUsuarioId())
 
         // Usar getEstudiantesIds() para obtener los ID
-        val estudiantesIds = calificacion.getEstudiantesIds()
+        val estudiantesIds = calificacion.getEstudiantesDocumentos()
         estudiantesEditText.setText(estudiantesIds.joinToString(", "))
     }
 

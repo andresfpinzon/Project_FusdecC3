@@ -39,13 +39,13 @@ class ColegioAdapter(
         holder.estudiantesTextView.text = when {
             // Si tenemos objetos completos de estudiantes, mostrar nombres
             colegio.getEstudiantes().isNotEmpty() &&
-                    colegio.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
+                    colegio.getEstudiantes().first().getNombre().isNotEmpty() -> {
                 colegio.getEstudiantes()
-                    .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
+                    .joinToString(", ") { "${it.getNombre()} ${it.getApellido()}" }
             }
             // Si solo tenemos ID, mostrarlos directamente
             else -> {
-                colegio.getEstudiantesIds().joinToString(", ")
+                colegio.getEstudiantesDocumentos().joinToString(", ")
             }
         }
 
