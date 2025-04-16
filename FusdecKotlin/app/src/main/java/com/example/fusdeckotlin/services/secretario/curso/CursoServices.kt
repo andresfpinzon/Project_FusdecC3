@@ -1,75 +1,100 @@
 package com.example.fusdeckotlin.services.secretario.curso
 
-import models.secretario.curso.Curso
-import java.util.*
+import com.example.fusdeckotlin.api.secretario.curso.CursoApi
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.secretario.curso.ActualizarCursoRequest
+import com.example.fusdeckotlin.dto.secretario.curso.CrearCursoRequest
+import com.example.fusdeckotlin.models.secretario.curso.Curso
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 
 class CursoServices {
 
-    companion object {
+    private val cursoApi: CursoApi = RetrofitClient.cursoApi
 
-        fun crearCurso(
-            cursos: MutableList<Curso>,
-            id: String = UUID.randomUUID().toString(),
-            nombreCurso: String,
-            descripcionCurso: String,
-            intensidadHorariaCurso: String,
-            fundacionId: String,
-            estadoCurso: Boolean = true,
-            ediciones: List<String> = emptyList()
-        ): Curso {
-            if (nombreCurso.isBlank() || descripcionCurso.isBlank() || intensidadHorariaCurso.isBlank() || fundacionId.isBlank()) {
-                throw IllegalArgumentException("Los campos nombre, descripción, intensidad horaria y fundación ID son obligatorios")
-            }
-
-            val nuevoCurso = Curso(
-                id = id,
-                nombreCurso = nombreCurso,
-                descripcionCurso = descripcionCurso,
-                intensidadHorariaCurso = intensidadHorariaCurso,
-                estadoCurso = estadoCurso,
+    suspend fun crearCurso(
+        nombre: String,
+        descripcion: String,
+        intensidadHoraria: String,
+        fundacionId: String,
+        ediciones: List<String>
+    ): Result<Curso> {
+        return try {
+            val request = CrearCursoRequest.from(
+                nombre = nombre,
+                descripcion = descripcion,
+                intensidadHoraria = intensidadHoraria,
                 fundacionId = fundacionId,
                 ediciones = ediciones
             )
 
-            cursos.add(nuevoCurso)
-            return nuevoCurso
+            val response = cursoApi.crearCurso(request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun listarCursosActivos(cursos: List<Curso>): List<Curso> {
-            return cursos.filter { it.getEstadoCurso() }
+    suspend fun listarCursosActivos(): Result<List<Curso>> {
+        return try {
+            val response = cursoApi.listarCursosActivos()
+            handleListResponse(response) { it.filter { curso -> curso.getEstadoCurso() } }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun obtenerCursoPorId(cursos: List<Curso>, id: String): Curso {
-            return cursos.find { it.getId() == id } ?: throw NoSuchElementException("Curso no encontrado")
+    suspend fun obtenerCursoPorId(id: String): Result<Curso> {
+        return try {
+            val response = cursoApi.obtenerCursoPorId(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun actualizarCurso(
-            cursos: MutableList<Curso>,
-            id: String,
-            nombreCurso: String? = null,
-            descripcionCurso: String? = null,
-            intensidadHorariaCurso: String? = null,
-            estadoCurso: Boolean? = null,
-            fundacionId: String? = null,
-            ediciones: List<String>? = null
-        ): Curso {
-            val curso = cursos.find { it.getId() == id } ?: throw NoSuchElementException("Curso no encontrado")
+    suspend fun actualizarCurso(
+        id: String,
+        nombre: String? = null,
+        descripcion: String? = null,
+        intensidadHoraria: String? = null,
+        estado: Boolean? = null,
+        fundacionId: String? = null,
+        ediciones: List<String>? = null
+    ): Result<Curso> {
+        return try {
+            val request = ActualizarCursoRequest.from(
+                nombre = nombre,
+                descripcion = descripcion,
+                intensidadHoraria = intensidadHoraria,
+                fundacionId = fundacionId,
+                estado = estado,
+                ediciones = ediciones
+            )
 
-            nombreCurso?.let { curso.setNombreCurso(it) }
-            descripcionCurso?.let { curso.setDescripcionCurso(it) }
-            intensidadHorariaCurso?.let { curso.setIntensidadHorariaCurso(it) }
-            estadoCurso?.let { curso.setEstadoCurso(it) }
-            fundacionId?.let { curso.setFundacionId(it) }
-            ediciones?.let { curso.setEdiciones(it) }
-
-            return curso
+            val response = cursoApi.actualizarCurso(id, request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun desactivarCurso(cursos: MutableList<Curso>, id: String): Curso {
-            val curso = cursos.find { it.getId() == id } ?: throw NoSuchElementException("Curso no encontrado")
-            curso.setEstadoCurso(false)
-            return curso
+    suspend fun desactivarCurso(id: String): Result<Curso> {
+        return try {
+            val response = cursoApi.desactivarCurso(id)
+
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Respuesta vacía del servidor"))
+            } else {
+                when (response.code()) {
+                    404 -> Result.failure(Exception("Curso no encontrado"))
+                    else -> Result.failure(Exception("Error del servidor: ${response.code()}"))
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
-

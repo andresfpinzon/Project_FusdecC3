@@ -46,7 +46,7 @@ class AsistenciaAdapter(
                 asistencia.getEstudiantes()
                     .joinToString(", ") { "${it.getNombreEstudiante()} ${it.getApellidoEstudiante()}" }
             }
-            // Si solo tenemos IDs, mostrarlos directamente
+            // Si solo tenemos ID, mostrarlos directamente
             else -> {
                 asistencia.getEstudiantesIds().joinToString(", ")
             }

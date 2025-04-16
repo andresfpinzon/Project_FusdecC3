@@ -1,7 +1,11 @@
 package com.example.fusdeckotlin.config.retrofit
 
+import com.example.fusdeckotlin.api.administrativo.colegio.ColegioApi
 import com.example.fusdeckotlin.api.auth.AuthApi
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
+import com.example.fusdeckotlin.api.instructor.calificacion.CalificacionApi
+import com.example.fusdeckotlin.api.secretario.curso.CursoApi
+import com.example.fusdeckotlin.api.secretario.edicion.EdicionApi
 import com.example.fusdeckotlin.api.secretario.estudiante.EstudianteApi
 import com.example.fusdeckotlin.models.auth.AuthManager
 import okhttp3.Interceptor
@@ -61,5 +65,10 @@ object RetrofitClient {
     //Node
     val asistenciaApi: AsistenciaApi by lazy { nodeRetrofit.create(AsistenciaApi::class.java) }
     val estudianteApi: EstudianteApi by lazy { nodeRetrofit.create(EstudianteApi::class.java) }
+    val cursoApi: CursoApi by lazy { nodeRetrofit.create(CursoApi::class.java) }
+    val edicionApi: EdicionApi by lazy { nodeRetrofit.create(EdicionApi::class.java) }
+    val colegioApi: ColegioApi by lazy { nodeRetrofit.create(ColegioApi::class.java) }
+    val calificacionApi: CalificacionApi by lazy { nodeRetrofit.create(CalificacionApi::class.java) }
+
 
 }

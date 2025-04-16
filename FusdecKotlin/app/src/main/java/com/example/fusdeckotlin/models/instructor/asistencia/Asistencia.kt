@@ -4,7 +4,8 @@ import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
-class Asistencia(
+class
+Asistencia(
     @SerializedName("_id") private val id: String,
     @SerializedName("tituloAsistencia") private var tituloAsistencia: String,
     @SerializedName("fechaAsistencia") private var fechaAsistenciaString: String,
@@ -15,7 +16,6 @@ class Asistencia(
     // Getters
     fun getId(): String = id
     fun getTituloAsistencia(): String = tituloAsistencia
-
     fun getFechaAsistencia(): LocalDate {
         return LocalDate.parse(fechaAsistenciaString.substring(0, 10))
     }
@@ -27,7 +27,7 @@ class Asistencia(
         return estudiantes.mapNotNull {
             when (it) {
                 is Estudiante -> it
-                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "", "", false, emptyList(), emptyList(), emptyList(), emptyList())
+                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "", false, emptyList(), emptyList(), emptyList(), emptyList())
                 is Map<*, *> -> convertMapToEstudiante(it)
                 else -> null
             }
@@ -50,7 +50,6 @@ class Asistencia(
             id = map["_id"] as? String ?: "",
             nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
             apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
-            correoEstudiante = map["correoEstudiante"] as? String ?: "",
             tipoDocumento = map["tipoDocumento"] as? String ?: "",
             numeroDocumento = map["numeroDocumento"] as? String ?: "",
             fechaNacimientoString = (map["fechaNacimiento"] as? String)?.substring(0, 10) ?: "",

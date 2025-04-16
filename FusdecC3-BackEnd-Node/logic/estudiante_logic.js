@@ -10,7 +10,6 @@ async function crearEstudiante(body) {
     // Verificar si ya existe un estudiante con el mismo correo o número de documento
     const estudianteExistente = await Estudiante.findOne({
         $or: [
-            { correoEstudiante: body.correoEstudiante },
             { numeroDocumento: body.numeroDocumento }
         ]
     });
@@ -28,7 +27,6 @@ async function crearEstudiante(body) {
     const nuevoEstudiante = new Estudiante({
         nombreEstudiante: body.nombreEstudiante,
         apellidoEstudiante: body.apellidoEstudiante,
-        correoEstudiante: body.correoEstudiante,
         tipoDocumento: body.tipoDocumento,
         numeroDocumento: body.numeroDocumento,
         fechaNacimiento: body.fechaNacimiento,
@@ -90,7 +88,6 @@ async function actualizarEstudiante(id, body) {
     // Verificar que el correo o documento no estén en uso por otro estudiante
     const estudianteExistente = await Estudiante.findOne({
         $or: [
-            { correoEstudiante: body.correoEstudiante },
             { numeroDocumento: body.numeroDocumento }
         ],
         _id: { $ne: id }

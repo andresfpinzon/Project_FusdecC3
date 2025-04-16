@@ -114,6 +114,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="30dp"/>
 
+
+    <TextView
+            android:id="@+id/cursoEdiciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ediciones del curso"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="1dp"/>
+
+
+    <EditText
+            android:id="@+id/edicionesCurso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ediciones separadas por coma (,)"
+            android:inputType="text"
+            android:ems="10"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"/>
+
     <!-- faltan horarios y estudiantes -->
 
     <Button

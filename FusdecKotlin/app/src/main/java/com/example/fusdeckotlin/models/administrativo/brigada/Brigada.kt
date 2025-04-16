@@ -1,20 +1,48 @@
 package com.example.fusdeckotlin.models.administrativo.brigada
 
-data class Brigada(
-    private val id: String,
-    private var nombreBrigada: String,
-    private var ubicacionBrigada: String,
-    private var estadoBrigada: Boolean,
-    private var comandoId: String,
-    private var unidades: List<String>
+import com.google.gson.annotations.SerializedName
+
+class Brigada(
+    @SerializedName("_id") private val id: String,
+    @SerializedName("nombreBrigada") private var nombreBrigada: String,
+    @SerializedName("ubicacionBrigada") private var ubicacionBrigada: String,
+    @SerializedName("estadoBrigada") private var estadoBrigada: Boolean = true,
+    @SerializedName("comandoId") private var comandoId: Any, // String o Comando
+    @SerializedName("unidades") private var unidades: List<Any> = emptyList() // String o Unidad
 ) {
+    // Getters básicos
     fun getId() = id
     fun getNombreBrigada() = nombreBrigada
     fun getUbicacionBrigada() = ubicacionBrigada
     fun getEstadoBrigada() = estadoBrigada
-    fun getComandoId() = comandoId
-    fun getUnidades() = unidades
 
+    // Manejo flexible de comandoId
+    fun getComandoId(): String {
+        return when(comandoId) {
+            is String -> comandoId as String
+            else -> "" // Implementar lógica si recibe objeto Comando
+        }
+    }
+
+    fun getComando(): Any { // O devuelve modelo Comando
+        return comandoId
+    }
+
+    // Manejo flexible de unidades
+    fun getUnidades(): List<String> {
+        return unidades.map {
+            when(it) {
+                is String -> it
+                else -> "" // Implementar lógica si recibe objetos Unidad
+            }
+        }.filter { it.isNotEmpty() }
+    }
+
+    fun getUnidadesObjects(): List<Any> { // O devuelve objetos Unidad
+        return unidades
+    }
+
+    // Setters
     fun setNombreBrigada(nombre: String) {
         nombreBrigada = nombre
     }
@@ -31,27 +59,26 @@ data class Brigada(
         comandoId = comando
     }
 
+    fun setComando(comando: Any) { // O específica tipo Comando
+        comandoId = comando
+    }
+
     fun setUnidades(unidades: List<String>) {
         this.unidades = unidades
     }
 
-    companion object{
-        val brigada1 = Brigada(
-            id = "BRIG01",
-            nombreBrigada = "Brigada 1",
-            ubicacionBrigada = "Ubicación 1",
-            estadoBrigada = true,
-            comandoId = "COM01",
-            unidades = listOf("UNI01", "UNI02")
-        )
+    fun setUnidadesObjects(unidades: List<Any>) {
+        this.unidades = unidades
+    }
 
-        val brigada2 = Brigada(
-            id = "BRIG02",
-            nombreBrigada = "Brigada 2",
-            ubicacionBrigada = "Ubicación 2",
+    companion object {
+        fun createDefault() = Brigada(
+            id = "",
+            nombreBrigada = "",
+            ubicacionBrigada = "",
             estadoBrigada = true,
-            comandoId = "COM02",
-            unidades = listOf("UNI03", "UNI04")
+            comandoId = "",
+            unidades = emptyList()
         )
     }
 }

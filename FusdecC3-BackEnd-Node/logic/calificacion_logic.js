@@ -41,8 +41,8 @@ async function actualizarCalificacion(id, body) {
       throw new Error('Calificación no encontrada');
   }
 
-  // Verificar si ya existe una calificación con el mismo título, excluyendo el curso actual
-  const calificacionExistente = await Curso.findOne({
+  // Verificar si ya existe una calificación con el mismo título
+  const calificacionExistente = await Calificacion.findOne({
     tituloCalificacion: body.tituloCalificacion,
     _id: { $ne: id }, // Excluir el curso actual
   });

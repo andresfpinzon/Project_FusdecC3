@@ -20,7 +20,6 @@ const crearEstudiante = async (req, res) => {
   const { error, value } = estudianteSchemaValidation.validate({
     nombreEstudiante: body.nombreEstudiante,
     apellidoEstudiante: body.apellidoEstudiante,
-    correoEstudiante: body.correoEstudiante,
     tipoDocumento: body.tipoDocumento,
     numeroDocumento: body.numeroDocumento,
     fechaNacimiento: body.fechaNacimiento,
@@ -57,7 +56,6 @@ const actualizarEstudiante = async (req, res) => {
   const { error, value } = estudianteSchemaValidation.validate({
     nombreEstudiante: body.nombreEstudiante,
     apellidoEstudiante: body.apellidoEstudiante,
-    correoEstudiante: body.correoEstudiante,
     tipoDocumento: body.tipoDocumento,
     numeroDocumento: body.numeroDocumento,
     fechaNacimiento: body.fechaNacimiento,
