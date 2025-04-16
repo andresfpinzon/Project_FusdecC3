@@ -1,6 +1,8 @@
 package models.administrativo.auditoria.model
 
+import com.example.fusdeckotlin.models.root.fundacion.Fundacion
 import com.google.gson.annotations.SerializedName
+import models.administrativo.c.CertificadoModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -13,7 +15,7 @@ data class AuditoriaModel(
     @SerializedName("nombreEmisor")
     private val nombreEmisor: String,
     @SerializedName("certificadoId")
-    private val certificadoId: String,
+    private val certificadoId: Any,
     @SerializedName("estadoAuditoria")
     private var estadoAuditoria: Boolean = true
 ) {
@@ -21,7 +23,45 @@ data class AuditoriaModel(
     fun getNombreEmisorAuditoria(): String = nombreEmisor
     fun getIdAuditoria() : String = _id.toString()
     fun getFechaAuditoria() : String = fechaAuditoria
-    fun getCertificadoAuditoria(): String = certificadoId
+    fun getCertificadoId(): String {
+        return when(certificadoId) {
+            is String -> certificadoId as String
+            is CertificadoModel -> (certificadoId as CertificadoModel).getIdCertificado()
+            is Map<*, *> -> (certificadoId as Map<*, *>)["_id"] as? String ?: ""
+            else -> ""
+        }
+    }
+
+    fun getCertificateObject(): CertificadoModel {
+        return when(certificadoId) {
+            is CertificadoModel -> certificadoId as CertificadoModel
+            is String -> createCertifiacteEmpty(certificadoId as String)
+            is Map<*, *> -> convertMapToCetificate(certificadoId as Map<*, *>)
+            else -> createCertifiacteEmpty("")
+        }
+    }
+
+    fun createCertifiacteEmpty(id: String): CertificadoModel{
+        return CertificadoModel(
+            id = id,
+            usuarioId = "",
+            cursoId = "",
+            estudianteId = "",
+            nombreEmisorCertificado = ""
+        )
+    }
+
+    fun convertMapToCetificate(map: Map<*,*>): CertificadoModel{
+        return CertificadoModel(
+            id = map["_id"] as? String ?: "",
+            usuarioId = map["usuarioId"] as? String ?: "",
+            cursoId = map["cursoId"] as? String ?: "",
+            estudianteId = map["estudianteId"] as? String ?: "",
+            nombreEmisorCertificado = map["nombreEmisorCertificado"] as? String ?: ""
+
+        )
+    }
+
     fun getEstadoAuditoria(): Boolean = estadoAuditoria
 
     /*
