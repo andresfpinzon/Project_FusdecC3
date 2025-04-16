@@ -37,16 +37,17 @@
             android:id="@+id/fechaEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Fecha (yyyy-MM-dd)"
+            android:hint="Fecha (yyyy/MM/dd)"
+            android:inputType="date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fechaTextView" />
 
     <TextView
-            android:id="@+id/idTextView"
+            android:id="@+id/usuarioIdTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ID"
+            android:text="Usuario ID"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fechaEditText"
             android:layout_marginTop="16dp" />
@@ -55,28 +56,10 @@
             android:id="@+id/usuarioIdEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Usuario ID"
+            android:hint="ID del usuario"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/idTextView" />
-
-    <TextView
-            android:id="@+id/estudiantesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Estudiantes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
-            android:layout_marginTop="16dp" />
-
-    <EditText
-            android:id="@+id/estudiantesEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="IDs de estudiantes separados por coma"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/estudiantesTextView" />
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdTextView" />
 
     <Button
             android:id="@+id/confirmarButton"
@@ -85,7 +68,7 @@
             android:text="Confirmar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/estudiantesEditText"
+            app:layout_constraintTop_toBottomOf="@id/usuarioIdEditText"
             android:layout_marginTop="16dp" />
 
     <Button

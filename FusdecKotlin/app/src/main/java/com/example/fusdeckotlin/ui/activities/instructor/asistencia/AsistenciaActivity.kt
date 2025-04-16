@@ -24,7 +24,6 @@ class AsistenciaActivity : AppCompatActivity() {
     private lateinit var tituloEditText: EditText
     private lateinit var fechaEditText: EditText
     private lateinit var usuarioIdEditText: EditText
-    private lateinit var estudiantesEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var asistenciasRecyclerView: RecyclerView
@@ -33,7 +32,7 @@ class AsistenciaActivity : AppCompatActivity() {
     private lateinit var adapter: AsistenciaAdapter
 
     private var isEditing: Boolean = false
-    private var currentAsistenciaId: String? = null
+    private var currentAsistenciaId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,6 @@ class AsistenciaActivity : AppCompatActivity() {
         tituloEditText = findViewById(R.id.tituloEditText)
         fechaEditText = findViewById(R.id.fechaEditText)
         usuarioIdEditText = findViewById(R.id.usuarioIdEditText)
-        estudiantesEditText = findViewById(R.id.estudiantesEditText)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
         asistenciasRecyclerView = findViewById(R.id.asistenciasRecyclerView)
@@ -104,9 +102,8 @@ class AsistenciaActivity : AppCompatActivity() {
         val titulo = tituloEditText.text.toString().trim()
         val fechaStr = fechaEditText.text.toString().trim()
         val usuarioId = usuarioIdEditText.text.toString().trim()
-        val estudiantes = estudiantesEditText.text.toString().trim()
 
-        if (titulo.isEmpty() || fechaStr.isEmpty() || usuarioId.isEmpty() || estudiantes.isEmpty()) {
+        if (titulo.isEmpty() || fechaStr.isEmpty() || usuarioId.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
@@ -114,16 +111,13 @@ class AsistenciaActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-                val estudiantesList = estudiantes.split(",").map { it.trim() }
 
                 if (isEditing && currentAsistenciaId != null) {
                     asistenciaServicio.actualizarAsistencia(
                         currentAsistenciaId!!,
                         titulo,
                         fecha,
-                        usuarioId,
-                        true,
-                        estudiantesList
+                        true
                     ).onSuccess {
                         Toast.makeText(this@AsistenciaActivity, "Asistencia actualizada", Toast.LENGTH_SHORT).show()
                         resetEditingState()
@@ -135,8 +129,7 @@ class AsistenciaActivity : AppCompatActivity() {
                     asistenciaServicio.crearAsistencia(
                         titulo,
                         fecha,
-                        usuarioId,
-                        estudiantesList
+                        usuarioId
                     ).onSuccess {
                         Toast.makeText(this@AsistenciaActivity, "Asistencia creada", Toast.LENGTH_SHORT).show()
                         resetEditingState()
@@ -150,7 +143,6 @@ class AsistenciaActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun resetEditingState() {
         isEditing = false
@@ -166,20 +158,15 @@ class AsistenciaActivity : AppCompatActivity() {
         tituloEditText.text.clear()
         fechaEditText.text.clear()
         usuarioIdEditText.text.clear()
-        estudiantesEditText.text.clear()
     }
 
     private fun onUpdateClick(asistencia: Asistencia) {
         isEditing = true
         currentAsistenciaId = asistencia.getId()
-        tituloEditText.setText(asistencia.getTituloAsistencia())
-        fechaEditText.setText(asistencia.getFechaAsistencia()
+        tituloEditText.setText(asistencia.getTitulo())
+        fechaEditText.setText(asistencia.getFecha()
             .format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
         usuarioIdEditText.setText(asistencia.getUsuarioId())
-
-        // Usar getEstudiantesIds() para obtener los ID
-        val estudiantesIds = asistencia.getEstudiantesDocumentos()
-        estudiantesEditText.setText(estudiantesIds.joinToString(", "))
     }
 
     private fun onDeleteClick(asistencia: Asistencia) {

@@ -4,59 +4,68 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="16dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/white">
 
+    <!-- Título (ocupará el espacio disponible antes de los botones) -->
     <TextView
             android:id="@+id/tituloTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Título"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/updateButton"
+            app:layout_constraintHorizontal_bias="0" />
 
+    <!-- Fecha (debajo del título) -->
     <TextView
             android:id="@+id/fechaTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Fecha"
+            android:textSize="14sp"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tituloTextView"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintEnd_toStartOf="@id/updateButton"
+            android:layout_marginTop="4dp" />
 
+    <!-- ID de Usuario (debajo de la fecha) -->
     <TextView
             android:id="@+id/usuarioIdTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Usuario ID"
+            android:textSize="14sp"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fechaTextView"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintEnd_toStartOf="@id/updateButton"
+            android:layout_marginTop="4dp" />
 
-    <TextView
-            android:id="@+id/estudiantesTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Estudiantes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/usuarioIdTextView"
-            android:layout_marginTop="8dp" />
-
+    <!-- Botón Editar -->
     <ImageButton
             android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_refresh_24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_edit"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/update_button_description"
             app:layout_constraintEnd_toStartOf="@id/deleteButton"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="8dp" />
 
+    <!-- Botón Eliminar -->
     <ImageButton
             android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_delete_24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_delete"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete_button_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -20,7 +20,6 @@ class AsistenciaAdapter(
         val tituloTextView: TextView = itemView.findViewById(R.id.tituloTextView)
         val fechaTextView: TextView = itemView.findViewById(R.id.fechaTextView)
         val usuarioIdTextView: TextView = itemView.findViewById(R.id.usuarioIdTextView)
-        val estudiantesTextView: TextView = itemView.findViewById(R.id.estudiantesTextView)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
@@ -33,25 +32,11 @@ class AsistenciaAdapter(
 
     override fun onBindViewHolder(holder: AsistenciaViewHolder, position: Int) {
         val asistencia = asistencias[position]
-        holder.tituloTextView.text = asistencia.getTituloAsistencia()
-        holder.fechaTextView.text = asistencia.getFechaAsistencia()
+
+        holder.tituloTextView.text = asistencia.getTitulo()
+        holder.fechaTextView.text = asistencia.getFecha()
             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         holder.usuarioIdTextView.text = asistencia.getUsuarioId()
-
-        // Mostrar información de estudiantes según lo disponible
-        holder.estudiantesTextView.text = when {
-            // Si tenemos objetos completos de estudiantes, mostrar nombres
-            asistencia.getEstudiantes().isNotEmpty() &&
-                    asistencia.getEstudiantes().first().getNombre().isNotEmpty() -> {
-                asistencia.getEstudiantes()
-                    .joinToString(", ") { "${it.getNombre()} ${it.getApellido()}" }
-            }
-            // Si solo tenemos ID, mostrarlos directamente
-            else -> {
-                asistencia.getEstudiantesDocumentos().joinToString(", ")
-            }
-        }
-
         holder.updateButton.setOnClickListener { onUpdateClick(asistencia) }
         holder.deleteButton.setOnClickListener { onDeleteClick(asistencia) }
     }

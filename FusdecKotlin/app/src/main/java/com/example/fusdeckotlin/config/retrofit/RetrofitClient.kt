@@ -62,9 +62,9 @@ object RetrofitClient {
     // Spring
     val authApi: AuthApi by lazy { springRetrofit.create(AuthApi::class.java) }
     val estudianteApi: EstudianteApi by lazy { springRetrofit.create(EstudianteApi::class.java) }
+    val asistenciaApi: AsistenciaApi by lazy { springRetrofit.create(AsistenciaApi::class.java) }
 
     //Node
-    val asistenciaApi: AsistenciaApi by lazy { nodeRetrofit.create(AsistenciaApi::class.java) }
     val cursoApi: CursoApi by lazy { nodeRetrofit.create(CursoApi::class.java) }
     val edicionApi: EdicionApi by lazy { nodeRetrofit.create(EdicionApi::class.java) }
     val colegioApi: ColegioApi by lazy { nodeRetrofit.create(ColegioApi::class.java) }
