@@ -27,18 +27,20 @@ import SaveIcon from "@mui/icons-material/Save"
 import HistoryIcon from "@mui/icons-material/History"
 
 const Asistencias = () => {
-  // Estado para almacenar el token JWT
-  const token = localStorage.getItem("token")
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [students, setStudents] = useState([]);
+  const [attendance, setAttendance] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openHistory, setOpenHistory] = useState(false);
+  const [attendanceHistory, setAttendanceHistory] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [userId, setUserId] = useState(null);
+  const token = localStorage.getItem("token");
 
-  // Estados para manejar la interfaz y los datos
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
-  const [students, setStudents] = useState([])
-  const [attendance, setAttendance] = useState({})
-  const [searchTerm, setSearchTerm] = useState("")
-  const [openHistory, setOpenHistory] = useState(false)
-  const [attendanceHistory, setAttendanceHistory] = useState([])
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
-  const [userId, setUserId] = useState(null)
+  // Función para mostrar notificaciones
+  const showSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   // Efecto para cargar datos iniciales
   useEffect(() => {
@@ -49,88 +51,121 @@ const Asistencias = () => {
         fetchStudents()
         fetchAttendanceHistory()
       } catch (error) {
-        setSnackbar({ open: true, message: "Error al decodificar el token", severity: "error" })
+        showSnackbar("Error al decodificar el token", "error")
       }
     }
   }, [token])
 
+  // Cargar estudiantes    (?estado=true)
   const fetchStudents = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      })
-      if (!response.ok) throw new Error("Error al obtener estudiantes")
-      const data = await response.json()
-      if (data.length === 0) {
-        setSnackbar({ open: true, message: "No hay estudiantes registrados", severity: "warning" })
-      }
-      setStudents(data)
-      setAttendance(data.reduce((acc, student) => ({ ...acc, [student._id]: false }), {}))
+      const response = await fetch("http://localhost:8080/estudiantes", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      
+      if (!response.ok) throw new Error(await response.text());
+      
+      const data = await response.json();
+      const initialAttendance = {};
+      data.forEach(student => {
+        initialAttendance[student.numeroDocumento] = false;
+      });
+      
+      setStudents(data);
+      setAttendance(initialAttendance);
     } catch (error) {
-      setSnackbar({ open: true, message: "Error al cargar estudiantes", severity: "error" })
+      showSnackbar("Error al cargar estudiantes: " + error.message, "error");
     }
-  }
+  };
 
-  // Función para obtener el historial de asistencias
+  // Obtener historial de asistencias
   const fetchAttendanceHistory = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias", {
-        headers: { Authorization: token },
+      const response = await fetch("http://localhost:8080/asistencias", {
+        headers: { 
+          "Authorization": `Bearer ${token}` 
+        },
       })
+      
       if (!response.ok) throw new Error("Error al obtener historial")
+      
       const data = await response.json()
       setAttendanceHistory(data)
     } catch (error) {
-      setSnackbar({ open: true, message: "Error al cargar historial", severity: "error" })
+      showSnackbar("Error al cargar historial: " + error.message, "error")
     }
   }
 
-
-  // Manejador para cambiar el estado de asistencia
+  // Manejar cambio en checkbox de asistencia
   const handleAttendanceChange = (studentId) => {
-    setAttendance((prev) => ({ ...prev, [studentId]: !prev[studentId] }))
+    setAttendance(prev => ({
+      ...prev,
+      [studentId]: !prev[studentId]
+    }))
   }
 
-
-  // Función para guardar la asistencia
+  // Guardar asistencia (versión robusta)
   const handleSaveAttendance = async () => {
     try {
-      const presentStudents = Object.entries(attendance).filter(([_, present]) => present).map(([id]) => id)
-      const absentStudents = Object.entries(attendance).filter(([_, present]) => !present).map(([id]) => id)
-
-      const attendanceData = {
-        tituloAsistencia: `Asistencia ${selectedDate}`,
-        fechaAsistencia: selectedDate,
-        usuarioId: userId,
-        estudiantes: presentStudents,
-        inasistencias: absentStudents,
+      // Validación básica
+      if (!userId) throw new Error("No se identificó al usuario");
+      if (Object.values(attendance).every(v => !v)) {
+        return showSnackbar("Marque al menos un estudiante presente", "warning");
       }
 
-      const response = await fetch("http://localhost:3000/api/asistencias", {
+      // Crear asistencia
+      const asistenciaRes = await fetch("http://localhost:8080/asistencias", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(attendanceData),
-      })
-      if (!response.ok) throw new Error("Error al guardar asistencia")
-      setSnackbar({ open: true, message: "Asistencia guardada exitosamente", severity: "success" })
-      fetchAttendanceHistory()
+        body: JSON.stringify({
+          titulo: `Asistencia ${selectedDate}`,
+          fecha: selectedDate,
+          usuarioId: userId,
+        }),
+      });
+      
+      if (!asistenciaRes.ok) throw new Error(await asistenciaRes.text());
+      
+      const asistencia = await asistenciaRes.json();
+
+      // Registrar estudiantes presentes
+      const presentes = Object.entries(attendance)
+        .filter(([_, presente]) => presente)
+        .map(([doc]) => doc);
+
+      await Promise.all(
+        presentes.map(doc =>
+          fetch("http://localhost:8080/asistencia-estudiantes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              asistenciaId: asistencia.id,
+              estudianteId: doc,
+            }),
+          })
+        )
+      );
+
+      showSnackbar("Asistencia registrada correctamente", "success");
+      fetchAttendanceHistory();
     } catch (error) {
-      setSnackbar({ open: true, message: "Error al guardar asistencia", severity: "error" })
+      showSnackbar("Error: " + error.message, "error");
+      console.error("Error al guardar:", error);
     }
-  }
+  };
 
   // Filtrar estudiantes basado en el término de búsqueda
-  const filteredStudents = students.filter((student) =>
-    student.nombreEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.apellidoEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.documentoEstudiante?.includes(searchTerm),
-  )
+  const filteredStudents = students.filter(student =>
+    student.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.apellido?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.numeroDocumento?.includes(searchTerm))
+  
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -149,10 +184,19 @@ const Asistencias = () => {
               shrink: true,
             }}
           />
-          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSaveAttendance} color="primary">
+          <Button 
+            variant="contained" 
+            startIcon={<SaveIcon />} 
+            onClick={handleSaveAttendance} 
+            color="primary"
+          >
             Guardar Asistencia
           </Button>
-          <Button variant="outlined" startIcon={<HistoryIcon />} onClick={() => setOpenHistory(true)}>
+          <Button 
+            variant="outlined" 
+            startIcon={<HistoryIcon />} 
+            onClick={() => setOpenHistory(true)}
+          >
             Ver Historial
           </Button>
         </Box>
@@ -170,22 +214,22 @@ const Asistencias = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>Documento</TableCell>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Apellido</TableCell>
-                <TableCell>Documento</TableCell>
                 <TableCell align="center">Asistencia</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredStudents.map((student) => (
-                <TableRow key={student._id}>
-                  <TableCell>{student.nombreEstudiante}</TableCell>
-                  <TableCell>{student.apellidoEstudiante}</TableCell>
-                  <TableCell>{student.documentoEstudiante}</TableCell>
+                <TableRow key={student.numeroDocumento}>
+                  <TableCell>{student.numeroDocumento}</TableCell>
+                  <TableCell>{student.nombre}</TableCell>
+                  <TableCell>{student.apellido}</TableCell>
                   <TableCell align="center">
                     <Checkbox
-                      checked={attendance[student._id] || false}
-                      onChange={() => handleAttendanceChange(student._id)}
+                      checked={attendance[student.numeroDocumento] || false}
+                      onChange={() => handleAttendanceChange(student.numeroDocumento)}
                       color="primary"
                     />
                   </TableCell>
@@ -196,6 +240,7 @@ const Asistencias = () => {
         </TableContainer>
       </Paper>
 
+      {/* Diálogo de historial */}
       <Dialog open={openHistory} onClose={() => setOpenHistory(false)} maxWidth="md" fullWidth>
         <DialogTitle>Historial de Asistencias</DialogTitle>
         <DialogContent>
@@ -203,19 +248,21 @@ const Asistencias = () => {
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell>ID</TableCell>
                   <TableCell>Fecha</TableCell>
                   <TableCell>Título</TableCell>
-                  <TableCell align="center">Presentes</TableCell>
                   <TableCell align="center">Estado</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {attendanceHistory.map((record) => (
-                  <TableRow key={record._id}>
-                    <TableCell>{new Date(record.fechaAsistencia).toLocaleDateString()}</TableCell>
-                    <TableCell>{record.tituloAsistencia}</TableCell>
-                    <TableCell align="center">{record.estudiantes?.length || 0}</TableCell>
-                    <TableCell align="center">{record.estadoAsistencia ? "Activa" : "Inactiva"}</TableCell>
+                  <TableRow key={record.id}>
+                    <TableCell>{record.id}</TableCell>
+                    <TableCell>{new Date(record.fecha).toLocaleDateString()}</TableCell>
+                    <TableCell>{record.titulo}</TableCell>
+                    <TableCell align="center">
+                      {record.estado ? "Activa" : "Inactiva"}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -227,8 +274,16 @@ const Asistencias = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-        <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+      {/* Snackbar para notificaciones */}
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+      >
+        <Alert 
+          severity={snackbar.severity} 
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
@@ -237,4 +292,3 @@ const Asistencias = () => {
 }
 
 export default Asistencias
-
