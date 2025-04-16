@@ -19,7 +19,7 @@ data class Brigada(
     private var unidades: List<Any> = emptyList()
 ) {
     // Getters básicos
-    fun getId() = id
+    fun getId() = id.toString()
     fun getNombreBrigada() = nombreBrigada
     fun getUbicacionBrigada() = ubicacionBrigada
     fun getEstadoBrigada() = estadoBrigada
