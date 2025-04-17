@@ -118,14 +118,23 @@
                             android:textStyle="bold"
                             android:layout_marginTop="16dp"/>
 
-                    <EditText
-                            android:id="@+id/fundacionId"
+                    <Button
+                            android:id="@+id/seleccionarFundacionButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Ingrese el ID de la fundación"
-                            android:inputType="number"
+                            android:text="Seleccionar Fundación"
+                            android:textColor="@color/white"
+                            android:backgroundTint="@color/primaryColor"
                             android:layout_marginTop="4dp"
-                            android:backgroundTint="@color/primaryColor"/>
+                            style="@style/Widget.MaterialComponents.Button"/>
+
+                    <TextView
+                            android:id="@+id/fundacionSeleccionadaText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ninguna fundación seleccionada"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/textSecondary"/>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

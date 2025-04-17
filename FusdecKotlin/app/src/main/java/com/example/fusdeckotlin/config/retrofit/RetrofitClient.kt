@@ -4,6 +4,7 @@ import com.example.fusdeckotlin.api.administrativo.colegio.ColegioApi
 import com.example.fusdeckotlin.api.auth.AuthApi
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
 import com.example.fusdeckotlin.api.instructor.asistenciaestudiante.AsistenciaEstudianteApi
+import com.example.fusdeckotlin.api.root.fundacion.FundacionApi
 import com.example.fusdeckotlin.api.secretario.curso.CursoApi
 import com.example.fusdeckotlin.api.secretario.edicion.EdicionApi
 import com.example.fusdeckotlin.api.secretario.estudiante.EstudianteApi
@@ -69,6 +70,7 @@ object RetrofitClient {
     val cursoApi: CursoApi by lazy { nodeRetrofit.create(CursoApi::class.java) }
     val edicionApi: EdicionApi by lazy { nodeRetrofit.create(EdicionApi::class.java) }
     val colegioApi: ColegioApi by lazy { nodeRetrofit.create(ColegioApi::class.java) }
+    val fundacionApi: FundacionApi by lazy { nodeRetrofit.create(FundacionApi::class.java) }
 
 
 }

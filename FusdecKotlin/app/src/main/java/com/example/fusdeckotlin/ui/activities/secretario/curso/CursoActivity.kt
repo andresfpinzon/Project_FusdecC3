@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.curso.Curso
+import com.example.fusdeckotlin.models.root.fundacion.Fundacion
 import com.example.fusdeckotlin.services.secretario.curso.CursoServices
 import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
+import com.example.fusdeckotlin.services.root.fundacion.FundacionService
 import com.example.fusdeckotlin.ui.adapters.secretario.curso.CursoAdapter
 import kotlinx.coroutines.launch
 
@@ -27,7 +29,8 @@ class CursoActivity : AppCompatActivity() {
     private lateinit var tituloCurso: EditText
     private lateinit var descripcionCurso: EditText
     private lateinit var intensidadHorariaCurso: EditText
-    private lateinit var fundacionId: EditText
+    private lateinit var seleccionarFundacionButton: Button
+    private lateinit var fundacionSeleccionadaText: TextView
     private lateinit var confirmarCursoButton: Button
     private lateinit var cancelarCursoButton: Button
     private lateinit var searchEditText: EditText
@@ -35,26 +38,37 @@ class CursoActivity : AppCompatActivity() {
 
     private val cursoServicio = CursoServices()
     private val edicionService = EdicionServices()
+    private val fundacionService = FundacionService()
     private lateinit var adapter: CursoAdapter
 
     private var isEditing: Boolean = false
     private var currentCursoId: String? = null
+    private var fundacionSeleccionada: Fundacion? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_curso)
 
-        // Inicializar vistas con tus nombres exactos
+        initViews()
+        setupRecyclerView()
+        setupListeners()
+        cargarCursos()
+        configurarBusqueda()
+    }
+
+    private fun initViews() {
         tituloCurso = findViewById(R.id.tituloCurso)
         descripcionCurso = findViewById(R.id.descripcionCurso)
         intensidadHorariaCurso = findViewById(R.id.intensidadHorariaCurso)
-        fundacionId = findViewById(R.id.fundacionId)
+        seleccionarFundacionButton = findViewById(R.id.seleccionarFundacionButton)
+        fundacionSeleccionadaText = findViewById(R.id.fundacionSeleccionadaText)
         confirmarCursoButton = findViewById(R.id.confirmarCursoButton)
         cancelarCursoButton = findViewById(R.id.cancelarCursoButton)
         searchEditText = findViewById(R.id.searchEditText)
         cursosRecyclerView = findViewById(R.id.cursosRecyclerView)
+    }
 
-        // Configurar RecyclerView
+    private fun setupRecyclerView() {
         adapter = CursoAdapter(
             emptyList(),
             ::onUpdateClick,
@@ -63,14 +77,10 @@ class CursoActivity : AppCompatActivity() {
         )
         cursosRecyclerView.layoutManager = LinearLayoutManager(this)
         cursosRecyclerView.adapter = adapter
+    }
 
-        // Cargar cursos al iniciar
-        cargarCursos()
-
-        // Configurar búsqueda
-        configurarBusqueda()
-
-        // Configurar listeners de botones
+    private fun setupListeners() {
+        seleccionarFundacionButton.setOnClickListener { mostrarDialogoSeleccionFundaciones() }
         confirmarCursoButton.setOnClickListener { guardarCurso() }
         cancelarCursoButton.setOnClickListener { finish() }
     }
@@ -105,12 +115,44 @@ class CursoActivity : AppCompatActivity() {
             result.onSuccess { cursos ->
                 adapter.actualizarLista(cursos)
             }.onFailure { error ->
-                Toast.makeText(
-                    this@CursoActivity,
-                    "Error al cargar cursos: ${error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showError("Error al cargar cursos: ${error.message}")
             }
+        }
+    }
+
+    private fun mostrarDialogoSeleccionFundaciones() {
+        lifecycleScope.launch {
+            val result = fundacionService.obtenerTodasLasFundaciones()
+            result.onSuccess { fundaciones ->
+                mostrarDialogoSeleccion(fundaciones)
+            }.onFailure { error ->
+                showError("Error al cargar fundaciones: ${error.message}")
+            }
+        }
+    }
+
+    private fun mostrarDialogoSeleccion(fundaciones: List<Fundacion>) {
+        val fundacionesArray = fundaciones.map {
+            "${it.getNombreFundacion()}"
+        }.toTypedArray()
+
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar Fundación")
+            .setItems(fundacionesArray) { _, which ->
+                fundacionSeleccionada = fundaciones[which]
+                actualizarTextoFundacionSeleccionada()
+            }
+            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
+    }
+
+    private fun actualizarTextoFundacionSeleccionada() {
+        fundacionSeleccionada?.let { fundacion ->
+            fundacionSeleccionadaText.text =
+                "Fundación seleccionada: ${fundacion.getNombreFundacion()}"
+        } ?: run {
+            fundacionSeleccionadaText.text = "Ninguna fundación seleccionada"
         }
     }
 
@@ -118,10 +160,10 @@ class CursoActivity : AppCompatActivity() {
         val nombre = tituloCurso.text.toString().trim()
         val descripcion = descripcionCurso.text.toString().trim()
         val intensidadHoraria = intensidadHorariaCurso.text.toString().trim()
-        val fundacionIdStr = fundacionId.text.toString().trim()
+        val fundacionId = fundacionSeleccionada?.getId() ?: ""
 
-        if (nombre.isEmpty() || descripcion.isEmpty() || intensidadHoraria.isEmpty() || fundacionIdStr.isEmpty()) {
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+        if (nombre.isEmpty() || descripcion.isEmpty() || intensidadHoraria.isEmpty() || fundacionId.isEmpty()) {
+            showError("Por favor, complete todos los campos y seleccione una fundación")
             return
         }
 
@@ -133,10 +175,10 @@ class CursoActivity : AppCompatActivity() {
                         nombre = nombre,
                         descripcion = descripcion,
                         intensidadHoraria = intensidadHoraria,
-                        fundacionId = fundacionIdStr,
-                        estado = true,
+                        fundacionId = fundacionId,
+                        estado = true
                     ).onSuccess {
-                        Toast.makeText(this@CursoActivity, "Curso actualizado", Toast.LENGTH_SHORT).show()
+                        showSuccess("Curso actualizado")
                         resetEditingState()
                         cargarCursos()
                     }.onFailure { error ->
@@ -147,9 +189,9 @@ class CursoActivity : AppCompatActivity() {
                         nombre = nombre,
                         descripcion = descripcion,
                         intensidadHoraria = intensidadHoraria,
-                        fundacionId = fundacionIdStr,
+                        fundacionId = fundacionId
                     ).onSuccess {
-                        Toast.makeText(this@CursoActivity, "Curso creado", Toast.LENGTH_SHORT).show()
+                        showSuccess("Curso creado")
                         resetEditingState()
                         cargarCursos()
                     }.onFailure { error ->
@@ -165,6 +207,7 @@ class CursoActivity : AppCompatActivity() {
     private fun resetEditingState() {
         isEditing = false
         currentCursoId = null
+        fundacionSeleccionada = null
         limpiarFormulario()
     }
 
@@ -172,11 +215,15 @@ class CursoActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun limpiarFormulario() {
         tituloCurso.text.clear()
         descripcionCurso.text.clear()
         intensidadHorariaCurso.text.clear()
-        fundacionId.text.clear()
+        fundacionSeleccionadaText.text = "Ninguna fundación seleccionada"
     }
 
     private fun onUpdateClick(curso: Curso) {
@@ -185,38 +232,39 @@ class CursoActivity : AppCompatActivity() {
         tituloCurso.setText(curso.getNombreCurso())
         descripcionCurso.setText(curso.getDescripcionCurso())
         intensidadHorariaCurso.setText(curso.getIntensidadHorariaCurso())
-        fundacionId.setText(curso.getFundacionId())
 
+        // Cargar fundación seleccionada
+        lifecycleScope.launch {
+            val result = fundacionService.obtenerFundacionPorId(curso.getFundacionId())
+            result.onSuccess { fundacion ->
+                fundacionSeleccionada = fundacion
+                actualizarTextoFundacionSeleccionada()
+            }.onFailure { error ->
+                showError("Error al cargar fundación: ${error.message}")
+            }
+        }
     }
 
     private fun onDeleteClick(curso: Curso) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Confirmar eliminación")
-        builder.setMessage("¿Estás seguro de que deseas eliminar este curso?")
-
-        builder.setPositiveButton("Sí") { _, _ ->
-            lifecycleScope.launch {
-                val result = cursoServicio.desactivarCurso(curso.getId())
-                result.onSuccess {
-                    Toast.makeText(
-                        this@CursoActivity,
-                        "Curso eliminado",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    cargarCursos()
-                }.onFailure { error ->
-                    Toast.makeText(
-                        this@CursoActivity,
-                        error.message ?: "Error al eliminar",
-                        Toast.LENGTH_SHORT
-                    ).show()
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Estás seguro de que deseas eliminar este curso?")
+            .setPositiveButton("Sí") { _, _ ->
+                lifecycleScope.launch {
+                    val result = cursoServicio.desactivarCurso(curso.getId())
+                    result.onSuccess {
+                        showSuccess("Curso eliminado")
+                        cargarCursos()
+                    }.onFailure { error ->
+                        showError(error.message ?: "Error al eliminar")
+                    }
                 }
             }
-        }
-
-        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
     }
+
     private fun onInfoClick(curso: Curso) {
         lifecycleScope.launch {
             try {
@@ -268,7 +316,6 @@ class CursoActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
 }
 
 
