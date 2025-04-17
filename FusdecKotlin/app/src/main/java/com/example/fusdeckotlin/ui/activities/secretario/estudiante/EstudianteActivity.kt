@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
+import com.example.fusdeckotlin.services.instructor.asistenciaestudiante.AsistenciaEstudianteService
 import com.example.fusdeckotlin.services.secretario.estudiante.EstudianteServices
 import com.example.fusdeckotlin.ui.adapters.secretario.estudiante.EstudianteAdapter
 import kotlinx.coroutines.launch
@@ -36,6 +39,8 @@ class EstudianteActivity : AppCompatActivity() {
     private lateinit var estudiantesRecyclerView: RecyclerView
 
     private val estudianteServicio = EstudianteServices()
+    private val asistenciaService = AsistenciaServices()
+    private val asistenciaEstudianteService = AsistenciaEstudianteService()
     private lateinit var adapter: EstudianteAdapter
 
     private var isEditing: Boolean = false
@@ -63,7 +68,8 @@ class EstudianteActivity : AppCompatActivity() {
         adapter = EstudianteAdapter(
             emptyList(),
             ::onUpdateClick,
-            ::onDeleteClick
+            ::onDeleteClick,
+            ::onInfoClick
         )
         estudiantesRecyclerView.layoutManager = LinearLayoutManager(this)
         estudiantesRecyclerView.adapter = adapter
@@ -245,4 +251,81 @@ class EstudianteActivity : AppCompatActivity() {
         builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
+
+    private fun onInfoClick(estudiante: Estudiante) {
+        lifecycleScope.launch {
+            try {
+                // Obtener todas las relaciones asistencia-estudiante
+                val resultRelaciones = asistenciaEstudianteService.obtenerTodasLasRelaciones()
+
+                resultRelaciones.onSuccess { todasRelaciones ->
+                    // Filtrar relaciones donde el estudiante haya asistido
+                    val relacionesDelEstudiante = todasRelaciones.filter {
+                        it.getEstudianteId() == estudiante.getNumeroDocumento()
+                    }
+
+                    if (relacionesDelEstudiante.isEmpty()) {
+                        runOnUiThread {
+                            mostrarDialogoAsistencias(emptyArray())
+                        }
+                        return@onSuccess
+                    }
+
+                    // Obtener todas las asistencias
+                    val resultAsistencias = asistenciaService.listarAsistenciasActivas()
+
+                    resultAsistencias.onSuccess { todasAsistencias ->
+                        // Filtrar las asistencias del estudiante
+                        val asistenciasDelEstudiante = todasAsistencias.filter { asistencia ->
+                            relacionesDelEstudiante.any { rel -> rel.getAsistenciaId() == asistencia.getId() }
+                        }.map { asistencia ->
+                            "• ${asistencia.getTitulo()}" // o cualquier otro campo representativo
+                        }.toTypedArray()
+
+                        runOnUiThread {
+                            mostrarDialogoAsistencias(asistenciasDelEstudiante)
+                        }
+                    }.onFailure { error ->
+                        runOnUiThread {
+                            showError("Error al cargar asistencias: ${error.message}")
+                        }
+                    }
+                }.onFailure { error ->
+                    runOnUiThread {
+                        showError("Error al cargar relaciones: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    showError("Error inesperado: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun mostrarDialogoAsistencias(asistencias: Array<String>) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_asistencias_estudiante, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        val asistenciasTextView = dialogView.findViewById<TextView>(R.id.asistenciasTextView)
+        val cerrarBtn = dialogView.findViewById<TextView>(R.id.btnCerrar)
+
+        val textoFormateado = if (asistencias.isNotEmpty()) {
+            asistencias.joinToString("\n")
+        } else {
+            "No hay asistencias registradas para este estudiante."
+        }
+
+        asistenciasTextView.text = textoFormateado
+
+        cerrarBtn.setOnClickListener { dialog.dismiss() }
+
+        dialog.show()
+    }
+
+
+
+
 }

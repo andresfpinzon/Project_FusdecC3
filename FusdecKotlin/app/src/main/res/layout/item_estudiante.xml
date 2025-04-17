@@ -42,13 +42,23 @@
                     android:orientation="horizontal">
 
                 <ImageButton
+                        android:id="@+id/infoButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_info"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/info_button_description"
+                        android:tint="@color/primaryColor" />
+
+                <ImageButton
                         android:id="@+id/updateButton"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:src="@drawable/ic_edit"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/update_button_description"
-                        android:tint="@color/primaryColor"/>
+                        android:tint="@color/primaryColor"
+                        android:layout_marginStart="8dp" />
 
                 <ImageButton
                         android:id="@+id/deleteButton"
@@ -61,6 +71,7 @@
                         android:layout_marginStart="8dp"/>
             </LinearLayout>
         </LinearLayout>
+
 
         <!-- Primera línea de información -->
         <LinearLayout

@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.ui.adapters.secretario.estudiante
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 
 class EstudianteAdapter(
     private var estudiantes: List<Estudiante>,
     private val onUpdateClick: (Estudiante) -> Unit,
-    private val onDeleteClick: (Estudiante) -> Unit
+    private val onDeleteClick: (Estudiante) -> Unit,
+    private val onInfoClick: (Estudiante) -> Unit
 ) : RecyclerView.Adapter<EstudianteAdapter.EstudianteViewHolder>(), Filterable {
 
     private var estudiantesFiltrados: List<Estudiante> = estudiantes
@@ -32,6 +35,7 @@ class EstudianteAdapter(
         val estadoTextView: TextView = itemView.findViewById(R.id.estadoTextView)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+        val infoButton: ImageButton = itemView.findViewById(R.id.infoButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EstudianteViewHolder {
@@ -41,6 +45,7 @@ class EstudianteAdapter(
         return EstudianteViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: EstudianteViewHolder, position: Int) {
         val estudiante = estudiantesFiltrados[position]
 
@@ -70,6 +75,7 @@ class EstudianteAdapter(
         // Configurar botones
         holder.updateButton.setOnClickListener { onUpdateClick(estudiante) }
         holder.deleteButton.setOnClickListener { onDeleteClick(estudiante) }
+        holder.infoButton.setOnClickListener { onInfoClick(estudiante) }
 
         // Efecto de elevación al hacer clic
         holder.itemView.setOnClickListener {
