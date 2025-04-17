@@ -20,7 +20,6 @@ const crearEdicion = async (req, res) => {
     fechaFinEdicion: body.fechaFinEdicion,
     estadoEdicion: body.estadoEdicion,
     cursoId: body.cursoId,
-    estudiantes: body.estudiantes,
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -45,7 +44,6 @@ const actualizarEdicion = async (req, res) => {
     fechaInicioEdicion: body.fechaInicioEdicion,
     fechaFinEdicion: body.fechaFinEdicion,
     cursoId: body.cursoId,
-    estudiantes: body.estudiantes,
   });
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
@@ -106,33 +104,10 @@ const obtenerEdicionPorId = async (req, res) => {
   }
 };
 
-// Controlador para agregar estudiantes a una edicion
-const agregarEstudianteAEdicion = async (req, res) => {
-  const { edicionId } = req.params;
-  const { estudiantes } = req.body;
-
-  if (!Array.isArray(estudiantes) || estudiantes.length === 0) {
-    return res
-      .status(400)
-      .json({ error: "Se requiere un array de IDs de estidiantes" });
-  }
-
-  try {
-    const edicionActualizada = await logic.agregarEstudianteAEdicion(
-      edicionId,
-      estudiantes
-    );
-    res.json({ edicion: edicionActualizada });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 module.exports = {
   crearEdicion,
   actualizarEdicion,
   desactivarEdicion,
   listarEdicionesActivas,
   obtenerEdicionPorId,
-  agregarEstudianteAEdicion,
 };

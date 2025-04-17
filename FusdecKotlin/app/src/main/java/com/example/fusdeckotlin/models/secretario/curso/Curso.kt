@@ -71,7 +71,6 @@ class Curso(
                     fechaFinString = LocalDate.now().toString(),
                     cursoId = this.id,
                     estadoEdicion = true,
-                    estudiantes = emptyList()
                 )
                 is Map<*, *> -> convertMapToEdicion(it)
                 else -> null
@@ -100,7 +99,6 @@ class Curso(
             fechaFinString = (map["fechaFin"] as? String)?.substring(0, 10) ?: LocalDate.now().toString(),
             cursoId = map["cursoId"] as? String ?: this.id,
             estadoEdicion = map["estadoEdicion"] as? Boolean ?: true,
-            estudiantes = map["estudiantes"] as? List<Any> ?: emptyList()
         )
     }
 

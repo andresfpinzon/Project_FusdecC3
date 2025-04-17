@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.models.secretario.edicion
 
-import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.example.fusdeckotlin.models.secretario.curso.Curso
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
@@ -12,7 +11,6 @@ class Edicion(
     @SerializedName("fechaFinEdicion") private var fechaFinString: String,
     @SerializedName("cursoId") private var cursoId: Any,
     @SerializedName("estadoEdicion") private var estadoEdicion: Boolean = true,
-    @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList()
 ) {
     // Getters básicos
     fun getId(): String = id
@@ -84,67 +82,9 @@ class Edicion(
         )
     }
 
-    // Manejo de estudiantes
-    fun getEstudiantes(): List<Estudiante> {
-        return estudiantes.mapNotNull {
-            when (it) {
-                is Estudiante -> it
-                is String -> crearEstudianteVacio(it)
-                is Map<*, *> -> convertMapToEstudiante(it)
-                else -> null
-            }
-        }
-    }
-
-    fun getEstudiantesDocumentos(): List<String> {
-        return estudiantes.map {
-            when (it) {
-                is Estudiante -> it.getNumeroDocumento()
-                is String -> it
-                is Map<*, *> -> it["numeroDocumento"] as? String ?: ""
-                else -> ""
-            }
-        }.filter { it.isNotEmpty() }
-    }
-
-    private fun crearEstudianteVacio(documento: String): Estudiante {
-        return Estudiante(
-            numeroDocumento = documento,
-            nombre = "",
-            apellido = "",
-            tipoDocumento = "",
-            genero = "",
-            unidad = "",
-            colegio = "",
-            edicion = "",
-            grado = "",
-            estado = true,
-            asistenciasRegistradas = 0,
-            aprobado = false
-        )
-    }
-
-    private fun convertMapToEstudiante(map: Map<*, *>): Estudiante {
-        return Estudiante(
-            numeroDocumento = map["numeroDocumento"] as? String ?: "",
-            nombre = map["nombre"] as? String ?: "",
-            apellido = map["apellido"] as? String ?: "",
-            tipoDocumento = map["tipoDocumento"] as? String ?: "",
-            genero = map["genero"] as? String ?: "",
-            unidad = map["unidad"] as? String ?: "",
-            colegio = map["colegio"] as? String ?: "",
-            edicion = map["edicion"] as? String ?: "",
-            grado = map["grado"] as? String ?: "",
-            estado = map["estado"] as? Boolean ?: true,
-            asistenciasRegistradas = map["asistenciasRegistradas"] as? Int ?: 0,
-            aprobado = map ["aprobado"] as? Boolean ?: false
-        )
-    }
-
-
     override fun toString(): String {
         return "Edicion(id='$id', nombre='$nombreEdicion', " +
                 "fechas=${getFechaInicio()} a ${getFechaFin()}, " +
-                "cursoId='${getCursoId()}', estudiantes=${getEstudiantesDocumentos().size})"
+                "cursoId='${getCursoId()}')"
     }
 }
