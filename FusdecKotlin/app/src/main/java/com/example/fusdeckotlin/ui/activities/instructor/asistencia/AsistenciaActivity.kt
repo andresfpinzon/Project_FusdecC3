@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -18,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.auth.AuthManager
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
@@ -59,6 +61,23 @@ class AsistenciaActivity : AppCompatActivity() {
         setupListeners()
         cargarAsistencias()
         configurarBusqueda()
+        llenarUsuarioId()
+    }
+
+    private fun llenarUsuarioId() {
+        if (!AuthManager.isLoggedIn()) {
+            showError("Usuario no autenticado")
+            finish() // o redirigir al login
+            return
+        }
+
+        val userId = AuthManager.getUserIdFromToken()
+        if (userId != null) {
+            usuarioIdEditText.setText(userId)
+            usuarioIdEditText.isEnabled = false // Bloquea la edición
+        } else {
+            showError("No se pudo obtener el ID del usuario")
+        }
     }
 
     private fun initViews() {
