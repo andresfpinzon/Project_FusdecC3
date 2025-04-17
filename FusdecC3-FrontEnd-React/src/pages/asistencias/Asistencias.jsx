@@ -107,7 +107,7 @@ const Asistencias = () => {
   // Guardar asistencia (versión robusta)
   const handleSaveAttendance = async () => {
     try {
-      // Validación básica
+      // Validación
       if (!userId) throw new Error("No se identificó al usuario");
       if (Object.values(attendance).every(v => !v)) {
         return showSnackbar("Marque al menos un estudiante presente", "warning");
