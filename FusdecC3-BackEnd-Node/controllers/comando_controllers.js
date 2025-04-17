@@ -10,16 +10,8 @@ const listarComandos = async (_req, res) => {
             return res.status(204).send(); // 204 No Content
         }
         
-        // Log commands with their foundation details
-        console.log("Comandos con detalles de fundación:", comandos.map(c => ({
-            nombreComando: c.nombreComando,
-            fundacionId: c.fundacionId?._id,
-            nombreFundacion: c.fundacionId?.nombreFundacion || 'Sin fundación asignada'
-        })));
-
         res.json(comandos);
     } catch (error) {
-        console.error('Error al cargar los comandos:', error);
         res.status(500).json({ error: 'Error al cargar los comandos', details: error.message });
     }
 };
@@ -45,7 +37,6 @@ const actualizarComando = async (req, res) => {
         const comandoActualizado = await logic.actualizarComando(id, req.body);
         res.status(200).json(comandoActualizado);
     } catch (error) {
-        console.error("Error al actualizar comando:", error);
         return res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
@@ -78,16 +69,8 @@ const obtenerComandoPorId = async (req, res) => {
             return res.status(404).json({ error: 'Comando no encontrado' });
         }
 
-        // Log command details
-        console.log("Detalles del comando:", {
-            nombreComando: comando.nombreComando,
-            fundacionId: comando.fundacionId?._id,
-            nombreFundacion: comando.fundacionId?.nombreFundacion || 'Sin fundación asignada'
-        });
-
         res.json(comando);
     } catch (error) {
-        console.error('Error al obtener el comando:', error);
         res.status(500).json({ error: 'Error al obtener el comando' });
     }
 };
@@ -110,7 +93,6 @@ const agregarBrigadasAComandos = async (req, res) => {
             comando: comandoActualizado
         });
     } catch (error) {
-        console.error('Error completo:', error);
         res.status(500).json({ 
             mensaje: 'Error al agregar brigadas al comando', 
             error: error.message 

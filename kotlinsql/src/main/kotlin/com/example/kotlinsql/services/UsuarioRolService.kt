@@ -26,8 +26,12 @@ class UsuarioRolService {
     }
 
     fun crear(rol: UsuarioRolCreateRequest): UsuarioRol? {
-        val sql = "INSERT INTO usuario_rol (usuario_numero_documento, rol) VALUES (?, ?) RETURNING *"
-        return jdbcTemplate.queryForObject(sql, rowMapper, rol.usuarioNumeroDocumento, rol.rol)
+        return try {
+            val sql = "INSERT INTO usuario_rol (usuario_numero_documento, rol) VALUES (?, ?) RETURNING *"
+            jdbcTemplate.queryForObject(sql, rowMapper, rol.usuarioNumeroDocumento, rol.rol)
+        } catch (ex: Exception) {
+            throw IllegalArgumentException("Error al asignar el rol: ${ex.message}")
+        }
     }
 
     fun eliminar(usuarioNumeroDocumento: String, rol: String): Int {

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -11,303 +10,225 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Switch,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
   Snackbar,
   Alert,
   Select,
   MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
   Checkbox,
   ListItemText,
-  TablePagination,
-  Chip
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
-
-const token = localStorage.getItem("token");
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [formValues, setFormValues] = useState({
-    nombreUsuario: "",
-    apellidoUsuario: "",
     numeroDocumento: "",
+    nombre: "",
+    apellido: "",
     correo: "",
     password: "",
-    estadoUsuario: true,
+    estado: true,
     roles: [],
   });
+  const [selectedUser, setSelectedUser] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
-
-  // Paginación y búsqueda
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState("success"); // "success" o "error"
+  const [severity, setSeverity] = useState("success");
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetchUsuarios();
-    fetchRoles();
-  }, []);
+    if (token) {
+      fetchUsuarios();
+      fetchRoles();
+    } else {
+      setMessage("Token no encontrado. Por favor, inicia sesión.");
+      setSeverity("error");
+      setOpenSnackbar(true);
+    }
+  }, [token]);
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios",{
+      const response = await fetch("http://localhost:8080/", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (!response.ok) throw new Error("Error al obtener usuarios");
       const data = await response.json();
 
-      // Condicion que verifica si el arreglo de usuarios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay usuarios registrados.");
-        setOpenSnackbar(true);
-        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setUsuarios(data);
-      }
+      const usuariosConRoles = await Promise.all(
+        data.map(async (usuario) => {
+          const rolesResponse = await fetch(
+            `http://localhost:8080/roles/${usuario.numeroDocumento}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (!rolesResponse.ok) throw new Error("Error al obtener roles del usuario");
+          const rolesData = await rolesResponse.json();
+          return { ...usuario, roles: rolesData.map((r) => r.rol) };
+        })
+      );
+
+      setUsuarios(usuariosConRoles);
     } catch (error) {
-      console.error("Error al obtener usuarios:", error);
-      setErrorMessage("Error al obtener usuarios");
+      console.error(error);
+      setMessage(error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/roles/enum",{
+      const response = await fetch("http://localhost:8080/roles", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (!response.ok) throw new Error("Error al obtener roles");
       const data = await response.json();
-
-      // Condicion que verifica si el arreglo de roles está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay roles registrados.");
-        setOpenSnackbar(true);
-        setRoles([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setRoles(data);
-      }
+      const uniqueRoles = [...new Set(data.map((rol) => rol.rol))];
+      setRoles(uniqueRoles);
     } catch (error) {
-      console.error("Error al obtener roles:", error);
-      setErrorMessage("Error al obtener roles");
+      console.error(error);
+      setMessage(error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
-  };
-
-  // Filtrar usuarios según el término de búsqueda
-  const filteredUsuarios = usuarios.filter((usuario) =>
-    (usuario.nombreUsuario && usuario.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (usuario.apellidoUsuario && usuario.apellidoUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (usuario.correo && usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  // Cambiar página
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  // Cambiar filas por página
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleSwitchChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.checked,
-    });
-  };
+  const handleRoleChange = async (event) => {
+    const { value } = event.target;
+    const selectedRole = value[value.length - 1];
 
-  const handleRoleChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    // Convertir a array y asegurar que sean strings válidos
-    const rolesArray = Array.isArray(value) 
-      ? value.map(role => {
-          if (role && typeof role === 'string') {
-            return role.trim();
-          }
-          return null;
-        }).filter(role => role !== null)
-      : value ? [value.toString()] : [];
-    
-    // Filtrar roles no válidos
-    const validRoles = rolesArray.filter(role => roles.includes(role));
-    
-    setFormValues({
-      ...formValues,
-      roles: validRoles,
-    });
-  };
-
-  const handleCreateUser = async () => {
     try {
-      // Validar que al menos haya un rol seleccionado
-      if (!formValues.roles || formValues.roles.length === 0) {
-        setErrorMessage("Debe seleccionar al menos un rol");
-        setOpenSnackbar(true);
-        return;
-      }
-
-      const response = await fetch("http://localhost:3000/api/usuarios", {
+      const response = await fetch("http://localhost:8080/roles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify({
+          usuarioNumeroDocumento: formValues.numeroDocumento,
+          rol: selectedRole,
+        }),
       });
 
-      if (response.ok) {
-        const nuevoUsuario = await response.json();
-        setUsuarios([...usuarios, nuevoUsuario]);
-        setFormValues({
-          nombreUsuario: "",
-          apellidoUsuario: "",
-          numeroDocumento: "",
-          correo: "",
-          password: "",
-          estadoUsuario: true,
-          roles: [],
-        });
-        setMessage("Usuario guardado exitosamente");
-        setSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear usuario");
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("No tienes permisos para asignar este rol");
+        }
+        throw new Error("Error al asignar el rol");
       }
+
+      setFormValues((prev) => ({
+        ...prev,
+        roles: [...prev.roles, selectedRole],
+      }));
+      setMessage("Rol asignado correctamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
     } catch (error) {
-      console.error("Error al crear usuario:", error);
-      setErrorMessage(error.message);
-      setMessage("Error al crear usuario: " + error.message);
+      console.error(error);
+      setMessage(error.message);
       setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
-  const handleUpdateUser = async () => {
+  const handleCreateOrUpdateUser = async () => {
     try {
-      // Validar que al menos haya un rol seleccionado
-      if (!formValues.roles || formValues.roles.length === 0) {
-        setErrorMessage("Debe seleccionar al menos un rol");
-        setOpenSnackbar(true);
-        return;
-      }
-
-      // Validar que los roles sean válidos
-      const invalidRoles = formValues.roles.filter(role => !roles.includes(role));
-      if (invalidRoles.length > 0) {
-        setErrorMessage(`Roles inválidos: ${invalidRoles.join(', ')}`);
-        setOpenSnackbar(true);
-        return;
-      }
-
-      const response = await fetch(`http://localhost:3000/api/usuarios/${selectedUser._id}`, {
-        method: "PUT",
+      const method = selectedUser ? "PUT" : "POST";
+      const url = selectedUser
+        ? `http://localhost:8080/${formValues.numeroDocumento}`
+        : "http://localhost:8080/";
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formValues),
       });
 
-      if (response.ok) {
-        const updatedUsuario = await response.json();
-        setUsuarios(usuarios.map(usuario => 
-          usuario._id === selectedUser._id ? updatedUsuario : usuario
-        ));
-        setFormValues({
-          nombreUsuario: "",
-          apellidoUsuario: "",
-          numeroDocumento: "",
-          correo: "",
-          password: "",
-          estadoUsuario: true,
-          roles: [],
-        });
-        setSelectedUser(null);
-        setMessage("Usuario actualizado exitosamente");
-        setSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar usuario");
+      if (!response.ok) {
+        if (response.status === 403) {
+          setMessage("No tienes permisos para realizar esta acción");
+          setSeverity("warning");
+          setOpenSnackbar(true);
+          return;
+        }
+        throw new Error("Error al guardar el usuario");
       }
+
+      const data = await response.json();
+      if (selectedUser) {
+        setUsuarios((prev) =>
+          prev.map((user) =>
+            user.numeroDocumento === data.numeroDocumento ? data : user
+          )
+        );
+      } else {
+        setUsuarios((prev) => [...prev, data]);
+      }
+
+      setMessage("Usuario guardado correctamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
+      setFormValues({
+        numeroDocumento: "",
+        nombre: "",
+        apellido: "",
+        correo: "",
+        password: "",
+        estado: true,
+        roles: [],
+      });
+      setSelectedUser(null);
     } catch (error) {
-      console.error("Error al actualizar usuario:", error);
-      setErrorMessage(error.message);
-      setMessage("Error al actualizar usuario: " + error.message);
+      console.error(error);
+      setMessage(error.message);
       setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
-  const handleDeleteUser = async () => {
-    if (!userToDelete) return;
+  const handleDeleteUser = async (numeroDocumento) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/usuarios/${userToDelete._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-        }
-      );
-      if (response.ok) {
-        setUsuarios(usuarios.filter((user) => user._id !== userToDelete._id));
-        handleCloseDeleteDialog();
+      const response = await fetch(`http://localhost:8080/${numeroDocumento}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        //mensaje de eliminación exitosa
-        setMessage("Usuario eliminado exitosamente!");
-        setSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar Usuario");
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("No tienes permisos para eliminar este usuario");
+        }
+        throw new Error("Error al eliminar el usuario");
       }
+
+      setUsuarios((prev) => prev.filter((user) => user.numeroDocumento !== numeroDocumento));
+      setMessage("Usuario eliminado correctamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
     } catch (error) {
-      console.error("Error al eliminar usuario:", error);
-      setErrorMessage(error.message);
-      setMessage("Error al eliminar usuario: " + error.message);
+      console.error(error);
+      setMessage(error.message);
       setSeverity("error");
       setOpenSnackbar(true);
     }
@@ -315,25 +236,7 @@ const Usuarios = () => {
 
   const handleEdit = (usuario) => {
     setSelectedUser(usuario);
-    setFormValues({
-      nombreUsuario: usuario.nombreUsuario || "",
-      apellidoUsuario: usuario.apellidoUsuario || "",
-      numeroDocumento: usuario.numeroDocumento || "",
-      correo: usuario.correo || "",
-      password: "",
-      estadoUsuario: usuario.estadoUsuario || true,
-      roles: usuario.roles || [],
-    });
-  };
-
-  const handleDeleteClick = (usuario) => {
-    setUserToDelete(usuario);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setUserToDelete(null);
+    setFormValues({ ...usuario, password: "", roles: usuario.roles });
   };
 
   const handleCloseSnackbar = () => {
@@ -342,24 +245,8 @@ const Usuarios = () => {
 
   return (
     <Container>
-      <h1>Gestión de Usuarios:</h1>
-      <form noValidate autoComplete="off">
-        <TextField
-          label="Nombre"
-          name="nombreUsuario"
-          value={formValues.nombreUsuario}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Apellido"
-          name="apellidoUsuario"
-          value={formValues.apellidoUsuario}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
+      <h1>Gestión de Usuarios y Roles</h1>
+      <form>
         <TextField
           label="Número de Documento"
           name="numeroDocumento"
@@ -367,15 +254,31 @@ const Usuarios = () => {
           onChange={handleInputChange}
           fullWidth
           margin="normal"
+          disabled={!!selectedUser}
         />
         <TextField
-          label="Correo Electrónico"
+          label="Nombre"
+          name="nombre"
+          value={formValues.nombre}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Apellido"
+          name="apellido"
+          value={formValues.apellido}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Correo"
           name="correo"
           value={formValues.correo}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
-          disabled={!!selectedUser} // Deshabilita el campo si se está actualizando
         />
         <TextField
           label="Contraseña"
@@ -386,142 +289,86 @@ const Usuarios = () => {
           fullWidth
           margin="normal"
         />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Roles</InputLabel>
-          <Select
-            multiple
-            value={formValues.roles}
-            onChange={handleRoleChange}
-            input={<OutlinedInput label="Roles" />}
-            renderValue={(selected) => selected.join(', ')}
-          >
-            {roles.map((role) => (
-              <MenuItem key={role} value={role}>
-                <Checkbox checked={formValues.roles.includes(role)} />
-                <ListItemText primary={role} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estadoUsuario}
-            onChange={handleSwitchChange}
-            name="estadoUsuario"
-            color="primary"
-          />
-          Estado Activo
-        </Box>
-        <Box marginTop={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={selectedUser ? handleUpdateUser : handleCreateUser}
-          >
-            {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
-          </Button>
-        </Box>
+        <Select
+          multiple
+          value={formValues.roles}
+          onChange={handleRoleChange}
+          renderValue={(selected) => selected.join(", ")}
+          fullWidth
+          margin="normal"
+        >
+          {roles.map((rol) => (
+            <MenuItem key={rol} value={rol}>
+              <Checkbox checked={formValues.roles.includes(rol)} />
+              <ListItemText primary={rol} />
+            </MenuItem>
+          ))}
+        </Select>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCreateOrUpdateUser}
+          style={{ marginTop: "20px" }}
+        >
+          {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
+        </Button>
       </form>
-      <br></br>
-      
-       {/* Busqueda */}
-      <TextField
-        label="Buscar usuarios"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-       {/* cuerpo */}
+
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Número de Documento</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Apellido</TableCell>
               <TableCell>Correo</TableCell>
-              <TableCell>Roles</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Roles</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredUsuarios
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((usuario) => (
-                <TableRow key={usuario._id}>
-                  <TableCell>{usuario.nombreUsuario}</TableCell>
-                  <TableCell>{usuario.apellidoUsuario}</TableCell>
-                  <TableCell>{usuario.correo}</TableCell>
-                  <TableCell>
-                    {usuario.roles && usuario.roles.length > 0 ? (
-                      usuario.roles.map((role) => (
-                        <Chip
-                          key={role}
-                          label={role}
-                          color="primary"
-                          size="small"
-                          sx={{ mr: 1 }}
-                        />
-                      ))
-                    ) : (
-                      <Typography color="error">Sin roles asignados</Typography>
-                    )}
-                  </TableCell>
-                  <TableCell>{usuario.estadoUsuario ? "Activo" : "Inactivo"}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEdit(usuario)} color="primary">
-                      <Edit />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteClick(usuario)} color="error">
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {usuarios.map((usuario) => (
+              <TableRow key={usuario.numeroDocumento}>
+                <TableCell>{usuario.numeroDocumento}</TableCell>
+                <TableCell>{usuario.nombre}</TableCell>
+                <TableCell>{usuario.apellido}</TableCell>
+                <TableCell>{usuario.correo}</TableCell>
+                <TableCell>{usuario.estado ? "Activo" : "Inactivo"}</TableCell>
+                <TableCell>
+                  {Array.isArray(usuario.roles)
+                    ? usuario.roles.join(", ")
+                    : "Sin roles"}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleEdit(usuario)}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDeleteUser(usuario.numeroDocumento)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
-        
-        {/* Paginación */}
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredUsuarios.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </TableContainer>
 
-      {/* Confirmar eliminación */}
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Usuario</DialogTitle>
-        <DialogContent>
-          <Typography>
-            ¿Estás seguro que deseas eliminar al usuario{" "}
-            {userToDelete?.nombreUsuario}?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleDeleteUser} color="secondary">
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Notificación de errores */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
       >
-        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: "100%" }}>
+        <Alert onClose={handleCloseSnackbar} severity={severity}>
           {message}
         </Alert>
       </Snackbar>

@@ -14,29 +14,8 @@ async function listarComandos() {
                 select: 'nombreBrigada _id' // Mostrar el nombre y el ID de las brigadas
             });
         
-        // Log detailed information about each command
-        console.log("Comandos encontrados:", comandos.map(comando => ({
-            _id: comando._id,
-            nombreComando: comando.nombreComando,
-            estadoComando: comando.estadoComando,
-            ubicacionComando: comando.ubicacionComando,
-            fundacion: comando.fundacionId ? {
-                _id: comando.fundacionId._id,
-                nombreFundacion: comando.fundacionId.nombreFundacion
-            } : null,
-            brigadas: comando.brigadas.map(brigada => ({
-                _id: brigada._id,
-                nombreBrigada: brigada.nombreBrigada
-            }))
-        })));
-
         return comandos;
     } catch (error) {
-        console.error('Error detallado al listar los comandos:', {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
-        });
         throw error;
     }
 };
@@ -53,7 +32,6 @@ const crearComando = async (body) => {
     });
     return await comando.save();
     } catch (error) {
-        console.error('Error al crear el comando (comando_logic):', error);
         throw error;
     }
 };
@@ -75,7 +53,6 @@ const actualizarComando = async (id, body) => {
 
     return await comando.save();
     } catch (error) {
-        console.error('Error al actualizar el comando (comando_logic):', error);
         throw error;
     }
 };
@@ -89,7 +66,6 @@ const desactivarComando = async (id) => {
         }
         return comando;
     } catch (error) {
-        console.error('Error al desactivar el comando (comando_logic):', error);
         throw error;
     }
 };
@@ -108,7 +84,6 @@ async function buscarComandoPorId(id) {
             select: 'nombreBrigada' // Mostrar solo el nombre de las brigadas
         });
     } catch (error) {
-        console.error('Error al buscar comando por ID:', error);
         throw error;
     }
 };
@@ -124,7 +99,6 @@ const agregarBrigadasAComandos = async (id, brigadaIds) => {
     comando.brigadas.push(...brigadaIds);
     return await comando.save();
     } catch (error) {
-        console.error('Error al agregar brigadas al comando (comando_logic):', error);
         throw error;   
     }
 };
