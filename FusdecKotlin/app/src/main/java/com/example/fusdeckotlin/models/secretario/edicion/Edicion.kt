@@ -116,8 +116,11 @@ class Edicion(
             genero = "",
             unidad = "",
             colegio = "",
+            edicion = "",
             grado = "",
-            estado = true
+            estado = true,
+            asistenciasRegistradas = 0,
+            aprobado = false
         )
     }
 
@@ -130,8 +133,11 @@ class Edicion(
             genero = map["genero"] as? String ?: "",
             unidad = map["unidad"] as? String ?: "",
             colegio = map["colegio"] as? String ?: "",
+            edicion = map["edicion"] as? String ?: "",
             grado = map["grado"] as? String ?: "",
-            estado = map["estado"] as? Boolean ?: true
+            estado = map["estado"] as? Boolean ?: true,
+            asistenciasRegistradas = map["asistenciasRegistradas"] as? Int ?: 0,
+            aprobado = map ["aprobado"] as? Boolean ?: false
         )
     }
 

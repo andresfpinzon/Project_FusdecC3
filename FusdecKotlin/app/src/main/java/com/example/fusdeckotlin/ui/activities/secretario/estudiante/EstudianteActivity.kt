@@ -32,6 +32,7 @@ class EstudianteActivity : AppCompatActivity() {
     private lateinit var generoEditText: EditText
     private lateinit var unidadEditText: EditText
     private lateinit var colegioEditText: EditText
+    private lateinit var edicionEditText: EditText
     private lateinit var gradoEditText: EditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
@@ -58,6 +59,7 @@ class EstudianteActivity : AppCompatActivity() {
         generoEditText = findViewById(R.id.generoEditText)
         unidadEditText = findViewById(R.id.unidadEditText)
         colegioEditText = findViewById(R.id.colegioEditText)
+        edicionEditText = findViewById(R.id.edicionEditText)
         gradoEditText = findViewById(R.id.gradoEditText)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
@@ -134,6 +136,7 @@ class EstudianteActivity : AppCompatActivity() {
         val genero = generoEditText.text.toString().trim()
         val unidad = unidadEditText.text.toString().trim()
         val colegio = colegioEditText.text.toString().trim()
+        val edicion = edicionEditText.text.toString().trim()
         val grado = gradoEditText.text.toString().trim()
 
         if (nombre.isEmpty() || apellido.isEmpty() || tipoDocumento.isEmpty() ||
@@ -154,6 +157,7 @@ class EstudianteActivity : AppCompatActivity() {
                         genero,
                         unidad,
                         colegio,
+                        edicion,
                         grado,
                         true
                     ).onSuccess {
@@ -172,6 +176,7 @@ class EstudianteActivity : AppCompatActivity() {
                         genero,
                         unidad,
                         colegio,
+                        edicion,
                         grado
                     ).onSuccess {
                         Toast.makeText(this@EstudianteActivity, "Estudiante creado", Toast.LENGTH_SHORT).show()
@@ -206,6 +211,7 @@ class EstudianteActivity : AppCompatActivity() {
         generoEditText.text.clear()
         unidadEditText.text.clear()
         colegioEditText.text.clear()
+        edicionEditText.text.clear()
         gradoEditText.text.clear()
     }
 
@@ -219,6 +225,7 @@ class EstudianteActivity : AppCompatActivity() {
         generoEditText.setText(estudiante.getGenero())
         unidadEditText.setText(estudiante.getUnidad())
         colegioEditText.setText(estudiante.getColegio())
+        edicionEditText.setText(estudiante.getEdicion())
         gradoEditText.setText(estudiante.getGrado())
         numeroDocumentoEditText.isEnabled = false
     }
@@ -324,8 +331,5 @@ class EstudianteActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
-
-
 
 }

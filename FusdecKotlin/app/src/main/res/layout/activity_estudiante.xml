@@ -179,6 +179,24 @@
                             android:layout_marginTop="4dp"
                             android:backgroundTint="@color/primaryColor"/>
 
+                    <!-- Edicion -->
+                    <TextView
+                            android:id="@+id/edicionTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Edicion"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/edicionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese la edicion"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
                     <!-- Grado -->
                     <TextView
                             android:id="@+id/gradoTextView"

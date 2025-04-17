@@ -21,6 +21,7 @@ class EstudianteServices {
         genero: String,
         unidad: String,
         colegio: String,
+        edicion: String,
         grado: String
     ): Result<Estudiante> {
         return try {
@@ -32,6 +33,7 @@ class EstudianteServices {
                 genero = genero,
                 unidad = unidad,
                 colegio = colegio,
+                edicion = edicion,
                 grado = grado
             )
 
@@ -68,8 +70,10 @@ class EstudianteServices {
         genero: String? = null,
         unidad: String? = null,
         colegio: String? = null,
+        edicion: String? = null,
         grado: String? = null,
         estado: Boolean? = null
+
     ): Result<Estudiante> {
         return try {
             val request = ActualizarEstudianteRequest(
@@ -79,8 +83,9 @@ class EstudianteServices {
                 genero = genero,
                 unidad = unidad,
                 colegio = colegio,
+                edicion = edicion,
                 grado = grado,
-                estado = estado
+                estado = estado,
             )
 
             val response = estudianteApi.actualizarEstudiante(documento, request)

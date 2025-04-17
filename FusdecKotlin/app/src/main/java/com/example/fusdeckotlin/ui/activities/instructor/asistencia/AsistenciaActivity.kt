@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
-import com.example.fusdeckotlin.models.instructor.asistenciaestudiante.AsistenciaEstudiante
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
 import com.example.fusdeckotlin.services.instructor.asistenciaestudiante.AsistenciaEstudianteService
@@ -411,7 +410,7 @@ class AsistenciaActivity : AppCompatActivity() {
     }
 
     private fun mostrarDialogoEstudiantes(estudiantes: Array<String>) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_estudiantes_asistentes, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_estudiantes_asistencia, null)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()

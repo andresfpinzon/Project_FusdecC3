@@ -30,7 +30,10 @@ class Colegio(
                     unidad = "",
                     colegio = "",
                     grado = "",
-                    estado = true
+                    edicion = "",
+                    estado = true,
+                    asistenciasRegistradas = 0,
+                    aprobado = false
                 )
                 is Map<*, *> -> convertMapToEstudiante(it)
                 else -> null
@@ -60,8 +63,11 @@ class Colegio(
             genero = map["genero"] as? String ?: "",
             unidad = map["unidad"] as? String ?: "",
             colegio = map["colegio"] as? String ?: "",
+            edicion = map["edicion"] as? String ?: "",
             grado = map["grado"] as? String ?: "",
-            estado = map["estado"] as? Boolean ?: false
+            estado = map["estado"] as? Boolean ?: true,
+            asistenciasRegistradas = map["asistenciasRegistradas"] as? Int ?: 0,
+            aprobado = map ["aprobado"] as? Boolean ?: false
         )
     }
 

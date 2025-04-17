@@ -24,6 +24,9 @@ data class CrearEstudianteRequest(
     @SerializedName("colegio")
     val colegio: String,
 
+    @SerializedName("edicion")
+    val edicion: String,
+
     @SerializedName("grado")
     val grado: String
 )

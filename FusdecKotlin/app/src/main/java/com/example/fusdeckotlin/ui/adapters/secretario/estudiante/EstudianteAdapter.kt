@@ -25,12 +25,13 @@ class EstudianteAdapter(
     private var estudiantesFiltrados: List<Estudiante> = estudiantes
     private var context: Context? = null
 
-    inner class EstudianteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class EstudianteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreTextView)
         val numeroDocumentoTextView: TextView = itemView.findViewById(R.id.numeroDocumentoTextView)
         val generoTextView: TextView = itemView.findViewById(R.id.generoTextView)
         val unidadValueTextView: TextView = itemView.findViewById(R.id.unidadValueTextView)
         val colegioValueTextView: TextView = itemView.findViewById(R.id.colegioValueTextView)
+        val edicionValueTextView: TextView = itemView.findViewById(R.id.edicionValueTextView)
         val gradoValueTextView: TextView = itemView.findViewById(R.id.gradoValueTextView)
         val estadoTextView: TextView = itemView.findViewById(R.id.estadoTextView)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
@@ -55,6 +56,7 @@ class EstudianteAdapter(
         holder.generoTextView.text = estudiante.getGenero()
         holder.unidadValueTextView.text = estudiante.getUnidad()
         holder.colegioValueTextView.text = estudiante.getColegio()
+        holder.edicionValueTextView.text = estudiante.getEdicion()
         holder.gradoValueTextView.text = estudiante.getGrado()
 
         // Configurar estado visual
@@ -103,6 +105,7 @@ class EstudianteAdapter(
                             estudiante.getGenero().lowercase().contains(filterPattern) ||
                             estudiante.getUnidad().lowercase().contains(filterPattern) ||
                             estudiante.getColegio().lowercase().contains(filterPattern) ||
+                            estudiante.getEdicion().lowercase().contains(filterPattern) ||
                             estudiante.getGrado().lowercase().contains(filterPattern)) {
                             filteredList.add(estudiante)
                         }

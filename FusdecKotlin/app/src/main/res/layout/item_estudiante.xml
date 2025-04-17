@@ -167,6 +167,28 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/infoLine2">
 
+            <!-- Edición -->
+            <TextView
+                    android:id="@+id/edicionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edición:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/edicionValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+
+            <View
+                    android:layout_width="1dp"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@color/dividerColor"/>
+
             <TextView
                     android:id="@+id/gradoTextView"
                     android:layout_width="wrap_content"

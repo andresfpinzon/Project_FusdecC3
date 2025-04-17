@@ -21,6 +21,9 @@ data class ActualizarEstudianteRequest(
     @SerializedName("colegio")
     val colegio: String? = null,
 
+    @SerializedName("edicion")
+    val edicion: String? = null,
+
     @SerializedName("grado")
     val grado: String? = null,
 

@@ -104,34 +104,6 @@ class Curso(
         )
     }
 
-    // Setters
-    fun setNombreCurso(nombre: String) {
-        this.nombreCurso = nombre
-    }
-
-    fun setDescripcionCurso(descripcion: String) {
-        this.descripcionCurso = descripcion
-    }
-
-    fun setIntensidadHorariaCurso(intensidad: String) {
-        this.intensidadHorariaCurso = intensidad
-    }
-
-    fun setEstadoCurso(estado: Boolean) {
-        this.estadoCurso = estado
-    }
-
-    fun setFundacionId(fundacion: String) {
-        this.fundacionId = fundacion
-    }
-
-    fun setEdiciones(ediciones: List<Edicion>) {
-        this.ediciones = ediciones
-    }
-
-    fun setEdicionesIds(edicionesIds: List<String>) {
-        this.ediciones = edicionesIds
-    }
 
     override fun toString(): String {
         return "Curso(id='$id', nombre='$nombreCurso', descripción='$descripcionCurso', " +
