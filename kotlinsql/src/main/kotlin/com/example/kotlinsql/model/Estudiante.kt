@@ -8,6 +8,9 @@ data class Estudiante(
     val genero: String,
     val unidad: String,
     val colegio: String,
+    val edicion: String,
     val grado: String,
     val estado: Boolean = true,
+    val asistenciasRegistradas: Int = 0,
+    val aprobado: Boolean = false
 )

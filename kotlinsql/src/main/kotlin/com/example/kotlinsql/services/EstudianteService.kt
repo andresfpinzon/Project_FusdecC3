@@ -18,6 +18,7 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
             tipoDocumento = rs.getString("tipo_documento"),
             genero = rs.getString("genero"),
             unidad = rs.getString("unidad"),
+            edicion = rs.getString("edicion"),
             colegio = rs.getString("colegio"),
             grado = rs.getString("grado"),
             estado = rs.getBoolean("estado")
@@ -33,7 +34,7 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         val sql = """
             INSERT INTO estudiante (
                 numero_documento, nombre, apellido, tipo_documento,
-                genero, unidad, colegio, grado
+                genero, unidad, colegio, edicion, grado
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             RETURNING *
         """.trimIndent()
@@ -47,6 +48,7 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
             request.genero,
             request.unidad,
             request.colegio,
+            request.edicion,
             request.grado
         )
     }
@@ -62,6 +64,7 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         request.unidad?.let { campos.add("unidad = ?"); valores.add(it) }
         request.colegio?.let { campos.add("colegio = ?"); valores.add(it) }
         request.grado?.let { campos.add("grado = ?"); valores.add(it) }
+        request.edicion?.let { campos.add("edicion = ?"); valores.add(it) }
         request.estado?.let { campos.add("estado = ?"); valores.add(it) }
 
         if (campos.isEmpty()) return null

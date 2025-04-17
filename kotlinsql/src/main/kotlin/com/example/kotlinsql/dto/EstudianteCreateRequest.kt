@@ -24,6 +24,10 @@ data class EstudianteCreateRequest(
     @NotBlank(message = "El colegio es obligatorio")
     val colegio: String,
 
+    @NotBlank(message = "La edición es obligatoria")
+    val edicion: String,
+
     @NotBlank(message = "El grado es obligatorio")
     val grado: String
+
 )

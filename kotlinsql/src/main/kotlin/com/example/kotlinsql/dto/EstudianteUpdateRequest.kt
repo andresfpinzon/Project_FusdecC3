@@ -8,5 +8,6 @@ data class EstudianteUpdateRequest(
     val unidad: String? = null,
     val colegio: String? = null,
     val grado: String? = null,
+    val edicion: String? = null,
     val estado: Boolean? = null
 )
