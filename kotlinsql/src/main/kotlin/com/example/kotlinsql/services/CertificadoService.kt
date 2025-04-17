@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
+import java.sql.Date
 
 @Service
 class CertificadoService {
@@ -33,16 +34,29 @@ class CertificadoService {
     }
 
     fun crear(certificado: CertificadoCreateRequest): Certificado? {
+        // Verificar si el usuario existe
+        val usuarioExiste = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM usuario WHERE numero_documento = ?",
+            Int::class.java,
+            certificado.usuarioId
+        ) ?: 0
+
+        if (usuarioExiste == 0) {
+            throw IllegalArgumentException("El usuario con ID ${certificado.usuarioId} no existe en la base de datos")
+        }
+
         val sql = """
             INSERT INTO certificado (fecha_emision, usuario_id, estudiante_id, nombre_emisor, codigo_verificacion, estado)
             VALUES (?, ?, ?, ?, ?, ?)
             RETURNING *
         """.trimIndent()
 
+        val fechaEmision = Date.valueOf(certificado.fechaEmision)
+
         val certificadoCreado = jdbcTemplate.queryForObject(
             sql,
             rowMapper,
-            certificado.fechaEmision,
+            fechaEmision,
             certificado.usuarioId,
             certificado.estudianteId,
             certificado.nombreEmisor,

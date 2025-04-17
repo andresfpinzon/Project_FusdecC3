@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.dao.EmptyResultDataAccessException
 
 @Service
 class UsuarioService {
@@ -20,10 +21,11 @@ class UsuarioService {
 
     val rowMapper = RowMapper<Usuario> { rs, _ ->
         Usuario(
+            id = rs.getInt("id"),
             numeroDocumento = rs.getString("numero_documento"),
             nombre = rs.getString("nombre"),
             apellido = rs.getString("apellido"),
-            correo = rs.getString("correo"),
+            email = rs.getString("email"),
             password = rs.getString("password"),
             estado = rs.getBoolean("estado"),
             createdAt = rs.getString("created_at"),
@@ -104,5 +106,14 @@ class UsuarioService {
     fun eliminarPorDocumento(documento: String): Int {
         val sql = "DELETE FROM usuario WHERE numero_documento = ?"
         return jdbcTemplate.update(sql, documento)
+    }
+
+    fun obtenerPorDocumento(documento: String): Usuario {
+        val sql = "SELECT * FROM usuario WHERE numero_documento = ? AND estado = true"
+        return try {
+            jdbcTemplate.queryForObject(sql, rowMapper, documento)
+        } catch (e: EmptyResultDataAccessException) {
+            throw IllegalArgumentException("Usuario no encontrado")
+        }
     }
 }

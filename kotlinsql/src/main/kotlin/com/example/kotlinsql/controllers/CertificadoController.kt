@@ -6,6 +6,7 @@ import com.example.kotlinsql.model.Certificado
 import com.example.kotlinsql.services.CertificadoService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.responses.*
@@ -41,8 +42,15 @@ class CertificadoController {
         )
     )
     @PostMapping
-    fun crear(@Valid @RequestBody certificado: CertificadoCreateRequest): Certificado? {
-        return certificadoService.crear(certificado)
+    fun crear(@Valid @RequestBody certificado: CertificadoCreateRequest): ResponseEntity<Any> {
+        return try {
+            val certificadoCreado = certificadoService.crear(certificado)
+            ResponseEntity.ok(certificadoCreado)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().body(mapOf("error" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(mapOf("error" to "Error al crear el certificado: ${e.message}"))
+        }
     }
 
     @Operation(summary = "Actualizar certificado", description = "Actualiza un certificado existente mediante su ID.")
