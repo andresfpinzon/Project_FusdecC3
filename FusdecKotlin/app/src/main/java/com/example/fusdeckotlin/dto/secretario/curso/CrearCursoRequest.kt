@@ -17,26 +17,4 @@ data class CrearCursoRequest(
 
     @SerializedName("estadoCurso")
     val estado: Boolean = true,
-
-    @SerializedName("ediciones")
-    val ediciones: List<String>
-) {
-    companion object {
-        fun from(
-            nombre: String,
-            descripcion: String,
-            intensidadHoraria: String,
-            fundacionId: String,
-            ediciones: List<String>
-        ): CrearCursoRequest {
-            return CrearCursoRequest(
-                nombre = nombre,
-                descripcion = descripcion,
-                intensidadHoraria = intensidadHoraria,
-                fundacionId = fundacionId,
-                estado = true,
-                ediciones = ediciones
-            )
-        }
-    }
-}
+)

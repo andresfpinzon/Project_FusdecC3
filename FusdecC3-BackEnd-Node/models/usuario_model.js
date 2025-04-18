@@ -33,15 +33,16 @@ const UsuarioSchema = new Schema({
   roles: {
       type: [String],
       enum: Object.values(ERoles),
-      default: [ERoles.Instructor],
     },
 
   estadoUsuario: {
     type: Boolean,
     default: true,
   },
-}, {
-  timestamps: true
+  creadoEn: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Usuario = mongoose.model("Usuario", UsuarioSchema);

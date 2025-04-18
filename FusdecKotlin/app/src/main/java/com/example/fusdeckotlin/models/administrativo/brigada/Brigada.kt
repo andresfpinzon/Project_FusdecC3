@@ -65,41 +65,11 @@ data class Brigada(
         )
     }
 
-    // Getters para manejar referencias
-
-
-    // Setters
-    fun setNombreBrigada(nombre: String) {
-        nombreBrigada = nombre
-    }
-
-    fun setUbicacionBrigada(ubicacion: String) {
-        ubicacionBrigada = ubicacion
-    }
-
-    fun setEstadoBrigada(estado: Boolean) {
-        estadoBrigada = estado
-    }
-
-    fun setComandoId(comando: String) {
-        comandoId = comando
-    }
-
-
-
-    fun setUnidades(unidades: List<Unidad>) {
-        this.unidades = unidades
-    }
-
-    fun setUnidadesIds(unidadesIds: List<String>) {
-        this.unidades = unidadesIds
-    }
-
     fun getUnidades(): List<Unidad> {
         return unidades.mapNotNull {
             when (it) {
                 is Unidad -> it
-                is String -> Unidad(id = it, "", "", true, "", emptyList(), emptyList())
+                is String -> Unidad(id = it, "", "", true, "")
                 is Map<*, *> -> convertMaptoUnidades(it)
                 else -> null
             }
@@ -123,8 +93,6 @@ data class Brigada(
             brigadaId = map["brigadaId"] as? String ?: "",
             estadoUnidad = map["estadoUnidad"] as? Boolean ?: true,
             usuarioId = map["usuarioId"] as? String ?: "",
-            comandos = map["comandos"] as? List<String> ?: emptyList(),
-            estudiantes = map["estudiantes"] as? List<String> ?: emptyList()
         )
     }
 

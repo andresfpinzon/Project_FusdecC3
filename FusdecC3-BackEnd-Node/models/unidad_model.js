@@ -24,10 +24,6 @@ const UnidadSchema = new Schema({
         ref: 'Usuario', // Asegúrate de que esto coincida con el modelo de Usuario
         required: true,
     },
-    estudiantes: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Estudiante', // Asegúrate de que esto coincida con el modelo de Estudiante
-    }],
 },
     {
         timestamps: true

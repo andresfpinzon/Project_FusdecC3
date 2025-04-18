@@ -1,21 +1,18 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.certificate
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.dto.administrativo.certificado.CreateCertificadoDto
 import com.example.fusdeckotlin.dto.administrativo.certificado.UpdateCertificadoDto
 import com.example.fusdeckotlin.services.administrativo.certificate.CertificadoServices
-import com.example.fusdeckotlin.ui.adapters.administrador.certificateAdapter.CertificateAdapter
+import com.example.fusdeckotlin.ui.adapters.administrativo.certificate.CertificateAdapter
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
-import com.example.fusdeckotlin.models.administrativo.certificado.CertificadoModel
 
 class CertificateActivity : AppCompatActivity() {
 
@@ -37,8 +34,8 @@ class CertificateActivity : AppCompatActivity() {
         setContentView(R.layout.activity_certificate)
 
         initViews()
-        setupRecyclerView()
-        loadCertificates()
+       // setupRecyclerView()
+        //loadCertificates()
         setupButtons()
     }
 
@@ -52,26 +49,26 @@ class CertificateActivity : AppCompatActivity() {
         certificateRecyclerView = findViewById(R.id.recyclerViewCertificates)
     }
 
-    private fun setupRecyclerView() {
-        adapter = CertificateAdapter(
-            emptyList(),
-            ::onUpdateClick,
-            ::onDeleteClick
-        )
-        certificateRecyclerView.layoutManager = LinearLayoutManager(this)
-        certificateRecyclerView.adapter = adapter
-    }
+//    private fun setupRecyclerView() {
+//        adapter = CertificateAdapter(
+//            emptyList(),
+//            ::onUpdateClick,
+//            ::onDeleteClick
+//        )
+//        certificateRecyclerView.layoutManager = LinearLayoutManager(this)
+//        certificateRecyclerView.adapter = adapter
+//    }
 
-    private fun loadCertificates() {
-        lifecycleScope.launch {
-            val result = certificadoServices.getCertificatesActives()
-            result.onSuccess { certificates ->
-                adapter.updateList(certificates)
-            }.onFailure { error ->
-                showError("Error al cargar certificados: ${error.message}")
-            }
-        }
-    }
+//    private fun loadCertificates() {
+//        lifecycleScope.launch {
+//            val result = certificadoServices.getCertificatesActives()
+//            result.onSuccess { certificates ->
+//                adapter.updateList(certificates)
+//            }.onFailure { error ->
+//                showError("Error al cargar certificados: ${error.message}")
+//            }
+//        }
+//    }
 
     private fun saveCertificate() {
         val usuarioText = usuario.text.toString().trim()
@@ -79,10 +76,10 @@ class CertificateActivity : AppCompatActivity() {
         val estudianteText = estudiante.text.toString().trim()
         val emisorText = emisor.text.toString().trim()
 
-//        if (usuarioText.isEmpty() || cursoText.isEmpty() || estudianteText.isEmpty() || emisorText.isEmpty()) {
-//            showError("Por favor, complete todos los campos")
-//            return
-//        }
+        if (usuarioText.isEmpty() || cursoText.isEmpty() || estudianteText.isEmpty() || emisorText.isEmpty()) {
+            showError("Por favor, complete todos los campos")
+            return
+        }
 
         lifecycleScope.launch {
             if (isEditing && currentCertificateId != null) {
@@ -109,7 +106,7 @@ class CertificateActivity : AppCompatActivity() {
         certificadoServices.createCertificado(dto).onSuccess {
             showSuccess("Certificado creado exitosamente")
             resetEditingState()
-            loadCertificates()
+            //loadCertificates()
         }.onFailure { error ->
             showError("Error al crear certificado: ${error.message}")
         }
@@ -132,39 +129,39 @@ class CertificateActivity : AppCompatActivity() {
         certificadoServices.updateCertificate(id, dto).onSuccess {
             showSuccess("Certificado actualizado exitosamente")
             resetEditingState()
-            loadCertificates()
+            //loadCertificates()
         }.onFailure { error ->
             showError("Error al actualizar certificado: ${error.message}")
         }
     }
 
-    private fun onUpdateClick(certificate: CertificadoModel) {
-        isEditing = true
-        currentCertificateId = certificate.getIdCertificado()
-        usuario.setText(certificate.getUsuarioId())
-        curso.setText(certificate.getCursoId())
-        estudiante.setText(certificate.getEstudianteId())
-        emisor.setText(certificate.getNombreEmisor())
-    }
+//    private fun onUpdateClick(certificate: Certificado) {
+//        isEditing = true
+//        currentCertificateId = certificate.getIdCertificado()
+//        usuario.setText(certificate.getUsuarioId())
+//        curso.setText(certificate.getCursoId())
+//        estudiante.setText(certificate.getEstudianteId())
+//        emisor.setText(certificate.getNombreEmisor())
+//    }
 
-    private fun onDeleteClick(certificate: CertificadoModel) {
-        AlertDialog.Builder(this)
-            .setTitle("Confirmar eliminación")
-            .setMessage("¿Estás seguro de que deseas eliminar este certificado?")
-            .setPositiveButton("Sí") { _, _ ->
-                lifecycleScope.launch {
-                    certificadoServices.deleteCertificateById(certificate.getIdCertificado())
-                        .onSuccess {
-                            showSuccess("Certificado eliminado")
-                            loadCertificates()
-                        }.onFailure { error ->
-                            showError("Error al eliminar: ${error.message}")
-                        }
-                }
-            }
-            .setNegativeButton("No", null)
-            .show()
-    }
+//    private fun onDeleteClick(certificate: Certificado) {
+//        AlertDialog.Builder(this)
+//            .setTitle("Confirmar eliminación")
+//            .setMessage("¿Estás seguro de que deseas eliminar este certificado?")
+//            .setPositiveButton("Sí") { _, _ ->
+//                lifecycleScope.launch {
+//                    certificadoServices.deleteCertificateById(certificate.getIdCertificado())
+//                        .onSuccess {
+//                            showSuccess("Certificado eliminado")
+//                            loadCertificates()
+//                        }.onFailure { error ->
+//                            showError("Error al eliminar: ${error.message}")
+//                        }
+//                }
+//            }
+//            .setNegativeButton("No", null)
+//            .show()
+//    }
 
     private fun setupButtons() {
         guardarButton.setOnClickListener { saveCertificate() }

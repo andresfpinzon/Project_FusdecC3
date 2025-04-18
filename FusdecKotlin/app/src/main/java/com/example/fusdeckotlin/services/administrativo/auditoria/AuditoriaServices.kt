@@ -1,16 +1,16 @@
 package com.example.fusdeckotlin.services.administrativo.auditoria
 
-import com.example.fusdeckotlin.api.administrativo.auditoria.IAuditoriaApi
+import com.example.fusdeckotlin.api.administrativo.auditoria.AuditoriaApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
-import models.administrativo.auditoria.model.AuditoriaModel
+import com.example.fusdeckotlin.models.administrativo.auditoria.Auditoria
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 
 class AuditoriaServices {
 
-    private val auditoriaApi : IAuditoriaApi = RetrofitClient.auditoriaApi
+    private val auditoriaApi : AuditoriaApi = RetrofitClient.auditoriaApi
 
-    suspend fun getAuditorias(): Result<List<AuditoriaModel>>{
+    suspend fun getAuditorias(): Result<List<Auditoria>>{
         return  try {
             val res = auditoriaApi.getAuditorias()
             handleListResponse(res)
@@ -20,7 +20,7 @@ class AuditoriaServices {
     }
 
 
-    suspend fun getAuditoria(id: String): Result<AuditoriaModel>{
+    suspend fun getAuditoria(id: String): Result<Auditoria>{
         return try {
             val res = auditoriaApi.getAuditoriaById(id)
             handleResponse(res)
@@ -29,7 +29,7 @@ class AuditoriaServices {
         }
     }
 
-    suspend fun getAuditoriaByCertificadoId(id: String): Result<AuditoriaModel>{
+    suspend fun getAuditoriaByCertificadoId(id: String): Result<Auditoria>{
         return  try {
             val res = auditoriaApi.getAuditoriaByCertificadoId(id)
             handleResponse(res)

@@ -7,18 +7,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fusdeckotlin.databinding.ActivityAuditoriaBinding
-import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.services.administrativo.auditoria.AuditoriaServices
-import com.example.fusdeckotlin.ui.adapters.administrador.auditoriaAdapter.AuditoriaAdapter
+import com.example.fusdeckotlin.ui.adapters.administrativo.auditoria.AuditoriaAdapter
 import kotlinx.coroutines.launch
-import models.administrativo.auditoria.model.AuditoriaModel
+import com.example.fusdeckotlin.models.administrativo.auditoria.Auditoria
 
 class AuditoriaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuditoriaBinding
     private lateinit var adapter: AuditoriaAdapter
-    private val auditorias = mutableListOf<AuditoriaModel>()
-    private var auditoriasOriginales = listOf<AuditoriaModel>() // Para mantener una copia original si necesitas filtrar
+    private val auditorias = mutableListOf<Auditoria>()
+    private var auditoriasOriginales = listOf<Auditoria>() // Para mantener una copia original si necesitas filtrar
     private val auditoriaServices = AuditoriaServices() // Tu servicio de auditorías
 
     override fun onCreate(savedInstanceState: Bundle?) {

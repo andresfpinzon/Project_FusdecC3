@@ -29,7 +29,7 @@ class UnidadServices {
         }
     }
 
-    suspend fun getUnidadActives(): Result<List<Unidad>>{
+    suspend fun listarUnidadesActivas(): Result<List<Unidad>>{
         return try {
             val res = unidadApi.getUnidades()
             handleListResponse(res){it.filter { unidad -> unidad.getEstadoUnidad() == true   }}

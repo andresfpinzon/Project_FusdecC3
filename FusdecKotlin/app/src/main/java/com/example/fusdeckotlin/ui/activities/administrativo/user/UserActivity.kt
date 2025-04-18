@@ -12,7 +12,7 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.dto.administrativo.user.CreateUserDto
 import com.example.fusdeckotlin.dto.administrativo.user.UpdateUserDto
 import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
-import com.example.fusdeckotlin.ui.adapters.administrador.userAdapter.UserAdapter
+import com.example.fusdeckotlin.ui.adapters.administrativo.user.UserAdapter
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 import models.administrativo.user.model.Usuario
