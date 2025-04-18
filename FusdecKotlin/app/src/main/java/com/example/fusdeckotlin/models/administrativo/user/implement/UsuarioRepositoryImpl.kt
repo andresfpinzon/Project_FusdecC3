@@ -1,6 +1,6 @@
 //package models.administrativo.user.implement
 //
-//import models.administrativo.user.model.Usuario
+//import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 //import models.administrativo.user.repository.UsuarioRepository
 //import java.time.LocalDateTime
 //import java.time.format.DateTimeFormatter

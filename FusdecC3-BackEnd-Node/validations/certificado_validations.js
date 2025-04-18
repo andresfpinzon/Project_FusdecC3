@@ -3,7 +3,6 @@ const Joi = require('@hapi/joi');
 const certificadoSchemaValidation = Joi.object({
 
   fechaEmision: Joi.date()
-    .required()
     .messages({
       'date.base': 'La fecha de emisión debe ser una fecha válida',
       'date.empty': 'La fecha de emisión no puede estar vacía',
@@ -13,13 +12,11 @@ const certificadoSchemaValidation = Joi.object({
   codigoVerificacion: Joi.string()
     .min(5)
     .max(20)
-    .required()
     .messages({
       'string.base': 'El código de verificación debe ser un texto',
       'string.empty': 'El código de verificación no puede estar vacío',
       'string.min': 'El código de verificación debe tener al menos 5 caracteres',
       'string.max': 'El código de verificación no puede exceder los 20 caracteres',
-      'any.required': 'El código de verificación es un campo requerido',
     }),
   nombreEmisorCertificado: Joi.string()
     .min(3)
@@ -39,7 +36,6 @@ const certificadoSchemaValidation = Joi.object({
     }),
   estudianteId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
-    .required()
     .messages({
       'string.base': 'El estudianteId debe ser un texto',
       'string.empty': 'El estudianteId no puede estar vacío',
@@ -47,7 +43,6 @@ const certificadoSchemaValidation = Joi.object({
     }),
   cursoId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/) // Validación para ObjectId
-    .required()
     .messages({
       'string.base': 'El cursoId debe ser un texto',
       'string.empty': 'El cursoId no puede estar vacío',
@@ -56,7 +51,6 @@ const certificadoSchemaValidation = Joi.object({
     }),
   usuarioId: Joi.string()
     .max(450)
-    .required()
     .messages({
       'string.base': 'El ID del usuario debe ser un texto',
       'string.max': 'El ID del usuario no puede exceder los 450 caracteres',

@@ -1,20 +1,31 @@
-package models.administrativo.user.model
+package com.example.fusdeckotlin.models.administrativo.user.model
+
+import com.google.gson.annotations.SerializedName
 
 data class Usuario(
-    private val id : String = generateId(),
+    @SerializedName("_id")
+    private val id : String? = null,
+    @SerializedName("nombreUsuario")
     private var nombreUsuario: String,
+    @SerializedName("apellidoUsuario")
     private var apellidoUsuario: String,
+    @SerializedName("numeroDocumento")
     private var numeroDocumento: String,
+    @SerializedName("correo")
     private var correo: String,
+    @SerializedName("password")
     private var password: String,
+    @SerializedName("roles")
     private var roles: List<String>,
-    private var estadoUsuario: Boolean,
+    @SerializedName("estadoUsuario")
+    private var estadoUsuario: Boolean = true,
+    @SerializedName("")
     private val creadoEn: String = obtenerFechaActual()
 ) {
 
     /**++++++++++++++GETTERS+++++++++++++++++*/
 
-    fun getUserId(): String = id
+    fun getUserId(): String = id.toString()
 
     fun getNombreUsuario(): String = nombreUsuario
 

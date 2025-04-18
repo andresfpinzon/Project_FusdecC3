@@ -1,6 +1,7 @@
 package com.example.fusdeckotlin.api.administrativo.brigada
 
 import com.example.fusdeckotlin.dto.administrativo.brigada.CrearBrigadaRequest
+import com.example.fusdeckotlin.dto.administrativo.brigada.ActualizarBrigadaRequest
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 import retrofit2.Response
 import retrofit2.http.*
@@ -15,7 +16,7 @@ interface BrigadaApi {
     @PUT("api/brigadas/{id}")
     suspend fun actualizarBrigada(
         @Path("id") id: String,
-        @Body request: CrearBrigadaRequest
+        @Body request: ActualizarBrigadaRequest
     ): Response<Brigada>
 
     @DELETE("api/brigadas/{id}")

@@ -1,6 +1,5 @@
 //require('dotenv').config();
 const mongoose = require('mongoose');
-const seedDatabase = require('../seed/seed');
 
 // Conexión a MongoDB Atlas 
 /*
@@ -22,7 +21,6 @@ mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: 
 mongoose.connect('mongodb://localhost:27017/FusdecDB', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Conectado a MongoDB local...');
-        return seedDatabase();
     })
     .catch(err => {
         console.error('No se pudo conectar con MongoDB local...', err);

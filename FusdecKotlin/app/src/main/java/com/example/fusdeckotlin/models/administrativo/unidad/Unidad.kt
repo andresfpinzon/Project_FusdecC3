@@ -1,110 +1,102 @@
 package com.example.fusdeckotlin.models.administrativo.unidad
 
+import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 import com.google.gson.annotations.SerializedName
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 
-class Unidad(
-    @SerializedName("_id") private val id: String,
-    @SerializedName("nombreUnidad") private var nombreUnidad: String,
-    @SerializedName("brigadaId") private var brigadaId: Any, // String o Brigada
-    @SerializedName("estadoUnidad") private var estadoUnidad: Boolean = true,
-    @SerializedName("usuarioId") private var usuarioId: Any, // String o Usuario
-    @SerializedName("comandos") private var comandos: List<Any> = emptyList(), // String o Comando
-    @SerializedName("estudiantes") private var estudiantes: List<Any> = emptyList() // String o Estudiante
+data class Unidad(
+    @SerializedName("_id")
+    private val id: String,
+    @SerializedName("nombreUnidad")
+    private var nombreUnidad: String,
+    @SerializedName("brigadaId")
+    private var brigadaId: Any,
+    @SerializedName("estadoUnidad")
+    private var estadoUnidad: Boolean = true,
+    @SerializedName("usuarioId")
+    private var usuarioId: Any,
 ) {
-    // Getters básicos
     fun getId() = id
     fun getNombreUnidad() = nombreUnidad
-    fun getEstadoUnidad() = estadoUnidad
 
-    // Manejo flexible de relaciones
-    fun getBrigadaId(): String {
-        return when(brigadaId) {
+    fun getBrigadaId(): String{
+        return when (brigadaId) {
             is String -> brigadaId as String
-            else -> "" // Implementar lógica si recibe objeto Brigada
-        }
-    }
-
-    fun getUsuarioId(): String {
-        return when(usuarioId) {
-            is String -> usuarioId as String
+            is Brigada -> (brigadaId as Brigada).getId()
+            is Map<*, *> -> (brigadaId as Map<*, *>)["_id"] as? String ?: ""
             else -> ""
         }
     }
 
-    fun getComandos(): List<String> {
-        return comandos.map {
-            when(it) {
-                is String -> it
-                else -> ""
-            }
-        }.filter { it.isNotEmpty() }
+    fun getBrigada(): Brigada {
+        return when (brigadaId){
+            is Brigada -> brigadaId as Brigada
+            is String -> createBrigradaEmpty(brigadaId as String)
+            is Map<*,*> -> convertMaptoBrigada(brigadaId as Map<*,*>)
+            else -> createBrigradaEmpty("")
+        }
     }
 
-    fun getEstudiantes(): List<String> {
-        return estudiantes.map {
-            when(it) {
-                is String -> it
-                else -> ""
-            }
-        }.filter { it.isNotEmpty() }
+    private fun createBrigradaEmpty(id: String): Brigada{
+         return Brigada(
+             id = id,
+             nombreBrigada = "",
+             ubicacionBrigada = "",
+             comandoId = "",
+             unidades = emptyList(),
+         )
     }
 
-    // Versiones que devuelven objetos completos
-    fun getBrigada(): Any = brigadaId
-    fun getUsuario(): Any = usuarioId
-    fun getComandosObjects(): List<Any> = comandos
-    fun getEstudiantesObjects(): List<Any> = estudiantes
-
-    // Setters
-    fun setNombreUnidad(nombre: String) {
-        nombreUnidad = nombre
-    }
-
-    fun setBrigadaId(brigada: String) {
-        brigadaId = brigada
-    }
-
-    fun setBrigada(brigada: Any) {
-        brigadaId = brigada
-    }
-
-    fun setEstadoUnidad(estado: Boolean) {
-        estadoUnidad = estado
-    }
-
-    fun setUsuarioId(usuario: String) {
-        usuarioId = usuario
-    }
-
-    fun setUsuario(usuario: Any) {
-        usuarioId = usuario
-    }
-
-    fun setComandos(comandos: List<String>) {
-        this.comandos = comandos
-    }
-
-    fun setComandosObjects(comandos: List<Any>) {
-        this.comandos = comandos
-    }
-
-    fun setEstudiantes(estudiantes: List<String>) {
-        this.estudiantes = estudiantes
-    }
-
-    fun setEstudiantesObjects(estudiantes: List<Any>) {
-        this.estudiantes = estudiantes
-    }
-
-    companion object {
-        fun createDefault() = Unidad(
-            id = "",
-            nombreUnidad = "",
-            brigadaId = "",
-            estadoUnidad = true,
-            usuarioId = "",
-            comandos = emptyList(),
-            estudiantes = emptyList()
+    private fun convertMaptoBrigada(map: Map<*,*>): Brigada {
+        return Brigada(
+            id = map["_id"] as? String ?: "",
+            nombreBrigada = map["nombreBrigada"] as? String ?: "",
+            ubicacionBrigada = map["ubicacionBrigada"] as? String ?: "",
+            comandoId = map["comandoId"] as? String ?: "",
+            unidades = map["unidades"] as? List<String> ?: emptyList()
         )
     }
+    fun getEstadoUnidad() = estadoUnidad
+
+    fun getUsuarioId(): String {
+        return when (usuarioId) {
+            is String -> usuarioId as String
+            is Usuario -> (usuarioId as Usuario).getUserId()
+            is Map<*,*> -> (usuarioId as Map<*,*>) ["_id"] as? String ?:""
+            else -> ""
+        }
+    }
+    fun getUser(): Usuario {
+        return when (usuarioId){
+            is Usuario -> usuarioId as Usuario
+            is String -> createUsersEmpty(usuarioId as String)
+            is Map<*,*> -> convertMapToUsers(usuarioId as Map<*,*>)
+            else -> createUsersEmpty("")
+        }
+    }
+
+    private fun createUsersEmpty(id: String): Usuario {
+        return Usuario(
+            id = id,
+            nombreUsuario = "",
+            apellidoUsuario = "",
+            numeroDocumento = "",
+            correo = "",
+            password = "",
+            roles = emptyList(),
+        )
+    }
+
+    private fun convertMapToUsers(map: Map<*,*>): Usuario {
+        return Usuario(
+            id = map["_id"] as? String ?: "",
+            nombreUsuario = map["nombreUsuario"] as? String ?: "",
+            apellidoUsuario = map["apellidoUsuario"] as? String ?: "",
+            numeroDocumento = map["numeroDocumento"] as? String ?: "",
+            correo = map["correo"] as? String ?: "",
+            password = map["password"] as? String ?: "",
+            roles = map["roles"] as? List<String> ?: emptyList()
+        )
+    }
+
 }

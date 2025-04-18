@@ -10,26 +10,18 @@ const crearColegio = async (req, res) => {
     nombreColegio: body.nombreColegio,
     emailColegio: body.emailColegio,
     estadoColegio: body.estadoColegio,
-    estudiantes: body.estudiantes,
   });
   if (error) {
-    return res.status(400).json({ 
-      error: `Error de validación: ${error.details[0].message}` 
-    });
+    return res.status(400).json({ error: error.details[0].message });
   }
   try {
     const nuevoColegio = await logic.crearColegio(value);
     res.status(201).json(nuevoColegio);
   } catch (err) {
     if (err.message === "El colegio con este título ya existe") {
-      return res.status(409).json({ 
-        error: "Ya existe un colegio con este nombre o email" 
-      });
+      return res.status(409).json({ error: err.message });
     }
-    console.error("Error al crear colegio:", err);
-    res.status(500).json({ 
-      error: "Error interno del servidor al crear el colegio" 
-    });
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
@@ -41,26 +33,18 @@ const actualizarColegio = async (req, res) => {
     nombreColegio: body.nombreColegio,
     emailColegio: body.emailColegio,
     estadoColegio: body.estadoColegio,
-    estudiantes: body.estudiantes,
   });
   if (error) {
-    return res.status(400).json({ 
-      error: `Error de validación: ${error.details[0].message}` 
-    });
+    return res.status(400).json({ error: error.details[0].message });
   }
   try {
     const colegioActualizado = await logic.actualizarColegio(id, value);
     if (!colegioActualizado) {
-      return res.status(404).json({ 
-        error: "No se encontró el colegio para actualizar" 
-      });
+      return res.status(404).json({ error: "Colegio no encontrado" });
     }
     res.json(colegioActualizado);
   } catch (err) {
-    console.error("Error al actualizar colegio:", err);
-    res.status(500).json({ 
-      error: "Error interno del servidor al actualizar el colegio" 
-    });
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
@@ -70,16 +54,11 @@ const desactivarColegio = async (req, res) => {
   try {
     const colegioDesactivado = await logic.desactivarColegio(id);
     if (!colegioDesactivado) {
-      return res.status(404).json({ 
-        error: "No se encontró el colegio para desactivar" 
-      });
+      return res.status(404).json({ error: "Colegio no encontrado" });
     }
     res.json(colegioDesactivado);
   } catch (err) {
-    console.error("Error al desactivar colegio:", err);
-    res.status(500).json({ 
-      error: "Error interno del servidor al desactivar el colegio" 
-    });
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
@@ -92,10 +71,7 @@ const listarColegiosActivos = async (req, res) => {
     }
     res.json(colegiosActivos);
   } catch (err) {
-    console.error("Error al listar colegios:", err);
-    res.status(500).json({ 
-      error: "Error interno del servidor al listar los colegios" 
-    });
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
@@ -107,43 +83,13 @@ const obtenerColegiosPorId = async (req, res) => {
     if (!colegio) {
       return res
         .status(404)
-        .json({ 
-          error: `No se encontró el colegio con ID ${id}` 
-        });
+        .json({ error: `Colegio con ID ${id} no encontrado` });
     }
     res.json(colegio);
   } catch (err) {
-    console.error("Error al buscar colegio:", err);
-    if (err.message === 'ID de colegio inválido') {
-      return res.status(400).json({
-        error: 'El ID del colegio proporcionado no es válido'
-      });
-    }
-    res.status(500).json({ 
-      error: "Error interno del servidor al buscar el colegio" 
+    res.status(500).json({
+      error: `Error interno del servidor al buscar el colegio: ${err.message}`,
     });
-  }
-};
-
-// Controlador para agregar estudiantes a un colegio
-const agregarEstudianteAColegio = async (req, res) => {
-  const { colegioId } = req.params;
-  const { estudiantes } = req.body;
-
-  if (!Array.isArray(estudiantes) || estudiantes.length === 0) {
-      return res.status(400).json({ 
-        error: 'Se requiere un array de IDs de estudiantes' 
-      });
-  }
-
-  try {
-      const colegioActualizado = await logic.agregarEstudianteAColegio(colegioId, estudiantes);
-      res.json({ colegio: colegioActualizado });
-  } catch (error) {
-      console.error("Error al agregar estudiantes:", error);
-      res.status(500).json({ 
-        error: "Error interno del servidor al agregar estudiantes" 
-      });
   }
 };
 
@@ -154,5 +100,4 @@ module.exports = {
   desactivarColegio,
   listarColegiosActivos,
   obtenerColegiosPorId,
-  agregarEstudianteAColegio
 };

@@ -1,107 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:background="@color/white"
         android:padding="16dp">
 
-    <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="1">
+    <!-- ScrollView para el formulario -->
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/colegiosRecyclerView">
 
-        <TableRow>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+            <!-- Título del formulario -->
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nombre Colegio"
-                    android:padding="8dp"/>
-            <EditText
-                    android:id="@+id/nombreColegioEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Nombre Colegio"
-                    android:layout_weight="1"
-                    android:padding="8dp"/>
-        </TableRow>
+                    android:text="Registro de Colegio"
+                    android:textSize="20sp"
+                    android:textColor="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"/>
 
-        <TableRow>
-            <TextView
-                    android:layout_width="wrap_content"
+            <!-- Campos del formulario -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Email Colegio"
-                    android:padding="8dp"/>
-            <EditText
-                    android:id="@+id/emailColegioEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Email Colegio"
-                    android:layout_weight="1"
-                    android:padding="8dp"/>
-        </TableRow>
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
-        <TableRow>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Estudiantes"
-                    android:padding="8dp"/>
-            <EditText
-                    android:id="@+id/estudiantesEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Estudiantes (separados por comas)"
-                    android:layout_weight="1"
-                    android:padding="8dp"/>
-        </TableRow>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-        <TableRow>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Activo"
-                    android:padding="8dp"/>
-            <Switch
-                    android:id="@+id/estadoColegioSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Activo"
-                    android:padding="8dp"/>
-        </TableRow>
+                    <!-- Nombre -->
+                    <TextView
+                            android:id="@+id/nombreLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nombre"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"/>
 
-        <TableRow>
-            <Button
-                    android:id="@+id/confirmarButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Confirmar"
-                    android:layout_weight="1"
-                    android:padding="8dp"/>
-            <Button
-                    android:id="@+id/cancelarButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Cancelar"
-                    android:layout_weight="1"
-                    android:padding="8dp"/>
-        </TableRow>
+                    <EditText
+                            android:id="@+id/nombreColegioEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese el nombre del colegio"
+                            android:inputType="text"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
 
-        <TableRow>
-            <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchViewColegio"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:queryHint="Buscar Colegio"
-                    android:padding="8dp"/>
-        </TableRow>
-    </TableLayout>
+                    <!-- Email -->
+                    <TextView
+                            android:id="@+id/emailLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Email"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
 
+                    <EditText
+                            android:id="@+id/emailColegioEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese el email del colegio"
+                            android:inputType="textEmailAddress"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botones de acción -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:weightSum="2">
+
+                <Button
+                        android:id="@+id/cancelarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cancelar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/red"
+                        android:layout_marginEnd="4dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                        android:id="@+id/confirmarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Confirmar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/green"
+                        android:layout_marginStart="4dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+            </LinearLayout>
+
+            <!-- Barra de búsqueda -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Buscar colegios"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primaryColor"
+                            app:hintTextColor="@color/primaryColor"
+                            app:endIconTint="@color/primaryColor"
+                            app:startIconTint="@color/primaryColor">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/searchEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionSearch"
+                                android:inputType="text"
+                                android:textColor="@color/primaryDarkColor"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- RecyclerView para mostrar la lista de colegios -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/colegiosRecyclerView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="8dp"/>
-</LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/scrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

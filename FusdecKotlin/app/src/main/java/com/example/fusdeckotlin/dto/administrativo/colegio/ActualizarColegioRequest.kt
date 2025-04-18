@@ -12,22 +12,4 @@ data class ActualizarColegioRequest(
     @SerializedName("estadoColegio")
     val estado: Boolean? = null,
 
-    @SerializedName("estudiantes")
-    val estudiantes: List<String>? = null
-) {
-    companion object {
-        fun from(
-            nombre: String? = null,
-            email: String? = null,
-            estado: Boolean? = null,
-            estudiantes: List<String>? = null
-        ): ActualizarColegioRequest {
-            return ActualizarColegioRequest(
-                nombre = nombre,
-                email = email,
-                estado = estado,
-                estudiantes = estudiantes
-            )
-        }
-    }
-}
+)

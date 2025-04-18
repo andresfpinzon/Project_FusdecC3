@@ -1,0 +1,13 @@
+spring.application.name=kotlinsql
+spring.datasource.url=jdbc:postgresql://localhost:5432/
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.jpa.database-platform=org.hibernate.dialect.PostgreSQL95Dialect
+spring.datasource.initialization-mode=always
+spring.jpa.hibernate.ddl-auto=update
+JWT_SECRET=
+ROOT_EMAIL=
+ROOT_PASSWORD=
+spring.security.user.name=
+spring.security.user.password=

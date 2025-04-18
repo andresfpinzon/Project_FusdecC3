@@ -3,8 +3,10 @@ package com.example.fusdeckotlin.services.administrativo.brigada
 import com.example.fusdeckotlin.api.administrativo.brigada.BrigadaApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
 import com.example.fusdeckotlin.dto.administrativo.brigada.CrearBrigadaRequest
+import com.example.fusdeckotlin.dto.administrativo.brigada.ActualizarBrigadaRequest
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
-import retrofit2.Response
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 
 class BrigadaServices {
 
@@ -13,17 +15,13 @@ class BrigadaServices {
     suspend fun crearBrigada(
         nombreBrigada: String,
         ubicacionBrigada: String,
-        estadoBrigada: Boolean = true,
-        comandoId: String,
-        unidades: List<String> = emptyList()
+        comandoId: String
     ): Result<Brigada> {
         return try {
-            val request = CrearBrigadaRequest.from(
+            val request = CrearBrigadaRequest(
                 nombreBrigada = nombreBrigada,
                 ubicacionBrigada = ubicacionBrigada,
-                estadoBrigada = estadoBrigada,
-                comandoId = comandoId,
-                unidades = unidades
+                comandoId = comandoId
             )
 
             val response = brigadaApi.crearBrigada(request)
@@ -36,12 +34,16 @@ class BrigadaServices {
     suspend fun listarBrigadasActivas(): Result<List<Brigada>> {
         return try {
             val response = brigadaApi.listarBrigadas()
-            if (response.isSuccessful) {
-                val brigadas = response.body()?.filter { it.getEstadoBrigada() } ?: emptyList()
-                Result.success(brigadas)
-            } else {
-                Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
-            }
+            handleListResponse(response) { it.filter { brigada -> brigada.getEstadoBrigada() } }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun obtenerBrigadaPorId(id: String): Result<Brigada> {
+        return try {
+            val response = brigadaApi.obtenerBrigadaPorId(id)
+            handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -51,30 +53,15 @@ class BrigadaServices {
         id: String,
         nombreBrigada: String? = null,
         ubicacionBrigada: String? = null,
-        estadoBrigada: Boolean? = null,
         comandoId: String? = null,
-        unidades: List<String>? = null
+        estadoBrigada: Boolean? = null
     ): Result<Brigada> {
         return try {
-            val currentResponse = brigadaApi.obtenerBrigadaPorId(id)
-            if (!currentResponse.isSuccessful || currentResponse.body() == null) {
-                return Result.failure(Exception("Brigada no encontrada"))
-            }
-
-            val brigadaActual = currentResponse.body()!!
-
-            nombreBrigada?.let { brigadaActual.setNombreBrigada(it) }
-            ubicacionBrigada?.let { brigadaActual.setUbicacionBrigada(it) }
-            estadoBrigada?.let { brigadaActual.setEstadoBrigada(it) }
-            comandoId?.let { brigadaActual.setComandoId(it) }
-            unidades?.let { brigadaActual.setUnidades(it) }
-
-            val request = CrearBrigadaRequest.from(
-                brigadaActual.getNombreBrigada(),
-                brigadaActual.getUbicacionBrigada(),
-                brigadaActual.getEstadoBrigada(),
-                brigadaActual.getComandoId(),
-                brigadaActual.getUnidades()
+            val request = ActualizarBrigadaRequest(
+                nombreBrigada = nombreBrigada,
+                ubicacionBrigada = ubicacionBrigada,
+                comandoId = comandoId,
+                estadoBrigada = estadoBrigada
             )
 
             val response = brigadaApi.actualizarBrigada(id, request)
@@ -90,16 +77,6 @@ class BrigadaServices {
             handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
-        }
-    }
-
-    private fun <T> handleResponse(response: Response<T>): Result<T> {
-        return if (response.isSuccessful) {
-            response.body()?.let {
-                Result.success(it)
-            } ?: Result.failure(Exception("Respuesta vacía del servidor"))
-        } else {
-            Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
         }
     }
 }

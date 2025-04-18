@@ -7,21 +7,21 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface AsistenciaApi {
-    @GET("api/asistencias")
+    @GET("asistencias")
     suspend fun listarAsistencias(): Response<List<Asistencia>>
 
-    @POST("api/asistencias")
+    @POST("asistencias")
     suspend fun crearAsistencia(@Body request: CrearAsistenciaRequest): Response<Asistencia>
 
-    @PUT("api/asistencias/{id}")
+    @PUT("asistencias/{id}")
     suspend fun actualizarAsistencia(
         @Path("id") id: String,
         @Body request: ActualizarAsistenciaRequest
     ): Response<Asistencia>
 
-    @DELETE("api/asistencias/{id}")
+    @DELETE("asistencias/{id}")
     suspend fun desactivarAsistencia(@Path("id") id: String): Response<Asistencia>
 
-    @GET("api/asistencias/{id}")
+    @GET("asistencias/{id}")
     suspend fun obtenerAsistenciaPorId(@Path("id") id: String): Response<Asistencia>
 }

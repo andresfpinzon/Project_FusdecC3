@@ -1,141 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="16dp">
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="16dp">
 
-    <!-- Título del formulario -->
-    <TextView
-            android:id="@+id/tituloFormulario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Formulario edición"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="30dp"/>
+    <!-- ScrollView para el formulario -->
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/edicionesRecyclerView">
 
-    <!-- Título de la edición -->
-    <TextView
-            android:id="@+id/edicionTitulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Título de la edición"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="4dp"/>
-
-    <EditText
-            android:id="@+id/tituloEdicion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ingrese el título"
-            android:inputType="text"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"/>
-
-    <!-- Fecha de inicio -->
-    <TextView
-            android:id="@+id/edicionFechaInicio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fecha de inicio"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="4dp"/>
-
-    <EditText
-            android:id="@+id/fechaInicioEdicion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Seleccione fecha (yyyy-MM-dd)"
-            android:inputType="none"
-            android:gravity="center"
-            android:focusable="false"
-            android:clickable="true"
-            android:layout_marginBottom="24dp"/>
-
-    <!-- Fecha de fin -->
-    <TextView
-            android:id="@+id/edicionFechaFin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fecha de finalización"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="4dp"/>
-
-    <EditText
-            android:id="@+id/fechaFinEdicion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Seleccione fecha (yyyy-MM-dd)"
-            android:inputType="none"
-            android:gravity="center"
-            android:focusable="false"
-            android:clickable="true"
-            android:layout_marginBottom="24dp"/>
-
-    <!-- Curso -->
-    <TextView
-            android:id="@+id/edicionCurso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Curso de la edición"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="4dp"/>
-
-    <EditText
-            android:id="@+id/cursoId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="ID del curso"
-            android:inputType="text"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"/>
-
-    <!-- Botones -->
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="16dp">
-
-        <Button
-                android:id="@+id/confirmarEdicionButton"
-                android:layout_width="200dp"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Confirmar"
-                android:layout_marginEnd="8dp"/>
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <Button
-                android:id="@+id/cancelarEdicionButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="Cancelar"/>
-    </LinearLayout>
+            <!-- Título del formulario -->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Registro de Edición"
+                    android:textSize="20sp"
+                    android:textColor="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"/>
 
-    <!-- Lista de ediciones -->
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ediciones registradas"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="8dp"/>
+            <!-- Campos del formulario agrupados en CardViews -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <!-- Título -->
+                    <TextView
+                            android:id="@+id/tituloLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Título"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"/>
+
+                    <EditText
+                            android:id="@+id/tituloEdicionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese el título de la edición"
+                            android:inputType="text"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Fecha Inicio -->
+                    <TextView
+                            android:id="@+id/fechaInicioLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fecha Inicio"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/fechaInicioEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione la fecha de inicio"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Fecha Fin -->
+                    <TextView
+                            android:id="@+id/fechaFinLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fecha Fin"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/fechaFinEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione la fecha de fin"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Botón para seleccionar curso -->
+                    <Button
+                            android:id="@+id/seleccionarCursoButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Seleccionar Curso"
+                            android:layout_marginTop="16dp"
+                            android:textColor="@color/white"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Curso seleccionado -->
+                    <TextView
+                            android:id="@+id/cursoSeleccionadoText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ningún curso seleccionado"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/textSecondary"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botones de acción -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:weightSum="2">
+
+                <Button
+                        android:id="@+id/cancelarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cancelar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/red"
+                        android:layout_marginEnd="4dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                        android:id="@+id/confirmarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Confirmar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/green"
+                        android:layout_marginStart="4dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+            </LinearLayout>
+
+            <!-- Barra de búsqueda -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Buscar ediciones"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primaryColor"
+                            app:hintTextColor="@color/primaryColor"
+                            app:endIconTint="@color/primaryColor"
+                            app:startIconTint="@color/primaryColor">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/searchEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionSearch"
+                                android:inputType="text"
+                                android:textColor="@color/primaryDarkColor"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- RecyclerView para mostrar la lista de ediciones -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/edicionesRecyclerView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"/>
-</LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/scrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

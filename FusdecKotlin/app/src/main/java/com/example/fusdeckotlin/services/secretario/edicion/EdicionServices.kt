@@ -18,15 +18,13 @@ class EdicionServices {
         fechaInicio: LocalDate,
         fechaFin: LocalDate,
         cursoId: String,
-        estudiantes: List<String> = emptyList()
     ): Result<Edicion> {
         return try {
-            val request = CrearEdicionRequest.from(
+            val request = CrearEdicionRequest(
                 nombre = nombre,
-                fechaInicio = fechaInicio,
-                fechaFin = fechaFin,
+                fechaInicio = fechaInicio.toString(),
+                fechaFin = fechaFin.toString(),
                 cursoId = cursoId,
-                estudiantes = estudiantes
             )
 
             val response = edicionApi.crearEdicion(request)
@@ -61,16 +59,14 @@ class EdicionServices {
         fechaFin: LocalDate? = null,
         cursoId: String? = null,
         estado: Boolean? = null,
-        estudiantes: List<String>? = null
     ): Result<Edicion> {
         return try {
-            val request = ActualizarEdicionRequest.from(
+            val request = ActualizarEdicionRequest(
                 nombre = nombre,
-                fechaInicio = fechaInicio,
-                fechaFin = fechaFin,
+                fechaInicio = fechaInicio.toString(),
+                fechaFin = fechaFin.toString(),
                 cursoId = cursoId,
                 estado = estado,
-                estudiantes = estudiantes
             )
 
             val response = edicionApi.actualizarEdicion(id, request)

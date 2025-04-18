@@ -1,38 +1,18 @@
 package com.example.fusdeckotlin.dto.administrativo.brigada
 
+import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 import com.google.gson.annotations.SerializedName
 
-data class CrearBrigadaRequest (
-    @SerializedName("nombreBrigda")
-    var nombreBrigada: String,
+data class CrearBrigadaRequest(
+    @SerializedName("nombreBrigada")
+    var nombreBrigada: String?,
 
     @SerializedName("ubicacionBrigada")
-    var ubicacionBrigada: String,
+    var ubicacionBrigada: String?,
 
     @SerializedName("estadoBrigada")
-    var estadoBrigada: Boolean = true,
+     var estadoBrigada: Boolean? = true,
 
     @SerializedName("comandoId")
-    var comandoId: String,
-
-    @SerializedName("unidades")
-    var unidades: List<String> = emptyList()
-){
-    companion object {
-        fun from(
-            nombreBrigada: String,
-            ubicacionBrigada: String,
-            estadoBrigada: Boolean = true,
-            comandoId: String,
-            unidades: List<String> = emptyList()
-        ): CrearBrigadaRequest {
-            return CrearBrigadaRequest(
-                nombreBrigada = nombreBrigada,
-                ubicacionBrigada = ubicacionBrigada,
-                estadoBrigada = estadoBrigada,
-                comandoId = comandoId,
-                unidades = unidades
-            )
-        }
-    }
-}
+    var comandoId: String?,
+)

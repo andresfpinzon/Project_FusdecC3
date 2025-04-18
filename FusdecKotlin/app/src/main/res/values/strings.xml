@@ -2,6 +2,7 @@
     <string name="app_name">FusdecKotlin</string>
     <string name="update_button_description">Actualizar</string>
     <string name="delete_button_description">Eliminar</string>
+    <string name="info_button_description">Información de la asistencia</string>
     <string name="add_button_description">Agregar</string>
     <string name="cancel_button_description">Cancelar</string>
     <string name="save_button_description">Guardar</string>
@@ -16,4 +17,7 @@
     <string name="yes_button_description">Sí</string>
     <string name="no_button_description">No</string>
     <string name="ok_button_description">Aceptar</string>
+    <string name="estado_activo">ACTIVO</string>
+    <string name="estado_inactivo">INACTIVO</string>
+    <string name="info_button_estudiante">Información del estudiante</string>
 </resources>

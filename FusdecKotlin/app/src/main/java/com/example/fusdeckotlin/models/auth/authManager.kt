@@ -28,4 +28,31 @@ object AuthManager {
     fun isLoggedIn(): Boolean {
         return getToken() != null
     }
+
+    fun getUserIdFromToken(): String? {
+        val token = getToken() ?: return null
+        try {
+            val parts = token.split(".")
+            if (parts.size != 3) return null
+
+            val payload = parts[1]
+            val paddedPayload = when (payload.length % 4) {
+                2 -> "$payload=="
+                3 -> "$payload="
+                else -> payload
+            }
+
+            val decodedPayload = String(
+                android.util.Base64.decode(paddedPayload, android.util.Base64.URL_SAFE),
+                Charsets.UTF_8
+            )
+
+            // Parsear el JSON y extraer el ID
+            val jsonObject = org.json.JSONObject(decodedPayload)
+            return jsonObject.getString("id") // Extraemos el campo "id"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
 }

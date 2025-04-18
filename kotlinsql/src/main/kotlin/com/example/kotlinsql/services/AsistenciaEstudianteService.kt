@@ -26,18 +26,50 @@ class AsistenciaEstudianteService {
     }
 
     fun crear(request: AsistenciaEstudianteCreateRequest): AsistenciaEstudiante? {
-        val sql = """
-        INSERT INTO asistencia_estudiante (asistencia_id, estudiante_id)
-        VALUES (?, ?)
-        RETURNING *
-    """.trimIndent()
-        return jdbcTemplate.queryForObject(sql, rowMapper, request.asistenciaId, request.estudianteId)
+        val insertSql = """
+            INSERT INTO asistencia_estudiante (asistencia_id, estudiante_id)
+            VALUES (?, ?)
+            RETURNING *
+        """.trimIndent()
+
+        val result = jdbcTemplate.queryForObject(insertSql, rowMapper, request.asistenciaId, request.estudianteId)
+
+        // Incrementar contador y verificar aprobado
+        val updateSql = """
+            UPDATE estudiante
+            SET asistencias_registradas = asistencias_registradas + 1,
+                aprobado = CASE 
+                    WHEN asistencias_registradas + 1 >= 15 THEN TRUE 
+                    ELSE aprobado 
+                END
+            WHERE numero_documento = ?
+        """.trimIndent()
+
+        jdbcTemplate.update(updateSql, request.estudianteId)
+
+        return result
     }
-
-
 
     fun eliminar(asistenciaId: Int, estudianteId: String): Int {
-        val sql = "DELETE FROM asistencia_estudiante WHERE asistencia_id = ? AND estudiante_id = ?"
-        return jdbcTemplate.update(sql, asistenciaId, estudianteId)
+        val deleteSql = "DELETE FROM asistencia_estudiante WHERE asistencia_id = ? AND estudiante_id = ?"
+        val rows = jdbcTemplate.update(deleteSql, asistenciaId, estudianteId)
+
+        if (rows > 0) {
+            // Decrementar contador y verificar aprobado
+            val updateSql = """
+                UPDATE estudiante
+                SET asistencias_registradas = asistencias_registradas - 1,
+                    aprobado = CASE 
+                        WHEN asistencias_registradas - 1 < 15 THEN FALSE 
+                        ELSE aprobado 
+                    END
+                WHERE numero_documento = ?
+            """.trimIndent()
+
+            jdbcTemplate.update(updateSql, estudianteId)
+        }
+
+        return rows
     }
 }
+

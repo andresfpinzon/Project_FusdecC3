@@ -14,25 +14,27 @@ class EstudianteServices {
     private val estudianteApi: EstudianteApi = RetrofitClient.estudianteApi
 
     suspend fun crearEstudiante(
-        nombreEstudiante: String,
-        apellidoEstudiante: String,
+        nombre: String,
+        apellido: String,
         tipoDocumento: String,
         numeroDocumento: String,
-        fechaNacimiento: LocalDate,
-        generoEstudiante: String,
-        unidadId: String,
-        colegioId: String
+        genero: String,
+        unidad: String,
+        colegio: String,
+        edicion: String,
+        grado: String
     ): Result<Estudiante> {
         return try {
-            val request = CrearEstudianteRequest.from(
-                nombreEstudiante = nombreEstudiante,
-                apellidoEstudiante = apellidoEstudiante,
-                tipoDocumento = tipoDocumento,
+            val request = CrearEstudianteRequest(
                 numeroDocumento = numeroDocumento,
-                fechaNacimiento = fechaNacimiento,
-                generoEstudiante = generoEstudiante,
-                unidadId = unidadId,
-                colegioId = colegioId
+                nombre = nombre,
+                apellido = apellido,
+                tipoDocumento = tipoDocumento,
+                genero = genero,
+                unidad = unidad,
+                colegio = colegio,
+                edicion = edicion,
+                grado = grado
             )
 
             val response = estudianteApi.crearEstudiante(request)
@@ -45,15 +47,15 @@ class EstudianteServices {
     suspend fun listarEstudiantesActivos(): Result<List<Estudiante>> {
         return try {
             val response = estudianteApi.listarEstudiantes()
-            handleListResponse(response) { it.filter { estudiante -> estudiante.getEstadoEstudiante() } }
+            handleListResponse(response) { it.filter { estudiante -> estudiante.getEstado() } }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun obtenerEstudiantePorId(id: String): Result<Estudiante> {
+    suspend fun obtenerEstudiantePorDocumento(documento: String): Result<Estudiante> {
         return try {
-            val response = estudianteApi.obtenerEstudiantePorId(id)
+            val response = estudianteApi.obtenerEstudiantePorDocumento(documento)
             handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -61,48 +63,41 @@ class EstudianteServices {
     }
 
     suspend fun actualizarEstudiante(
-        id: String,
-        nombreEstudiante: String? = null,
-        apellidoEstudiante: String? = null,
+        documento: String,
+        nombre: String? = null,
+        apellido: String? = null,
         tipoDocumento: String? = null,
-        numeroDocumento: String? = null,
-        fechaNacimiento: LocalDate? = null,
-        generoEstudiante: String? = null,
-        unidadId: String? = null,
-        colegioId: String? = null,
-        estadoEstudiante: Boolean? = null,
-        edicionesIds: List<String>? = null,
-        calificacionesIds: List<String>? = null,
-        asistenciasIds: List<String>? = null,
-        certificadosIds: List<String>? = null
+        genero: String? = null,
+        unidad: String? = null,
+        colegio: String? = null,
+        edicion: String? = null,
+        grado: String? = null,
+        estado: Boolean? = null
+
     ): Result<Estudiante> {
         return try {
-            val request = ActualizarEstudianteRequest.from(
-                nombreEstudiante = nombreEstudiante,
-                apellidoEstudiante = apellidoEstudiante,
+            val request = ActualizarEstudianteRequest(
+                nombre = nombre,
+                apellido = apellido,
                 tipoDocumento = tipoDocumento,
-                numeroDocumento = numeroDocumento,
-                fechaNacimiento = fechaNacimiento,
-                generoEstudiante = generoEstudiante,
-                unidadId = unidadId,
-                colegioId = colegioId,
-                estadoEstudiante = estadoEstudiante,
-                ediciones = edicionesIds,
-                calificaciones = calificacionesIds,
-                asistencias = asistenciasIds,
-                certificados = certificadosIds
+                genero = genero,
+                unidad = unidad,
+                colegio = colegio,
+                edicion = edicion,
+                grado = grado,
+                estado = estado,
             )
 
-            val response = estudianteApi.actualizarEstudiante(id, request)
+            val response = estudianteApi.actualizarEstudiante(documento, request)
             handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun desactivarEstudiante(id: String): Result<Estudiante> {
+    suspend fun desactivarEstudiante(documento: String): Result<Estudiante> {
         return try {
-            val response = estudianteApi.desactivarEstudiante(id)
+            val response = estudianteApi.desactivarEstudiante(documento)
 
             if (response.isSuccessful) {
                 response.body()?.let {

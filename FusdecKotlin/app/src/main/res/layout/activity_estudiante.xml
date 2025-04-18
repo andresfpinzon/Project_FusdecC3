@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:padding="16dp">
 
     <!-- ScrollView para el formulario -->
@@ -20,136 +22,286 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="8dp">
 
-            <!-- Formulario de Estudiante -->
+            <!-- Título del formulario -->
             <TextView
-                    android:id="@+id/nombreTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nombre"/>
-
-            <EditText
-                    android:id="@+id/nombreEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre del estudiante"/>
+                    android:text="Registro de Estudiante"
+                    android:textSize="20sp"
+                    android:textColor="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"/>
 
-            <TextView
-                    android:id="@+id/apellidoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Apellido"
-                    android:layout_marginTop="16dp"/>
-
-            <EditText
-                    android:id="@+id/apellidoEditText"
+            <!-- Campos del formulario agrupados en CardViews -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Apellido del estudiante"/>
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
-            <TextView
-                    android:id="@+id/tipoDocumentoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tipo de Documento"
-                    android:layout_marginTop="16dp"/>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-            <EditText
-                    android:id="@+id/tipoDocumentoEditText"
+                    <!-- Nombre -->
+                    <TextView
+                            android:id="@+id/nombreTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nombre"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                    />
+
+                    <EditText
+                            android:id="@+id/nombreEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese el nombre"
+                            android:inputType="textPersonName"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Apellido -->
+                    <TextView
+                            android:id="@+id/apellidoTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Apellido"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/apellidoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese el apellido"
+                            android:inputType="textPersonName"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Tipo Documento -->
+                    <TextView
+                            android:id="@+id/tipoDocumentoTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tipo de Documento"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/tipoDocumentoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione el tipo de documento"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Número Documento -->
+                    <TextView
+                            android:id="@+id/numeroDocumentoTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Número de Documento"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/numeroDocumentoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese el número"
+                            android:inputType="number"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Género -->
+                    <TextView
+                            android:id="@+id/generoTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Género"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/generoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione el género"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Unidad -->
+                    <TextView
+                            android:id="@+id/unidadTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unidad"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/unidadEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione la unidad"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Colegio -->
+                    <TextView
+                            android:id="@+id/colegioTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Colegio"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/colegioEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione el colegio"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Edicion -->
+                    <TextView
+                            android:id="@+id/edicionTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Edicion"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/edicionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione la edición"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <!-- Grado -->
+                    <TextView
+                            android:id="@+id/gradoTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Grado"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/gradoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Seleccione el grado"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botones de acción -->
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Tipo de documento"/>
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:weightSum="2">
 
-            <TextView
-                    android:id="@+id/numeroDocumentoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Número de Documento"
-                    android:layout_marginTop="16dp"/>
+                <Button
+                        android:id="@+id/cancelarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cancelar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/red"
+                        android:layout_marginEnd="4dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
-            <EditText
-                    android:id="@+id/numeroDocumentoEditText"
+                <Button
+                        android:id="@+id/confirmarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Confirmar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/green"
+                        android:layout_marginStart="4dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+            </LinearLayout>
+            <!-- Barra de búsqueda -->
+            <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Número de documento"/>
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
-            <TextView
-                    android:id="@+id/fechaNacimientoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fecha de Nacimiento"
-                    android:layout_marginTop="16dp"/>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
 
-            <EditText
-                    android:id="@+id/fechaNacimientoEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="dd/MM/yyyy"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Buscar estudiantes"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primaryColor"
+                            app:hintTextColor="@color/primaryColor"
+                            app:endIconTint="@color/primaryColor"
+                            app:startIconTint="@color/primaryColor">
 
-            <TextView
-                    android:id="@+id/generoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Género"
-                    android:layout_marginTop="16dp"/>
-
-            <EditText
-                    android:id="@+id/generoEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Género del estudiante"/>
-
-            <TextView
-                    android:id="@+id/unidadIdTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Unidad ID"
-                    android:layout_marginTop="16dp"/>
-
-            <EditText
-                    android:id="@+id/unidadIdEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Unidad ID"/>
-
-            <TextView
-                    android:id="@+id/colegioIdTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Colegio ID"
-                    android:layout_marginTop="16dp"/>
-
-            <EditText
-                    android:id="@+id/colegioIdEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Colegio ID"/>
-
-            <Switch
-                    android:id="@+id/estadoSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Activo"
-                    android:layout_marginTop="16dp"/>
-
-            <Button
-                    android:id="@+id/confirmarButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Confirmar"
-                    android:layout_marginTop="16dp"/>
-
-            <Button
-                    android:id="@+id/cancelarButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cancelar"
-                    android:layout_marginTop="8dp"/>
-
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/searchEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionSearch"
+                                android:inputType="text"
+                                android:textColor="@color/primaryDarkColor"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-
     </ScrollView>
+
 
     <!-- RecyclerView para mostrar la lista de estudiantes -->
     <androidx.recyclerview.widget.RecyclerView
@@ -161,6 +313,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 

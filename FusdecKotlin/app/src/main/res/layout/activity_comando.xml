@@ -1,91 +1,179 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp"
-        tools:context=".ui.activities.administrativo.comando.ComandoActivity">
+        android:background="@color/white"
+        android:padding="16dp">
 
-    <EditText
-            android:id="@+id/nombreComandoEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre del Comando"
-            android:inputType="text" />
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/comandosRecyclerView">
 
-    <Spinner
-            android:id="@+id/brigadaSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    <EditText
-            android:id="@+id/ubicacionComandoEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ubicación del Comando"
-            android:inputType="text" />
-
-    <EditText
-            android:id="@+id/usuarioIdEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="ID del Usuario"
-            android:inputType="text" />
-
-    <EditText
-            android:id="@+id/comandosEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Comandos (separados por comas)"
-            android:inputType="text" />
-
-    <EditText
-            android:id="@+id/estudiantesEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Estudiantes (separados por comas)"
-            android:inputType="text" />
-
-    <Switch
-            android:id="@+id/estadoComandoSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Estado Activo"
-            android:layout_marginTop="16dp" />
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
-
-        <Button
-                android:id="@+id/confirmarButton"
-                android:layout_width="0dp"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Confirmar" />
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <Button
-                android:id="@+id/cancelarButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cancelar" />
-    </LinearLayout>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Registro de Comando"
+                    android:textSize="20sp"
+                    android:textColor="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"/>
 
-    <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchViewComando"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:queryHint="Buscar comando"
-            android:layout_marginTop="16dp"/>
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <TextView
+                            android:id="@+id/nombreLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nombre"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"/>
+
+                    <EditText
+                            android:id="@+id/nombreComandoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese el nombre del comando"
+                            android:inputType="text"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <TextView
+                            android:id="@+id/ubicacionLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ubicación"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+
+                    <EditText
+                            android:id="@+id/ubicacionComandoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese la ubicación del comando"
+                            android:inputType="text"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <Button
+                            android:id="@+id/seleccionarFundacionButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Seleccionar Fundación"
+                            android:layout_marginTop="16dp"
+                            android:textColor="@color/white"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <TextView
+                            android:id="@+id/fundacionSeleccionadaText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ninguna fundación seleccionada"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/textSecondary"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:weightSum="2">
+
+                <Button
+                        android:id="@+id/cancelarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cancelar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/red"
+                        android:layout_marginEnd="4dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                        android:id="@+id/confirmarButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Confirmar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/green"
+                        android:layout_marginStart="4dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Buscar comandos"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            app:boxStrokeColor="@color/primaryColor"
+                            app:hintTextColor="@color/primaryColor"
+                            app:endIconTint="@color/primaryColor"
+                            app:startIconTint="@color/primaryColor">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/searchEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionSearch"
+                                android:inputType="text"
+                                android:textColor="@color/primaryDarkColor"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comandosRecyclerView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@id/scrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

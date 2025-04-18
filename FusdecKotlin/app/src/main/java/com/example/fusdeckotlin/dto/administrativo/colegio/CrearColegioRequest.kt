@@ -12,22 +12,4 @@ data class CrearColegioRequest(
     @SerializedName("estadoColegio")
     val estado: Boolean = true,
 
-    @SerializedName("estudiantes")
-    val estudiantes: List<String> = emptyList()
-) {
-    companion object {
-        fun from(
-            nombre: String,
-            email: String,
-            estudiantes: List<String> = emptyList(),
-            estado: Boolean = true
-        ): CrearColegioRequest {
-            return CrearColegioRequest(
-                nombre = nombre,
-                email = email,
-                estado = estado,
-                estudiantes = estudiantes
-            )
-        }
-    }
-}
+)

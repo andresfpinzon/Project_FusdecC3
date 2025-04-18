@@ -19,26 +19,4 @@ data class ActualizarEdicionRequest(
     @SerializedName("estadoEdicion")
     val estado: Boolean? = null,
 
-    @SerializedName("estudiantes")
-    val estudiantes: List<String>? = null
-) {
-    companion object {
-        fun from(
-            nombre: String? = null,
-            fechaInicio: LocalDate? = null,
-            fechaFin: LocalDate? = null,
-            cursoId: String? = null,
-            estado: Boolean? = null,
-            estudiantes: List<String>? = null
-        ): ActualizarEdicionRequest {
-            return ActualizarEdicionRequest(
-                nombre = nombre,
-                fechaInicio = fechaInicio?.toString(),
-                fechaFin = fechaFin?.toString(),
-                cursoId = cursoId,
-                estado = estado,
-                estudiantes = estudiantes
-            )
-        }
-    }
-}
+)

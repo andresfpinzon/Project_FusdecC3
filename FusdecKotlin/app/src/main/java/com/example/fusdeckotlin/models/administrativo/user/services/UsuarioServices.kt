@@ -1,6 +1,6 @@
 //package models.administrativo.user.services
 //
-//import models.administrativo.user.model.Usuario
+//import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 //import models.administrativo.user.repository.UsuarioRepository
 //
 //class UsuarioServices(private val repository: UsuarioRepository) {
