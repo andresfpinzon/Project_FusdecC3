@@ -10,7 +10,7 @@ data class Certificado(
     private val fechaEmision: String ,
     @SerializedName("usuarioId")
     private val usuarioId: Any,
-    @SerializedName("usuarioId")
+    @SerializedName("cursoId")
     private val cursoId: Any,
     @SerializedName("estudianteId")
     private val estudianteId: Any,
