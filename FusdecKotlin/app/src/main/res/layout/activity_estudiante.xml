@@ -102,7 +102,10 @@
                             android:id="@+id/tipoDocumentoEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Seleccione el tipo"
+                            android:hint="Seleccione el tipo de documento"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:layout_marginTop="4dp"
                             android:backgroundTint="@color/primaryColor"/>
 
@@ -140,6 +143,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Seleccione el género"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:layout_marginTop="4dp"
                             android:backgroundTint="@color/primaryColor"/>
 
@@ -157,7 +163,10 @@
                             android:id="@+id/unidadEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Ingrese la unidad"
+                            android:hint="Seleccione la unidad"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:layout_marginTop="4dp"
                             android:backgroundTint="@color/primaryColor"/>
 
@@ -175,7 +184,10 @@
                             android:id="@+id/colegioEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Ingrese el colegio"
+                            android:hint="Seleccione el colegio"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:layout_marginTop="4dp"
                             android:backgroundTint="@color/primaryColor"/>
 
@@ -193,7 +205,10 @@
                             android:id="@+id/edicionEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Ingrese la edicion"
+                            android:hint="Seleccione la edición"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:layout_marginTop="4dp"
                             android:backgroundTint="@color/primaryColor"/>
 
@@ -211,7 +226,10 @@
                             android:id="@+id/gradoEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Ingrese el grado"
+                            android:hint="Seleccione el grado"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:layout_marginTop="4dp"
                             android:backgroundTint="@color/primaryColor"/>
                 </LinearLayout>

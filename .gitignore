@@ -94,3 +94,6 @@ __pycache__/
 *.opt
 *.vbw
 *.binlog
+
+kotlinsql/src/main/resources/application.properties
+kotlinsql/src/main/resources/local.properties
