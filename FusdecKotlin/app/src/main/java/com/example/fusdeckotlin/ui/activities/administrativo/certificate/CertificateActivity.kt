@@ -15,7 +15,7 @@ import com.example.fusdeckotlin.services.administrativo.certificate.CertificadoS
 import com.example.fusdeckotlin.ui.adapters.administrador.certificateAdapter.CertificateAdapter
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.CertificadoModel
 
 class CertificateActivity : AppCompatActivity() {
 
@@ -79,10 +79,10 @@ class CertificateActivity : AppCompatActivity() {
         val estudianteText = estudiante.text.toString().trim()
         val emisorText = emisor.text.toString().trim()
 
-        if (usuarioText.isEmpty() || cursoText.isEmpty() || estudianteText.isEmpty() || emisorText.isEmpty()) {
-            showError("Por favor, complete todos los campos")
-            return
-        }
+//        if (usuarioText.isEmpty() || cursoText.isEmpty() || estudianteText.isEmpty() || emisorText.isEmpty()) {
+//            showError("Por favor, complete todos los campos")
+//            return
+//        }
 
         lifecycleScope.launch {
             if (isEditing && currentCertificateId != null) {

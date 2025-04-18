@@ -1,9 +1,13 @@
-package models.administrativo.c
+package com.example.fusdeckotlin.models.administrativo.certificado
+
 import com.example.fusdeckotlin.models.secretario.curso.Curso
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
 import models.administrativo.user.model.Usuario
-import java.util.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.UUID
+import kotlin.collections.get
 
 data class CertificadoModel(
     @SerializedName("_id")
@@ -12,7 +16,7 @@ data class CertificadoModel(
     private val fechaEmision: String = obtenerFechaActual(),
     @SerializedName("usuarioId")
     private val usuarioId: Any,
-    @SerializedName("usuarioId")
+    @SerializedName("cursoId")
     private val cursoId: Any,
     @SerializedName("estudianteId")
     private val estudianteId: Any,
@@ -40,7 +44,7 @@ data class CertificadoModel(
             else -> ""
         }
     }
-    fun getUserObject(): Usuario{
+    fun getUserObject(): Usuario {
         return when (usuarioId){
             is Usuario -> usuarioId as Usuario
             is String -> createUsersEmpty(usuarioId as String)
@@ -49,7 +53,7 @@ data class CertificadoModel(
         }
     }
 
-    private fun createUsersEmpty(id: String): Usuario{
+    private fun createUsersEmpty(id: String): Usuario {
         return Usuario(
             id = id,
             nombreUsuario = "",
@@ -93,7 +97,7 @@ data class CertificadoModel(
     }
 
     private fun createCursoEmpty(id: String): Curso {
-        return Curso (
+        return Curso(
             id = id,
             nombreCurso = "",
             descripcionCurso = "",
@@ -150,17 +154,17 @@ data class CertificadoModel(
             certificados = emptyList()
         )
     }
-    private fun convertMapToEstudents(map: Map<*,*>): Estudiante{
+    private fun convertMapToEstudents(map: Map<*,*>): Estudiante {
         return Estudiante(
             id = map["_id"] as? String ?: "",
-            nombreEstudiante = map["nombreEstudiante"]as? String ?: "",
-            apellidoEstudiante = map["apellidoEstudiante"]as? String ?: "",
-            tipoDocumento = map["tipoDocumento"]as? String ?: "",
-            numeroDocumento = map["numeroDocumento"]as? String ?: "",
-            fechaNacimientoString = map["fechaNacimientoString"]as? String ?: "",
-            generoEstudiante = map["generoEstudiante"]as? String ?: "",
-            unidadId = map["unidadId"]as? String ?: "",
-            colegioId = map["colegioId"]as? String ?: "",
+            nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
+            apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
+            tipoDocumento = map["tipoDocumento"] as? String ?: "",
+            numeroDocumento = map["numeroDocumento"] as? String ?: "",
+            fechaNacimientoString = map["fechaNacimientoString"] as? String ?: "",
+            generoEstudiante = map["generoEstudiante"] as? String ?: "",
+            unidadId = map["unidadId"] as? String ?: "",
+            colegioId = map["colegioId"] as? String ?: "",
             ediciones = map["ediciones"] as? List<String> ?: emptyList(),
             calificaciones = map["calificaciones"] as? List<String> ?: emptyList(),
             asistencias = map["asistencias"] as? List<String> ?: emptyList(),
@@ -243,9 +247,9 @@ data class CertificadoModel(
         }
 
         fun obtenerFechaActual(): String{
-            val formato = java.text.SimpleDateFormat("yyyy-MM-dd")
+            val formato = SimpleDateFormat("yyyy-MM-dd")
 
-            return formato.format(java.util.Date())
+            return formato.format(Date())
         }
 
         fun generarCodigoVerificacion(): String {

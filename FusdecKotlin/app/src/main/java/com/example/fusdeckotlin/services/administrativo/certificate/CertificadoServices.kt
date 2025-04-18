@@ -4,7 +4,7 @@ import com.example.fusdeckotlin.api.administrativo.certificado.ICertificadoApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
 import com.example.fusdeckotlin.dto.administrativo.certificado.CreateCertificadoDto
 import com.example.fusdeckotlin.dto.administrativo.certificado.UpdateCertificadoDto
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.CertificadoModel
 
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse

@@ -4,7 +4,7 @@ import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.models.instructor.calificacion.Calificacion
 import com.example.fusdeckotlin.models.secretario.edicion.Edicion
 import com.google.gson.annotations.SerializedName
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.CertificadoModel
 import java.time.LocalDate
 
 class Estudiante(

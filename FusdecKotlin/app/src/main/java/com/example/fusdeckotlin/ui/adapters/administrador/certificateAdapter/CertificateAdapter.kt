@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.CertificadoModel
 
 class CertificateAdapter(
     private var certificates: List<CertificadoModel>,

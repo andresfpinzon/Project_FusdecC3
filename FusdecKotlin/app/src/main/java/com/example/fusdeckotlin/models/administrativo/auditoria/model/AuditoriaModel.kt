@@ -2,7 +2,7 @@ package models.administrativo.auditoria.model
 
 import com.example.fusdeckotlin.models.root.fundacion.Fundacion
 import com.google.gson.annotations.SerializedName
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.CertificadoModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID

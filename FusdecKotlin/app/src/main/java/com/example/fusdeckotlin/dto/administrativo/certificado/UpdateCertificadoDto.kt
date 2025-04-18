@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class UpdateCertificadoDto(
     @SerializedName("usuarioId")
     private val usuarioId: String? = null,
-    @SerializedName("usuarioId")
+    @SerializedName("cursoId")
     private val cursoId: String? = null,
     @SerializedName("estudianteId")
     private val estudianteId: String? = null,
