@@ -96,27 +96,27 @@
             android:inputType="textPassword"
     />
 
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputRole"
-            android:layout_width="254dp"
-            android:layout_height="45dp"
-            android:hint="Rol"
-            app:layout_constraintTop_toBottomOf="@+id/inputPassword"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-            android:textSize="14sp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="#ee00ef"
-            android:inputType="textPersonName"
-    />
+<!--    <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/inputRole"-->
+<!--            android:layout_width="254dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:hint="Rol"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/inputPassword"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:layout_marginStart="40dp"-->
+<!--            android:textSize="14sp"-->
+<!--            android:padding="8dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textColorHighlight="#ee00ef"-->
+<!--            android:inputType="textPersonName"-->
+<!--    />-->
 
     <Button
             android:id="@+id/buttonConfirmar"
             android:layout_width="100dp"
             android:layout_height="0dp"
             android:text="Crear"
-            app:layout_constraintTop_toBottomOf="@+id/inputRole"
+            app:layout_constraintTop_toBottomOf="@+id/inputPassword"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="40dp"
     />
@@ -126,7 +126,7 @@
             android:layout_width="120dp"
             android:layout_height="0dp"
             android:text="Cancelar"
-            app:layout_constraintTop_toBottomOf="@+id/inputRole"
+            app:layout_constraintTop_toBottomOf="@+id/inputPassword"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="40dp"
     />
