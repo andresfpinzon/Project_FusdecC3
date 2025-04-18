@@ -69,7 +69,7 @@ data class Brigada(
         return unidades.mapNotNull {
             when (it) {
                 is Unidad -> it
-                is String -> Unidad(id = it, "", "", true, "", emptyList())
+                is String -> Unidad(id = it, "", "", true, "")
                 is Map<*, *> -> convertMaptoUnidades(it)
                 else -> null
             }
@@ -93,7 +93,6 @@ data class Brigada(
             brigadaId = map["brigadaId"] as? String ?: "",
             estadoUnidad = map["estadoUnidad"] as? Boolean ?: true,
             usuarioId = map["usuarioId"] as? String ?: "",
-            comandos = map["comandos"] as? List<String> ?: emptyList(),
         )
     }
 

@@ -3,6 +3,8 @@ package com.example.fusdeckotlin.ui.adapters.administrativo.brigada
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,19 +14,19 @@ import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 class BrigadaAdapter(
     private var brigadas: List<Brigada>,
     private val onUpdateClick: (Brigada) -> Unit,
-    private val onDeleteClick: (Brigada) -> Unit
-) : RecyclerView.Adapter<BrigadaAdapter.BrigadaViewHolder>() {
+    private val onDeleteClick: (Brigada) -> Unit,
+    private val onInfoClick: (Brigada) -> Unit
+) : RecyclerView.Adapter<BrigadaAdapter.BrigadaViewHolder>(), Filterable {
 
-    private var originalBrigadas : List<Brigada> = brigadas
+    private var brigadasFiltradas: List<Brigada> = brigadas
 
     class BrigadaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textIdBrigada: TextView = itemView.findViewById(R.id.textViewBrigadaId)
-        val textNombre: TextView = itemView.findViewById(R.id.textViewNombre)
-        val textUbicacion: TextView = itemView.findViewById(R.id.textViewUbicacion)
-        val textComandoId: TextView = itemView.findViewById(R.id.textViewComandoId)
-        val textUnidades: TextView = itemView.findViewById(R.id.textViewUnidades)
+        val nombreTextView: TextView = itemView.findViewById(R.id.nombreBrigada)
+        val ubicacionTextView: TextView = itemView.findViewById(R.id.ubicacionBrigada)
+        val comandoTextView: TextView = itemView.findViewById(R.id.comandoIdBrigada)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+        val infoButton: ImageButton = itemView.findViewById(R.id.infoButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrigadaViewHolder {
@@ -34,53 +36,61 @@ class BrigadaAdapter(
     }
 
     override fun onBindViewHolder(holder: BrigadaViewHolder, position: Int) {
-        val brigada = brigadas[position]
-        holder.textIdBrigada.text = brigada.getId()
-        holder.textNombre.text = brigada.getNombreBrigada()
-        holder.textUbicacion.text = brigada.getUbicacionBrigada()
+        val brigada = brigadasFiltradas[position]
 
-        // Mostrar información del comando según lo disponible
-        holder.textComandoId.text = when {
-            // Si tenemos el objeto Comando completo con nombre
-            brigada.getComando().getNombreComando().isNotEmpty() ->
-                brigada.getComando().getNombreComando()
-            // Si solo tenemos el ID
-            else -> "Comando ID: ${brigada.getComandoId()}"
+        holder.nombreTextView.text = brigada.getNombreBrigada()
+        holder.ubicacionTextView.text = brigada.getUbicacionBrigada()
+        holder.comandoTextView.text = when {
+            brigada.getComando().getNombreComando().isNotEmpty() -> brigada.getComando().getNombreComando()
+            else -> brigada.getComandoId()
         }
-
-        holder.textUnidades.text = when {
-            brigada.getUnidades().isNotEmpty() &&
-                    brigada.getUnidades().first().getNombreUnidad().isNotEmpty() -> {
-                        brigada.getUnidades()
-                            .joinToString(", ") {"${it.getNombreUnidad()}"}
-
-                    }
-            else -> {
-                brigada.getUnidadesIds().joinToString(", ")
-            }
-        }
-
 
         holder.updateButton.setOnClickListener { onUpdateClick(brigada) }
         holder.deleteButton.setOnClickListener { onDeleteClick(brigada) }
+        holder.infoButton.setOnClickListener { onInfoClick(brigada) }
     }
 
-    fun filter(query: String?) {
-        brigadas = if (query.isNullOrEmpty()) {
-            originalBrigadas
-        } else {
-            originalBrigadas.filter {
-                it.getNombreBrigada().contains(query, ignoreCase = true)
+    override fun getItemCount(): Int = brigadasFiltradas.size
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList = mutableListOf<Brigada>()
+                if (constraint.isNullOrEmpty()) {
+                    filteredList.addAll(brigadas)
+                } else {
+                    val filterPattern = constraint.toString().lowercase().trim()
+                    brigadas.forEach { brigada ->
+                        if (brigada.getNombreBrigada().lowercase().contains(filterPattern) ||
+                            brigada.getUbicacionBrigada().lowercase().contains(filterPattern) ||
+                            (brigada.getComando().getNombreComando().isNotEmpty() &&
+                                    brigada.getComando().getNombreComando().lowercase().contains(filterPattern))
+                        ) {
+                            filteredList.add(brigada)
+                        }
+                    }
+                }
+                val results = FilterResults()
+                results.values = filteredList
+                return results
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                brigadasFiltradas = results?.values as List<Brigada>
+                notifyDataSetChanged()
             }
         }
-        notifyDataSetChanged()
     }
-
-    override fun getItemCount(): Int = brigadas.size
 
     fun actualizarLista(nuevasBrigadas: List<Brigada>) {
         brigadas = nuevasBrigadas
-        originalBrigadas = nuevasBrigadas
+        brigadasFiltradas = nuevasBrigadas
+        notifyDataSetChanged()
+    }
+
+    fun limpiarFiltro() {
+        brigadasFiltradas = brigadas
         notifyDataSetChanged()
     }
 }

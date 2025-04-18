@@ -192,7 +192,6 @@ class UnidadActivity : AppCompatActivity() {
         nombreUnidadEditText.setText(unidad.getNombreUnidad())
         brigadaUnidadEditText.setText(unidad.getBrigadaId())
         usuarioIdEditText.setText(unidad.getUsuarioId())
-        comandosEditText.setText(unidad.getComandos().joinToString(", "))
         estadoSwitch.isChecked = unidad.getEstadoUnidad()
     }
 

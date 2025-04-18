@@ -1,8 +1,6 @@
-
 package com.example.fusdeckotlin.models.administrativo.unidad
+
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
-import com.example.fusdeckotlin.models.administrativo.comando.Comando
-import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.google.gson.annotations.SerializedName
 import models.administrativo.user.model.Usuario
 
@@ -17,11 +15,10 @@ data class Unidad(
     private var estadoUnidad: Boolean = true,
     @SerializedName("usuarioId")
     private var usuarioId: Any,
-    @SerializedName("comandos")
-    private var comandos: List<Any>,
 ) {
     fun getId() = id
     fun getNombreUnidad() = nombreUnidad
+
     fun getBrigadaId(): String{
         return when (brigadaId) {
             is String -> brigadaId as String
@@ -31,7 +28,7 @@ data class Unidad(
         }
     }
 
-    fun getBrigadaObject(): Brigada {
+    fun getBrigada(): Brigada {
         return when (brigadaId){
             is Brigada -> brigadaId as Brigada
             is String -> createBrigradaEmpty(brigadaId as String)
@@ -69,7 +66,7 @@ data class Unidad(
             else -> ""
         }
     }
-    fun getUserObject(): Usuario{
+    fun getUser(): Usuario{
         return when (usuarioId){
             is Usuario -> usuarioId as Usuario
             is String -> createUsersEmpty(usuarioId as String)
@@ -101,47 +98,5 @@ data class Unidad(
             roles = map["roles"] as? List<String> ?: emptyList()
         )
     }
-
-    fun getComandos(): List<Comando> {
-        return comandos?.mapNotNull {
-            when (it) {
-                is Comando -> it
-                is String -> Comando(id = it, "", true, "", "", emptyList())
-                is Map<*, *> -> convertMaptoComandos(it)
-                else -> null
-            }
-        } ?: emptyList() // Devuelve lista vacía si comandos es null
-    }
-
-    fun getComandoByIds(): List<String> {
-        return comandos?.map {
-            when(it) {
-                is Comando -> it.getId() ?: ""
-                is String -> it
-                is Map<*,*> -> it["_id"] as? String ?: ""
-                else -> ""
-            }
-        }?.filter { it.isNotEmpty() } ?: emptyList() // Seguro contra null
-    }
-
-    // Versión mejorada de convertMaptoComandos
-    private fun convertMaptoComandos(map: Map<*,*>): Comando {
-        return try {
-            Comando(
-                id = map["_id"] as? String ?: "",
-                nombreComando = map["nombreComando"] as? String ?: "",
-                estadoComando = map["estadoComando"] as? Boolean ?: true,
-                ubicacionComando = map["ubicacionComando"] as? String ?: "",
-                fundacionId = map["fundacionId"] as? String ?: "",
-                brigadas = map["brigadas"] as? List<String> ?: emptyList()
-            )
-        } catch (e: Exception) {
-            // Devuelve un comando vacío si hay error en la conversión
-            Comando(id = "", nombreComando = "", estadoComando = true,
-                ubicacionComando = "", fundacionId = "", brigadas = emptyList())
-        }
-    }
-
-
 
 }

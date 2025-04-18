@@ -1,92 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/white">
 
-    <TextView
-            android:id="@+id/textViewBrigadaId"
-            android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ID"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="ID: BRIG-1234567890"/>
+            android:padding="16dp">
 
-    <TextView
-            android:id="@+id/textViewNombre"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Nombre"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewBrigadaId"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Nombre: Brigada 1"/>
+        <LinearLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-            android:id="@+id/textViewUbicacion"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Ubicación"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewNombre"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Ubicación: Ubicación 1"/>
+            <TextView
+                    android:id="@+id/nombreBrigada"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textColor="@color/primaryColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
 
-    <TextView
-            android:id="@+id/textViewComandoId"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Comando ID"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewUbicacion"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Comando ID: 1"/>
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-    <TextView
-            android:id="@+id/textViewUnidades"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Unidades"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewComandoId"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Unidades: 1, 2, 3"/>
+                <ImageButton
+                        android:id="@+id/infoButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_info"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Info button"
+                        android:tint="@color/primaryColor"/>
 
-    <ImageButton
-            android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_edit"
-            android:contentDescription="Update"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp"/>
+                <ImageButton
+                        android:id="@+id/updateButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_edit"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Update button"
+                        android:tint="@color/primaryColor"
+                        android:layout_marginStart="8dp"/>
 
-    <ImageButton
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_delete"
-            android:contentDescription="Delete"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/updateButton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp"/>
+                <ImageButton
+                        android:id="@+id/deleteButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_delete"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Delete button"
+                        android:tint="@color/red"
+                        android:layout_marginStart="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+                android:id="@+id/infoLine1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ubicación:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/ubicacionBrigada"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"
+                    android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/infoLine2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comando:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/comandoIdBrigada"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

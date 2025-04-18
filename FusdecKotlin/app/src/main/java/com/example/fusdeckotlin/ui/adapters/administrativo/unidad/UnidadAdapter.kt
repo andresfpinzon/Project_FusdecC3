@@ -40,30 +40,19 @@ class UnidadAdapter(
         holder.textNombre.text = unidad.getNombreUnidad()
         // Safe brigade handling
         holder.textBrigada.text = when {
-            unidad.getBrigadaObject()?.getNombreBrigada().isNullOrEmpty().not() ->
-                unidad.getBrigadaObject()?.getNombreBrigada()
+            unidad.getBrigada()?.getNombreBrigada().isNullOrEmpty().not() ->
+                unidad.getBrigada()?.getNombreBrigada()
             else -> "Brigada: ${unidad.getBrigadaId()}"
         }.orEmpty()
 
         // Safe user handling
         holder.txtUser.text = when {
-            unidad.getUserObject()?.getNombreUsuario().isNullOrEmpty().not() ->
-                unidad.getUserObject()?.getNombreUsuario()
+            unidad.getUser()?.getNombreUsuario().isNullOrEmpty().not() ->
+                unidad.getUser()?.getNombreUsuario()
             else -> "Usuario ID: ${unidad.getUsuarioId()}"
         }.orEmpty()
 
-        // Safe comando handling
-        holder.txtComando.text = buildString {
-            append("Comandos: ")
-            val comandos = unidad.getComandos()
-            when {
-                comandos.isEmpty() -> append("Ninguno")
-                else -> {
-                    append(comandos.take(3).joinToString(", ") { it.getNombreComando() })
-                        if (comandos.size > 3) append("...")
-                }
-            }
-        }
+
 
 
         holder.updateButton.setOnClickListener { onUpdateClick(unidad) }
