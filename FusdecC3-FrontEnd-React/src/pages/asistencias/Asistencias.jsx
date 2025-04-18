@@ -16,6 +16,7 @@ import {
   TableRow,
   Checkbox,
   Box,
+  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -25,6 +26,8 @@ import {
 } from "@mui/material"
 import SaveIcon from "@mui/icons-material/Save"
 import HistoryIcon from "@mui/icons-material/History"
+import InfoIcon from "@mui/icons-material/Info"
+import Delete from "@mui/icons-material/Delete";
 
 const Asistencias = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
@@ -35,7 +38,14 @@ const Asistencias = () => {
   const [attendanceHistory, setAttendanceHistory] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [userId, setUserId] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [attendanceToDelete, setAttendanceToDelete] = useState(null);
   const token = localStorage.getItem("token");
+  
+  // Nuevos estados para el diálogo de estudiantes
+  const [openStudentsDialog, setOpenStudentsDialog] = useState(false);
+  const [currentAttendanceStudents, setCurrentAttendanceStudents] = useState([]);
+  const [currentAttendanceInfo, setCurrentAttendanceInfo] = useState(null);
 
   // Función para mostrar notificaciones
   const showSnackbar = (message, severity) => {
@@ -95,6 +105,42 @@ const Asistencias = () => {
       showSnackbar("Error al cargar historial: " + error.message, "error")
     }
   }
+
+  // Obtener estudiantes de una asistencia específica
+  const fetchStudentsForAttendance = async (attendanceId) => {
+    try {
+      // Primero obtener las relaciones asistencia-estudiante
+      const relationsRes = await fetch(
+        `http://localhost:8080/asistencia-estudiantes?asistenciaId=${attendanceId}`,
+        {
+          headers: { "Authorization": `Bearer ${token}` }
+        }
+      );
+      
+      if (!relationsRes.ok) throw new Error("Error al obtener relaciones");
+      
+      const relations = await relationsRes.json();
+      
+      // Obtener los IDs de los estudiantes
+      const studentIds = relations.map(rel => rel.estudianteId);
+      
+      // Obtener los datos completos de los estudiantes
+      const studentsRes = await fetch(
+        `http://localhost:8080/estudiantes?ids=${studentIds.join(",")}`,
+        {
+          headers: { "Authorization": `Bearer ${token}` }
+        }
+      );
+      
+      if (!studentsRes.ok) throw new Error("Error al obtener estudiantes");
+      
+      const studentsData = await studentsRes.json();
+      
+      setCurrentAttendanceStudents(studentsData);
+    } catch (error) {
+      showSnackbar("Error al cargar estudiantes: " + error.message, "error");
+    }
+  };
 
   // Manejar cambio en checkbox de asistencia
   const handleAttendanceChange = (studentId) => {
@@ -158,6 +204,42 @@ const Asistencias = () => {
       showSnackbar("Error: " + error.message, "error");
       console.error("Error al guardar:", error);
     }
+  };
+
+  // Función para eliminar asistencia
+  const handleDeleteAttendance = async () => {
+    if (!attendanceToDelete) return;
+    
+    try {
+      const response = await fetch(`http://localhost:8080/asistencias/${attendanceToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error("Error al eliminar asistencia");
+
+      const result = await response.text();
+      showSnackbar(result, "success");
+      fetchAttendanceHistory(); // Refrescar el historial
+      handleCloseDeleteDialog();
+    } catch (error) {
+      showSnackbar(error.message, "error");
+      console.error("Error al eliminar asistencia:", error);
+    }
+  };
+
+  // Función para abrir el diálogo de confirmación
+  const handleOpenDeleteDialog = (attendance) => {
+    setAttendanceToDelete(attendance);
+    setOpenDeleteDialog(true);
+  };
+
+  // Función para cerrar el diálogo
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setAttendanceToDelete(null);
   };
 
   // Filtrar estudiantes basado en el término de búsqueda
@@ -252,17 +334,40 @@ const Asistencias = () => {
                   <TableCell>Fecha</TableCell>
                   <TableCell>Título</TableCell>
                   <TableCell align="center">Estado</TableCell>
+                  <TableCell align="center">Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {attendanceHistory.map((record) => (
                   <TableRow key={record.id}>
                     <TableCell>{record.id}</TableCell>
-                    <TableCell>{new Date(record.fecha).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(record.fecha+ 'T00:00:00').toLocaleDateString('es-ES')}</TableCell>
                     <TableCell>{record.titulo}</TableCell>
                     <TableCell align="center">
                       {record.estado ? "Activa" : "Inactiva"}
                     </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={async () => {
+                          setCurrentAttendanceInfo(record);
+                          await fetchStudentsForAttendance(record.id);
+                          setOpenStudentsDialog(true);
+                        }}
+                        color="info"
+                        aria-label="ver estudiantes"
+                      >
+                        <InfoIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleOpenDeleteDialog(record)}
+                        color="error"
+                        aria-label="eliminar asistencia"
+                        sx={{ ml: 1 }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>
@@ -271,6 +376,73 @@ const Asistencias = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenHistory(false)}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo de estudiantes de la asistencia */}
+      <Dialog 
+        open={openStudentsDialog} 
+        onClose={() => setOpenStudentsDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+      >
+        <DialogTitle>
+          Estudiantes en la asistencia del {currentAttendanceInfo && new Date(currentAttendanceInfo.fecha).toLocaleDateString()}
+        </DialogTitle>
+        <DialogContent>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Tipo Documento</TableCell>
+                  <TableCell>Documento</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Apellido</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentAttendanceStudents.length > 0 ? (
+                  currentAttendanceStudents.map((student) => (
+                    <TableRow key={student.numeroDocumento}>
+                      <TableCell>{student.tipoDocumento}</TableCell>
+                      <TableCell>{student.numeroDocumento}</TableCell>
+                      <TableCell>{student.nombre}</TableCell>
+                      <TableCell>{student.apellido}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center">
+                      No hay estudiantes registrados en esta asistencia
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenStudentsDialog(false)}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Eliminar Asistencia</DialogTitle>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que deseas eliminar la asistencia del día {attendanceToDelete && new Date(attendanceToDelete.fecha).toLocaleDateString()}?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mt={2}>
+            Título: {attendanceToDelete?.titulo}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleDeleteAttendance} color="error" variant="contained">
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
 

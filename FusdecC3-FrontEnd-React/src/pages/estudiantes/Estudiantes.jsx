@@ -536,7 +536,7 @@ const Estudiantes = () => {
             onChange={handleInputChange}
             input={<OutlinedInput label="Grado" />}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((grado) => (
+            {[ 8, 9, 10, 11].map((grado) => (
               <MenuItem key={grado} value={`${grado}°`}>
                 {grado}° Grado
               </MenuItem>
