@@ -3,25 +3,30 @@ package com.example.fusdeckotlin.ui.adapters.administrador.colegioAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
+import java.util.Locale
 
 class ColegioAdapter(
     private var colegios: List<Colegio>,
     private val onUpdateClick: (Colegio) -> Unit,
-    private val onDeleteClick: (Colegio) -> Unit
-) : RecyclerView.Adapter<ColegioAdapter.ColegioViewHolder>() {
+    private val onDeleteClick: (Colegio) -> Unit,
+    private val onInfoClick: (Colegio) -> Unit
+) : RecyclerView.Adapter<ColegioAdapter.ColegioViewHolder>(), Filterable {
+
+    private var colegiosFiltrados: List<Colegio> = colegios
 
     class ColegioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val idTextView: TextView = itemView.findViewById(R.id.textViewColegioId)
-        val nombreTextView: TextView = itemView.findViewById(R.id.textViewNombre)
-        val emailTextView: TextView = itemView.findViewById(R.id.textViewEmail)
-        val estudiantesTextView: TextView = itemView.findViewById(R.id.textViewEstudiantes)
+        val nombreTextView: TextView = itemView.findViewById(R.id.nombreTextView)
+        val emailTextView: TextView = itemView.findViewById(R.id.emailTextView)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+        val infoButton: ImageButton = itemView.findViewById(R.id.infoButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColegioViewHolder {
@@ -31,32 +36,55 @@ class ColegioAdapter(
     }
 
     override fun onBindViewHolder(holder: ColegioViewHolder, position: Int) {
-        val colegio = colegios[position]
-        holder.idTextView.text = colegio.getId()
+        val colegio = colegiosFiltrados[position]
+
+        // Configurar datos principales
         holder.nombreTextView.text = colegio.getNombreColegio()
         holder.emailTextView.text = colegio.getEmailColegio()
-        // Mostrar información de estudiantes según lo disponible
-        holder.estudiantesTextView.text = when {
-            // Si tenemos objetos completos de estudiantes, mostrar nombres
-            colegio.getEstudiantes().isNotEmpty() &&
-                    colegio.getEstudiantes().first().getNombre().isNotEmpty() -> {
-                colegio.getEstudiantes()
-                    .joinToString(", ") { "${it.getNombre()} ${it.getApellido()}" }
-            }
-            // Si solo tenemos ID, mostrarlos directamente
-            else -> {
-                colegio.getEstudiantesDocumentos().joinToString(", ")
-            }
-        }
 
+        // Configurar listeners de botones
         holder.updateButton.setOnClickListener { onUpdateClick(colegio) }
         holder.deleteButton.setOnClickListener { onDeleteClick(colegio) }
+        holder.infoButton.setOnClickListener { onInfoClick(colegio) }
     }
 
-    override fun getItemCount(): Int = colegios.size
+    override fun getItemCount(): Int = colegiosFiltrados.size
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList = mutableListOf<Colegio>()
+                if (constraint.isNullOrEmpty()) {
+                    filteredList.addAll(colegios)
+                } else {
+                    val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+                    colegios.forEach { colegio ->
+                        if (colegio.getNombreColegio().lowercase(Locale.getDefault()).contains(filterPattern)) {
+                            filteredList.add(colegio)
+                        }
+                    }
+                }
+                val results = FilterResults()
+                results.values = filteredList
+                return results
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                colegiosFiltrados = results?.values as List<Colegio>
+                notifyDataSetChanged()
+            }
+        }
+    }
 
     fun actualizarLista(nuevosColegios: List<Colegio>) {
         colegios = nuevosColegios
+        colegiosFiltrados = nuevosColegios
+        notifyDataSetChanged()
+    }
+
+    fun limpiarFiltro() {
+        colegiosFiltrados = colegios
         notifyDataSetChanged()
     }
 }
