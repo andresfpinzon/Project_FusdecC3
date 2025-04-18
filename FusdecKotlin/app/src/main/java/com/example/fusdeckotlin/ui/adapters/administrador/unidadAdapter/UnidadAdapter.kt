@@ -38,34 +38,40 @@ class UnidadAdapter(
         val unidad = unidades[position]
         holder.textIdUnidad.text = unidad.getId()
         holder.textNombre.text = unidad.getNombreUnidad()
+        // Safe brigade handling
         holder.textBrigada.text = when {
-            unidad.getBrigadaObject().getNombreBrigada().isNotEmpty() ->
-                unidad.getBrigadaObject().getNombreBrigada()
+            unidad.getBrigadaObject()?.getNombreBrigada().isNullOrEmpty().not() ->
+                unidad.getBrigadaObject()?.getNombreBrigada()
             else -> "Brigada: ${unidad.getBrigadaId()}"
-        }
+        }.orEmpty()
+
+        // Safe user handling
         holder.txtUser.text = when {
-            unidad.getUserObject().getNombreUsuario().isNotEmpty() ->
-                unidad.getUserObject().getNombreUsuario()
+            unidad.getUserObject()?.getNombreUsuario().isNullOrEmpty().not() ->
+                unidad.getUserObject()?.getNombreUsuario()
             else -> "Usuario ID: ${unidad.getUsuarioId()}"
-        }
-        holder.txtComando.text = when {
-            unidad.getComandos().isNotEmpty() &&
-                    unidad.getComandos().first().getNombreComando().isNotEmpty() -> {
-                "Comandos: " + unidad.getComandos()
-                    .take(3)
-                    .joinToString(", ") {it.getNombreComando()} +
-                        if(unidad.getComandos().size > 3) "..." else ""
+        }.orEmpty()
+
+        // Safe comando handling
+        holder.txtComando.text = buildString {
+            append("Comandos: ")
+            val comandos = unidad.getComandos()
+            when {
+                comandos.isEmpty() -> append("Ninguno")
+                else -> {
+                    append(comandos.take(3).joinToString(", ") { it.getNombreComando() })
+                        if (comandos.size > 3) append("...")
+                }
             }
-            else -> "Estudiantes: ${unidad.getEstudiantesByIds().size}"
         }
+
+        // Safe estudiantes handling
         holder.textEstudiantes.text = when {
-            unidad.getEstudiantes().isNotEmpty() &&
-                    unidad.getEstudiantes().first().getNombreEstudiante().isNotEmpty() -> {
-                        "Estudiantes: " + unidad.getEstudiantes()
-                            .take(3)
-                            .joinToString(", ") {it.getNombreEstudiante()} +
-                                if(unidad.getEstudiantes().size > 3) "..." else ""
-                    }
+            !unidad.getEstudiantes().isNullOrEmpty() -> {
+                val firstThree = unidad.getEstudiantes()!!.take(3)
+                "Estudiantes: ${firstThree.joinToString(", ") { it.getNombreEstudiante().orEmpty() }}" +
+                        if (unidad.getEstudiantes()!!.size > 3) "..." else ""
+            }
             else -> "Estudiantes: ${unidad.getEstudiantesByIds().size}"
         }
 

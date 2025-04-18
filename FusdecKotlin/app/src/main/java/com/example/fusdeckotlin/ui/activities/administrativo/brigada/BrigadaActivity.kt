@@ -127,10 +127,10 @@ class BrigadaActivity : AppCompatActivity() {
         val comandoId = comandoIdEditText.text.toString().trim()
         val unidades = unidadesEditText.text.toString().trim().split(",").map { it.trim() }
 
-        if (nombre.isEmpty() || ubicacion.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
-            showError("Por favor, complete todos los campos")
-            return
-        }
+//        if (nombre.isEmpty() || ubicacion.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
+//            showError("Por favor, complete todos los campos")
+//            return
+//        }
 
         lifecycleScope.launch {
             try {

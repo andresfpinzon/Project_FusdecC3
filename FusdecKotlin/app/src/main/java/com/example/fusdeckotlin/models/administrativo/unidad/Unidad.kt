@@ -128,37 +128,44 @@ data class Unidad(
         this.estudiantes = estudiantes
     }
 
-    fun getComandos(): List<Comando>{
-        return comandos.mapNotNull {
+    fun getComandos(): List<Comando> {
+        return comandos?.mapNotNull {
             when (it) {
                 is Comando -> it
-                is String -> Comando (id = it, "", true, "", "", emptyList() )
+                is String -> Comando(id = it, "", true, "", "", emptyList())
                 is Map<*, *> -> convertMaptoComandos(it)
                 else -> null
             }
-        }
+        } ?: emptyList() // Devuelve lista vacía si comandos es null
     }
 
-    fun getComandoByIds(): List<String>{
-        return comandos.map{
-            when(it){
+    fun getComandoByIds(): List<String> {
+        return comandos?.map {
+            when(it) {
                 is Comando -> it.getId() ?: ""
                 is String -> it
                 is Map<*,*> -> it["_id"] as? String ?: ""
                 else -> ""
             }
-        }.filter { it.isNotEmpty() }
+        }?.filter { it.isNotEmpty() } ?: emptyList() // Seguro contra null
     }
 
+    // Versión mejorada de convertMaptoComandos
     private fun convertMaptoComandos(map: Map<*,*>): Comando {
-        return Comando (
-            id = map["_id"] as? String ?: "",
-            nombreComando = map["nombreComando"] as? String ?: "",
-            estadoComando = map["estadoComando"] as? Boolean ?: true,
-            ubicacionComando = map["ubicacionComando"] as? String ?: "",
-            fundacionId = map["fundacionId"] as? String ?: "",
-            brigadas = map["brigadas"] as? List<String> ?: emptyList()
-        )
+        return try {
+            Comando(
+                id = map["_id"] as? String ?: "",
+                nombreComando = map["nombreComando"] as? String ?: "",
+                estadoComando = map["estadoComando"] as? Boolean ?: true,
+                ubicacionComando = map["ubicacionComando"] as? String ?: "",
+                fundacionId = map["fundacionId"] as? String ?: "",
+                brigadas = map["brigadas"] as? List<String> ?: emptyList()
+            )
+        } catch (e: Exception) {
+            // Devuelve un comando vacío si hay error en la conversión
+            Comando(id = "", nombreComando = "", estadoComando = true,
+                ubicacionComando = "", fundacionId = "", brigadas = emptyList())
+        }
     }
 
     fun getEstudiantes(): List<Estudiante>{

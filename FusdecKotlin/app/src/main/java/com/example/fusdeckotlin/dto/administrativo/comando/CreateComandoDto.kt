@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class CreateComandoDto(
     @SerializedName("nombreComando")
-    var nombreComando: String,
+    var nombreComando: String?,
 
     @SerializedName("ubicacionComando")
-    var ubicacionComando: String,
+    var ubicacionComando: String?,
 
     @SerializedName("fundacionId")
-    var fundacionId: String,
+    var fundacionId: String?,
 
     @SerializedName("brigadas")
-    var brigadas: List<String>
+    var brigadas: List<String>?
 )

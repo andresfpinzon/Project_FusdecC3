@@ -100,10 +100,10 @@ class UnidadActivity : AppCompatActivity() {
         val estudiantes = estudiantesEditText.text.toString().trim().split(",").map { it.trim() }
         val estadoUnidad = estadoSwitch.isChecked
 
-        if (nombreUnidad.isEmpty() || brigadaId.isEmpty() || usuarioId.isEmpty() || comandos.isEmpty() || estudiantes.isEmpty()) {
-            showError("Por favor, complete todos los campos")
-            return
-        }
+//        if (nombreUnidad.isEmpty() || brigadaId.isEmpty() || usuarioId.isEmpty() || comandos.isEmpty() || estudiantes.isEmpty()) {
+//            showError("Por favor, complete todos los campos")
+//            return
+//        }
 
         lifecycleScope.launch {
             try {

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CreateAuditoriaDto(
     @SerializedName("nombreEmisor")
-    private val nombreEmisor: String,
+    private val nombreEmisor: String?,
     @SerializedName("certificadoId")
-    private val certificadoId: String,
+    private val certificadoId: String?,
 )

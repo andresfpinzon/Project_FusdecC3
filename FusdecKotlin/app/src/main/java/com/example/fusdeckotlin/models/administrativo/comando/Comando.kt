@@ -18,7 +18,7 @@ data class Comando(
     @SerializedName("brigadas")
     private var brigadas: List<Any> = emptyList()
 ) {
-    fun getId() = id
+    fun getId() = id.toString()
     fun getNombreComando() = nombreComando
     fun getEstadoComando() = estadoComando
     fun getUbicacionComando() = ubicacionComando
