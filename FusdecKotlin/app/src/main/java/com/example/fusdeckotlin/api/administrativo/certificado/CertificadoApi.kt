@@ -3,28 +3,28 @@ package com.example.fusdeckotlin.api.administrativo.certificado
 
 import com.example.fusdeckotlin.dto.administrativo.certificado.CreateCertificadoDto
 import com.example.fusdeckotlin.dto.administrativo.certificado.UpdateCertificadoDto
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
 import retrofit2.http.*
 import retrofit2.Response
 
 
-interface ICertificadoApi {
+interface CertificadoApi {
 
     @GET("api/certificados")
-    suspend fun getCertificados(): Response<List<CertificadoModel>>
+    suspend fun getCertificados(): Response<List<Certificado>>
 
     @POST("api/certificados")
-    suspend fun createCertificado(@Body data: CreateCertificadoDto): Response<CertificadoModel>
+    suspend fun createCertificado(@Body data: CreateCertificadoDto): Response<Certificado>
 
     @PUT("api/certificados/{id}")
     suspend fun updateCertificado(
         @Path("id") id: String,
         @Body data: UpdateCertificadoDto
-    ): Response<CertificadoModel>
+    ): Response<Certificado>
 
     @GET("api/certificados/{id}")
-    suspend fun getCertificadoById(@Path("id") id: String): Response<CertificadoModel>
+    suspend fun getCertificadoById(@Path("id") id: String): Response<Certificado>
 
     @DELETE("api/certificados/{id}")
-    suspend fun deleteCertificadoById(@Path("id") id: String): Response<CertificadoModel>
+    suspend fun deleteCertificadoById(@Path("id") id: String): Response<Certificado>
 }

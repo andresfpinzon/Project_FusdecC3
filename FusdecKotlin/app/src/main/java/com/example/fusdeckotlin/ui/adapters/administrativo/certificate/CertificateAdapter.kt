@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters.administrador.certificateAdapter
+package com.example.fusdeckotlin.ui.adapters.administrativo.certificate
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +7,12 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
 
 class CertificateAdapter(
-    private var certificates: List<CertificadoModel>,
-    private val onUpdateClick: (CertificadoModel) -> Unit,
-    private val onDeleteClick: (CertificadoModel) -> Unit
+    private var certificates: List<Certificado>,
+    private val onUpdateClick: (Certificado) -> Unit,
+    private val onDeleteClick: (Certificado) -> Unit
 ) : RecyclerView.Adapter<CertificateAdapter.CertificateViewHolder>() {
 
      class CertificateViewHolder(item: View) : RecyclerView.ViewHolder(item){
@@ -40,32 +40,7 @@ class CertificateAdapter(
     override fun onBindViewHolder(holder: CertificateViewHolder, position: Int) {
         val certificate = certificates[position]
 
-        holder.textViewCertificateId.text = "ID: ${certificate.getIdCertificado()}"
-        holder.textViewFecha.text = "Fecha-Emision: ${certificate.getFechaEmisio()}"
-        holder.textViewUsuario.text = when {
-            // Si tenemos el objeto Fundacion completo con nombre
-            certificate.getUserObject().getNombreUsuario().isNotEmpty() ->
-                certificate.getUserObject().getNombreUsuario()
-            // Si solo tenemos el ID
-            else -> "Estudiante ID: ${certificate.getUsuarioId()}"
-        }
-        holder.textViewCurso.text = when {
-            // Si tenemos el objeto Fundacion completo con nombre
-            certificate.getCursoObject().getNombreCurso().isNotEmpty() ->
-                certificate.getCursoObject().getNombreCurso()
-            // Si solo tenemos el ID
-            else -> "Curso ID: ${certificate.getCursoId()}"
-        }
-        holder.textViewEstudiante.text = when {
-            // Si tenemos el objeto Fundacion completo con nombre
-            certificate.getEstudentObject().getNombreEstudiante().isNotEmpty() ->
-                certificate.getEstudentObject().getNombreEstudiante()
-            // Si solo tenemos el ID
-            else -> "Estudiante ID: ${certificate.getEstudianteId()}"
-        }
-        holder.textViewEmisor.text = "Emisor: ${certificate.getNombreEmisor()}"
-        holder.textViewCodeVerify.text = "Código de verficación: ${certificate.getCodigoVerificacion()}"
-        holder.textViewState.text = "Estado: ${certificate.getEstadoCertificado()}"
+
 
         holder.updateButton.setOnClickListener{
             onUpdateClick(certificate)
@@ -79,7 +54,7 @@ class CertificateAdapter(
 
     override fun getItemCount(): Int = certificates.size
 
-    fun updateList(newList: List<CertificadoModel>) {
+    fun updateList(newList: List<Certificado>) {
         certificates = newList
         notifyDataSetChanged()
     }

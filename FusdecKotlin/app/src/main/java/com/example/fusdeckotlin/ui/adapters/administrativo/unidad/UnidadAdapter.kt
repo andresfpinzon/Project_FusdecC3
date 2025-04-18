@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters.administrador.unidadAdapter
+package com.example.fusdeckotlin.ui.adapters.administrativo.unidad
 
 import android.view.LayoutInflater
 import android.view.View
@@ -65,15 +65,6 @@ class UnidadAdapter(
             }
         }
 
-        // Safe estudiantes handling
-        holder.textEstudiantes.text = when {
-            !unidad.getEstudiantes().isNullOrEmpty() -> {
-                val firstThree = unidad.getEstudiantes()!!.take(3)
-                "Estudiantes: ${firstThree.joinToString(", ") { it.getNombreEstudiante().orEmpty() }}" +
-                        if (unidad.getEstudiantes()!!.size > 3) "..." else ""
-            }
-            else -> "Estudiantes: ${unidad.getEstudiantesByIds().size}"
-        }
 
         holder.updateButton.setOnClickListener { onUpdateClick(unidad) }
         holder.deleteButton.setOnClickListener { onDeleteClick(unidad) }

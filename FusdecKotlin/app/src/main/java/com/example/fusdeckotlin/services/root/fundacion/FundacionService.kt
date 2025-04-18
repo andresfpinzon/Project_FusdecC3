@@ -12,7 +12,7 @@ class FundacionService {
 
     private val api: FundacionApi = RetrofitClient.fundacionApi
 
-    suspend fun obtenerTodasLasFundaciones(): Result<List<Fundacion>> {
+    suspend fun listarTodasLasFundaciones(): Result<List<Fundacion>> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.listarFundaciones()

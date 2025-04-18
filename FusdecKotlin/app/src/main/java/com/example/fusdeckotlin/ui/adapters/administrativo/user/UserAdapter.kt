@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters.administrador.userAdapter
+package com.example.fusdeckotlin.ui.adapters.administrativo.user
 
 import android.view.LayoutInflater
 import android.view.View

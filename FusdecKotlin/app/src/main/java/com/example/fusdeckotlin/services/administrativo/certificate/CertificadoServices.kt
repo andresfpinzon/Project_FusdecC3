@@ -1,19 +1,19 @@
 package com.example.fusdeckotlin.services.administrativo.certificate
 
-import com.example.fusdeckotlin.api.administrativo.certificado.ICertificadoApi
+import com.example.fusdeckotlin.api.administrativo.certificado.CertificadoApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
 import com.example.fusdeckotlin.dto.administrativo.certificado.CreateCertificadoDto
 import com.example.fusdeckotlin.dto.administrativo.certificado.UpdateCertificadoDto
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
 
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 
 class CertificadoServices {
 
-    private val certificadoApi : ICertificadoApi = RetrofitClient.certificadoApi
+    private val certificadoApi : CertificadoApi = RetrofitClient.certificadoApi
 
-    suspend fun createCertificado(data: CreateCertificadoDto): Result<CertificadoModel> {
+    suspend fun createCertificado(data: CreateCertificadoDto): Result<Certificado> {
         return try {
             val res = certificadoApi.createCertificado(data)
             handleResponse(res)
@@ -22,7 +22,7 @@ class CertificadoServices {
         }
     }
 
-    suspend fun updateCertificate(id: String, data: UpdateCertificadoDto): Result<CertificadoModel> {
+    suspend fun updateCertificate(id: String, data: UpdateCertificadoDto): Result<Certificado> {
         return try {
             val res = certificadoApi.updateCertificado(id, data)
             handleResponse(res)
@@ -31,16 +31,16 @@ class CertificadoServices {
         }
     }
 
-    suspend fun getCertificatesActives(): Result<List<CertificadoModel>> {
-        return try {
-            val res = certificadoApi.getCertificados()
-            handleListResponse(res) {it.filter { certificate -> certificate.getEstadoCertificado() == true }}
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
+//    suspend fun getCertificatesActives(): Result<List<Certificado>> {
+//        return try {
+//            val res = certificadoApi.getCertificados()
+//            handleListResponse(res) {it.filter { certificate -> certificate.getEstadoCertificado() == true }}
+//        } catch (e: Exception) {
+//            Result.failure(e)
+//        }
+//    }
 
-    suspend fun getCertficateById(id: String): Result<CertificadoModel> {
+    suspend fun getCertficateById(id: String): Result<Certificado> {
         return  try {
             val res = certificadoApi.getCertificadoById(id)
             handleResponse(res)
@@ -50,7 +50,7 @@ class CertificadoServices {
     }
 
 
-    suspend fun deleteCertificateById(id: String): Result<CertificadoModel> {
+    suspend fun deleteCertificateById(id: String): Result<Certificado> {
         return try {
             val res = certificadoApi.deleteCertificadoById(id)
             handleResponse(res)

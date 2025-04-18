@@ -1,13 +1,12 @@
-package models.administrativo.auditoria.model
+package com.example.fusdeckotlin.models.administrativo.auditoria
 
-import com.example.fusdeckotlin.models.root.fundacion.Fundacion
 import com.google.gson.annotations.SerializedName
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-data class AuditoriaModel(
+data class Auditoria(
     @SerializedName("_id")
     private val _id: String? = null,
     @SerializedName("fechaAuditoria")
@@ -26,41 +25,41 @@ data class AuditoriaModel(
     fun getCertificadoId(): String {
         return when(certificadoId) {
             is String -> certificadoId as String
-            is CertificadoModel -> (certificadoId as CertificadoModel).getIdCertificado()
+            //is Certificado -> (certificadoId as Certificado).getIdCertificado()
             is Map<*, *> -> (certificadoId as Map<*, *>)["_id"] as? String ?: ""
             else -> ""
         }
     }
 
-    fun getCertificateObject(): CertificadoModel {
-        return when(certificadoId) {
-            is CertificadoModel -> certificadoId as CertificadoModel
-            is String -> createCertifiacteEmpty(certificadoId as String)
-            is Map<*, *> -> convertMapToCetificate(certificadoId as Map<*, *>)
-            else -> createCertifiacteEmpty("")
-        }
-    }
+//    fun getCertificateObject(): Certificado {
+//        return when(certificadoId) {
+//            is Certificado -> certificadoId as Certificado
+//            is String -> createCertifiacteEmpty(certificadoId as String)
+//            is Map<*, *> -> convertMapToCetificate(certificadoId as Map<*, *>)
+//            else -> createCertifiacteEmpty("")
+//        }
+//    }
 
-    fun createCertifiacteEmpty(id: String): CertificadoModel{
-        return CertificadoModel(
-            id = id,
-            usuarioId = "",
-            cursoId = "",
-            estudianteId = "",
-            nombreEmisorCertificado = ""
-        )
-    }
+//    fun createCertifiacteEmpty(id: String): Certificado {
+//        return Certificado(
+//            id = id,
+//            usuarioId = "",
+//            cursoId = "",
+//            estudianteId = "",
+//            nombreEmisorCertificado = ""
+//        )
+//    }
 
-    fun convertMapToCetificate(map: Map<*,*>): CertificadoModel{
-        return CertificadoModel(
-            id = map["_id"] as? String ?: "",
-            usuarioId = map["usuarioId"] as? String ?: "",
-            cursoId = map["cursoId"] as? String ?: "",
-            estudianteId = map["estudianteId"] as? String ?: "",
-            nombreEmisorCertificado = map["nombreEmisorCertificado"] as? String ?: ""
-
-        )
-    }
+//    fun convertMapToCetificate(map: Map<*,*>): Certificado {
+//        return Certificado(
+//            id = map["_id"] as? String ?: "",
+//            usuarioId = map["usuarioId"] as? String ?: "",
+//            cursoId = map["cursoId"] as? String ?: "",
+//            estudianteId = map["estudianteId"] as? String ?: "",
+//            nombreEmisorCertificado = map["nombreEmisorCertificado"] as? String ?: ""
+//
+//        )
+//    }
 
     fun getEstadoAuditoria(): Boolean = estadoAuditoria
 

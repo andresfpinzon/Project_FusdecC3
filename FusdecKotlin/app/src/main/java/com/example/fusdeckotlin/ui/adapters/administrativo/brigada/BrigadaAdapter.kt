@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter
+package com.example.fusdeckotlin.ui.adapters.administrativo.brigada
 
 import android.view.LayoutInflater
 import android.view.View

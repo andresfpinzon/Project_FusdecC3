@@ -19,8 +19,6 @@ data class Unidad(
     private var usuarioId: Any,
     @SerializedName("comandos")
     private var comandos: List<Any>,
-    @SerializedName("estudiantes")
-    private var estudiantes: List<Any>
 ) {
     fun getId() = id
     fun getNombreUnidad() = nombreUnidad
@@ -104,30 +102,6 @@ data class Unidad(
         )
     }
 
-    fun setNombreUnidad(nombre: String) {
-        nombreUnidad = nombre
-    }
-
-    fun setBrigadaId(brigada: String) {
-        brigadaId = brigada
-    }
-
-    fun setEstadoUnidad(estado: Boolean) {
-        estadoUnidad = estado
-    }
-
-    fun setUsuarioId(usuario: String) {
-        usuarioId = usuario
-    }
-
-    fun setComandos(comandos: List<String>) {
-        this.comandos = comandos
-    }
-
-    fun setEstudiantes(estudiantes: List<String>) {
-        this.estudiantes = estudiantes
-    }
-
     fun getComandos(): List<Comando> {
         return comandos?.mapNotNull {
             when (it) {
@@ -166,48 +140,6 @@ data class Unidad(
             Comando(id = "", nombreComando = "", estadoComando = true,
                 ubicacionComando = "", fundacionId = "", brigadas = emptyList())
         }
-    }
-
-    fun getEstudiantes(): List<Estudiante>{
-        return estudiantes.mapNotNull {
-            when (it) {
-                is Estudiante -> it
-                is String -> Estudiante(id = it, "", "", "", "", "", "", "", "",  true, emptyList(), emptyList(),
-                    emptyList(), emptyList())
-                is Map<*,*> -> convertMapToEstudiantes(it)
-                else -> null
-            }
-        }
-    }
-    fun getEstudiantesByIds(): List<String>{
-        return estudiantes.map{
-            when(it){
-                is Estudiante -> it.getId() ?: ""
-                is String -> it
-                is Map<*,*> -> it["_id"] as? String ?: ""
-                else -> ""
-            }
-        }
-    }
-
-
-    private fun convertMapToEstudiantes(map: Map<*,*>): Estudiante{
-        return Estudiante(
-            id = map["_id"] as? String ?: "",
-            nombreEstudiante = map["nombreEstudiante"] as? String ?: "",
-            apellidoEstudiante = map["apellidoEstudiante"] as? String ?: "",
-            tipoDocumento = map["tipoDocumento"] as? String ?: "",
-            numeroDocumento = map["numeroDocumento"] as? String ?: "",
-            fechaNacimientoString = map["fecaNacimineto"] as? String ?: "",
-            generoEstudiante = map["generoEstudiante"] as? String ?: "",
-            unidadId = map["unidadId"] as? String ?: "",
-            colegioId = map["colegioId"] as? String ?: "",
-            estadoEstudiante = map["estadoEstudiante"] as? Boolean ?: true,
-            ediciones = map["ediciones"] as? List<String> ?: emptyList(),
-            calificaciones = map["calificaciones"] as? List<String> ?: emptyList(),
-            asistencias = map["asistencias"] as? List<String> ?: emptyList(),
-            certificados = map["certificados"] as? List<String> ?: emptyList()
-        )
     }
 
 

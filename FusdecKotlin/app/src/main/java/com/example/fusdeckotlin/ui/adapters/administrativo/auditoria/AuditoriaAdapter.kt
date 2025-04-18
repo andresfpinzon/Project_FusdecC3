@@ -1,4 +1,4 @@
-package com.example.fusdeckotlin.ui.adapters.administrador.auditoriaAdapter
+package com.example.fusdeckotlin.ui.adapters.administrativo.auditoria
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.administrativo.auditoria.model.AuditoriaModel
+import com.example.fusdeckotlin.models.administrativo.auditoria.Auditoria
 import java.time.format.DateTimeFormatter
 
 class AuditoriaAdapter(
-    private val auditorias: List<AuditoriaModel> // Cambiado a List inmutable
+    private val auditorias: List<Auditoria> // Cambiado a List inmutable
 ) : RecyclerView.Adapter<AuditoriaAdapter.AuditoriaViewHolder>() {
 
     // ViewHolder sin los botones de acción
@@ -37,8 +37,6 @@ class AuditoriaAdapter(
         holder.textFechaAuditoria.text = "Fecha: ${formatFecha(auditoria.getFechaAuditoria())}"
         holder.textCertificadoAuditoria.text =  when {
             // Si tenemos el objeto Fundacion completo con nombre
-            auditoria.getCertificateObject().getIdCertificado().isNotEmpty() ->
-                auditoria.getCertificateObject().getNombreEmisor()
             // Si solo tenemos el ID
             else -> "Certificado ID: ${auditoria.getCertificadoId()}"
         }
@@ -56,7 +54,7 @@ class AuditoriaAdapter(
     }
     override fun getItemCount(): Int = auditorias.size
 
-    fun actualizarLista(nuevasAuditorias: List<AuditoriaModel>) {
+    fun actualizarLista(nuevasAuditorias: List<Auditoria>) {
         (auditorias as? MutableList)?.apply {
             clear()
             addAll(nuevasAuditorias)

@@ -13,7 +13,7 @@ import com.example.fusdeckotlin.dto.administrativo.unidad.CreateUnidadDto
 import com.example.fusdeckotlin.dto.administrativo.unidad.UpdateUnidadDto
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
-import com.example.fusdeckotlin.ui.adapters.administrador.unidadAdapter.UnidadAdapter
+import com.example.fusdeckotlin.ui.adapters.administrativo.unidad.UnidadAdapter
 import kotlinx.coroutines.launch
 
 class UnidadActivity : AppCompatActivity() {
@@ -83,7 +83,7 @@ class UnidadActivity : AppCompatActivity() {
 
     private fun cargarUnidades() {
         lifecycleScope.launch {
-            val result = unidadServices.getUnidadActives()
+            val result = unidadServices.listarUnidadesActivas()
             result.onSuccess { unidades ->
                 adapter.actualizarLista(unidades)
             }.onFailure { error ->
@@ -193,7 +193,6 @@ class UnidadActivity : AppCompatActivity() {
         brigadaUnidadEditText.setText(unidad.getBrigadaId())
         usuarioIdEditText.setText(unidad.getUsuarioId())
         comandosEditText.setText(unidad.getComandos().joinToString(", "))
-        estudiantesEditText.setText(unidad.getEstudiantes().joinToString(", "))
         estadoSwitch.isChecked = unidad.getEstadoUnidad()
     }
 

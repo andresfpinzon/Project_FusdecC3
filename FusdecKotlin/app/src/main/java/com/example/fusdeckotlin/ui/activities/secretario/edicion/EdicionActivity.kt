@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.curso.Curso
 import com.example.fusdeckotlin.models.secretario.edicion.Edicion
-import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.example.fusdeckotlin.services.secretario.curso.CursoServices
 import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
 import com.example.fusdeckotlin.services.secretario.estudiante.EstudianteServices
@@ -307,13 +306,16 @@ class EdicionActivity : AppCompatActivity() {
     }
 
     private fun mostrarDialogoEstudiantes(estudiantes: Array<String>) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_estudiantes_asistencia, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_info_button, null)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()
 
-        val estudiantesTextView = dialogView.findViewById<TextView>(R.id.estudiantesTextView)
+        val tituloTextView = dialogView.findViewById<TextView>(R.id.tituloDialogo)
+        val contenidoTextView = dialogView.findViewById<TextView>(R.id.contenidoTextView)
         val cerrarBtn = dialogView.findViewById<TextView>(R.id.btnCerrar)
+
+        tituloTextView.text = "Estudiantes de la edición"
 
         val textoFormateado = if (estudiantes.isNotEmpty()) {
             estudiantes.joinToString("\n") { linea ->
@@ -326,10 +328,9 @@ class EdicionActivity : AppCompatActivity() {
             "No hay estudiantes inscritos en esta edición."
         }
 
-        estudiantesTextView.text = textoFormateado
+        contenidoTextView.text = textoFormateado
 
         cerrarBtn.setOnClickListener { dialog.dismiss() }
-
         dialog.show()
     }
 

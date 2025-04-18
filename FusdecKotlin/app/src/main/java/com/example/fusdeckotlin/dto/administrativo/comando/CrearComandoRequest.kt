@@ -2,7 +2,7 @@ package com.example.fusdeckotlin.dto.administrativo.comando
 
 import com.google.gson.annotations.SerializedName
 
-data class CreateComandoDto(
+data class CrearComandoRequest(
     @SerializedName("nombreComando")
     var nombreComando: String?,
 
@@ -11,7 +11,4 @@ data class CreateComandoDto(
 
     @SerializedName("fundacionId")
     var fundacionId: String?,
-
-    @SerializedName("brigadas")
-    var brigadas: List<String>?
 )

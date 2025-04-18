@@ -20,7 +20,7 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
 import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
 import com.example.fusdeckotlin.services.secretario.estudiante.EstudianteServices
-import com.example.fusdeckotlin.ui.adapters.administrador.colegioAdapter.ColegioAdapter
+import com.example.fusdeckotlin.ui.adapters.administrativo.colegio.ColegioAdapter
 import kotlinx.coroutines.launch
 
 class ColegioActivity : AppCompatActivity() {
