@@ -3,9 +3,9 @@ package com.example.fusdeckotlin.dto.administrativo.user
 import com.google.gson.annotations.SerializedName
 
 data class CreateUserDto(
-    @SerializedName("numero_documento") private var numeroDocumento: String,
-    @SerializedName("nombre") private var nombre: String,
-    @SerializedName("apellido") private var apellido: String,
-    @SerializedName("correo") private var correo: String,
-    @SerializedName("password") private var password: String,
+    @SerializedName("numeroDocumento")  var numeroDocumento: String,
+    @SerializedName("nombre")  var nombre: String,
+    @SerializedName("apellido")  var apellido: String,
+    @SerializedName("correo")  var correo: String,
+    @SerializedName("password")  var password: String,
 )
