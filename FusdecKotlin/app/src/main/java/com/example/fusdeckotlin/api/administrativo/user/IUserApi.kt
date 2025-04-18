@@ -9,22 +9,22 @@ import retrofit2.Response
 
 interface IUserApi {
 
-    @GET("api/usuarios")
+    @GET("usuarios")
     suspend fun getUsers(): Response<List<Usuario>>
 
-    @POST("api/usuarios")
+    @POST("usuarios")
     suspend fun createUser(@Body data: CreateUserDto): Response<Usuario>
 
-    @PUT("api/usuarios/{id}")
+    @PUT("usuarios/{numeroDocumento}")
     suspend fun updateUser(
-        @Path("id") id: String,
+        @Path("numeroDocumento") numeroDocumento: String,
         @Body data: UpdateUserDto
     ): Response<Usuario>
 
-    @GET("api/usuarios/{id}")
-    suspend fun getUserById(@Path("id") id: String): Response<Usuario>
+    @GET("usuarios/{numeroDocumento}")
+    suspend fun getUserById(@Path("numeroDocumento") numeroDocumento: String): Response<Usuario>
 
-    @DELETE("api/usuarios/{id}")
-    suspend fun deleteUserById(@Path("id") id: String): Response<Usuario>
+    @DELETE("usuarios/{numeroDocumento}")
+    suspend fun deleteUserById(@Path("numeroDocumento") numeroDocumento: String): Response<Usuario>
 
 }
