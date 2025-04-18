@@ -3,7 +3,7 @@ package com.example.fusdeckotlin.api.administrativo.certificado
 
 import com.example.fusdeckotlin.dto.administrativo.certificado.CreateCertificadoDto
 import com.example.fusdeckotlin.dto.administrativo.certificado.UpdateCertificadoDto
-import com.example.fusdeckotlin.models.administrativo.certificado.CertificadoModel
+import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
 
 import retrofit2.http.*
 import retrofit2.Response
