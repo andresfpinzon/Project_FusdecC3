@@ -2,7 +2,7 @@ package com.example.fusdeckotlin.dto.administrativo.unidad
 
 import com.google.gson.annotations.SerializedName
 
-data class UpdateUnidadDto(
+data class ActualizarUnidadRequest(
     @SerializedName("nombreUnidad")
      var nombreUnidad: String? = null,
     @SerializedName("brigadaId")

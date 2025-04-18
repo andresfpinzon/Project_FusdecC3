@@ -1,6 +1,5 @@
 const Unidad = require('../models/unidad_model');
 const Brigada = require('../models/brigada_model');
-const Usuario = require('../models/usuario_model');
 const unidadSchemaValidation = require('../validations/unidad_validations');
 
 // Función asíncrona para crear unidades
@@ -29,8 +28,7 @@ async function crearUnidad(data) {
 async function listarUnidades() {
     try {
     return await Unidad.find()
-    .populate('brigadaId') 
-    .populate('usuarioId'); 
+    .populate('brigadaId'); 
     } catch (error) {
         console.error('Error al listar las unidades (unidad_logic):', error);
         throw error;
@@ -124,8 +122,7 @@ async function buscarUnidadesPorBrigadaId(brigadaId) {
     try {
      
     const unidades = await Unidad.find({ brigadaId })
-    .populate('brigadaId')
-    .populate('usuarioId');
+    .populate('brigadaId');
     if (unidades.length === 0) {
         throw new Error(`No se encontraron unidades para la brigada con ID ${brigadaId}`);
     }
@@ -141,8 +138,7 @@ async function buscarUnidadesPorUsuarioId(usuarioId) {
     try {
         
     const unidades = await Unidad.find({ usuarioId })
-    .populate('brigadaId')
-    .populate('usuarioId');
+    .populate('brigadaId');
     if (unidades.length === 0) {
         throw new Error(`No se encontraron unidades para el usuario con ID ${usuarioId}`);
     }

@@ -2,8 +2,8 @@ package com.example.fusdeckotlin.services.administrativo.unidad
 
 import com.example.fusdeckotlin.api.administrativo.unidad.UnidadApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
-import com.example.fusdeckotlin.dto.administrativo.unidad.CreateUnidadDto
-import com.example.fusdeckotlin.dto.administrativo.unidad.UpdateUnidadDto
+import com.example.fusdeckotlin.dto.administrativo.unidad.CrearUnidadRequest
+import com.example.fusdeckotlin.dto.administrativo.unidad.ActualizarUnidadRequest
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
@@ -11,18 +11,18 @@ class UnidadServices {
 
     private val unidadApi: UnidadApi = RetrofitClient.unidadApi
 
-    suspend fun createUnidadServices(data: CreateUnidadDto): Result<Unidad>{
+    suspend fun createUnidadServices(data: CrearUnidadRequest): Result<Unidad>{
         return  try {
-            val res = unidadApi.createUnidad(data)
+            val res = unidadApi.crearUnidad(data)
             handleResponse(res)
         }catch (e: Exception){
             Result.failure(e)
         }
     }
 
-    suspend fun updateUnidadServices(id: String, data: UpdateUnidadDto): Result<Unidad>{
+    suspend fun updateUnidadServices(id: String, data: ActualizarUnidadRequest): Result<Unidad>{
         return try {
-            val res = unidadApi.updateUnidad(id, data)
+            val res = unidadApi.actualizarUnidad(id, data)
             handleResponse(res)
         }catch (e: Exception){
             Result.failure(e)
@@ -31,7 +31,7 @@ class UnidadServices {
 
     suspend fun listarUnidadesActivas(): Result<List<Unidad>>{
         return try {
-            val res = unidadApi.getUnidades()
+            val res = unidadApi.listarUnidades()
             handleListResponse(res){it.filter { unidad -> unidad.getEstadoUnidad() == true   }}
         } catch (e: Exception){
             Result.failure(e)
@@ -41,7 +41,7 @@ class UnidadServices {
 
     suspend fun getUnidadById(id: String): Result<Unidad>{
         return try {
-            val res = unidadApi.getUnidadById(id)
+            val res = unidadApi.obtenerUnidadPorId(id)
             handleResponse(res)
         } catch (e: Exception){
             Result.failure(e)
@@ -51,7 +51,7 @@ class UnidadServices {
     suspend fun deleteUnidadById(id: String): Result<Unidad>{
 
         return  try {
-            val res = unidadApi.deleteUnidadById(id)
+            val res = unidadApi.desactivarUnidad(id)
             if(res.isSuccessful){
                 res.body()?.let {
                     Result.success(it)

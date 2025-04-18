@@ -9,8 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.dto.administrativo.unidad.CreateUnidadDto
-import com.example.fusdeckotlin.dto.administrativo.unidad.UpdateUnidadDto
+import com.example.fusdeckotlin.dto.administrativo.unidad.CrearUnidadRequest
+import com.example.fusdeckotlin.dto.administrativo.unidad.ActualizarUnidadRequest
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
 import com.example.fusdeckotlin.ui.adapters.administrativo.unidad.UnidadAdapter
@@ -126,7 +126,7 @@ class UnidadActivity : AppCompatActivity() {
         estudiantes: List<String>,
         estado: Boolean
     ) {
-        val updateData = UpdateUnidadDto(
+        val updateData = ActualizarUnidadRequest(
             nombreUnidad = nombre,
             brigadaId = brigadaId,
             usuarioId = usuarioId,
@@ -153,7 +153,7 @@ class UnidadActivity : AppCompatActivity() {
         estudiantes: List<String>,
         estado: Boolean
     ) {
-        val createData = CreateUnidadDto(
+        val createData = CrearUnidadRequest(
             nombreUnidad = nombre,
             brigadaId = brigadaId,
             usuarioId = usuarioId,
