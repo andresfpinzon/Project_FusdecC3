@@ -25,7 +25,7 @@ class UserActivity : AppCompatActivity() {
     private lateinit var documento: TextInputEditText
     private lateinit var correo: TextInputEditText
     private lateinit var password: TextInputEditText
-    private lateinit var role: TextInputEditText
+    //private lateinit var role: TextInputEditText
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var userRecyclerView: RecyclerView
@@ -36,7 +36,7 @@ class UserActivity : AppCompatActivity() {
 
     // State
     private var isEditing = false
-    private var currentUserId: String? = null
+    private var currentNumeroDocument: String? = null
     private var usuariosOriginales: List<Usuario> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +55,7 @@ class UserActivity : AppCompatActivity() {
         documento = findViewById(R.id.inputNumeroDocumento)
         correo = findViewById(R.id.inputCorreo)
         password = findViewById(R.id.inputPassword)
-        role = findViewById(R.id.inputRole)
+        //role = findViewById(R.id.inputRole)
         confirmarButton = findViewById(R.id.buttonConfirmar)
         cancelarButton = findViewById(R.id.buttonCancelar)
         userRecyclerView = findViewById(R.id.recyclerViewUsers)
@@ -110,20 +110,20 @@ class UserActivity : AppCompatActivity() {
         val numeroDocumento = documento.text.toString().trim()
         val correoUsuario = correo.text.toString().trim()
         val passwordUsuario = password.text.toString().trim()
-        val rolUsuario = role.text.toString().trim()
+        //val rolUsuario = role.text.toString().trim()
 
         if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() || numeroDocumento.isEmpty() ||
-            correoUsuario.isEmpty() || passwordUsuario.isEmpty() || rolUsuario.isEmpty()) {
+            correoUsuario.isEmpty() || passwordUsuario.isEmpty()) {
             showError("Complete todos los campos obligatorios")
             return
         }
 
         lifecycleScope.launch {
             try {
-                if (isEditing && currentUserId != null) {
-                    actualizarUsuario(nombreUsuario, apellidoUsuario, numeroDocumento, correoUsuario, passwordUsuario, rolUsuario)
+                if (isEditing && currentNumeroDocument != null) {
+                    actualizarUsuario(nombreUsuario, apellidoUsuario, numeroDocumento, correoUsuario, passwordUsuario)
                 } else {
-                    crearUsuario(nombreUsuario, apellidoUsuario, numeroDocumento, correoUsuario, passwordUsuario, rolUsuario)
+                    crearUsuario(nombreUsuario, apellidoUsuario, numeroDocumento, correoUsuario, passwordUsuario)
                 }
             } catch (e: Exception) {
                 showError("Error: ${e.message}")
@@ -136,16 +136,14 @@ class UserActivity : AppCompatActivity() {
         apellidos: String,
         documento: String,
         correo: String,
-        password: String,
-        rol: String
+        password: String
     ) {
         val createData = CreateUserDto(
-            nombreUsuario = nombre,
-            apellidoUsuario = apellidos,
+            nombre = nombre,
+            apellido = apellidos,
             numeroDocumento = documento,
             correo = correo,
             password = password,
-            roles = listOf(rol)
         )
 
         usuarioServices.createUser(createData)
@@ -166,18 +164,15 @@ class UserActivity : AppCompatActivity() {
         documento: String,
         correo: String,
         password: String,
-        rol: String
     ) {
         val updateData = UpdateUserDto(
-            nombreUsuario = nombre,
-            apellidoUsuario = apellidos,
-            numeroDocumento = documento,
+            nombre = nombre,
+            apellido = apellidos,
             correo = correo,
             password = password,
-            roles = listOf(rol)
         )
 
-        usuarioServices.updateUser(currentUserId!!, updateData)
+        usuarioServices.updateUser(currentNumeroDocument!!, updateData)
             .onSuccess {
                 runOnUiThread {
                     showSuccess("Usuario actualizado")
@@ -191,24 +186,22 @@ class UserActivity : AppCompatActivity() {
 
     private fun resetForm() {
         isEditing = false
-        currentUserId = null
+        currentNumeroDocument = null
         nombre.text?.clear()
         apellidos.text?.clear()
         documento.text?.clear()
         correo.text?.clear()
         password.text?.clear()
-        role.text?.clear()
+
     }
 
     private fun onUpdateClick(usuario: Usuario) {
         isEditing = true
-        currentUserId = usuario.getUserId()
         nombre.setText(usuario.getNombreUsuario())
         apellidos.setText(usuario.getApellidoUsuario())
         documento.setText(usuario.getNumeroDocumento())
         correo.setText(usuario.getCorreo())
         password.setText(usuario.getPassword())
-        role.setText(usuario.getRoles().joinToString(", "))
     }
 
     private fun onDeleteClick(usuario: Usuario) {
@@ -217,7 +210,7 @@ class UserActivity : AppCompatActivity() {
             .setMessage("¿Confirmas que deseas eliminar este usuario?")
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
-                    usuarioServices.deleteUserById(usuario.getUserId()!!)
+                    usuarioServices.deleteUserById(usuario.getNumeroDocumento())
                         .onSuccess {
                             runOnUiThread {
                                 showSuccess("Usuario eliminado")
