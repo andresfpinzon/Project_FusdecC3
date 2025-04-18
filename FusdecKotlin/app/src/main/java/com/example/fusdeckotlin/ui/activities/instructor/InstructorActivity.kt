@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.activities.instructor.asistencia.AsistenciaActivity
-import com.example.fusdeckotlin.ui.activities.instructor.calificacion.CalificacionActivity
 
 class InstructorActivity : AppCompatActivity() {
 
@@ -17,18 +16,11 @@ class InstructorActivity : AppCompatActivity() {
 
         // Referencias a los botones
         val asistenciaButton: Button = findViewById(R.id.asistenciaButton)
-        val calificacionButton: Button = findViewById(R.id.calificacionButton)
         val volverButton: Button = findViewById(R.id.volverButton)
 
         // Botón para ir a Asistencia
         asistenciaButton.setOnClickListener {
             val intent = Intent(this, AsistenciaActivity::class.java)
-            startActivity(intent)
-        }
-
-        // Botón para ir a Calificación
-        calificacionButton.setOnClickListener {
-            val intent = Intent(this, CalificacionActivity::class.java)
             startActivity(intent)
         }
 

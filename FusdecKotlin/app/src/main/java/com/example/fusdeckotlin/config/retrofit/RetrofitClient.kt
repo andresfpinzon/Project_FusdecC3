@@ -9,7 +9,8 @@ import com.example.fusdeckotlin.api.administrativo.unidad.UnidadApi
 import com.example.fusdeckotlin.api.administrativo.user.IUserApi
 import com.example.fusdeckotlin.api.auth.AuthApi
 import com.example.fusdeckotlin.api.instructor.asistencia.AsistenciaApi
-import com.example.fusdeckotlin.api.instructor.calificacion.CalificacionApi
+import com.example.fusdeckotlin.api.instructor.asistenciaestudiante.AsistenciaEstudianteApi
+import com.example.fusdeckotlin.api.root.fundacion.FundacionApi
 import com.example.fusdeckotlin.api.secretario.curso.CursoApi
 import com.example.fusdeckotlin.api.secretario.edicion.EdicionApi
 import com.example.fusdeckotlin.api.secretario.estudiante.EstudianteApi
@@ -22,7 +23,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:3000/"
+    // API en puerto 3000
+    private const val NODE_BASE_URL = "http://10.0.2.2:3000/"
+    //API Spring en puerto 8080
+    private const val SPRING_BASE_URL = "http://10.0.2.2:8080/"
 
     private val authInterceptor = Interceptor { chain ->
         val originalRequest = chain.request()
@@ -38,9 +42,17 @@ object RetrofitClient {
         chain.proceed(originalRequest)
     }
 
-    private val retrofit by lazy {
+    private val nodeRetrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(NODE_BASE_URL)
+            .client(provideOkHttpClient())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private val springRetrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(SPRING_BASE_URL)
             .client(provideOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -55,13 +67,17 @@ object RetrofitClient {
             .build()
     }
 
-    val authApi: AuthApi by lazy { retrofit.create(AuthApi::class.java) }
-    val asistenciaApi: AsistenciaApi by lazy { retrofit.create(AsistenciaApi::class.java) }
-    val estudianteApi: EstudianteApi by lazy { retrofit.create(EstudianteApi::class.java) }
-    val cursoApi: CursoApi by lazy { retrofit.create(CursoApi::class.java) }
-    val edicionApi: EdicionApi by lazy { retrofit.create(EdicionApi::class.java) }
-    val colegioApi: ColegioApi by lazy { retrofit.create(ColegioApi::class.java) }
-    val calificacionApi: CalificacionApi by lazy { retrofit.create(CalificacionApi::class.java) }
+    // Spring
+    val authApi: AuthApi by lazy { springRetrofit.create(AuthApi::class.java) }
+    val estudianteApi: EstudianteApi by lazy { springRetrofit.create(EstudianteApi::class.java) }
+    val asistenciaApi: AsistenciaApi by lazy { springRetrofit.create(AsistenciaApi::class.java) }
+    val asistenciaestudianteApi: AsistenciaEstudianteApi by lazy { springRetrofit.create(AsistenciaEstudianteApi::class.java) }
+
+    //Node
+    val cursoApi: CursoApi by lazy { nodeRetrofit.create(CursoApi::class.java) }
+    val edicionApi: EdicionApi by lazy { nodeRetrofit.create(EdicionApi::class.java) }
+    val colegioApi: ColegioApi by lazy { nodeRetrofit.create(ColegioApi::class.java) }
+    val fundacionApi: FundacionApi by lazy { nodeRetrofit.create(FundacionApi::class.java) }
 
     val brigadaApi: BrigadaApi by lazy { retrofit.create(BrigadaApi::class.java)}
     val comandoApi: ComandoApi by lazy {retrofit.create(ComandoApi::class.java)}

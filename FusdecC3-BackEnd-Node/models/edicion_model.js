@@ -3,10 +3,6 @@ const { Schema } = mongoose;
 
 const EdicionSchema = new Schema(
   {
-    /*edicionId: {
-      type: Schema.Types.ObjectId,
-      default: () => new mongoose.Types.ObjectId(),
-    },*/
     tituloEdicion: {
       type: String,
       required: true,
@@ -28,12 +24,6 @@ const EdicionSchema = new Schema(
       ref: "Curso",
       default: null, // permite que el curso en la edición sea opcional
     }, 
-    estudiantes: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Estudiante", // Referencia a la colección de EstudianteEdicion
-      },
-    ],
   },
 );
 

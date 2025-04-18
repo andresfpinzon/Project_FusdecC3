@@ -21,7 +21,6 @@ async function crearEdicion(body) {
     fechaFinEdicion: body.fechaFinEdicion,
     estadoEdicion: body.estadoEdicion,
     cursoId: body.cursoId,
-    estudiantes: body.estudiantes || [],
   });
 
   // Asociar la edicion al curso correspondiente
@@ -62,7 +61,6 @@ async function actualizarEdicion(id, body) {
         fechaInicioEdicion: body.fechaInicioEdicion,
         fechaFinEdicion: body.fechaFinEdicion,
         cursoId: body.cursoId,
-        estudiantes: body.estudiantes,
       },
     },
     { new: true }
@@ -100,8 +98,7 @@ async function desactivarEdicion(id) {
 async function listarEdicionesActivas() {
   try {
     let ediciones = await Edicion.find({ estadoEdicion: true })
-    .populate('cursoId')
-    .populate('estudiantes');
+    .populate('cursoId');
     return ediciones;
   } catch (error) {
     console.error('Error al listar las ediciones (edicion_logic):', error);
@@ -125,29 +122,10 @@ async function buscarEdicionPorId(id) {
   }
 }
 
-// Lógica para agregar estudiantes a un colegio
-async function agregarEstudianteAEdicion(edicionId, estudianteIds) {
-  try {
-      const edicion = await Edicion.findOne({ edicionId });
-      if (!edicion) {
-          throw new Error('Edicion no encontrado');
-      }
-      // Filtrar los estudiantes ya existentes para no duplicarlos
-      const nuevosEstudiantes = estudianteIds.filter(estudianteId => !edicion.estudiantes.includes(estudianteId));
-      // Agregar los nuevos estudiantes al array de estudiantes del colegio
-      edicion.estudiantes = [...edicion.estudiantes, ...nuevosEstudiantes];
-      await edicion.save();
-      return edicion;
-  } catch (error) {
-      throw new Error(`Error al agregar estudiantes: ${error.message}`);
-  }
-}
-
 module.exports = {
   crearEdicion,
   actualizarEdicion,
   desactivarEdicion,
   listarEdicionesActivas,
   buscarEdicionPorId,
-  agregarEstudianteAEdicion
 };

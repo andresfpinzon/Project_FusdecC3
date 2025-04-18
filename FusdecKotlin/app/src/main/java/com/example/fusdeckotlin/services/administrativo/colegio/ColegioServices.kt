@@ -14,14 +14,12 @@ class ColegioServices {
 
     suspend fun crearColegio(
         nombre: String,
-        email: String,
-        estudiantes: List<String>
+        email: String
     ): Result<Colegio> {
         return try {
-            val request = CrearColegioRequest.from(
+            val request = CrearColegioRequest(
                 nombre = nombre,
-                email = email,
-                estudiantes = estudiantes
+                email = email
             )
 
             val response = colegioApi.crearColegio(request)
@@ -54,14 +52,12 @@ class ColegioServices {
         nombre: String? = null,
         email: String? = null,
         estado: Boolean? = null,
-        estudiantes: List<String>? = null
     ): Result<Colegio> {
         return try {
-            val request = ActualizarColegioRequest.from(
+            val request = ActualizarColegioRequest(
                 nombre = nombre,
                 email = email,
                 estado = estado,
-                estudiantes = estudiantes
             )
 
             val response = colegioApi.actualizarColegio(id, request)

@@ -20,14 +20,6 @@ const colegioSchemaValidation = Joi.object({
     'boolean.base': 'El estado del colegio debe ser un booleano',
   }),
 
-  estudiantes: Joi.array()
-    .items(Joi.string().pattern(/^[0-9a-fA-F]{24}$/))
-    .optional()
-    .messages({
-      "array.base": "Estudiantes debe ser un array",
-      "string.pattern.base":
-        "Cada estudiante debe tener un id válido (24 caracteres hexadecimales)",
-    }),
 });
 
 module.exports = { colegioSchemaValidation };
