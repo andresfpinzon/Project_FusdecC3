@@ -15,7 +15,7 @@ import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
 import com.example.fusdeckotlin.ui.adapters.administrativo.user.UserAdapter
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
-import models.administrativo.user.model.Usuario
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 
 class UserActivity : AppCompatActivity() {
 

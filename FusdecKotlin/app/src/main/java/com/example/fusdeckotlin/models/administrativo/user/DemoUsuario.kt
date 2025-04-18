@@ -1,7 +1,7 @@
 //package models.administrativo.user
 //
 //import models.administrativo.user.implement.UsuarioRepositoryImpl
-//import models.administrativo.user.model.Usuario
+//import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 //import models.administrativo.user.services.UsuarioServices
 //
 //class DemoUsuario {

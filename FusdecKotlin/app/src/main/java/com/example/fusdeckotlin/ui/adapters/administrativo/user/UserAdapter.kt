@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import models.administrativo.user.model.Usuario
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 import java.time.format.DateTimeFormatter
 
 class UserAdapter(

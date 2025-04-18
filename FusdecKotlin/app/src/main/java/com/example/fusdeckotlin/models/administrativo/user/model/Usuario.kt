@@ -1,4 +1,4 @@
-package models.administrativo.user.model
+package com.example.fusdeckotlin.models.administrativo.user.model
 
 import com.google.gson.annotations.SerializedName
 

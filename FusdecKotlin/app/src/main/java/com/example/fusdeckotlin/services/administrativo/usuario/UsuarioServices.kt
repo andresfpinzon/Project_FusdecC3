@@ -4,7 +4,7 @@ import com.example.fusdeckotlin.api.administrativo.user.IUserApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
 import com.example.fusdeckotlin.dto.administrativo.user.CreateUserDto
 import com.example.fusdeckotlin.dto.administrativo.user.UpdateUserDto
-import models.administrativo.user.model.Usuario
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 class UsuarioServices {

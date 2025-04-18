@@ -2,11 +2,11 @@ package com.example.fusdeckotlin.models.administrativo.unidad
 
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 import com.google.gson.annotations.SerializedName
-import models.administrativo.user.model.Usuario
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 
 data class Unidad(
     @SerializedName("_id")
-    private val id: String? = null,
+    private val id: String,
     @SerializedName("nombreUnidad")
     private var nombreUnidad: String,
     @SerializedName("brigadaId")
@@ -66,7 +66,7 @@ data class Unidad(
             else -> ""
         }
     }
-    fun getUser(): Usuario{
+    fun getUser(): Usuario {
         return when (usuarioId){
             is Usuario -> usuarioId as Usuario
             is String -> createUsersEmpty(usuarioId as String)
@@ -75,7 +75,7 @@ data class Unidad(
         }
     }
 
-    private fun createUsersEmpty(id: String): Usuario{
+    private fun createUsersEmpty(id: String): Usuario {
         return Usuario(
             id = id,
             nombreUsuario = "",

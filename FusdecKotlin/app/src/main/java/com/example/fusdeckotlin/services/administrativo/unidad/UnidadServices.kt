@@ -2,133 +2,82 @@ package com.example.fusdeckotlin.services.administrativo.unidad
 
 import com.example.fusdeckotlin.api.administrativo.unidad.UnidadApi
 import com.example.fusdeckotlin.config.retrofit.RetrofitClient
-import com.example.fusdeckotlin.dto.administrativo.unidad.CrearUnidadRequest
 import com.example.fusdeckotlin.dto.administrativo.unidad.ActualizarUnidadRequest
+import com.example.fusdeckotlin.dto.administrativo.unidad.CrearUnidadRequest
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
-import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
+import java.lang.Exception
+
 class UnidadServices {
 
     private val unidadApi: UnidadApi = RetrofitClient.unidadApi
 
-    suspend fun createUnidadServices(data: CrearUnidadRequest): Result<Unidad>{
-        return  try {
-            val res = unidadApi.crearUnidad(data)
-            handleResponse(res)
-        }catch (e: Exception){
-            Result.failure(e)
-        }
-    }
-
-    suspend fun updateUnidadServices(id: String, data: ActualizarUnidadRequest): Result<Unidad>{
+    suspend fun crearUnidad(
+        nombreUnidad: String,
+        brigadaId: String,
+        usuarioId: String
+    ): Result<Unidad> {
         return try {
-            val res = unidadApi.actualizarUnidad(id, data)
-            handleResponse(res)
-        }catch (e: Exception){
+            val request = CrearUnidadRequest(
+                nombreUnidad = nombreUnidad,
+                brigadaId = brigadaId,
+                usuarioId = usuarioId
+            )
+
+            val response = unidadApi.crearUnidad(request)
+            handleResponse(response)
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun listarUnidadesActivas(): Result<List<Unidad>>{
+    suspend fun listarUnidadesActivas(): Result<List<Unidad>> {
         return try {
-            val res = unidadApi.listarUnidades()
-            handleListResponse(res){it.filter { unidad -> unidad.getEstadoUnidad() == true   }}
-        } catch (e: Exception){
+            val response = unidadApi.listarUnidades()
+            handleListResponse(response) { it.filter { unidad -> unidad.getEstadoUnidad() } }
+        } catch (e: Exception) {
             Result.failure(e)
         }
-
     }
 
-    suspend fun getUnidadById(id: String): Result<Unidad>{
+    suspend fun obtenerUnidadPorId(id: String): Result<Unidad> {
         return try {
-            val res = unidadApi.obtenerUnidadPorId(id)
-            handleResponse(res)
-        } catch (e: Exception){
+            val response = unidadApi.obtenerUnidadPorId(id)
+            handleResponse(response)
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun deleteUnidadById(id: String): Result<Unidad>{
+    suspend fun actualizarUnidad(
+        id: String,
+        nombreUnidad: String? = null,
+        brigadaId: String? = null,
+        usuarioId: String? = null,
+        estadoUnidad: Boolean? = null
+    ): Result<Unidad> {
+        return try {
+            val request = ActualizarUnidadRequest(
+                nombreUnidad = nombreUnidad,
+                brigadaId = brigadaId,
+                usuarioId = usuarioId,
+                estadoUnidad = estadoUnidad
+            )
 
-        return  try {
-            val res = unidadApi.desactivarUnidad(id)
-            if(res.isSuccessful){
-                res.body()?.let {
-                    Result.success(it)
-                }?: Result.failure(Exception("Respuesta: Vacio el servidor"))
-            }else {
-                when (res.code()){
-                    404 -> Result.failure(Exception("Unidad no encontrado"))
-                    else -> Result.failure(Exception("Error del servidor: ${res.code()}"))
-                }
-            }
-        }catch (e: Exception){
+            val response = unidadApi.actualizarUnidad(id, request)
+            handleResponse(response)
+        } catch (e: Exception) {
             Result.failure(e)
         }
-
     }
 
-//    companion object {
-//        fun crearUnidad(
-//            unidades: MutableList<Unidad>,
-//            id: String,
-//            nombreUnidad: String,
-//            brigadaId: String,
-//            estadoUnidad: Boolean,
-//            usuarioId: String,
-//            comandos: List<String>,
-//            estudiantes: List<String>
-//        ): Unidad {
-//            if (nombreUnidad.isBlank() || brigadaId.isBlank() || usuarioId.isBlank()) {
-//                throw IllegalArgumentException("Todos los campos son obligatorios")
-//            }
-//
-//            val nuevaUnidad = Unidad(
-//                id = id,
-//                nombreUnidad = nombreUnidad,
-//                brigadaId = brigadaId,
-//                estadoUnidad = estadoUnidad,
-//                usuarioId = usuarioId,
-//                comandos = comandos,
-//                estudiantes = estudiantes
-//            )
-//            unidades.add(nuevaUnidad)
-//            return nuevaUnidad
-//        }
-//
-//        fun actualizarUnidad(
-//            unidades: MutableList<Unidad>,
-//            id: String,
-//            nombreUnidad: String?,
-//            brigadaId: String?,
-//            estadoUnidad: Boolean?,
-//            usuarioId: String?,
-//            comandos: List<String>?,
-//            estudiantes: List<String>?
-//        ): Unidad {
-//            val unidad = obtenerUnidadPorId(unidades, id)
-//            nombreUnidad?.let { unidad.setNombreUnidad(it) }
-//            brigadaId?.let { unidad.setBrigadaId(it) }
-//            estadoUnidad?.let { unidad.setEstadoUnidad(it) }
-//            usuarioId?.let { unidad.setUsuarioId(it) }
-//            comandos?.let { unidad.setComandos(it) }
-//            estudiantes?.let { unidad.setEstudiantes(it) }
-//            return unidad
-//        }
-//
-//        fun desactivarUnidad(unidades: MutableList<Unidad>, id: String): Unidad {
-//            val unidad = obtenerUnidadPorId(unidades, id)
-//            unidad.setEstadoUnidad(false)
-//            return unidad
-//        }
-//
-//        fun obtenerUnidadPorId(unidades: List<Unidad>, id: String): Unidad {
-//            return unidades.firstOrNull { it.getId() == id }
-//                ?: throw NoSuchElementException("Unidad no encontrada")
-//        }
-//
-//        fun listarUnidadesActivas(unidades: List<Unidad>): List<Unidad> {
-//            return unidades.filter { it.getEstadoUnidad() }
-//        }
-//    }
+    suspend fun desactivarUnidad(id: String): Result<Unidad> {
+        return try {
+            val response = unidadApi.desactivarUnidad(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

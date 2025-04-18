@@ -1,105 +1,125 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/white">
 
-    <TextView
-            android:id="@+id/textViewUnidadId"
-            android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ID"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="ID: 1"/>
+            android:padding="16dp">
 
-    <TextView
-            android:id="@+id/textViewNombre"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Nombre"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewUnidadId"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Nombre: Unidad 1"/>
+        <LinearLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-            android:id="@+id/textViewBrigada"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Brigada"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewNombre"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Brigada: Brigada 1"/>
+            <TextView
+                    android:id="@+id/nombreUnidad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textColor="@color/primaryColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
 
-    <TextView
-            android:id="@+id/textViewUserId"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Usuario"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewBrigada"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Usuario: Usuario1"
-    />
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-    <TextView
-            android:id="@+id/textViewComandosUnidad"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Comando"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewUserId"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Comando: Comando1"
-    />
+                <ImageButton
+                        android:id="@+id/infoButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_info"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Info button"
+                        android:tint="@color/primaryColor"/>
 
-    <TextView
-            android:id="@+id/textViewEstudiantes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Estudiantes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewComandosUnidad"
-            app:layout_constraintEnd_toStartOf="@+id/updateButton"
-            app:layout_constraintHorizontal_bias="0"
-            android:layout_marginEnd="8dp"
-            tools:text="Estudiantes: Andres, Ramiro"/>
+                <ImageButton
+                        android:id="@+id/updateButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_edit"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Update button"
+                        android:tint="@color/primaryColor"
+                        android:layout_marginStart="8dp"/>
 
-    <ImageButton
-            android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_edit"
-            android:contentDescription="Update"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp"/>
+                <ImageButton
+                        android:id="@+id/deleteButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_delete"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Delete button"
+                        android:tint="@color/red"
+                        android:layout_marginStart="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
 
-    <ImageButton
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_delete"
-            android:contentDescription="Delete"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/updateButton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="8dp"/>
+        <LinearLayout
+                android:id="@+id/infoLine1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brigada:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/brigadaId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/infoLine2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Usuario:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/usuarioId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

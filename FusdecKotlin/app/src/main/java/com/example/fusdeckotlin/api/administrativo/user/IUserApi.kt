@@ -2,7 +2,7 @@ package com.example.fusdeckotlin.api.administrativo.user
 
 import com.example.fusdeckotlin.dto.administrativo.user.CreateUserDto
 import com.example.fusdeckotlin.dto.administrativo.user.UpdateUserDto
-import models.administrativo.user.model.Usuario
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 import retrofit2.http.*
 import retrofit2.Response
 

@@ -9,8 +9,4 @@ data class CrearUnidadRequest(
     var brigadaId: String?,
     @SerializedName("usuarioId")
     var usuarioId: String?,
-    @SerializedName("comandos")
-    var comandos: List<String>?,
-    @SerializedName("estudiantes")
-    var estudiantes: List<String>?
 )
