@@ -24,7 +24,7 @@ const Certificados = () => {
   const [formValues, setFormValues] = useState({
     estudianteId: "",
     horasCompletadas: "80",
-    fechaEmision: new Date().toISOString().split("T")[0],
+    fechaEmision: new Date().toLocaleDateString('en-CA'), // Formato YYYY-MM-DD
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -36,14 +36,14 @@ const Certificados = () => {
 
   useEffect(() => {
     const inicializarDatos = async () => {
-      if (token) {
-        try {
-          const decodedToken = jwtDecode(token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
           console.log('Token decodificado:', decodedToken);
           
-          if (decodedToken.exp * 1000 < Date.now()) {
+        if (decodedToken.exp * 1000 < Date.now()) {
             handleSessionError("Su sesión ha expirado");
-            return;
+          return;
           }
 
           // Verificar si el usuario tiene el rol ROOT
@@ -85,7 +85,7 @@ const Certificados = () => {
     try {
       console.log('Buscando usuario con número de documento:', numeroDocumento);
       
-      const response = await fetch(`http://localhost:8080/`, {
+      const response = await fetch(`http://localhost:8080/usuarios`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json'
@@ -120,7 +120,7 @@ const Certificados = () => {
         }
       });
       if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
         setEstudiantes(data.filter(est => est.estado));
       } else {
         const errorData = await response.json();
@@ -146,7 +146,7 @@ const Certificados = () => {
         handleError("Complete todos los campos requeridos");
         return;
       }
-
+  
       const decodedToken = jwtDecode(token);
       console.log('Token decodificado:', decodedToken);
 
@@ -162,8 +162,15 @@ const Certificados = () => {
       const codigoVerificacion = `FSC-${Date.now().toString(36).slice(-4)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
       console.log('Código de verificación generado:', codigoVerificacion);
 
+      // Obtener el estudiante seleccionado
+      const estudianteSeleccionado = estudiantes.find(est => est.numeroDocumento === formValues.estudianteId);
+      if (!estudianteSeleccionado) {
+        throw new Error("No se encontró la información del estudiante");
+      }
+
       // Formatear la fecha para el backend (YYYY-MM-DD)
-      const fechaISO = new Date(formValues.fechaEmision).toISOString().split('T')[0];
+      const fechaEmision = new Date(formValues.fechaEmision + 'T00:00:00-05:00'); // Ajustamos a zona horaria de Colombia
+      const fechaISO = fechaEmision.toISOString().split('T')[0];
       console.log('Fecha ISO:', fechaISO);
 
       // Preparar datos del certificado
@@ -196,10 +203,33 @@ const Certificados = () => {
       const certificadoCreado = await response.json();
       console.log('Certificado creado:', certificadoCreado);
 
-      // Obtener el estudiante seleccionado para el PDF
-      const estudianteSeleccionado = estudiantes.find(est => est.numeroDocumento === formValues.estudianteId);
-      if (!estudianteSeleccionado) {
-        throw new Error("No se encontró la información del estudiante");
+      // Crear la auditoría con la información del certificado
+      const auditoriaData = {
+        fecha: fechaISO,
+        nombreEmisor: nombreEmisor,
+        certificadoId: certificadoCreado.id || certificadoCreado._id,
+        estado: true,
+        certificadoInfo: {
+          estudiante: `${estudianteSeleccionado.nombre} ${estudianteSeleccionado.apellido}`,
+          documento: estudianteSeleccionado.numeroDocumento,
+          horas: formValues.horasCompletadas,
+          fecha: fechaISO,
+          codigoVerificacion: codigoVerificacion
+        }
+      };
+
+      // Enviar solicitud para crear auditoría
+      const auditoriaResponse = await fetch("http://localhost:8080/auditorias", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(auditoriaData)
+      });
+
+      if (!auditoriaResponse.ok) {
+        console.error('Error al crear auditoría:', await auditoriaResponse.json());
       }
 
       // Generar PDF
@@ -208,63 +238,59 @@ const Certificados = () => {
         unit: "mm",
         format: "letter"
       });
-
+  
       // Configuración del PDF
-      doc.addImage(encabezadoCertificado, "PNG", 30, 10, 150, 30);
+      doc.addImage(encabezadoCertificado, "PNG", 30, 15, 150, 25);
       
-      // Título principal
+      // Título principal más compacto
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("LA FUNDACIÓN SOCORRISTAS DE", doc.internal.pageSize.width / 2, 80, { align: "center" });
-      doc.text("COLOMBIA", doc.internal.pageSize.width / 2, 90, { align: "center" });
-      
-      // Subtítulo CERTIFICA
       doc.setFontSize(14);
-      doc.text("CERTIFICA", doc.internal.pageSize.width / 2, 110, { align: "center" });
+      doc.text("LA FUNDACIÓN SOCORRISTAS DE", doc.internal.pageSize.width / 2, 65, { align: "center" });
+      doc.text("COLOMBIA", doc.internal.pageSize.width / 2, 72, { align: "center" });
+      
+      // Subtítulo CERTIFICA más cerca
+      doc.setFontSize(12);
+      doc.text("CERTIFICA", doc.internal.pageSize.width / 2, 85, { align: "center" });
 
-      // Contenido del certificado
+      // Contenido del certificado más compacto
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      
-      // Texto del certificado con formato justificado
-      const textoCompleto = `Que ${estudianteSeleccionado.nombre} ${estudianteSeleccionado.apellido} identificado(a) con C.C ${estudianteSeleccionado.numeroDocumento} del\n\n${estudianteSeleccionado.colegio} del curso ${estudianteSeleccionado.grado} prestó ${formValues.horasCompletadas} horas de servicio social\n\nestudiantil en nuestra entidad. De acuerdo a lo establecido en\n\nla resolución 4210 del ministerio de educación nacional y\n\nnormas concordantes.`;
+  
+      // Texto del certificado sin tantos saltos de línea
+      const textoCompleto = `Que ${estudianteSeleccionado.nombre} ${estudianteSeleccionado.apellido} identificado(a) con C.C ${estudianteSeleccionado.numeroDocumento} del\n${estudianteSeleccionado.colegio} del curso ${estudianteSeleccionado.grado} prestó ${formValues.horasCompletadas} horas de servicio social\nestudiantil en nuestra entidad. De acuerdo a lo establecido en\nla resolución 4210 del ministerio de educación nacional y\nnormas concordantes.`;
 
-      // Dividir el texto en líneas y centrarlo
+      // Dividir el texto en líneas y centrarlo con menos espacio entre líneas
       const lineas = textoCompleto.split('\n');
-      let y = 130;
+      let y = 100;
       lineas.forEach(linea => {
         doc.text(linea.trim(), doc.internal.pageSize.width / 2, y, { align: "center" });
-        y += 7;
+        y += 6; // Reducir el espacio entre líneas
       });
 
-      // Fecha para el certificado en formato largo
-      const fechaLarga = new Date(formValues.fechaEmision).toLocaleDateString('es-CO', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-      doc.text(`Dada en Bogotá a los ${fechaLarga}`, doc.internal.pageSize.width / 2, y + 20, { align: "center" });
-
-      // Firma
-      doc.addImage(firmaPresenteCertificado, "PNG", doc.internal.pageSize.width / 2 - 30, y + 40, 60, 30);
+      // Fecha para el certificado en formato largo más cerca del texto
+      const fechaEmisionFormateada = fechaEmision.toLocaleDateString('es-CO');
       
-      // Texto debajo de la firma
+      doc.text(`Dada en Bogotá a los ${fechaEmisionFormateada}`, doc.internal.pageSize.width / 2, y + 8, { align: "center" });
+
+      // Firma más cerca
+      doc.addImage(firmaPresenteCertificado, "PNG", doc.internal.pageSize.width / 2 - 30, y + 15, 60, 30);
+      
+      // Texto debajo de la firma más compacto
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.text("BRIGADIER G.", doc.internal.pageSize.width / 2, y + 85, { align: "center" });
-      doc.text("FERNELLY GÓMEZ GONZÁLEZ", doc.internal.pageSize.width / 2, y + 90, { align: "center" });
-      doc.text("PRESIDENTE", doc.internal.pageSize.width / 2, y + 95, { align: "center" });
-      doc.text("WWW.FUSDEC.COM", doc.internal.pageSize.width / 2, y + 100, { align: "center" });
+      doc.text("BRIGADIER G.", doc.internal.pageSize.width / 2, y + 50, { align: "center" });
+      doc.text("FERNELLY GÓMEZ GONZÁLEZ", doc.internal.pageSize.width / 2, y + 55, { align: "center" });
+      doc.text("PRESIDENTE", doc.internal.pageSize.width / 2, y + 60, { align: "center" });
+      doc.text("WWW.FUSDEC.COM", doc.internal.pageSize.width / 2, y + 65, { align: "center" });
 
-      // Código de verificación en la parte inferior
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      doc.text(`Código de Verificación: ${codigoVerificacion}`, doc.internal.pageSize.width / 2, y + 110, { align: "center" });
-
+      // Código de verificación más compacto
+      doc.setFontSize(9);
+      doc.text(`Código de Verificación: ${codigoVerificacion}`, doc.internal.pageSize.width / 2, y + 75, { align: "center" });
+  
       // Guardar PDF
       doc.save(`certificado_${estudianteSeleccionado.nombre}_${estudianteSeleccionado.apellido}.pdf`);
 
-      // Mostrar mensaje de éxito y reset form
+      // Mostrar mensaje simple de éxito
       handleSuccess();
       resetForm();
 
@@ -314,9 +340,9 @@ const Certificados = () => {
   };
 
   const handleSuccess = () => {
-    setOpenSnackbar(true);
     setMessage("Certificado generado exitosamente");
     setSeverity("success");
+    setOpenSnackbar(true);
   };
 
   const handleError = (message) => {
@@ -326,9 +352,9 @@ const Certificados = () => {
   };
 
   const handleSessionError = (message) => {
-    setOpenSnackbar(true);
+      setOpenSnackbar(true);
     setMessage(message);
-    setSeverity("error");
+      setSeverity("error");
     localStorage.removeItem("token");
   };
 
@@ -336,7 +362,7 @@ const Certificados = () => {
     setFormValues({
       estudianteId: "",
       horasCompletadas: "80",
-      fechaEmision: new Date().toISOString().split("T")[0],
+      fechaEmision: new Date().toLocaleDateString('en-CA'), // Formato YYYY-MM-DD
     });
   };
 
@@ -387,17 +413,17 @@ const Certificados = () => {
               onChange={(e) => setFormValues({...formValues, fechaEmision: e.target.value})}
               InputLabelProps={{ shrink: true }}
             />
-          </Grid>
+        </Grid>
 
           <Grid item xs={12}>
-            <Button
-              variant="contained"
+          <Button
+            variant="contained"
               startIcon={<School />}
-              onClick={generateCertificate}
+            onClick={generateCertificate}
               sx={{ mt: 2 }}
-            >
-              Generar Certificado
-            </Button>
+          >
+            Generar Certificado
+          </Button>
           </Grid>
         </Grid>
       </Paper>
@@ -406,8 +432,13 @@ const Certificados = () => {
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <Alert severity={severity} onClose={() => setOpenSnackbar(false)}>
+        <Alert 
+          severity={severity} 
+          onClose={() => setOpenSnackbar(false)}
+          sx={{ width: '100%' }}
+        >
           {message}
         </Alert>
       </Snackbar>

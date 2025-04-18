@@ -41,21 +41,40 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
-      const validatedBrigades = data.map(brigade => ({
-        ...brigade,
-        comandoId: brigade.comandoId || { nombreComando: 'Sin comando asignado' },
-        unidades: brigade.unidades || []
-      }));
+      
+      // Obtener las unidades para cada brigada
+      const unidadesResponse = await fetch('http://localhost:3000/api/unidades', {
+        headers: {
+          'Authorization': localStorage.getItem('token') || '',
+        },
+      });
+      const unidadesData = await unidadesResponse.json();
 
-      // Condicion que verifica si el arreglo de brigadas está vacío
+      // Mapear las unidades a sus brigadas correspondientes
+      const brigadasConUnidades = data.map(brigada => {
+        const unidadesDeBrigada = unidadesData.filter(unidad => 
+          unidad.brigadaId?._id === brigada._id
+        );
+        return {
+          ...brigada,
+          comandoId: brigada.comandoId || { nombreComando: 'Sin comando asignado' },
+          unidades: unidadesDeBrigada.map(unidad => ({
+            _id: unidad._id,
+            nombreUnidad: unidad.nombreUnidad,
+            estadoUnidad: unidad.estadoUnidad
+          }))
+        };
+      });
+
       if (data.length === 0) {
         setErrorMessage("No hay brigadas registradas.");
         setOpenSnackbar(true);
-        setBrigades([]); // esto mantiene el estado vacío para evitar errores
+        setBrigades([]);
       } else {
-        setBrigades(validatedBrigades);
+        setBrigades(brigadasConUnidades);
       }
     } catch (error) {
+      console.error('Error detallado:', error);
       setError('Error al obtener brigadas');
     } finally {
       setIsLoading(false);
@@ -400,69 +419,130 @@ const Brigadas = () => {
         <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
           Información de la Brigada
         </DialogTitle>
-        <DialogContent sx={{ padding: '20px' }}>
+        <DialogContent dividers sx={{ padding: '20px' }}>
           {selectedBrigade && (
-            <div>
+            <Box>
+              {/* Nombre de la Brigada */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Assignment color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{selectedBrigade.nombreBrigada || "N/A"}</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{selectedBrigade.nombreBrigada}</Typography>
               </Box>
+              
+              {/* Comando */}
               <Box display="flex" alignItems="center" mb={2}>
-                <LocationOn color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  <a href={selectedBrigade.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
-                    {selectedBrigade.ubicacionBrigada || "N/A"}
-                  </a>
-                </Typography>
-              </Box>
-              <Box display="flex" alignItems="center" mb={2}>
-                <Group color="primary" sx={{ mr: 1 }} />
+                <Shield color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedBrigade.comandoId?.nombreComando || "Sin comando asignado"}
+                  {selectedBrigade.comandoId?.nombreComando || 'Sin comando asignado'}
                 </Typography>
               </Box>
+              
+              {/* Estado */}
               <Box display="flex" alignItems="center" mb={2}>
-                {selectedBrigade.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
+                {selectedBrigade.estadoBrigada ? (
+                  <CheckCircle color="primary" sx={{ mr: 1 }} />
+                ) : (
+                  <Cancel color="error" sx={{ mr: 1 }} />
+                )}
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Chip
+                  label={selectedBrigade.estadoBrigada ? "Activo" : "Inactivo"}
+                  color={selectedBrigade.estadoBrigada ? "success" : "error"}
+                  variant="filled"
+                  size="small"
+                  sx={{
+                    ml: 1,
+                    borderRadius: '16px',
+                    minWidth: '80px',
+                    justifyContent: 'center'
+                  }}
+                />
+              </Box>
+
+              {/* Horario */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <LocationOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Horario:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedBrigade.estadoBrigada ? "Activo" : "Inactivo"}
+                  {selectedBrigade.horario === 'mañana' ? '9:00 AM - 12:00 PM' : '2:00 PM - 5:00 PM'}
                 </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
-                <Shield sx={{ mr: 1 }} color="primary" />
-                Unidades Asignadas
-              </Typography>
-              {selectedBrigade.unidades && selectedBrigade.unidades.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
-                  {selectedBrigade.unidades.map((unidad) => (
-                    <Chip
-                      key={unidad._id}
-                      label={unidad.nombreUnidad || "Unidad no encontrada"}
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      sx={{ 
-                        borderRadius: '16px',
-                        fontSize: '1rem',
-                        maxWidth: '200px',
-                        width: '100%',
-                        color: 'black',
-                        '&:hover': {
-                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                        },
-                      }}
-                    />
-                  ))}
+              
+              {/* Unidades Asignadas */}
+              <Box mb={2}>
+                <Box display="flex" alignItems="center" mb={2}>
+                  <Group color="primary" sx={{ mr: 1 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    Unidades Asignadas: ({selectedBrigade.unidades?.length || 0})
+                  </Typography>
                 </Box>
-              ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  Sin unidades asignadas
-                </Typography>
-              )}
-            </div>
+                <Box sx={{ 
+                  pl: 4,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1
+                }}>
+                  {selectedBrigade.unidades && selectedBrigade.unidades.length > 0 ? (
+                    selectedBrigade.unidades.map((unidad, index) => (
+                      <Box 
+                        key={unidad._id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          backgroundColor: '#f5f5f5',
+                          borderRadius: '8px',
+                          p: 1.5,
+                          border: '1px solid #e0e0e0',
+                          '&:hover': {
+                            backgroundColor: '#e8f4fd',
+                            borderColor: '#1d526eff'
+                          }
+                        }}
+                      >
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontWeight: 500,
+                            color: '#1d526eff',
+                            flex: 1,
+                            pl: 1,
+                            fontSize: '1rem'
+                          }}
+                        >
+                          {index + 1}. {unidad.nombreUnidad}
+                        </Typography>
+                        <Chip
+                          size="small"
+                          label={unidad.estadoUnidad ? "Activo" : "Inactivo"}
+                          color={unidad.estadoUnidad ? "success" : "error"}
+                          sx={{ 
+                            ml: 1,
+                            minWidth: '80px',
+                            '& .MuiChip-label': {
+                              fontWeight: 500
+                            }
+                          }}
+                        />
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                      sx={{ 
+                        pl: 2,
+                        fontStyle: 'italic',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      No hay unidades asignadas
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            </Box>
           )}
         </DialogContent>
         <DialogActions>

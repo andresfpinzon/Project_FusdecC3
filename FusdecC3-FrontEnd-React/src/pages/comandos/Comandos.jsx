@@ -472,7 +472,19 @@ const Comandos = () => {
                   <TableRow key={comando._id}>
                     <TableCell>{comando.nombreComando}</TableCell>
                     <TableCell>{comando.ubicacionComando}</TableCell>
-                    <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={comando.estadoComando ? "Activo" : "Inactivo"}
+                        color={comando.estadoComando ? "success" : "error"}
+                        variant="filled"
+                        size="small"
+                        sx={{
+                          borderRadius: '16px',
+                          minWidth: '80px',
+                          justifyContent: 'center'
+                        }}
+                      />
+                    </TableCell>
                     <TableCell>
                       {comando.fundacionId?.nombreFundacion || "Sin Fundación"}
                     </TableCell>

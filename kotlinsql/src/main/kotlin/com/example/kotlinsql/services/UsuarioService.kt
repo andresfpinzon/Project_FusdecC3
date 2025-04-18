@@ -21,11 +21,10 @@ class UsuarioService {
 
     val rowMapper = RowMapper<Usuario> { rs, _ ->
         Usuario(
-            id = rs.getInt("id"),
             numeroDocumento = rs.getString("numero_documento"),
             nombre = rs.getString("nombre"),
             apellido = rs.getString("apellido"),
-            email = rs.getString("email"),
+            correo = rs.getString("correo"),
             password = rs.getString("password"),
             estado = rs.getBoolean("estado"),
             createdAt = rs.getString("created_at"),
@@ -108,12 +107,12 @@ class UsuarioService {
         return jdbcTemplate.update(sql, documento)
     }
 
-    fun obtenerPorDocumento(documento: String): Usuario {
+    fun obtenerPorDocumento(documento: String): Usuario? {
         val sql = "SELECT * FROM usuario WHERE numero_documento = ? AND estado = true"
         return try {
             jdbcTemplate.queryForObject(sql, rowMapper, documento)
         } catch (e: EmptyResultDataAccessException) {
-            throw IllegalArgumentException("Usuario no encontrado")
+            null
         }
     }
 }
