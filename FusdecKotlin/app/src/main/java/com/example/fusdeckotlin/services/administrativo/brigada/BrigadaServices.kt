@@ -1,68 +1,82 @@
 package com.example.fusdeckotlin.services.administrativo.brigada
 
+import com.example.fusdeckotlin.api.administrativo.brigada.BrigadaApi
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.administrativo.brigada.CrearBrigadaRequest
+import com.example.fusdeckotlin.dto.administrativo.brigada.ActualizarBrigadaRequest
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 
 class BrigadaServices {
 
-    companion object {
-        fun crearBrigada(
-            brigadas: MutableList<Brigada>,
-            id: String,
-            nombreBrigada: String,
-            ubicacionBrigada: String,
-            estadoBrigada: Boolean =true,
-            comandoId: String,
-            unidades: List<String> = emptyList()
-        ): Brigada {
-            if (nombreBrigada.isBlank() || ubicacionBrigada.isBlank() || comandoId.isBlank() || unidades.isEmpty()) {
-                throw IllegalArgumentException("Faltan campos requeridos: nombreBrigada, ubicacionBrigada, comandoId, unidades")
-            }
+    private val brigadaApi: BrigadaApi = RetrofitClient.brigadaApi
 
-            val nuevaBrigada = Brigada(
-                id = id,
+    suspend fun crearBrigada(
+        nombreBrigada: String,
+        ubicacionBrigada: String,
+        comandoId: String
+    ): Result<Brigada> {
+        return try {
+            val request = CrearBrigadaRequest(
                 nombreBrigada = nombreBrigada,
                 ubicacionBrigada = ubicacionBrigada,
-                estadoBrigada = estadoBrigada,
-                comandoId = comandoId,
-                unidades = unidades
+                comandoId = comandoId
             )
 
-            brigadas.add(nuevaBrigada)
-            return nuevaBrigada
+            val response = brigadaApi.crearBrigada(request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun listarBrigadasActivas(brigadas: List<Brigada>): List<Brigada> {
-            return brigadas.filter { it.getEstadoBrigada() }
+    suspend fun listarBrigadasActivas(): Result<List<Brigada>> {
+        return try {
+            val response = brigadaApi.listarBrigadas()
+            handleListResponse(response) { it.filter { brigada -> brigada.getEstadoBrigada() } }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun obtenerBrigadaPorId(brigadas: List<Brigada>, id: String): Brigada {
-            return brigadas.find { it.getId() == id } ?: throw NoSuchElementException("Brigada no encontrada")
+    suspend fun obtenerBrigadaPorId(id: String): Result<Brigada> {
+        return try {
+            val response = brigadaApi.obtenerBrigadaPorId(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun actualizarBrigada(
-            brigadas: MutableList<Brigada>,
-            id: String,
-            nombreBrigada: String? = null,
-            ubicacionBrigada: String? = null,
-            comandoId: String? = null,
-            unidades: List<String>? = null,
-            estadoBrigada: Boolean
-        ): Brigada {
-            val brigada = brigadas.find { it.getId() == id } ?: throw NoSuchElementException("Brigada no encontrada")
+    suspend fun actualizarBrigada(
+        id: String,
+        nombreBrigada: String? = null,
+        ubicacionBrigada: String? = null,
+        comandoId: String? = null,
+        estadoBrigada: Boolean? = null
+    ): Result<Brigada> {
+        return try {
+            val request = ActualizarBrigadaRequest(
+                nombreBrigada = nombreBrigada,
+                ubicacionBrigada = ubicacionBrigada,
+                comandoId = comandoId,
+                estadoBrigada = estadoBrigada
+            )
 
-            nombreBrigada?.let { brigada.setNombreBrigada(it) }
-            ubicacionBrigada?.let { brigada.setUbicacionBrigada(it) }
-            comandoId?.let { brigada.setComandoId(it) }
-            unidades?.let { brigada.setUnidades(it) }
-            brigada.setEstadoBrigada(estadoBrigada)
-
-            return brigada
+            val response = brigadaApi.actualizarBrigada(id, request)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
-        fun desactivarBrigada(brigadas: MutableList<Brigada>, id: String): Brigada {
-            val brigada = brigadas.find { it.getId() == id } ?: throw NoSuchElementException("Brigada no encontrada")
-            brigada.setEstadoBrigada(false)
-            return brigada
+    suspend fun desactivarBrigada(id: String): Result<Brigada> {
+        return try {
+            val response = brigadaApi.desactivarBrigada(id)
+            handleResponse(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

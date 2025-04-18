@@ -46,7 +46,6 @@ class Curso(
             id = id,
             nombreFundacion = "",
             estadoFundacion = true,
-            comando = emptyList()
         )
     }
 
@@ -55,7 +54,6 @@ class Curso(
             id = map["_id"] as? String ?: "",
             nombreFundacion = map["nombreFundacion"] as? String ?: "",
             estadoFundacion = map["estadoFundacion"] as? Boolean ?: true,
-            comando = map["comando"] as? List<String> ?: emptyList()
         )
     }
 

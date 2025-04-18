@@ -1,6 +1,6 @@
 package models.administrativo.user.repository
 
-import models.administrativo.user.model.Usuario
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 
 interface UsuarioRepository {
     fun crear(usuario: Usuario): Usuario

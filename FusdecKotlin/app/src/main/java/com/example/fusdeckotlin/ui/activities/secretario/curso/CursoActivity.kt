@@ -122,7 +122,7 @@ class CursoActivity : AppCompatActivity() {
 
     private fun mostrarDialogoSeleccionFundaciones() {
         lifecycleScope.launch {
-            val result = fundacionService.obtenerTodasLasFundaciones()
+            val result = fundacionService.listarTodasLasFundaciones()
             result.onSuccess { fundaciones ->
                 mostrarDialogoSeleccion(fundaciones)
             }.onFailure { error ->
@@ -296,24 +296,24 @@ class CursoActivity : AppCompatActivity() {
     }
 
     private fun mostrarDialogoEdiciones(ediciones: Array<String>) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_ediciones_curso, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_info_button, null)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()
 
-        val edicionesTextView = dialogView.findViewById<TextView>(R.id.edicionesTextView)
+        val tituloTextView = dialogView.findViewById<TextView>(R.id.tituloDialogo)
+        val contenidoTextView = dialogView.findViewById<TextView>(R.id.contenidoTextView)
         val cerrarBtn = dialogView.findViewById<TextView>(R.id.btnCerrar)
 
-        val textoFormateado = if (ediciones.isNotEmpty()) {
+        tituloTextView.text = "Ediciones del curso:"
+
+        contenidoTextView.text = if (ediciones.isNotEmpty()) {
             ediciones.joinToString("\n")
         } else {
             "No hay ediciones registradas para este curso."
         }
 
-        edicionesTextView.text = textoFormateado
-
         cerrarBtn.setOnClickListener { dialog.dismiss() }
-
         dialog.show()
     }
 }

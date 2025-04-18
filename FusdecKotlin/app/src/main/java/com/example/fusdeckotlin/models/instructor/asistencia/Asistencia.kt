@@ -23,4 +23,5 @@ data class Asistencia(
         return "Asistencia(id=${getId()}, titulo='${getTitulo()}', fecha=${getFecha()}, " +
                 "usuarioId='${getUsuarioId()}', estado=${getEstado()}, createdAt='${getCreatedAt()}')"
     }
+
 }
