@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class Usuario(
 
-    @SerializedName("numero_documento") private var numeroDocumento: String,
+    @SerializedName("numeroDocumento") private var numeroDocumento: String,
     @SerializedName("nombre") private var nombre: String,
     @SerializedName("apellido") private var apellido: String,
     @SerializedName("correo") private var correo: String,
     @SerializedName("password") private var password: String,
     @SerializedName("estado") private var estado: Boolean = true,
-    @SerializedName("createAt") private val createAt: String,
-    @SerializedName("updateAt") private val updateAt: String
+    @SerializedName("create_at") private val createAt: String,
+    @SerializedName("update_at") private val updateAt: String
 ) {
 
     /**++++++++++++++GETTERS+++++++++++++++++*/
