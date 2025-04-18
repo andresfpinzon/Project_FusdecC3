@@ -56,7 +56,7 @@ const Asistencias = () => {
     }
   }, [token])
 
-  // Cargar estudiantes    (?estado=true)
+  // Cargar estudiantes
   const fetchStudents = async () => {
     try {
       const response = await fetch("http://localhost:8080/estudiantes", {
@@ -104,7 +104,7 @@ const Asistencias = () => {
     }))
   }
 
-  // Guardar asistencia (versión robusta)
+  // Guardar asistencia 
   const handleSaveAttendance = async () => {
     try {
       // Validación

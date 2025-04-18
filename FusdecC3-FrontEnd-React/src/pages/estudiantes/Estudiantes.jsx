@@ -78,7 +78,7 @@ const Estudiantes = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Authorization": `Bearer ${token}`
         }
       });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
@@ -88,7 +88,7 @@ const Estudiantes = () => {
       if (data.length === 0) {
         setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
-        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+        setEstudiantes([]); 
       } else {
         setEstudiantes(data);
       }
@@ -233,7 +233,7 @@ const Estudiantes = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(formValues)
       });
@@ -276,7 +276,7 @@ const Estudiantes = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify(formValues)
         }
@@ -321,7 +321,7 @@ const Estudiantes = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
           }
         }
       );
@@ -371,16 +371,55 @@ const Estudiantes = () => {
   };
 
   const handleInfoClick = async (estudiante) => {
-    const response = await fetch(`http://localhost:8080/estudiantes/${estudiante.numeroDocumento}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token 
-      }
-    });
-    const data = await response.json();
-    setInfoEstudiante(data);
-    setOpenInfoDialog(true);
+    try {
+      // Obtener todas las relaciones asistencia-estudiante
+      const relacionesResponse = await fetch("http://localhost:8080/asistencia-estudiantes", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!relacionesResponse.ok) throw new Error("Error al obtener relaciones");
+      
+      const relaciones = await relacionesResponse.json();
+      
+      // Filtrar las relaciones de este estudiante
+      const relacionesDelEstudiante = relaciones.filter(
+        rel => rel.estudianteId === estudiante.numeroDocumento
+      );
+      
+      // Obtener los detalles de cada asistencia
+      const asistenciasResponse = await fetch("http://localhost:8080/asistencias", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!asistenciasResponse.ok) throw new Error("Error al obtener asistencias");
+      
+      const todasAsistencias = await asistenciasResponse.json();
+      
+      // Filtrar las asistencias de este estudiante
+      const asistenciasDelEstudiante = todasAsistencias.filter(asistencia => 
+        relacionesDelEstudiante.some(rel => rel.asistenciaId === asistencia.id)
+      );
+      
+      // Actualizar el estado con la información
+      setInfoEstudiante({
+        ...estudiante,
+        asistencias: asistenciasDelEstudiante
+      });
+      setOpenInfoDialog(true);
+      
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Error al obtener las asistencias del estudiante");
+      setOpenSnackbar(true);
+    }
   };
 
   const handleCloseInfoDialog = () => {
@@ -661,110 +700,60 @@ const Estudiantes = () => {
       </Dialog>
 
       
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="md" fullWidth>
         <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-          Información del Estudiante
+          Asistencias de {infoEstudiante?.nombre} {infoEstudiante?.apellido}
         </DialogTitle>
         <DialogContent dividers sx={{ padding: '20px' }}>
           {infoEstudiante && (
             <div>
-              {/* Número de Documento */}
-              <Box display="flex" alignItems="center" mb={2}>
+              <Box display="flex" alignItems="center" mb={3}>
                 <CreditCard color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>N° Documento:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.numeroDocumento || "No disponible"}</Typography>
+                <Typography variant="h6">Documento: {infoEstudiante.numeroDocumento}</Typography>
               </Box>
 
-              {/* Nombre */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Person color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.nombre || "No disponible"}</Typography>
-              </Box>
-
-              {/* Apellido */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Person color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Apellido:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.apellido || "No disponible"}</Typography>
-              </Box>
-
-              {/* Tipo de Documento */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Description color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tipo Documento:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.tipoDocumento || "No disponible"}</Typography>
-              </Box>
-
-              {/* Género */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Person color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Género:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.genero || "No disponible"}</Typography>
-              </Box>
-
-              {/* Unidad */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidad:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.unidad || "No disponible"}</Typography>
-              </Box>
-
-              {/* Colegio */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Colegio:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.colegio || "No disponible"}</Typography>
-              </Box>
-
-              {/* Edición */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Edit color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Edición:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.edicion || "No disponible"}</Typography>
-              </Box>
-
-              {/* Grado */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Grado:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.grado || "No disponible"}</Typography>
-              </Box>
-
-              {/* Estado */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <ToggleOn color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoEstudiante.estado ? (
-                    <Chip label="Activo" color="success" size="small" />
-                  ) : (
-                    <Chip label="Inactivo" color="error" size="small" />
-                  )}
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                Registro de Asistencias ({infoEstudiante.asistencias?.length || 0})
+              </Typography>
+              
+              {infoEstudiante.asistencias?.length > 0 ? (
+                <TableContainer component={Paper} sx={{ maxHeight: 400, overflow: 'auto' }}>
+                  <Table size="small" stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Fecha</TableCell>
+                        <TableCell>Título</TableCell>
+                        <TableCell>Estado</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {infoEstudiante.asistencias
+                        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)) // Ordenar por fecha descendente
+                        .map((asistencia) => (
+                          <TableRow key={asistencia.id}>
+                            <TableCell>{asistencia.id}</TableCell>
+                            <TableCell>
+                              {new Date(asistencia.fecha + 'T00:00:00').toLocaleDateString('es-ES')}
+                            </TableCell>
+                            <TableCell>{asistencia.titulo}</TableCell>
+                            <TableCell>
+                              <Chip 
+                                label={asistencia.estado ? "Activa" : "Inactiva"} 
+                                color={asistencia.estado ? "success" : "error"} 
+                                size="small" 
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Typography variant="body1" sx={{ fontStyle: 'italic', textAlign: 'center', py: 2 }}>
+                  El estudiante no tiene asistencias registradas
                 </Typography>
-              </Box>
-
-              {/* Asistencias Registradas */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <CheckCircle color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Asistencias:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoEstudiante.asistenciasRegistradas || 0} registradas
-                </Typography>
-              </Box>
-
-              {/* Aprobado */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Star color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado Académico:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoEstudiante.aprobado ? (
-                    <Chip label="Aprobado" color="success" size="small" />
-                  ) : (
-                    <Chip label="En curso" color="warning" size="small" />
-                  )}
-                </Typography>
-              </Box>
+              )}
             </div>
           )}
         </DialogContent>
