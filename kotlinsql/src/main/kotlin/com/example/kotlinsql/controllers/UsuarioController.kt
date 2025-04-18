@@ -6,6 +6,8 @@ import com.example.kotlinsql.model.Usuario
 import com.example.kotlinsql.services.UsuarioService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -15,11 +17,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 
 @RestController
-class UsuarioController {
-
-    @Autowired
-    lateinit var usuarioService: UsuarioService
-
+@RequestMapping("/usuarios")
+class UsuarioController @Autowired constructor(private val usuarioService: UsuarioService) {
 
     @Operation(summary = "Obtener todos los usuarios", description = "Devuelve una lista de todos los usuarios registrados.")
     @ApiResponses(
@@ -32,10 +31,10 @@ class UsuarioController {
         ]
     )
     @GetMapping
-    fun obtenerUsuarios(): List<Usuario> {
-        return usuarioService.obtenerTodos()
+    fun obtenerUsuarios(): ResponseEntity<List<Usuario>> {
+        val usuarios = usuarioService.obtenerTodos()
+        return ResponseEntity.ok(usuarios)
     }
-
 
     @Operation(
         summary = "Crear nuevo usuario",
@@ -44,23 +43,30 @@ class UsuarioController {
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
+                responseCode = "201",
                 description = "Usuario creado exitosamente",
-                content = [Content(mediaType = "application/json",  schema = Schema(implementation = Usuario::class))]
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Usuario::class))]
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "Error en los datos enviados",
-                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "Error al crear el usuario")])]
+                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"mensaje\": \"Datos inválidos\"}")])]
             )
         ]
     )
     @PostMapping
-    fun crearUsuario(@Valid @RequestBody usuario: UsuarioCreateRequest): Usuario? {
-        return usuarioService.crear(usuario)
+    fun crearUsuario(@Valid @RequestBody usuario: UsuarioCreateRequest): ResponseEntity<Any> {
+        return try {
+            val nuevoUsuario = usuarioService.crear(usuario)
+            if (nuevoUsuario != null) {
+                ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario)
+            } else {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("mensaje" to "No se pudo crear el usuario"))
+            }
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("mensaje" to e.message))
+        }
     }
-
-
 
     @Operation(
         summary = "Actualizar un usuario",
@@ -71,12 +77,17 @@ class UsuarioController {
             ApiResponse(
                 responseCode = "200",
                 description = "Usuario actualizado exitosamente",
-                content = [Content(mediaType = "application/json",  schema = Schema(implementation = Usuario::class))]
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Usuario::class))]
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "Usuario no encontrado o sin cambios",
-                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "No se realizaron cambios o el usuario no fue encontrado")])]
+                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"mensaje\": \"No se realizaron cambios o el usuario no fue encontrado\"}")])]
+            ),
+            ApiResponse(
+                responseCode = "500",
+                description = "Error interno del servidor",
+                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"mensaje\": \"Ocurrió un error inesperado\"}")])]
             )
         ]
     )
@@ -84,8 +95,17 @@ class UsuarioController {
     fun actualizarUsuario(
         @PathVariable documento: String,
         @Valid @RequestBody usuario: UsuarioUpdateRequest
-    ): Usuario? {
-        return usuarioService.actualizar(documento, usuario)
+    ): ResponseEntity<Any> {
+        return try {
+            val usuarioActualizado = usuarioService.actualizar(documento, usuario)
+            if (usuarioActualizado != null) {
+                ResponseEntity.ok(usuarioActualizado)
+            } else {
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("mensaje" to "No se realizaron cambios o el usuario no fue encontrado"))
+            }
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("mensaje" to "Ocurrió un error inesperado"))
+        }
     }
 
     @Operation(
@@ -97,18 +117,22 @@ class UsuarioController {
             ApiResponse(
                 responseCode = "200",
                 description = "Usuario eliminado exitosamente",
-                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "Usuario eliminado")])]
+                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"mensaje\": \"Usuario eliminado\"}")])]
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "Usuario no encontrado",
-                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "Usuario no encontrado")])]
+                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"mensaje\": \"Usuario no encontrado\"}")])]
             )
         ]
     )
     @DeleteMapping("/{documento}")
-    fun eliminarUsuario(@PathVariable documento: String): String {
+    fun eliminarUsuario(@PathVariable documento: String): ResponseEntity<Map<String, String>> {
         val resultado = usuarioService.eliminarPorDocumento(documento)
-        return if (resultado > 0) "Usuario eliminado" else "Usuario no encontrado"
+        return if (resultado > 0) {
+            ResponseEntity.ok(mapOf("mensaje" to "Usuario eliminado"))
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("mensaje" to "Usuario no encontrado"))
+        }
     }
 }
