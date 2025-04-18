@@ -35,9 +35,9 @@ const token = localStorage.getItem("token");
 
 const Estudiantes = () => {
   const [estudiantes, setEstudiantes] = useState([]);
-  /*const [unidades, setUnidades] = useState([]);
+  const [unidades, setUnidades] = useState([]);
+  const [ediciones, setEdiciones] = useState([]);
   const [colegios, setColegios] = useState([]);
-  const [ediciones, setEdiciones] = useState([]);*/
   const [selectedEstudiante, setSelectedEstudiante] = useState(null);
   const [formValues, setFormValues] = useState({
     numeroDocumento: "",
@@ -67,9 +67,9 @@ const Estudiantes = () => {
 
   useEffect(() => {
     fetchEstudiantes();
-    /*fetchUnidades();
+    fetchUnidades();
     fetchColegios();
-    fetchEdiciones();*/
+    fetchEdiciones();
   }, []);
 
   const fetchEstudiantes = async () => {
@@ -99,23 +99,23 @@ const Estudiantes = () => {
     }
   };
 
-  /*const fetchUnidades = async () => {
+  const fetchUnidades = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/unidades",{
+      const response = await fetch("http://localhost:3000/api/unidades", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
+      
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
-
-      // Condicion que verifica si el arreglo de unidades está vacío
+      
       if (data.length === 0) {
         setErrorMessage("No hay unidades registradas.");
         setOpenSnackbar(true);
-        setUnidades([]); // esto mantiene el estado vacío para evitar errores
+        setUnidades([]);
       } else {
         setUnidades(data);
       }
@@ -124,52 +124,61 @@ const Estudiantes = () => {
       setErrorMessage("Error al obtener unidades");
       setOpenSnackbar(true);
     }
-  };*/
+  };
 
-  /*const fetchColegios = async () => {
+  const fetchColegios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/colegios",{
+      const response = await fetch("http://localhost:3000/api/colegios", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener colegios");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de colegios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay colegios registrados.");
-        setOpenSnackbar(true);
-        setColegios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setColegios(data);
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
+  
+      // Manejo de errores detallado
+      if (response.status === 401) {
+        const errorData = await response.json();
+        console.error("Detalles error 401:", errorData);
+        throw new Error(errorData.message || "No autorizado");
       }
+  
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      setColegios(data);
     } catch (error) {
-      console.error("Error al obtener colegios:", error);
-      setErrorMessage("Error al obtener colegios");
+      console.error("Error en fetchColegios:", error);
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
+      
+      // Redirigir a login si es error de autenticación
+      if (error.message.includes("No autorizado") || error.message.includes("401")) {
+        localStorage.removeItem("token");
+        // window.location.href = "/login"; // Descomenta si necesitas redirección
+      }
     }
-  };*/
+  };
 
-  /*const fetchEdiciones = async () => {
+  const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones",{
+      const response = await fetch("http://localhost:3000/api/ediciones", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
+      
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
-
-      // Condicion que verifica si el arreglo de ediciones está vacío
+      
       if (data.length === 0) {
         setErrorMessage("No hay ediciones registradas.");
         setOpenSnackbar(true);
-        setEdiciones([]); // esto mantiene el estado vacío para evitar errores
+        setEdiciones([]);
       } else {
         setEdiciones(data);
       }
@@ -178,7 +187,7 @@ const Estudiantes = () => {
       setErrorMessage("Error al obtener ediciones");
       setOpenSnackbar(true);
     }
-  };*/
+  };
 
   // Filtrar usuarios según el término de búsqueda
   const filteredEstudiantes = estudiantes.filter((estudiante) =>
@@ -216,16 +225,6 @@ const Estudiantes = () => {
       [e.target.name]: e.target.checked,
     });
   };
-
-  /*const handleEditionChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setFormValues({
-      ...formValues,
-      ediciones: typeof value === "string" ? value.split(",") : value,
-    });
-  };*/
 
   const handleCreateEstudiante = async () => {
     try {
@@ -495,37 +494,88 @@ const Estudiantes = () => {
         </FormControl>
 
         {/* Unidad */}
-        <TextField
-          label="Unidad"
-          name="unidad"
-          value={formValues.unidad}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          required
-        />
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel>Unidad</InputLabel>
+          <Select
+            value={unidades.find(u => u.nombreUnidad === formValues.unidad)?._id || ""}
+            onChange={(e) => {
+              const unidadSeleccionada = unidades.find(u => u._id === e.target.value);
+              setFormValues({
+                ...formValues,
+                unidad: unidadSeleccionada?.nombreUnidad || ""
+              });
+            }}
+            input={<OutlinedInput label="Unidad" />}
+          >
+            {unidades.map((unidad) => (
+              <MenuItem key={unidad._id} value={unidad._id}>
+                {unidad.nombreUnidad}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         {/* Colegio */}
-        <TextField
-          label="Colegio"
-          name="colegio"
-          value={formValues.colegio}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          required
-        />
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel>Colegio</InputLabel>
+          <Select
+            value={colegios.find(c => c.nombreColegio === formValues.colegio)?._id || ""}
+            onChange={(e) => {
+              const colegioSeleccionado = colegios.find(c => c._id === e.target.value);
+              setFormValues({
+                ...formValues,
+                colegio: colegioSeleccionado?.nombreColegio || ""
+              });
+            }}
+            input={<OutlinedInput label="Colegio" />}
+          >
+            {colegios.map((colegio) => (
+              <MenuItem key={colegio._id} value={colegio._id}>
+                {colegio.nombreColegio}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-        {/* Edición */}
-        <TextField
-          label="Edición"
-          name="edicion"
-          value={formValues.edicion}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          required
-        />
+        {/* Edición - Versión más robusta */}
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel>Edición</InputLabel>
+          <Select
+            value={
+              ediciones.find(e => 
+                e.tituloEdicion === formValues.edicion || 
+                e._id === formValues.edicion
+              )?._id || ""
+            }
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              const edicionSeleccionada = ediciones.find(e => e._id === selectedId);
+              
+              if (edicionSeleccionada) {
+                setFormValues({
+                  ...formValues,
+                  edicion: edicionSeleccionada.tituloEdicion
+                });
+              } else {
+                // Opcional: resetear si no se encuentra
+                setFormValues({
+                  ...formValues,
+                  edicion: ""
+                });
+              }
+            }}
+            input={<OutlinedInput label="Edición" />}
+          >
+            <MenuItem value="" disabled>
+              Seleccione una edición
+            </MenuItem>
+            {ediciones.map((edicion) => (
+              <MenuItem key={edicion._id} value={edicion._id}>
+                {edicion.tituloEdicion}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         {/* Grado */}
         <FormControl fullWidth margin="normal" required>

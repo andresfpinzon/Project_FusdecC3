@@ -35,7 +35,6 @@ const Colegios = () => {
     nombreColegio: "",
     emailColegio: "",
     estadoColegio: true,
-    estudiantes: [],
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -80,21 +79,21 @@ const Colegios = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes",{
+      const response = await fetch("http://localhost:8080/estudiantes", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-
+      
       // Condicion que verifica si el arreglo de estudiantes está vacío
       if (data.length === 0) {
         setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
-        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+        setEstudiantes([]); 
       } else {
         setEstudiantes(data);
       }
@@ -165,7 +164,6 @@ const Colegios = () => {
               nombreColegio: "",
               emailColegio: "",
               estadoColegio: true,
-              estudiantes: [],
             });
             // Muestra un mensaje de éxito
             setSuccessMessage("Colegio creado exitosamente");
@@ -207,7 +205,6 @@ const Colegios = () => {
           nombreColegio: "",
           emailColegio: "",
           estadoColegio: true,
-          estudiantes: [],
         });
         // Muestra un mensaje de éxito
         setSuccessMessage("Colegio actualizado exitosamente");
@@ -257,7 +254,6 @@ const Colegios = () => {
       nombreColegio: colegio.nombreColegio,
       emailColegio: colegio.emailColegio,
       estadoColegio: colegio.estadoColegio,
-      estudiantes: colegio.estudiantes || [],
     });
   };
 

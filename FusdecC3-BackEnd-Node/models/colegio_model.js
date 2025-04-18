@@ -23,12 +23,6 @@ const ColegioSchema = new Schema({
     required: true,
   },
 
-  estudiantes: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Estudiante", // Referencia a la colección de Estudiante
-    },
-  ],
 });
 
 const Colegio = mongoose.model("Colegio", ColegioSchema);

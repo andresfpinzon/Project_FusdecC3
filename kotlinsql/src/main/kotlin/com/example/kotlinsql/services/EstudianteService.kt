@@ -35,7 +35,7 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
             INSERT INTO estudiante (
                 numero_documento, nombre, apellido, tipo_documento,
                 genero, unidad, colegio, edicion, grado
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             RETURNING *
         """.trimIndent()
         return jdbcTemplate.queryForObject(
