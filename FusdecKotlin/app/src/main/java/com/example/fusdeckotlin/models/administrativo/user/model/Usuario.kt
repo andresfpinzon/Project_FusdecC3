@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Usuario(
 
-    @SerializedName("numero_Documento") private var numeroDocumento: String,
+    @SerializedName("numero_documento") private var numeroDocumento: String,
     @SerializedName("nombre") private var nombre: String,
     @SerializedName("apellido") private var apellido: String,
     @SerializedName("correo") private var correo: String,
