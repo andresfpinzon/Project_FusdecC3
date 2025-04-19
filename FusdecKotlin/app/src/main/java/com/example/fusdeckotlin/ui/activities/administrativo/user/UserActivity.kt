@@ -39,6 +39,10 @@ class UserActivity : AppCompatActivity() {
     private var currentNumeroDocument: String? = null
     private var usuariosOriginales: List<Usuario> = emptyList()
 
+
+    // option for select
+    private val roles = arrayOf("Administrativo", "Instructor", "Secretario")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
