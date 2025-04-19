@@ -4,6 +4,7 @@ import {
   Container,
   TextField,
   Button,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -483,7 +484,11 @@ const Ediciones = () => {
                 <TableCell>{formatDate(edicion.fechaInicioEdicion)}</TableCell>
                 <TableCell>{formatDate(edicion.fechaFinEdicion)}</TableCell>
                 <TableCell>
-                  {edicion.estadoEdicion ? "Activa" : "Inactiva"}
+                  {edicion.estadoEdicion ? (
+                                          <Chip label="Activo" color="success" size="small" />
+                                        ) : (
+                                          <Chip label="Inactivo" color="error" size="small" />
+                                        )}
                 </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEditClick(edicion)} color="primary">
