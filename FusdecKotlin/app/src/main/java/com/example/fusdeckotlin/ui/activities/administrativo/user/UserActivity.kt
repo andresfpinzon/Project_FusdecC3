@@ -214,4 +214,15 @@ class UserActivity : AppCompatActivity() {
         correo.text?.clear()
         password.text?.clear()
     }
+
+    private fun showDialogSelection(title: String, options: Array<String>, campoDestino:TextInputEditText ){
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar ${title}")
+            .setItems(options) {_, which ->
+                campoDestino.setText(options[which])
+            }
+            .setNegativeButton ("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
+    }
 }
