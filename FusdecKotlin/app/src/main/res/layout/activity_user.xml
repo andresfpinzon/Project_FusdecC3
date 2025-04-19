@@ -20,11 +20,25 @@
     />
 
     <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputNumeroDocumento"
+            android:layout_width="254dp"
+            android:layout_height="45dp"
+            android:hint="Número de documento"
+            app:layout_constraintTop_toBottomOf="@+id/tituloLayoutUser"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="40dp"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textColorHighlight="#ee00ef"
+            android:inputType="text|number"
+    />
+    <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputNombres"
             android:layout_width="254dp"
             android:layout_height="40dp"
             android:hint="Nombres"
-            app:layout_constraintTop_toBottomOf="@+id/tituloLayoutUser"
+            app:layout_constraintTop_toBottomOf="@+id/inputNumeroDocumento"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="10dp"
             android:layout_marginStart="40dp"
@@ -52,26 +66,13 @@
             android:scrollHorizontally="true"
     />
 
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputNumeroDocumento"
-            android:layout_width="254dp"
-            android:layout_height="45dp"
-            android:hint="Número de documento"
-            app:layout_constraintTop_toBottomOf="@+id/inputApellidos"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-            android:textSize="14sp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="#ee00ef"
-            android:inputType="text|number"
-    />
+
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/inputCorreo"
         android:layout_width="254dp"
         android:layout_height="45dp"
         android:hint="Correo"
-        app:layout_constraintTop_toBottomOf="@+id/inputNumeroDocumento"
+        app:layout_constraintTop_toBottomOf="@+id/inputApellidos"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="40dp"
         android:textSize="14sp"

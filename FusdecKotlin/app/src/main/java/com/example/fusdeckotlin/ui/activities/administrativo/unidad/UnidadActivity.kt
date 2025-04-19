@@ -210,7 +210,7 @@ class UnidadActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val brigadaId = brigadaSeleccionada!!.getId()
-            val usuarioId = usuarioSeleccionado!!.getUserId()
+            val usuarioId = usuarioSeleccionado!!.getNumeroDocumento()
 
             if (isEditing && currentUnidadId != null) {
                 unidadService.actualizarUnidad(

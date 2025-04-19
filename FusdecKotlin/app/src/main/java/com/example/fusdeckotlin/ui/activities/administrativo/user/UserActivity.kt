@@ -83,23 +83,15 @@ class UserActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val result = usuarioServices.getUsersActives()
-                result.onSuccess { usuarios ->
-                    usuariosOriginales = usuarios
-                    runOnUiThread {
-                        adapter.actualizarLista(usuarios)
-                        if (usuarios.isEmpty()) {
-                            showInfo("No hay usuarios registrados")
-                        }
-                    }
+                result.onSuccess { users ->
+                    adapter.actualizarLista(users)
                 }.onFailure { error ->
-                    runOnUiThread {
-                        showError("Error al cargar usuarios: ${error.message}")
-                    }
+                    showError("error al cargar los users: ${error.message}")
                 }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    showError("Error inesperado: ${e.message}")
-                }
+            }catch (e: Exception) {
+               runOnUiThread {
+                   showError("Error inesperado: ${e.message}")
+               }
             }
         }
     }
@@ -110,7 +102,6 @@ class UserActivity : AppCompatActivity() {
         val numeroDocumento = documento.text.toString().trim()
         val correoUsuario = correo.text.toString().trim()
         val passwordUsuario = password.text.toString().trim()
-        //val rolUsuario = role.text.toString().trim()
 
         if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() || numeroDocumento.isEmpty() ||
             correoUsuario.isEmpty() || passwordUsuario.isEmpty()) {
@@ -121,85 +112,57 @@ class UserActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 if (isEditing && currentNumeroDocument != null) {
-                    actualizarUsuario(nombreUsuario, apellidoUsuario, numeroDocumento, correoUsuario, passwordUsuario)
+                    // Modo de edición: Actualizar usuario
+                    val updateData = UpdateUserDto(
+                        nombre = nombreUsuario,
+                        apellido = apellidoUsuario,
+                        correo = correoUsuario,
+                        password = passwordUsuario
+                    )
+                    usuarioServices.updateUser(currentNumeroDocument!!, updateData)
+                        .onSuccess {
+                            runOnUiThread {
+                                showSuccess("Usuario actualizado")
+                                resetEditingState()
+                                cargarUsuarios()
+                            }
+                        }.onFailure { error ->
+                            showError("Error al actualizar: ${error.message}")
+                        }
                 } else {
-                    crearUsuario(nombreUsuario, apellidoUsuario, numeroDocumento, correoUsuario, passwordUsuario)
+                    // Modo de creación: Crear usuario
+                    val createData = CreateUserDto(
+                        numeroDocumento = numeroDocumento,
+                        nombre = nombreUsuario,
+                        apellido = apellidoUsuario,
+                        correo = correoUsuario,
+                        password = passwordUsuario
+                    )
+                    usuarioServices.createUser(createData)
+                        .onSuccess {
+                            runOnUiThread {
+                                showSuccess("Usuario creado")
+                                resetEditingState()
+                                cargarUsuarios()
+                            }
+                        }.onFailure { error ->
+                            showError("Error al crear: ${error.message}")
+                        }
                 }
             } catch (e: Exception) {
-                showError("Error: ${e.message}")
+                showError("Error inesperado: ${e.message}")
             }
         }
     }
 
-    private suspend fun crearUsuario(
-        nombre: String,
-        apellidos: String,
-        documento: String,
-        correo: String,
-        password: String
-    ) {
-        val createData = CreateUserDto(
-            nombre = nombre,
-            apellido = apellidos,
-            numeroDocumento = documento,
-            correo = correo,
-            password = password,
-        )
 
-        usuarioServices.createUser(createData)
-            .onSuccess {
-                runOnUiThread {
-                    showSuccess("Usuario creado")
-                    resetForm()
-                    cargarUsuarios()
-                }
-            }.onFailure { error ->
-                showError("Error al crear: ${error.message}")
-            }
-    }
 
-    private suspend fun actualizarUsuario(
-        nombre: String,
-        apellidos: String,
-        documento: String,
-        correo: String,
-        password: String,
-    ) {
-        val updateData = UpdateUserDto(
-            nombre = nombre,
-            apellido = apellidos,
-            correo = correo,
-            password = password,
-        )
-
-        usuarioServices.updateUser(currentNumeroDocument!!, updateData)
-            .onSuccess {
-                runOnUiThread {
-                    showSuccess("Usuario actualizado")
-                    resetForm()
-                    cargarUsuarios()
-                }
-            }.onFailure { error ->
-                showError("Error al actualizar: ${error.message}")
-            }
-    }
-
-    private fun resetForm() {
-        isEditing = false
-        currentNumeroDocument = null
-        nombre.text?.clear()
-        apellidos.text?.clear()
-        documento.text?.clear()
-        correo.text?.clear()
-        password.text?.clear()
-
-    }
 
     private fun onUpdateClick(usuario: Usuario) {
         isEditing = true
+        documento.setText(usuario.getNumeroDocumento())
         nombre.setText(usuario.getNombreUsuario())
         apellidos.setText(usuario.getApellidoUsuario())
-        documento.setText(usuario.getNumeroDocumento())
         correo.setText(usuario.getCorreo())
         password.setText(usuario.getPassword())
     }
@@ -236,5 +199,14 @@ class UserActivity : AppCompatActivity() {
 
     private fun showInfo(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun resetEditingState(){
+        isEditing = false
+        currentNumeroDocument = null
+        nombre.text?.clear()
+        apellidos.text?.clear()
+        correo.text?.clear()
+        password.text?.clear()
     }
 }

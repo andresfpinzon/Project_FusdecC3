@@ -18,18 +18,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:padding="8dp">
 
-        <!-- ID -->
-        <TextView
-                android:id="@+id/textViewUserId"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="ID: "
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginBottom="8dp" />
+<!--        &lt;!&ndash; ID &ndash;&gt;-->
+<!--        <TextView-->
+<!--                android:id="@+id/textViewUserId"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="ID: "-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                android:textStyle="bold"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginBottom="8dp" />-->
 
         <!-- Nombres -->
         <TextView
@@ -40,7 +40,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewUserId"
+                app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginBottom="8dp" />
 
         <!-- Apellidos -->
@@ -92,16 +92,16 @@
                 android:layout_marginBottom="8dp" />
 
         <!-- Rol -->
-        <TextView
-                android:id="@+id/textViewRol"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Rol: "
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewPassword"
-                android:layout_marginBottom="8dp" />
+<!--        <TextView-->
+<!--                android:id="@+id/textViewRol"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Rol: "-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/textViewPassword"-->
+<!--                android:layout_marginBottom="8dp" />-->
 
         <!-- Estado -->
         <TextView
@@ -112,20 +112,31 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewRol"
+                app:layout_constraintTop_toBottomOf="@id/textViewPassword"
                 android:layout_marginBottom="8dp" />
 
-        <!-- Creado en -->
-        <TextView
-                android:id="@+id/textViewCreadoEn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Creado: "
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewEstado"
-                android:layout_marginBottom="8dp" />
+<!--        &lt;!&ndash; Creado en &ndash;&gt;-->
+<!--        <TextView-->
+<!--                android:id="@+id/textViewCreadoEn"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Creado: "-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/textViewEstado"-->
+<!--                android:layout_marginBottom="8dp" />-->
+
+<!--        <TextView-->
+<!--                android:id="@+id/textViewUpdateAtUser"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Actualizado: "-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/textViewCreadoEn"-->
+<!--                android:layout_marginBottom="8dp" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Botones de acción -->

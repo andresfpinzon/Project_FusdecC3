@@ -61,7 +61,7 @@ data class Unidad(
     fun getUsuarioId(): String {
         return when (usuarioId) {
             is String -> usuarioId as String
-            is Usuario -> (usuarioId as Usuario).getUserId()
+            is Usuario -> (usuarioId as Usuario).getNumeroDocumento()
             is Map<*,*> -> (usuarioId as Map<*,*>) ["_id"] as? String ?:""
             else -> ""
         }
@@ -75,27 +75,27 @@ data class Unidad(
         }
     }
 
-    private fun createUsersEmpty(id: String): Usuario {
+    private fun createUsersEmpty(numeroDocumento: String): Usuario {
         return Usuario(
-            id = id,
-            nombreUsuario = "",
-            apellidoUsuario = "",
-            numeroDocumento = "",
+            numeroDocumento = numeroDocumento,
+            nombre = "",
+            apellido = "",
             correo = "",
             password = "",
-            roles = emptyList(),
+            createAt = "",
+            updateAt = ""
         )
     }
 
     private fun convertMapToUsers(map: Map<*,*>): Usuario {
         return Usuario(
-            id = map["_id"] as? String ?: "",
-            nombreUsuario = map["nombreUsuario"] as? String ?: "",
-            apellidoUsuario = map["apellidoUsuario"] as? String ?: "",
-            numeroDocumento = map["numeroDocumento"] as? String ?: "",
+            numeroDocumento = map["numero_documento"] as? String ?: "",
+            nombre = map["nombre"] as? String ?: "",
+            apellido = map["apellido"] as? String ?: "",
             correo = map["correo"] as? String ?: "",
             password = map["password"] as? String ?: "",
-            roles = map["roles"] as? List<String> ?: emptyList()
+            createAt = map["create_at"] as? String ?: "",
+            updateAt = map["update_at"]  as? String ?: ""
         )
     }
 
