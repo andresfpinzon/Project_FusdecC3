@@ -21,7 +21,7 @@ class UserRolServices {
     }
     suspend fun addRolToUser(data: AddRolUserDto): Result<UserRolModel>{
         return try {
-            val res = userRolApi.AddRolToUser(data)
+            val res = userRolApi.addRolToUser(data)
             handleResponse(res)
         }catch (e: Exception) {
             Result.failure(e)
