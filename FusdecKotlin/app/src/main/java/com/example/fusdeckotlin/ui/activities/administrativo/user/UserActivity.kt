@@ -160,6 +160,7 @@ class UserActivity : AppCompatActivity() {
 
     private fun onUpdateClick(usuario: Usuario) {
         isEditing = true
+        currentNumeroDocument = usuario.getNumeroDocumento()
         documento.setText(usuario.getNumeroDocumento())
         nombre.setText(usuario.getNombreUsuario())
         apellidos.setText(usuario.getApellidoUsuario())
