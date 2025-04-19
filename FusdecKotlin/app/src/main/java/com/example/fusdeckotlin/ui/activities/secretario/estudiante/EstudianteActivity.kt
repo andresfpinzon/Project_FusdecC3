@@ -19,6 +19,7 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
 import com.example.fusdeckotlin.services.instructor.asistenciaestudiante.AsistenciaEstudianteService
+import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
 import com.example.fusdeckotlin.services.secretario.estudiante.EstudianteServices
 import com.example.fusdeckotlin.ui.adapters.secretario.estudiante.EstudianteAdapter
 import kotlinx.coroutines.launch
@@ -42,16 +43,33 @@ class EstudianteActivity : AppCompatActivity() {
     private val estudianteServicio = EstudianteServices()
     private val asistenciaService = AsistenciaServices()
     private val asistenciaEstudianteService = AsistenciaEstudianteService()
+    private val edicionService = EdicionServices()
     private lateinit var adapter: EstudianteAdapter
 
     private var isEditing: Boolean = false
     private var currentEstudianteDocumento: String? = null
 
+    // Opciones para los select
+    private val tiposDocumento = arrayOf("T.I", "C.C")
+    private val generos = arrayOf("Masculino", "Femenino")
+    private val grados = arrayOf("Noveno", "Décimo", "Once")
+    private val unidades = mutableListOf<String>()
+    private val colegios = mutableListOf<String>()
+    private val ediciones = mutableListOf<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_estudiante)
 
-        // Inicializar vistas
+        initViews()
+        setupRecyclerView()
+        cargarDatosParaSelects()
+        setupListeners()
+        cargarEstudiantes()
+        configurarBusqueda()
+    }
+
+    private fun initViews() {
         nombreEditText = findViewById(R.id.nombreEditText)
         apellidoEditText = findViewById(R.id.apellidoEditText)
         tipoDocumentoEditText = findViewById(R.id.tipoDocumentoEditText)
@@ -66,7 +84,16 @@ class EstudianteActivity : AppCompatActivity() {
         searchEditText = findViewById(R.id.searchEditText)
         estudiantesRecyclerView = findViewById(R.id.estudiantesRecyclerView)
 
-        // Configurar RecyclerView
+        // Configurar campos como no editables (se seleccionan desde diálogos)
+        tipoDocumentoEditText.isFocusable = false
+        generoEditText.isFocusable = false
+        unidadEditText.isFocusable = false
+        colegioEditText.isFocusable = false
+        edicionEditText.isFocusable = false
+        gradoEditText.isFocusable = false
+    }
+
+    private fun setupRecyclerView() {
         adapter = EstudianteAdapter(
             emptyList(),
             ::onUpdateClick,
@@ -75,18 +102,55 @@ class EstudianteActivity : AppCompatActivity() {
         )
         estudiantesRecyclerView.layoutManager = LinearLayoutManager(this)
         estudiantesRecyclerView.adapter = adapter
+    }
 
-        // Cargar estudiantes al iniciar
-        cargarEstudiantes()
+    private fun cargarDatosParaSelects() {
+        lifecycleScope.launch {
+            // Cargar ediciones disponibles
+            edicionService.listarEdicionesActivas().onSuccess { listaEdiciones ->
+                ediciones.clear()
+                ediciones.addAll(listaEdiciones.map { it.getNombreEdicion() })
+            }
 
-        // Configurar búsqueda
-        configurarBusqueda()
+            // Cargar unidades y colegios de estudiantes existentes
+            estudianteServicio.listarEstudiantesActivos().onSuccess { estudiantes ->
+                unidades.clear()
+                colegios.clear()
 
-        // Botón confirmar
+                estudiantes.forEach {
+                    if (!unidades.contains(it.getUnidad())) {
+                        unidades.add(it.getUnidad())
+                    }
+                    if (!colegios.contains(it.getColegio())) {
+                        colegios.add(it.getColegio())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupListeners() {
+        // Listeners para abrir diálogos de selección
+        tipoDocumentoEditText.setOnClickListener { mostrarDialogoSeleccion("Tipo de Documento", tiposDocumento, tipoDocumentoEditText) }
+        generoEditText.setOnClickListener { mostrarDialogoSeleccion("Género", generos, generoEditText) }
+        gradoEditText.setOnClickListener { mostrarDialogoSeleccion("Grado", grados, gradoEditText) }
+        unidadEditText.setOnClickListener { mostrarDialogoSeleccion("Unidad", unidades.toTypedArray(), unidadEditText) }
+        colegioEditText.setOnClickListener { mostrarDialogoSeleccion("Colegio", colegios.toTypedArray(), colegioEditText) }
+        edicionEditText.setOnClickListener { mostrarDialogoSeleccion("Edición", ediciones.toTypedArray(), edicionEditText) }
+
         confirmarButton.setOnClickListener { guardarEstudiante() }
-
-        // Botón cancelar
         cancelarButton.setOnClickListener { finish() }
+    }
+
+    private fun mostrarDialogoSeleccion(titulo: String, opciones: Array<String>, campoDestino: EditText) {
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar $titulo")
+            .setItems(opciones) { _, which ->
+                campoDestino.setText(opciones[which])
+            }
+            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
     }
 
     private fun configurarBusqueda() {
@@ -119,11 +183,7 @@ class EstudianteActivity : AppCompatActivity() {
             result.onSuccess { estudiantes ->
                 adapter.actualizarLista(estudiantes)
             }.onFailure { error ->
-                Toast.makeText(
-                    this@EstudianteActivity,
-                    "Error al cargar estudiantes: ${error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showError("Error al cargar estudiantes: ${error.message}")
             }
         }
     }
@@ -142,7 +202,7 @@ class EstudianteActivity : AppCompatActivity() {
         if (nombre.isEmpty() || apellido.isEmpty() || tipoDocumento.isEmpty() ||
             numeroDocumento.isEmpty() || genero.isEmpty() || unidad.isEmpty() ||
             colegio.isEmpty() || grado.isEmpty()) {
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+            showError("Por favor, complete todos los campos")
             return
         }
 
@@ -161,7 +221,7 @@ class EstudianteActivity : AppCompatActivity() {
                         grado,
                         true
                     ).onSuccess {
-                        Toast.makeText(this@EstudianteActivity, "Estudiante actualizado", Toast.LENGTH_SHORT).show()
+                        showSuccess("Estudiante actualizado")
                         resetEditingState()
                         cargarEstudiantes()
                     }.onFailure { error ->
@@ -179,9 +239,11 @@ class EstudianteActivity : AppCompatActivity() {
                         edicion,
                         grado
                     ).onSuccess {
-                        Toast.makeText(this@EstudianteActivity, "Estudiante creado", Toast.LENGTH_SHORT).show()
+                        showSuccess("Estudiante creado")
                         resetEditingState()
                         cargarEstudiantes()
+                        // Actualizar listas de unidades y colegios
+                        cargarDatosParaSelects()
                     }.onFailure { error ->
                         showError("Error al crear: ${error.message}")
                     }
@@ -200,6 +262,10 @@ class EstudianteActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showSuccess(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -231,42 +297,33 @@ class EstudianteActivity : AppCompatActivity() {
     }
 
     private fun onDeleteClick(estudiante: Estudiante) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Confirmar eliminación")
-        builder.setMessage("¿Estás seguro de que deseas eliminar este estudiante?")
-
-        builder.setPositiveButton("Sí") { _, _ ->
-            lifecycleScope.launch {
-                val result = estudianteServicio.desactivarEstudiante(estudiante.getNumeroDocumento())
-                result.onSuccess {
-                    Toast.makeText(
-                        this@EstudianteActivity,
-                        "Estudiante eliminado",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    cargarEstudiantes()
-                }.onFailure { error ->
-                    Toast.makeText(
-                        this@EstudianteActivity,
-                        error.message ?: "Error al eliminar",
-                        Toast.LENGTH_SHORT
-                    ).show()
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Estás seguro de que deseas eliminar este estudiante?")
+            .setPositiveButton("Sí") { _, _ ->
+                lifecycleScope.launch {
+                    estudianteServicio.desactivarEstudiante(estudiante.getNumeroDocumento())
+                        .onSuccess {
+                            showSuccess("Estudiante eliminado")
+                            cargarEstudiantes()
+                            // Actualizar listas de unidades y colegios
+                            cargarDatosParaSelects()
+                        }.onFailure { error ->
+                            showError(error.message ?: "Error al eliminar")
+                        }
                 }
             }
-        }
-
-        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
     }
 
     private fun onInfoClick(estudiante: Estudiante) {
         lifecycleScope.launch {
             try {
-                // Obtener todas las relaciones asistencia-estudiante
                 val resultRelaciones = asistenciaEstudianteService.obtenerTodasLasRelaciones()
 
                 resultRelaciones.onSuccess { todasRelaciones ->
-                    // Filtrar relaciones donde el estudiante haya asistido
                     val relacionesDelEstudiante = todasRelaciones.filter {
                         it.getEstudianteId() == estudiante.getNumeroDocumento()
                     }
@@ -278,15 +335,13 @@ class EstudianteActivity : AppCompatActivity() {
                         return@onSuccess
                     }
 
-                    // Obtener todas las asistencias
                     val resultAsistencias = asistenciaService.listarAsistenciasActivas()
 
                     resultAsistencias.onSuccess { todasAsistencias ->
-                        // Filtrar las asistencias del estudiante
                         val asistenciasDelEstudiante = todasAsistencias.filter { asistencia ->
                             relacionesDelEstudiante.any { rel -> rel.getAsistenciaId() == asistencia.getId() }
                         }.map { asistencia ->
-                            "• ${asistencia.getTitulo()}" // o cualquier otro campo representativo
+                            "• ${asistencia.getTitulo()}"
                         }.toTypedArray()
 
                         runOnUiThread {
@@ -331,5 +386,4 @@ class EstudianteActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
 }
