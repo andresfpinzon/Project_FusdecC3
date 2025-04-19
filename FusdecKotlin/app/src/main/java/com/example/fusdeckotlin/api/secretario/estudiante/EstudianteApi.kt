@@ -7,21 +7,25 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface EstudianteApi {
-    @GET("api/estudiantes")
+    @GET("estudiantes")
     suspend fun listarEstudiantes(): Response<List<Estudiante>>
 
-    @GET("api/estudiantes/{id}")
-    suspend fun obtenerEstudiantePorId(@Path("id") id: String): Response<Estudiante>
+    @GET("estudiantes/{numeroDocumento}")
+    suspend fun obtenerEstudiantePorDocumento(
+        @Path("numeroDocumento") numeroDocumento: String
+    ): Response<Estudiante>
 
-    @POST("api/estudiantes")
+    @POST("estudiantes")
     suspend fun crearEstudiante(@Body request: CrearEstudianteRequest): Response<Estudiante>
 
-    @PUT("api/estudiantes/{id}")
+    @PUT("estudiantes/{numeroDocumento}")
     suspend fun actualizarEstudiante(
-        @Path("id") id: String,
+        @Path("numeroDocumento") numeroDocumento: String,
         @Body request: ActualizarEstudianteRequest
     ): Response<Estudiante>
 
-    @DELETE("api/estudiantes/{id}")
-    suspend fun desactivarEstudiante(@Path("id") id: String): Response<Estudiante>
+    @DELETE("estudiantes/{numeroDocumento}")
+    suspend fun desactivarEstudiante(
+        @Path("numeroDocumento") numeroDocumento: String
+    ): Response<Estudiante>
 }

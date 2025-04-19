@@ -16,15 +16,13 @@ class AsistenciaServices {
     suspend fun crearAsistencia(
         titulo: String,
         fecha: LocalDate,
-        usuarioId: String,
-        estudiantes: List<String>
+        usuarioId: String
     ): Result<Asistencia> {
         return try {
-            val request = CrearAsistenciaRequest.from(
+            val request = CrearAsistenciaRequest(
                 titulo = titulo,
-                fecha = fecha,
-                usuarioId = usuarioId,
-                estudiantes = estudiantes
+                fecha = fecha.toString(),
+                usuarioId = usuarioId
             )
 
             val response = asistenciaApi.crearAsistencia(request)
@@ -37,15 +35,15 @@ class AsistenciaServices {
     suspend fun listarAsistenciasActivas(): Result<List<Asistencia>> {
         return try {
             val response = asistenciaApi.listarAsistencias()
-            handleListResponse(response) { it.filter { asistencia -> asistencia.getEstadoAsistencia() } }
+            handleListResponse(response) { it.filter { asistencia -> asistencia.getEstado() } }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun obtenerAsistenciaPorId(id: String): Result<Asistencia> {
+    suspend fun obtenerAsistenciaPorId(id: Int): Result<Asistencia> {
         return try {
-            val response = asistenciaApi.obtenerAsistenciaPorId(id)
+            val response = asistenciaApi.obtenerAsistenciaPorId(id.toString())
             handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -53,47 +51,31 @@ class AsistenciaServices {
     }
 
     suspend fun actualizarAsistencia(
-        id: String,
-        tituloAsistencia: String? = null,
-        fechaAsistencia: LocalDate? = null,
-        usuarioId: String? = null,
-        estadoAsistencia: Boolean? = null,
-        estudiantesIds: List<String>? = null
+        id: Int,
+        titulo: String? = null,
+        fecha: LocalDate? = null,
+        estado: Boolean? = null
     ): Result<Asistencia> {
         return try {
-            val request = ActualizarAsistenciaRequest.from(
-                titulo = tituloAsistencia,
-                fecha = fechaAsistencia,
-                usuarioId = usuarioId,
-                estado = estadoAsistencia,
-                estudiantes = estudiantesIds
+            val request = ActualizarAsistenciaRequest(
+                titulo = titulo,
+                fecha = fecha?.toString(),
+                estado = estado
             )
 
-            val response = asistenciaApi.actualizarAsistencia(id, request)
+            val response = asistenciaApi.actualizarAsistencia(id.toString(), request)
             handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun desactivarAsistencia(id: String): Result<Asistencia> {
+    suspend fun desactivarAsistencia(id: Int): Result<Asistencia> {
         return try {
-            val response = asistenciaApi.desactivarAsistencia(id)
-
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    Result.success(it)
-                } ?: Result.failure(Exception("Respuesta vacía del servidor"))
-            } else {
-                when (response.code()) {
-                    404 -> Result.failure(Exception("Asistencia no encontrada"))
-                    else -> Result.failure(Exception("Error del servidor: ${response.code()}"))
-                }
-            }
+            val response = asistenciaApi.desactivarAsistencia(id.toString())
+            handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-
-
 }

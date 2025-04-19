@@ -1,173 +1,317 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.brigada
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.ui.adapters.administrador.brigadaAdapter.BrigadaAdapter
-import com.example.fusdeckotlin.services.administrativo.brigada.BrigadaServices
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import com.example.fusdeckotlin.models.administrativo.comando.Comando
+import com.example.fusdeckotlin.services.administrativo.brigada.BrigadaServices
+import com.example.fusdeckotlin.services.administrativo.comando.ComandoServices
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
+import com.example.fusdeckotlin.ui.adapters.administrativo.brigada.BrigadaAdapter
+import kotlinx.coroutines.launch
 
 class BrigadaActivity : AppCompatActivity() {
 
-    private lateinit var nombreBrigadaEditText: EditText
-    private lateinit var ubicacionBrigadaEditText: EditText
-    private lateinit var comandoIdEditText: EditText
-    private lateinit var unidadesEditText: EditText
-    private lateinit var estadoSwitch: Switch
+    private lateinit var nombreEditText: EditText
+    private lateinit var ubicacionEditText: EditText
+    private lateinit var seleccionarComandoButton: Button
+    private lateinit var comandoSeleccionadoText: TextView
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
+    private lateinit var searchEditText: EditText
     private lateinit var brigadasRecyclerView: RecyclerView
-    private lateinit var searchView: SearchView
 
-    private val brigadas = mutableListOf<Brigada>()
+    private val brigadaService = BrigadaServices()
+    private val comandoService = ComandoServices()
+    private val unidadService = UnidadServices()
     private lateinit var adapter: BrigadaAdapter
 
     private var isEditing: Boolean = false
     private var currentBrigadaId: String? = null
+    private var comandoSeleccionado: Comando? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_brigada)
 
-        nombreBrigadaEditText = findViewById(R.id.nombreBrigadaEditText)
-        ubicacionBrigadaEditText = findViewById(R.id.ubicacionBrigadaEditText)
-        comandoIdEditText = findViewById(R.id.comandoIdEditText)
-        unidadesEditText = findViewById(R.id.unidadesEditText)
-        estadoSwitch = findViewById(R.id.estadoSwitch)
+        initViews()
+        setupRecyclerView()
+        setupListeners()
+        cargarBrigadas()
+        configurarBusqueda()
+    }
+
+    private fun initViews() {
+        nombreEditText = findViewById(R.id.nombreBrigadaEditText)
+        ubicacionEditText = findViewById(R.id.ubicacionBrigadaEditText)
+        seleccionarComandoButton = findViewById(R.id.seleccionarComandoButton)
+        comandoSeleccionadoText = findViewById(R.id.comandoSeleccionadoText)
         confirmarButton = findViewById(R.id.confirmarButton)
         cancelarButton = findViewById(R.id.cancelarButton)
         brigadasRecyclerView = findViewById(R.id.brigadasRecyclerView)
-        searchView = findViewById(R.id.searchView)
+        searchEditText = findViewById(R.id.searchEditText)
+    }
 
+    private fun configurarBusqueda() {
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                adapter.filter.filter(s.toString())
+            }
+        })
+
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+    }
+
+    private fun setupRecyclerView() {
         adapter = BrigadaAdapter(
-            brigadas,
+            emptyList(),
             ::onUpdateClick,
-            ::onDeleteClick
+            ::onDeleteClick,
+            ::onInfoClick
         )
         brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
         brigadasRecyclerView.adapter = adapter
-
-        confirmarButton.setOnClickListener {
-            guardarBrigada()
-        }
-
-        cancelarButton.setOnClickListener {
-            finish()
-        }
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText)
-                return false
-            }
-        })
     }
 
-    private fun generarIdUnico(): String = "BRIG-${System.currentTimeMillis()}"
+    private fun setupListeners() {
+        seleccionarComandoButton.setOnClickListener { mostrarDialogoSeleccionComando() }
+        confirmarButton.setOnClickListener { guardarBrigada() }
+        cancelarButton.setOnClickListener { finish() }
+    }
+
+    private fun cargarBrigadas() {
+        lifecycleScope.launch {
+            val result = brigadaService.listarBrigadasActivas()
+            result.onSuccess { brigadas ->
+                adapter.actualizarLista(brigadas)
+            }.onFailure { error ->
+                showError("Error al cargar brigadas: ${error.message}")
+            }
+        }
+    }
+
+    private fun mostrarDialogoSeleccionComando() {
+        lifecycleScope.launch {
+            val result = comandoService.listarComandosActivos()
+            result.onSuccess { comandos ->
+                mostrarDialogoSeleccionComando(comandos)
+            }.onFailure { error ->
+                showError("Error al cargar comandos: ${error.message}")
+            }
+        }
+    }
+
+    private fun mostrarDialogoSeleccionComando(comandos: List<Comando>) {
+        val comandosArray = comandos.map {
+            "• ${it.getNombreComando()}"
+        }.toTypedArray()
+
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar Comando")
+            .setItems(comandosArray) { _, which ->
+                comandoSeleccionado = comandos[which]
+                actualizarTextoComandoSeleccionado()
+            }
+            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun actualizarTextoComandoSeleccionado() {
+        comandoSeleccionado?.let { comando ->
+            comandoSeleccionadoText.text =
+                "Comando seleccionado: ${comando.getNombreComando()} (${comando.getId()})"
+        } ?: run {
+            comandoSeleccionadoText.text = "Ningún comando seleccionado"
+        }
+    }
 
     private fun guardarBrigada() {
-        val nombreBrigada = nombreBrigadaEditText.text.toString().trim()
-        val ubicacionBrigada = ubicacionBrigadaEditText.text.toString().trim()
-        val estadoBrigada = estadoSwitch.isChecked
-        val comandoId = comandoIdEditText.text.toString().trim()
-        val unidades = unidadesEditText.text.toString().trim().split(",").map { it.trim() }
+        val nombre = nombreEditText.text.toString().trim()
+        val ubicacion = ubicacionEditText.text.toString().trim()
 
-        if (nombreBrigada.isEmpty() || ubicacionBrigada.isEmpty() || comandoId.isEmpty() || unidades.isEmpty()) {
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+        if (nombre.isEmpty() || ubicacion.isEmpty() || comandoSeleccionado == null) {
+            showError("Por favor, complete todos los campos y seleccione un comando")
             return
         }
 
-        try {
-            if (isEditing) {
-                BrigadaServices.actualizarBrigada(
-                    brigadas,
+        lifecycleScope.launch {
+            val comandoId = comandoSeleccionado!!.getId()
+
+            if (isEditing && currentBrigadaId != null) {
+                brigadaService.actualizarBrigada(
                     currentBrigadaId!!,
-                    nombreBrigada,
-                    ubicacionBrigada,
+                    nombre,
+                    ubicacion,
                     comandoId,
-                    unidades,
-                    estadoBrigada
-                )
-                Toast.makeText(this, "Brigada actualizada correctamente", Toast.LENGTH_SHORT).show()
-                isEditing = false
-                currentBrigadaId = null
+                    true
+                ).onSuccess {
+                    showSuccess("Brigada actualizada")
+                    resetEditingState()
+                    cargarBrigadas()
+                }.onFailure { error ->
+                    showError("Error al actualizar: ${error.message}")
+                }
             } else {
-                val id = generarIdUnico()
-                BrigadaServices.crearBrigada(
-                    brigadas,
-                    id,
-                    nombreBrigada,
-                    ubicacionBrigada,
-                    estadoBrigada,
-                    comandoId,
-                    unidades
-                )
-                Toast.makeText(this, "Brigada creada correctamente", Toast.LENGTH_SHORT).show()
+                brigadaService.crearBrigada(
+                    nombre,
+                    ubicacion,
+                    comandoId
+                ).onSuccess {
+                    showSuccess("Brigada creada")
+                    resetEditingState()
+                    cargarBrigadas()
+                }.onFailure { error ->
+                    showError("Error al crear: ${error.message}")
+                }
             }
-            actualizarLista()
-            limpiarFormulario()
-        } catch (e: Exception) {
-            Log.e("BrigadaActivity", "Error al guardar brigada", e)
-            Toast.makeText(this, "Error al guardar brigada: ${e.message}", Toast.LENGTH_SHORT).show()
         }
-    }
-
-
-    private fun limpiarFormulario() {
-        nombreBrigadaEditText.text.clear()
-        ubicacionBrigadaEditText.text.clear()
-        comandoIdEditText.text.clear()
-        unidadesEditText.text.clear()
-        estadoSwitch.isChecked = false
-        isEditing = false
-        currentBrigadaId = null
     }
 
     private fun onUpdateClick(brigada: Brigada) {
         isEditing = true
         currentBrigadaId = brigada.getId()
-        nombreBrigadaEditText.setText(brigada.getNombreBrigada())
-        ubicacionBrigadaEditText.setText(brigada.getUbicacionBrigada())
-        comandoIdEditText.setText(brigada.getComandoId())
-        unidadesEditText.setText(brigada.getUnidades().joinToString(", "))
-        estadoSwitch.isChecked = brigada.getEstadoBrigada()
+        nombreEditText.setText(brigada.getNombreBrigada())
+        ubicacionEditText.setText(brigada.getUbicacionBrigada())
+
+        // Check if we already have the comando object
+        if (brigada.getComando().getNombreComando().isNotEmpty()) {
+            comandoSeleccionado = brigada.getComando()
+            actualizarTextoComandoSeleccionado()
+        } else {
+            // Only make API call if we don't have the comando data
+            lifecycleScope.launch {
+                val result = comandoService.obtenerComandoPorId(brigada.getComandoId())
+                result.onSuccess { comando ->
+                    runOnUiThread {
+                        comandoSeleccionado = comando
+                        actualizarTextoComandoSeleccionado()
+                    }
+                }.onFailure { error ->
+                    runOnUiThread {
+                        showError("Error al cargar comando: ${error.message}")
+                    }
+                }
+            }
+        }
     }
 
     private fun onDeleteClick(brigada: Brigada) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Eliminar brigada")
-        builder.setMessage("¿Estás seguro de que deseas eliminar esta brigada?")
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Estás seguro de que deseas eliminar esta brigada?")
+            .setPositiveButton("Sí") { _, _ ->
+                lifecycleScope.launch {
+                    val result = brigadaService.desactivarBrigada(brigada.getId())
+                    result.onSuccess {
+                        showSuccess("Brigada eliminada")
+                        cargarBrigadas()
+                    }.onFailure { error ->
+                        showError(error.message ?: "Error al eliminar")
+                    }
+                }
+            }
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
+    }
 
-        builder.setPositiveButton("Sí") { _, _ ->
+    private fun onInfoClick(brigada: Brigada) {
+        lifecycleScope.launch {
             try {
-                BrigadaServices.desactivarBrigada(brigadas, brigada.getId())
-                actualizarLista()
-                Toast.makeText(this, "Brigada eliminada correctamente", Toast.LENGTH_SHORT).show()
-            } catch (e: NoSuchElementException) {
-                Toast.makeText(this, "Error deleting brigada: ${e.message}", Toast.LENGTH_SHORT).show()
+                val resultUnidades = unidadService.listarUnidadesActivas()
+
+                resultUnidades.onSuccess { todasUnidades ->
+                    val unidadesBrigada = todasUnidades.filter { unidad ->
+                        unidad.getBrigadaId() == brigada.getId()
+                    }.map { unidad ->
+                        "• ${unidad.getNombreUnidad()}"
+                    }.toTypedArray()
+
+                    runOnUiThread {
+                        if (unidadesBrigada.isNotEmpty()) {
+                            mostrarDialogoUnidades(unidadesBrigada, brigada.getNombreBrigada())
+                        } else {
+                            mostrarDialogoUnidades(
+                                arrayOf("No hay unidades asociadas a esta brigada"),
+                                brigada.getNombreBrigada()
+                            )
+                        }
+                    }
+                }.onFailure { error ->
+                    runOnUiThread {
+                        showError("Error al cargar unidades: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    showError("Error inesperado: ${e.message}")
+                }
             }
         }
+    }
 
-        builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+    private fun mostrarDialogoUnidades(unidades: Array<String>, nombreBrigada: String) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_info_button, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
 
-        val dialog = builder.create()
+        val tituloTextView = dialogView.findViewById<TextView>(R.id.tituloDialogo)
+        val unidadesTextView = dialogView.findViewById<TextView>(R.id.contenidoTextView)
+        val cerrarBtn = dialogView.findViewById<TextView>(R.id.btnCerrar)
+
+        tituloTextView.text = "Unidades de la brigada:"
+        unidadesTextView.text = unidades.joinToString("\n")
+
+        cerrarBtn.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }
 
-    private fun actualizarLista() {
-        adapter.actualizarLista(BrigadaServices.listarBrigadasActivas(brigadas))
+    private fun resetEditingState() {
+        isEditing = false
+        currentBrigadaId = null
+        comandoSeleccionado = null
+        nombreEditText.text.clear()
+        ubicacionEditText.text.clear()
+        comandoSeleccionadoText.text = "Ningún comando seleccionado"
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

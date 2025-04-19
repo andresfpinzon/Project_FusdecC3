@@ -9,7 +9,6 @@ import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.ui.activities.secretario.curso.CursoActivity
 import com.example.fusdeckotlin.ui.activities.secretario.edicion.EdicionActivity
 import com.example.fusdeckotlin.ui.activities.secretario.estudiante.EstudianteActivity
-import com.example.fusdeckotlin.ui.activities.secretario.horario.HorarioActivity
 
 class SecretarioActivity : AppCompatActivity() {
 
@@ -41,13 +40,6 @@ class SecretarioActivity : AppCompatActivity() {
         estudianteButton.setOnClickListener {
 
             val intent = Intent(this, EstudianteActivity::class.java)
-            startActivity(intent)
-
-        }
-
-        horarioButton.setOnClickListener {
-
-            val intent = Intent(this, HorarioActivity::class.java)
             startActivity(intent)
 
         }

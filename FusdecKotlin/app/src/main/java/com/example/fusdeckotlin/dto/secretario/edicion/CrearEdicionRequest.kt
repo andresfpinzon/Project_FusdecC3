@@ -19,25 +19,4 @@ data class CrearEdicionRequest(
     @SerializedName("estadoEdicion")
     val estado: Boolean = true,
 
-    @SerializedName("estudiantes")
-    val estudiantes: List<String> = emptyList()
-) {
-    companion object {
-        fun from(
-            nombre: String,
-            fechaInicio: LocalDate,
-            fechaFin: LocalDate,
-            cursoId: String,
-            estudiantes: List<String> = emptyList()
-        ): CrearEdicionRequest {
-            return CrearEdicionRequest(
-                nombre = nombre,
-                fechaInicio = fechaInicio.toString(),
-                fechaFin = fechaFin.toString(),
-                cursoId = cursoId,
-                estado = true,
-                estudiantes = estudiantes
-            )
-        }
-    }
-}
+)

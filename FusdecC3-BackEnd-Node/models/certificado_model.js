@@ -8,21 +8,22 @@ const CertificadoSchema = new Schema({
   },*/
   fechaEmision: {
     type: Date,
-    required: true,
+    default: new Date(),
+    required: false,
   },
   usuarioId: {
     type: Schema.Types.ObjectId,
-    required: true,
+    required: false,
     ref: "Usuario",
   },
   cursoId: {
     type: Schema.Types.ObjectId,
-    required: true,
+    required: false,
     ref: "Curso",
   },
   estudianteId: {
     type: Schema.Types.ObjectId,
-    required: true,
+    required: false,
     ref: "Estudiante",
   },
   nombreEmisorCertificado: {
@@ -31,13 +32,13 @@ const CertificadoSchema = new Schema({
   },
   codigoVerificacion: {
     type: String,
-    required: true,
+    required: false,
     unique: true, // Asegura que el código de verificación sea único
   },
   estadoCertificado: {
     type: Boolean,
     default: true,
-    required: true,
+    required: false,
   },
 });
 

@@ -1,5 +1,4 @@
 const Colegio = require("../models/colegio_model");
-const Estudiante = require('../models/estudiante_model');
 
 // Función asíncrona para crear colegios
 async function crearColegio(body) {
@@ -17,7 +16,6 @@ async function crearColegio(body) {
     nombreColegio: body.nombreColegio,
     emailColegio: body.emailColegio,
     estadoColegio: body.estadoColegio,
-    estudiantes: body.estudiantes,
   });
 
   return await colegio.save();
@@ -59,8 +57,7 @@ async function actualizarColegio(id, body) {
 // Función asíncrona para listar los colegio activos
 async function listarColegios() {
   try {
-  let colegios = await Colegio.find({ estadoColegio: true })
-  .populate('estudiantes');
+  let colegios = await Colegio.find({ estadoColegio: true });
   return colegios; 
   } catch (error) {
     console.error('Error al listar los colegios (colegio_logic):', error);
@@ -97,23 +94,6 @@ async function desactivarColegio(id) {
   }
 }
 
-// Lógica para agregar estudiantes a un colegio
-async function agregarEstudianteAColegio(colegioId, estudianteIds) {
-  try {
-      const colegio = await Colegio.findOne({ colegioId });
-      if (!colegio) {
-          throw new Error('Colegio no encontrado');
-      }
-      // Filtrar los estudiantes ya existentes para no duplicarlos
-      const nuevosEstudiantes = estudianteIds.filter(estudianteId => !colegio.estudiantes.includes(estudianteId));
-      // Agregar los nuevos estudiantes al array de estudiantes del colegio
-      colegio.estudiantes = [...colegio.estudiantes, ...nuevosEstudiantes];
-      await colegio.save();
-      return colegio;
-  } catch (error) {
-      throw new Error(`Error al agregar estudiantes: ${error.message}`);
-  }
-}
 
 module.exports = {
   crearColegio,
@@ -121,5 +101,4 @@ module.exports = {
   actualizarColegio,
   listarColegios,
   buscarColegiosPorId,
-  agregarEstudianteAColegio
 };

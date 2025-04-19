@@ -1,17 +1,17 @@
 package models.questions
-import models.administrativo.Usuario
+import models.administrativo.UsuarioNoUsar
 
 class ConfirmarUsuario() {
 
-    fun verificarEstado(usuario: Usuario): Boolean {
-        return usuario.estadoUsuario
+    fun verificarEstado(usuarioNoUsar: UsuarioNoUsar): Boolean {
+        return usuarioNoUsar.estadoUsuario
     }
 
-    fun verificarRol(usuario: Usuario, rolesPermitidos: List<String>): Boolean {
-        return usuario.roles.any { it in rolesPermitidos }
+    fun verificarRol(usuarioNoUsar: UsuarioNoUsar, rolesPermitidos: List<String>): Boolean {
+        return usuarioNoUsar.roles.any { it in rolesPermitidos }
     }
 
-    fun verificarUsuario(correo: String, password: String, usuario: Usuario): Boolean {
-        return correo == usuario.correo && password == usuario.password
+    fun verificarUsuario(correo: String, password: String, usuarioNoUsar: UsuarioNoUsar): Boolean {
+        return correo == usuarioNoUsar.correo && password == usuarioNoUsar.password
     }
 }

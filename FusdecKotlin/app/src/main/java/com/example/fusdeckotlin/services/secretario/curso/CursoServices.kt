@@ -17,15 +17,13 @@ class CursoServices {
         descripcion: String,
         intensidadHoraria: String,
         fundacionId: String,
-        ediciones: List<String>
     ): Result<Curso> {
         return try {
-            val request = CrearCursoRequest.from(
+            val request = CrearCursoRequest(
                 nombre = nombre,
                 descripcion = descripcion,
                 intensidadHoraria = intensidadHoraria,
                 fundacionId = fundacionId,
-                ediciones = ediciones
             )
 
             val response = cursoApi.crearCurso(request)
@@ -60,16 +58,14 @@ class CursoServices {
         intensidadHoraria: String? = null,
         estado: Boolean? = null,
         fundacionId: String? = null,
-        ediciones: List<String>? = null
     ): Result<Curso> {
         return try {
-            val request = ActualizarCursoRequest.from(
+            val request = ActualizarCursoRequest(
                 nombre = nombre,
                 descripcion = descripcion,
                 intensidadHoraria = intensidadHoraria,
                 fundacionId = fundacionId,
                 estado = estado,
-                ediciones = ediciones
             )
 
             val response = cursoApi.actualizarCurso(id, request)

@@ -1,49 +1,104 @@
 package com.example.fusdeckotlin.services.administrativo.certificate
 
-import models.administrativo.c.CertificadoModel
+import com.example.fusdeckotlin.api.administrativo.certificado.CertificadoApi
+import com.example.fusdeckotlin.config.retrofit.RetrofitClient
+import com.example.fusdeckotlin.dto.administrativo.certificado.CreateCertificadoDto
+import com.example.fusdeckotlin.dto.administrativo.certificado.UpdateCertificadoDto
+import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
 
+import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
+import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
 
 class CertificadoServices {
-    companion object{
-        private val certificateDB = mutableListOf<CertificadoModel>()
 
-        fun createCertificate(data: CertificadoModel): CertificadoModel{
-            val newCertificate = CertificadoModel(
-                usuarioId = data.getUsuarioId(),
-                cursoId = data.getCursoId(),
-                estudianteId = data.getEstudianteId(),
-                nombreEmisorCertificado = data.getNombreEmisor()
-            )
-            certificateDB.add(newCertificate)
+    private val certificadoApi : CertificadoApi = RetrofitClient.certificadoApi
 
-            return newCertificate
-        }
-
-        fun actualizarCertificadoByCodeVerify(codeVerify: String, data: CertificadoModel): CertificadoModel?{
-            val existCertificate = getCertificateByCodeVerify(codeVerify)
-
-            existCertificate.setNombreEmisor(data.getNombreEmisor())
-            existCertificate.setEstadoCertificado(data.getEstadoCertificado())
-
-            return existCertificate
-        }
-
-        fun getCertificateByCodeVerify(codeVerify: String): CertificadoModel{
-            return certificateDB.first{ it.getCodigoVerificacion() == codeVerify}
-        }
-
-        fun getAllCertificatesActives(): List<CertificadoModel>{
-            return certificateDB.filter{ it.getEstadoCertificado() == true}
-        }
-
-        fun removeCertificateByCodeVerify(codeVerify: String): Boolean{
-            val certificate = getCertificateByCodeVerify(codeVerify)
-
-            return if(certificate != null){
-                certificateDB.remove(certificate)
-            }else{
-                false
-            }
+    suspend fun createCertificado(data: CreateCertificadoDto): Result<Certificado> {
+        return try {
+            val res = certificadoApi.createCertificado(data)
+            handleResponse(res)
+        }catch (e: Exception){
+            Result.failure(e)
         }
     }
+
+    suspend fun updateCertificate(id: String, data: UpdateCertificadoDto): Result<Certificado> {
+        return try {
+            val res = certificadoApi.updateCertificado(id, data)
+            handleResponse(res)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+//    suspend fun getCertificatesActives(): Result<List<Certificado>> {
+//        return try {
+//            val res = certificadoApi.getCertificados()
+//            handleListResponse(res) {it.filter { certificate -> certificate.getEstadoCertificado() == true }}
+//        } catch (e: Exception) {
+//            Result.failure(e)
+//        }
+//    }
+
+    suspend fun getCertficateById(id: String): Result<Certificado> {
+        return  try {
+            val res = certificadoApi.getCertificadoById(id)
+            handleResponse(res)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
+    suspend fun deleteCertificateById(id: String): Result<Certificado> {
+        return try {
+            val res = certificadoApi.deleteCertificadoById(id)
+            handleResponse(res)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+//    companion object{
+//        private val certificateDB = mutableListOf<CertificadoModel>()
+//
+//        fun createCertificate(data: CertificadoModel): CertificadoModel{
+//            val newCertificate = CertificadoModel(
+//                usuarioId = data.getUsuarioId(),
+//                cursoId = data.getCursoId(),
+//                estudianteId = data.getEstudianteId(),
+//                nombreEmisorCertificado = data.getNombreEmisor()
+//            )
+//            certificateDB.add(newCertificate)
+//
+//            return newCertificate
+//        }
+//
+//        fun actualizarCertificadoByCodeVerify(codeVerify: String, data: CertificadoModel): CertificadoModel?{
+//            val existCertificate = getCertificateByCodeVerify(codeVerify)
+//
+//            existCertificate.setNombreEmisor(data.getNombreEmisor())
+//            existCertificate.setEstadoCertificado(data.getEstadoCertificado())
+//
+//            return existCertificate
+//        }
+//
+//        fun getCertificateByCodeVerify(codeVerify: String): CertificadoModel{
+//            return certificateDB.first{ it.getCodigoVerificacion() == codeVerify}
+//        }
+//
+//        fun getAllCertificatesActives(): List<CertificadoModel>{
+//            return certificateDB.filter{ it.getEstadoCertificado() == true}
+//        }
+//
+//        fun removeCertificateByCodeVerify(codeVerify: String): Boolean{
+//            val certificate = getCertificateByCodeVerify(codeVerify)
+//
+//            return if(certificate != null){
+//                certificateDB.remove(certificate)
+//            }else{
+//                false
+//            }
+//        }
+//    }
 }
