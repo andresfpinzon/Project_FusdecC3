@@ -1,7 +1,10 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.user
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -20,14 +23,13 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
 class UserActivity : AppCompatActivity() {
-
     // Views
-    private lateinit var nombre: TextInputEditText
-    private lateinit var apellidos: TextInputEditText
-    private lateinit var documento: TextInputEditText
-    private lateinit var correo: TextInputEditText
-    private lateinit var password: TextInputEditText
-    private lateinit var role: TextInputEditText
+    private lateinit var nombre: EditText
+    private lateinit var apellidos: EditText
+    private lateinit var documento: EditText
+    private lateinit var correo: EditText
+    private lateinit var password: EditText
+    private lateinit var spinnerRole: Spinner // Cambiado a Spinner
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var userRecyclerView: RecyclerView
@@ -45,9 +47,9 @@ class UserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
-
         initViews()
         setupRecyclerView()
+        setupSpinner() // Configurar Spinner
         setupListeners()
         cargarUsuarios()
     }
@@ -58,14 +60,16 @@ class UserActivity : AppCompatActivity() {
         documento = findViewById(R.id.inputNumeroDocumento)
         correo = findViewById(R.id.inputCorreo)
         password = findViewById(R.id.inputPassword)
-        role = findViewById(R.id.inputRole)
+        spinnerRole = findViewById(R.id.spinnerRole) // Nuevo ID
         confirmarButton = findViewById(R.id.buttonConfirmar)
         cancelarButton = findViewById(R.id.buttonCancelar)
         userRecyclerView = findViewById(R.id.recyclerViewUsers)
+    }
 
-        role.setOnClickListener {
-            showDialogSelection("Rol", roles, role)
-        }
+    private fun setupSpinner() {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roles)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerRole.adapter = adapter
     }
 
     private fun setupRecyclerView() {
@@ -106,10 +110,10 @@ class UserActivity : AppCompatActivity() {
         val numeroDocumento = documento.text.toString().trim()
         val correoUsuario = correo.text.toString().trim()
         val passwordUsuario = password.text.toString().trim()
-        val selectedRole = role.text.toString().trim()
+        val selectedRole = spinnerRole.selectedItem.toString() // Obtener selección del Spinner
 
         if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() || numeroDocumento.isEmpty() ||
-            correoUsuario.isEmpty() || passwordUsuario.isEmpty() || selectedRole.isEmpty()) {
+            correoUsuario.isEmpty() || passwordUsuario.isEmpty()) {
             showError("Complete todos los campos obligatorios")
             return
         }
@@ -201,7 +205,8 @@ class UserActivity : AppCompatActivity() {
         lifecycleScope.launch {
             rolServices.getRoleByUser(usuario.getNumeroDocumento()).onSuccess { userRol ->
                 runOnUiThread {
-                    role.setText(userRol.getRol())
+                    val position = roles.indexOf(userRol.getRol())
+                    spinnerRole.setSelection(position) // Establecer selección del Spinner
                 }
             }.onFailure { error ->
                 showError("Error al obtener rol: ${error.message}")
@@ -232,16 +237,6 @@ class UserActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showDialogSelection(title: String, options: Array<String>, campoDestino: TextInputEditText) {
-        AlertDialog.Builder(this)
-            .setTitle("Seleccionar $title")
-            .setItems(options) { _, which ->
-                campoDestino.setText(options[which])
-            }
-            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-            .show()
-    }
-
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
@@ -258,6 +253,6 @@ class UserActivity : AppCompatActivity() {
         documento.text?.clear()
         correo.text?.clear()
         password.text?.clear()
-        role.text?.clear()
+        spinnerRole.setSelection(0) // Reiniciar selección del Spinner
     }
 }

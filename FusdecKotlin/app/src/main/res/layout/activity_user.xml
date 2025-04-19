@@ -2,146 +2,199 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/white">
 
-
-    <TextView
-            android:id="@+id/tituloLayoutUser"
-            android:text="Crear usuario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="105dp"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"
-    />
-
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputNumeroDocumento"
-            android:layout_width="254dp"
-            android:layout_height="45dp"
-            android:hint="Número de documento"
-            app:layout_constraintTop_toBottomOf="@+id/tituloLayoutUser"
+            app:layout_constraintBottom_toTopOf="@id/recyclerViewUsers"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-            android:textSize="14sp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="#ee00ef"
-            android:inputType="text|number"
-    />
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputNombres"
-            android:layout_width="254dp"
-            android:layout_height="40dp"
-            android:hint="Nombres"
-            app:layout_constraintTop_toBottomOf="@+id/inputNumeroDocumento"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="40dp"
-            android:textSize="14sp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="#ee00ef"
-            android:inputType="textPersonName"
-            android:scrollHorizontally="true"
-    />
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputApellidos"
-            android:layout_width="254dp"
-            android:layout_height="45dp"
-            android:hint="Apellidos"
-            app:layout_constraintTop_toBottomOf="@+id/inputNombres"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-            android:textSize="14sp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="#ee00ef"
-            android:inputType="textPersonName"
-            android:scrollHorizontally="true"
-    />
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
+            <!-- Título -->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Crear usuario"
+                    android:textSize="20sp"
+                    android:textColor="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"/>
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/inputCorreo"
-        android:layout_width="254dp"
-        android:layout_height="45dp"
-        android:hint="Correo"
-        app:layout_constraintTop_toBottomOf="@+id/inputApellidos"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="40dp"
-        android:textSize="14sp"
-        android:padding="8dp"
-        android:textColor="@color/black"
-        android:textColorHighlight="#ee00ef"
-        android:inputType="textEmailAddress"
-    />
+            <!-- CardView con formulario -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="16dp">
 
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputPassword"
-            android:layout_width="254dp"
-            android:layout_height="45dp"
-            android:hint="Contraseña"
-            app:layout_constraintTop_toBottomOf="@+id/inputCorreo"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-            android:textSize="14sp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="#ee00ef"
-            android:inputType="textPassword"
-    />
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputRole"
-            android:layout_width="254dp"
-            android:layout_height="45dp"
-            android:hint="Rol"
-            app:layout_constraintTop_toBottomOf="@+id/inputPassword"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-            android:textSize="14sp"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="#ee00ef"
-            android:inputType="textPersonName"
-    />
+                    <!-- Número de documento -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Número de documento"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputNumeroDocumento"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:hint="Ingrese el número"
+                            android:inputType="number"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"
+                            android:padding="8dp"/>
 
-    <Button
-            android:id="@+id/buttonConfirmar"
-            android:layout_width="100dp"
-            android:layout_height="0dp"
-            android:text="Crear"
-            app:layout_constraintTop_toBottomOf="@+id/inputRole"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-    />
+                    <!-- Nombres -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nombres"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputNombres"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:hint="Ingrese los nombres"
+                            android:inputType="textPersonName"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"
+                            android:padding="8dp"/>
 
-    <Button
-            android:id="@+id/buttonCancelar"
-            android:layout_width="120dp"
-            android:layout_height="0dp"
-            android:text="Cancelar"
-            app:layout_constraintTop_toBottomOf="@+id/inputRole"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="40dp"
-    />
+                    <!-- Apellidos -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Apellidos"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputApellidos"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:hint="Ingrese los apellidos"
+                            android:inputType="textPersonName"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"
+                            android:padding="8dp"/>
 
+                    <!-- Correo -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Correo"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputCorreo"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:hint="Ingrese el correo"
+                            android:inputType="textEmailAddress"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"
+                            android:padding="8dp"/>
+
+                    <!-- Contraseña -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Contraseña"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:hint="Ingrese la contraseña"
+                            android:inputType="textPassword"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"
+                            android:padding="8dp"/>
+
+                    <!-- Selector de Rol -->
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rol"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"
+                            android:layout_marginTop="16dp"/>
+                    <Spinner
+                            android:id="@+id/spinnerRole"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botones de acción -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginTop="8dp">
+
+                <Button
+                        android:id="@+id/buttonCancelar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cancelar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/red"
+                        android:layout_marginEnd="4dp"/>
+
+                <Button
+                        android:id="@+id/buttonConfirmar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Crear"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/green"
+                        android:layout_marginStart="4dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- RecyclerView de usuarios -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewUsers"
-            android:layout_width="320dp"
-            android:layout_height="150dp"
-            app:layout_constraintTop_toBottomOf="@+id/buttonConfirmar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/scrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
             android:padding="8dp"
             android:clipToPadding="false"
-            android:scrollbars="vertical"
-    />
-
+            android:scrollbars="vertical"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
