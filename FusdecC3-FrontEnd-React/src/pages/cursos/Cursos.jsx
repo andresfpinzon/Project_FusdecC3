@@ -49,6 +49,7 @@ const Cursos = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [cursoToDelete, setCursoToDelete] = useState(null);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [infoCurso, setInfoCurso] = useState(null);
 
   // Paginación y búsqueda
@@ -153,48 +154,48 @@ const Cursos = () => {
 
   const handleCreateCurso = async () => {
     if (!formValues.nombreCurso || !formValues.descripcionCurso || !formValues.intensidadHorariaCurso) {
-        setErrorMessage("Todos los campos son obligatorios");
-        setOpenSnackbar(true);
-        return;
+      setErrorMessage("Todos los campos son obligatorios");
+      setOpenSnackbar(true);
+      return;
     }
     try {
-        const response = await fetch("http://localhost:3000/api/cursos", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token 
-            },
-            body: JSON.stringify(formValues),
-        });
-
-        if (response.ok) {
-            const nuevoCurso = await response.json();
-            setCursos([...cursos, nuevoCurso]);
-            
-            setFormValues({
-                nombreCurso: "",
-                descripcionCurso: "",
-                intensidadHorariaCurso: "",
-                estadoCurso: true,
-                fundacionId: "",
-            });
-            
-            // Muestra un mensaje de éxito
-            setSuccessMessage("Curso creado exitosamente.");
-            setOpenSnackbar(true);
-
-        } else {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Error al crear curso");
-        }
+      const response = await fetch("http://localhost:3000/api/cursos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token 
+        },
+        body: JSON.stringify(formValues),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Error al crear curso");
+      }
+  
+      setCursos([...cursos, data]);
+      setFormValues({
+        nombreCurso: "",
+        descripcionCurso: "",
+        intensidadHorariaCurso: "",
+        estadoCurso: true,
+        fundacionId: "",
+      });
+      
+      setSuccessMessage("Curso creado exitosamente.");
+      setErrorMessage(null);
+      setOpenSnackbar(true);
+  
     } catch (error) {
-        handleError("Error al crear cursos", error);
+      setErrorMessage(error.message || "Error al crear curso");
+      setOpenSnackbar(true);
     }
-};
+  };
 
   const handleUpdateCurso = async () => {
     if (!selectedCurso) return;
-
+  
     try {
       const response = await fetch(
         `http://localhost:3000/api/cursos/${selectedCurso._id}`,
@@ -207,33 +208,30 @@ const Cursos = () => {
           body: JSON.stringify(formValues),
         }
       );
-
-      if (response.ok) {
-        await fetchCursos();
-        const cursoActualizado = await response.json();
-        setCursos(
-          cursos.map((curso) =>
-            curso._id === selectedCurso._id ? cursoActualizado : curso
-          )
-        );
-        setSelectedCurso(null);
-        setFormValues({
-          nombreCurso: "",
-          descripcionCurso: "",
-          intensidadHorariaCurso: "",
-          estadoCurso: true,
-          fundacionId: "",
-        });
-
-        // Mostrar mensaje de éxito
-        setSuccessMessage("El curso se actualizó correctamente");
-        setOpenSnackbar(true); 
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar curso");
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Error al actualizar curso");
       }
+  
+      await fetchCursos();
+      setSelectedCurso(null);
+      setFormValues({
+        nombreCurso: "",
+        descripcionCurso: "",
+        intensidadHorariaCurso: "",
+        estadoCurso: true,
+        fundacionId: "",
+      });
+  
+      setSuccessMessage("El curso se actualizó correctamente");
+      setErrorMessage(null);
+      setOpenSnackbar(true);
+  
     } catch (error) {
-      handleError("Error al actualizar cursos", error);
+      setErrorMessage(error.message || "Error al actualizar curso");
+      setOpenSnackbar(true);
     }
   };
 
@@ -507,8 +505,11 @@ const Cursos = () => {
       </Dialog>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert 
+          onClose={() => setOpenSnackbar(false)} 
+          severity={errorMessage ? "error" : "success"}
+        >
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </Container>
