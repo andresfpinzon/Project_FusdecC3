@@ -7,9 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
+import org.springframework.dao.DataAccessException
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import org.slf4j.LoggerFactory
 
 @Service
 class CertificadoService {
+
+    private val logger = LoggerFactory.getLogger(CertificadoService::class.java)
 
     @Autowired
     lateinit var jdbcTemplate: JdbcTemplate
@@ -32,33 +39,74 @@ class CertificadoService {
         return jdbcTemplate.query(sql, rowMapper)
     }
 
+    @Transactional
     fun crear(certificado: CertificadoCreateRequest): Certificado? {
-        val sql = """
-            INSERT INTO certificado (fecha_emision, usuario_id, estudiante_id, nombre_emisor, codigo_verificacion, estado)
-            VALUES (?, ?, ?, ?, ?, ?)
-            RETURNING *
-        """.trimIndent()
+        try {
+            val fechaEmision = try {
+                LocalDate.parse(certificado.fechaEmision)
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Formato de fecha inválido. Debe ser YYYY-MM-DD")
+            }
 
-        val certificadoCreado = jdbcTemplate.queryForObject(
-            sql,
-            rowMapper,
-            certificado.fechaEmision,
-            certificado.usuarioId,
-            certificado.estudianteId,
-            certificado.nombreEmisor,
-            certificado.codigoVerificacion,
-            true
-        )
+            val estudianteExiste = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM estudiante WHERE numero_documento = ?",
+                Int::class.java,
+                certificado.estudianteId
+            ) ?: 0
 
-        certificadoCreado?.let {
-            val auditoriaSql = """
-                INSERT INTO auditoria (fecha, nombre_emisor, certificado_id)
-                VALUES (CURRENT_DATE, ?, ?)
+            if (estudianteExiste == 0) {
+                throw IllegalArgumentException("El estudiante no existe")
+            }
+
+            val usuarioExiste = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM usuario WHERE numero_documento = ?",
+                Int::class.java,
+                certificado.usuarioId
+            ) ?: 0
+
+            if (usuarioExiste == 0) {
+                throw IllegalArgumentException("El usuario no existe")
+            }
+
+            val sql = """
+                INSERT INTO certificado (
+                    fecha_emision, 
+                    usuario_id, 
+                    estudiante_id, 
+                    nombre_emisor, 
+                    codigo_verificacion, 
+                    estado
+                )
+                VALUES (?, ?, ?, ?, ?, ?)
+                RETURNING *
             """.trimIndent()
-            jdbcTemplate.update(auditoriaSql, it.nombreEmisor, it.id)
-        }
 
-        return certificadoCreado
+            val certificadoCreado = jdbcTemplate.queryForObject(
+                sql,
+                rowMapper,
+                fechaEmision,
+                certificado.usuarioId,
+                certificado.estudianteId,
+                certificado.nombreEmisor,
+                certificado.codigoVerificacion,
+                true
+            )
+
+            certificadoCreado?.let {
+                val auditoriaSql = """
+                    INSERT INTO auditoria (fecha, nombre_emisor, certificado_id)
+                    VALUES (CURRENT_DATE, ?, ?)
+                """.trimIndent()
+                jdbcTemplate.update(auditoriaSql, it.nombreEmisor, it.id)
+            }
+
+            return certificadoCreado
+
+        } catch (e: DataAccessException) {
+            throw IllegalStateException("Error al crear el certificado: ${e.message}")
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     fun actualizar(id: Int, certificado: CertificadoUpdateRequest): Certificado? {

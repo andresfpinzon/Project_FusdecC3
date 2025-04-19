@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -11,299 +10,486 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Switch,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
   Snackbar,
   Alert,
   Select,
   MenuItem,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
   Checkbox,
   ListItemText,
-  TablePagination
+  Chip,
+  FormControl,
+  InputLabel,
+  Box,
+  FormHelperText,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
-
-const token = localStorage.getItem("token");
+import { useNavigate } from "react-router-dom";
 
 const Usuarios = () => {
+  const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [rolesDisponibles, setRolesDisponibles] = useState([]);
+  const [rolesAsignados, setRolesAsignados] = useState([]);
   const [formValues, setFormValues] = useState({
-    nombreUsuario: "",
-    apellidoUsuario: "",
     numeroDocumento: "",
+    nombre: "",
+    apellido: "",
     correo: "",
     password: "",
-    estadoUsuario: true,
+    estado: true,
     roles: [],
   });
+  const [selectedUser, setSelectedUser] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
-
-  // Paginación y búsqueda
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState("success"); // "success" o "error"
+  const [severity, setSeverity] = useState("success");
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetchUsuarios();
-    fetchRoles();
-  }, []);
+    if (token) {
+      fetchUsuarios();
+      fetchRolesDisponibles();
+    } else {
+      setMessage("Token no encontrado. Por favor, inicia sesión.");
+      setSeverity("error");
+      setOpenSnackbar(true);
+    }
+  }, [token]);
+
+  const fetchRolesDisponibles = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/roles/enum", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("No autorizado. Por favor, inicia sesión nuevamente.");
+        }
+        throw new Error("Error al obtener roles disponibles");
+      }
+      
+      const data = await response.json();
+      setRolesDisponibles(data);
+      setRoles(data);
+    } catch (error) {
+      console.error("Error en fetchRolesDisponibles:", error);
+      setMessage("Error al obtener roles disponibles. Por favor, intente nuevamente.");
+      setSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios",{
+      const response = await fetch("http://localhost:8080/usuarios", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("No autorizado. Por favor, inicia sesión nuevamente.");
         }
-    });
-      if (!response.ok) throw new Error("Error al obtener usuarios");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de usuarios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay usuarios registrados.");
-        setOpenSnackbar(true);
-        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setUsuarios(data);
+        throw new Error("Error al obtener usuarios");
       }
+      
+      const data = await response.json();
+      
+      // Obtener roles para cada usuario
+      const usuariosConRoles = await Promise.all(
+        data.map(async (usuario) => {
+          try {
+            const rolesResponse = await fetch(`http://localhost:8080/roles/${usuario.numeroDocumento}`, {
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+              }
+            });
+
+            if (rolesResponse.ok) {
+              const rolesData = await rolesResponse.json();
+              return {
+                ...usuario,
+                roles: rolesData.map(rolObj => rolObj.rol)
+              };
+            }
+            return {
+              ...usuario,
+              roles: []
+            };
+          } catch (error) {
+            return {
+              ...usuario,
+              roles: []
+            };
+          }
+        })
+      );
+
+      setUsuarios(usuariosConRoles);
     } catch (error) {
-      console.error("Error al obtener usuarios:", error);
-      setErrorMessage("Error al obtener usuarios");
+      console.error("Error en fetchUsuarios:", error);
+      setMessage("Error al obtener usuarios. Por favor, intente nuevamente.");
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
-  const fetchRoles = async () => {
+  const fetchRolesAsignados = async (documento) => {
+    if (!documento) {
+      console.error("No se proporcionó un número de documento");
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:3000/api/roles/enum",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener roles");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de roles está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay roles registrados.");
+      if (!token) {
+        setMessage("No hay token de autenticación. Por favor, inicie sesión nuevamente.");
+        setSeverity("error");
         setOpenSnackbar(true);
-        setRoles([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setRoles(data);
+        return;
       }
+
+      const response = await fetch(`http://localhost:8080/roles/${documento}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Sesión expirada. Por favor, inicie sesión nuevamente.");
+        } else if (response.status === 403) {
+          throw new Error("No tienes permisos para ver los roles asignados.");
+        } else {
+          throw new Error(`Error al obtener roles asignados: ${response.status}`);
+        }
+      }
+
+      const rolesData = await response.json();
+      const rolesAsignados = rolesData.map(rolObj => rolObj.rol);
+      setRoles(rolesAsignados);
+
+      // Si estamos en modo edición, actualizar también formValues.roles
+      if (formValues.numeroDocumento === documento) {
+        setFormValues(prev => ({
+          ...prev,
+          roles: rolesAsignados
+        }));
+      }
+
     } catch (error) {
-      console.error("Error al obtener roles:", error);
-      setErrorMessage("Error al obtener roles");
+      console.error("Error en fetchRolesAsignados:", error);
+      setMessage(error.message);
+      setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
-  // Filtrar usuarios según el término de búsqueda
-  const filteredUsuarios = usuarios.filter((usuario) =>
-    (usuario.nombreUsuario && usuario.nombreUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (usuario.apellidoUsuario && usuario.apellidoUsuario.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (usuario.correo && usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  // Cambiar página
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  // Cambiar filas por página
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const sincronizarRoles = async (numeroDocumento) => {
+    await Promise.all([
+      fetchRolesDisponibles(),
+      fetchRolesAsignados(numeroDocumento)
+    ]);
   };
 
   const handleInputChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleSwitchChange = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.checked,
-    });
-  };
+  const handleRoleChange = async (event) => {
+    const { value } = event.target;
+    const selectedRole = value[value.length - 1];
 
-  const handleRoleChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setFormValues({
-      ...formValues,
-      roles: typeof value === "string" ? value.split(",") : value,
-    });
-  };
+    if (!formValues.numeroDocumento) {
+      setMessage("Debe crear o seleccionar un usuario antes de asignar roles");
+      setSeverity("warning");
+      setOpenSnackbar(true);
+      return;
+    }
 
-  const handleCreateUser = async () => {
+    // Verificar que el rol no sea undefined y sea válido
+    if (!selectedRole || !rolesDisponibles.includes(selectedRole)) {
+      setMessage("Debe seleccionar un rol válido");
+      setSeverity("warning");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Verificar si el rol ya está asignado
+    if (formValues.roles && formValues.roles.includes(selectedRole)) {
+      setMessage("Este rol ya está asignado al usuario");
+      setSeverity("warning");
+      setOpenSnackbar(true);
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:3000/api/usuarios", {
+      // Verificar si el token existe
+      if (!token) {
+        setMessage("No hay token de autenticación. Por favor, inicie sesión nuevamente.");
+        setSeverity("error");
+        setOpenSnackbar(true);
+        return;
+      }
+
+      const requestData = {
+        usuarioNumeroDocumento: formValues.numeroDocumento,
+        rol: selectedRole
+      };
+
+      const response = await fetch("http://localhost:8080/roles", {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Accept": "application/json"
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(requestData),
       });
 
-      if (response.ok) {
-        const nuevoUsuario = await response.json();
-        setUsuarios([...usuarios, nuevoUsuario]);
-        setFormValues({
-          nombreUsuario: "",
-          apellidoUsuario: "",
-          numeroDocumento: "",
-          correo: "",
-          password: "",
-          estadoUsuario: true,
-          roles: [],
-        });
-        //mensaje de creacion exitosa
-        setMessage("Usuario guardado exitosamente");
-        setSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear usuario");
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("Error response:", errorText);
+        
+        if (response.status === 403) {
+          throw new Error("No tienes permisos para asignar roles. Verifica que tengas el rol Root o Administrativo.");
+        } else if (response.status === 401) {
+          throw new Error("Sesión expirada. Por favor, inicie sesión nuevamente.");
+        } else {
+          throw new Error(errorText || "Error al asignar el rol");
+        }
       }
+
+      // Actualizar el estado local
+      setFormValues(prev => ({
+        ...prev,
+        roles: [...(prev.roles || []), selectedRole]
+      }));
+
+      setMessage("Rol asignado correctamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
+
+      // Recargar los roles del usuario
+      await fetchRolesAsignados(formValues.numeroDocumento);
+      // Recargar la lista de usuarios para actualizar la vista
+      await fetchUsuarios();
+
     } catch (error) {
-      console.error("Error al crear usuario:", error);
-      setErrorMessage(error.message);
-      setMessage("Error al crear usuario: " + error.message);
+      console.error("Error en handleRoleChange:", error);
+      setMessage(error.message);
       setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
-  const handleUpdateUser = async () => {
+  const handleRemoveRole = async (documento, rol) => {
+    if (!documento || !rol) {
+      setMessage("Se requiere documento y rol para eliminar un rol");
+      setSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/usuarios/${selectedUser._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
-
-      if (response.ok) {
-        const updatedUser = await response.json();
-        const updatedUsuarios = usuarios.map((user) =>
-          user._id === updatedUser._id ? updatedUser : user
-        );
-        setUsuarios(updatedUsuarios);
-        setSelectedUser(null);
-        setFormValues({
-          nombreUsuario: "",
-          apellidoUsuario: "",
-          numeroDocumento: "",
-          correo: "",
-          password: "",
-          estadoUsuario: true,
-          roles: [],
-        });
-        //mensaje de actualizacion exitosa
-        setMessage("Usuario actualizado exitosamente");
-        setSeverity("success");
+      if (!token) {
+        setMessage("No hay token de autenticación. Por favor, inicie sesión nuevamente.");
+        setSeverity("error");
         setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar usuario");
+        return;
       }
+
+      const response = await fetch(`http://localhost:8080/roles/${documento}/${rol}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Sesión expirada. Por favor, inicie sesión nuevamente.");
+        } else if (response.status === 403) {
+          throw new Error("No tienes permisos para eliminar roles.");
+        } else {
+          throw new Error(`Error al eliminar el rol: ${response.status}`);
+        }
+      }
+
+      // Actualizar el estado local
+      setRoles(prevRoles => prevRoles.filter(r => r !== rol));
+      
+      // Si estamos en modo edición, actualizar también formValues.roles
+      if (formValues.numeroDocumento === documento) {
+        setFormValues(prev => ({
+          ...prev,
+          roles: prev.roles.filter(r => r !== rol)
+        }));
+      }
+
+      setMessage("Rol eliminado exitosamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
+
+      // Recargar la lista de usuarios y roles asignados
+      await fetchUsuarios();
+      await fetchRolesAsignados(documento);
+
     } catch (error) {
-      console.error("Error al actualizar usuario:", error);
-      setErrorMessage(error.message);
-      setMessage("Error al actualizar usuario: " + error.message);
+      console.error("Error en handleRemoveRole:", error);
+      setMessage(error.message);
       setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
-  const handleDeleteUser = async () => {
-    if (!userToDelete) return;
+  const handleCreateOrUpdateUser = async () => {
+    // Validación de campos
+    if (!formValues.numeroDocumento || !formValues.correo) {
+      setMessage("Por favor complete los campos obligatorios");
+      setSeverity("warning");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Validar formato de correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formValues.correo)) {
+      setMessage("Por favor ingrese un correo electrónico válido");
+      setSeverity("warning");
+      setOpenSnackbar(true);
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/usuarios/${userToDelete._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-        }
-      );
-      if (response.ok) {
-        setUsuarios(usuarios.filter((user) => user._id !== userToDelete._id));
-        handleCloseDeleteDialog();
+      const method = selectedUser ? "PUT" : "POST";
+      const url = selectedUser
+        ? `http://localhost:8080/usuarios/${formValues.numeroDocumento}`
+        : "http://localhost:8080/usuarios";
+        
+      // Preparar el cuerpo de la petición según sea creación o actualización
+      const requestBody = selectedUser ? {
+        nombre: formValues.nombre ? formValues.nombre.trim() : null,
+        apellido: formValues.apellido ? formValues.apellido.trim() : null,
+        correo: formValues.correo ? formValues.correo.trim().toLowerCase() : null,
+        password: formValues.password || null,
+        estado: formValues.estado
+      } : {
+        ...formValues,
+        nombre: formValues.nombre ? formValues.nombre.trim() : "",
+        apellido: formValues.apellido ? formValues.apellido.trim() : "",
+        correo: formValues.correo.trim().toLowerCase()
+      };
 
-        //mensaje de eliminación exitosa
-        setMessage("Usuario eliminado exitosamente!");
-        setSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar Usuario");
+      // Eliminar campos nulos o vacíos en caso de actualización
+      if (selectedUser) {
+        Object.keys(requestBody).forEach(key => {
+          if (requestBody[key] === null || requestBody[key] === "") {
+            delete requestBody[key];
+          }
+        });
       }
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          setMessage("No tienes permisos para realizar esta acción");
+          setSeverity("warning");
+          setOpenSnackbar(true);
+          return;
+        }
+        const errorData = await response.text();
+        throw new Error(errorData || "Error al guardar el usuario");
+      }
+
+      setMessage(selectedUser ? "Usuario actualizado correctamente" : "Usuario creado correctamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
+      
+      setFormValues({
+        numeroDocumento: "",
+        nombre: "",
+        apellido: "",
+        correo: "",
+        password: "",
+        estado: true,
+        roles: [],
+      });
+      setSelectedUser(null);
+      
+      await fetchUsuarios();
     } catch (error) {
-      console.error("Error al eliminar usuario:", error);
-      setErrorMessage(error.message);
-      setMessage("Error al eliminar usuario: " + error.message);
+      console.error(error);
+      setMessage(error.message);
       setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
-  const handleEditClick = (usuario) => {
+  const handleDeleteUser = async (numeroDocumento) => {
+    if (!numeroDocumento) {
+      console.error("Número de documento no proporcionado");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/usuarios/${numeroDocumento}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error("No tienes permisos para eliminar este usuario");
+        }
+        throw new Error("Error al eliminar el usuario");
+      }
+
+      setMessage("Usuario eliminado correctamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
+      
+      // Actualizar la lista de usuarios
+      await fetchUsuarios();
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message);
+      setSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleEdit = (usuario) => {
     setSelectedUser(usuario);
-    setFormValues({
-      nombreUsuario: usuario.nombreUsuario,
-      apellidoUsuario: usuario.apellidoUsuario,
-      numeroDocumento: usuario.numeroDocumento,
-      correo: usuario.correo,
-      password: "",
-      estadoUsuario: usuario.estadoUsuario,
-      roles: usuario.roles.map((rol) => rol._id),
+    setFormValues({ 
+      ...usuario, 
+      password: "", 
+      roles: [] // Inicializar con array vacío, se cargarán los roles reales en sincronizarRoles
     });
-  };
-
-  const handleDeleteClick = (usuario) => {
-    setUserToDelete(usuario);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setUserToDelete(null);
+    sincronizarRoles(usuario.numeroDocumento);
   };
 
   const handleCloseSnackbar = () => {
@@ -312,40 +498,45 @@ const Usuarios = () => {
 
   return (
     <Container>
-      <h1>Gestión de Usuarios:</h1>
-      <form noValidate autoComplete="off">
+      <h1>Gestión de Usuarios y Roles</h1>
+      <form>
         <TextField
-          label="Nombre"
-          name="nombreUsuario"
-          value={formValues.nombreUsuario}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Apellido"
-          name="apellidoUsuario"
-          value={formValues.apellidoUsuario}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Número de Documento"
+          label="Número de Documento *"
           name="numeroDocumento"
           value={formValues.numeroDocumento}
           onChange={handleInputChange}
           fullWidth
-          margin="normal"
+          margin="dense"
+          disabled={!!selectedUser}
+          helperText="Campo obligatorio"
         />
         <TextField
-          label="Correo Electrónico"
+          label="Nombre"
+          name="nombre"
+          value={formValues.nombre}
+          onChange={handleInputChange}
+          fullWidth
+          margin="dense"
+          inputProps={{ style: { textTransform: 'capitalize' } }}
+        />
+        <TextField
+          label="Apellido"
+          name="apellido"
+          value={formValues.apellido}
+          onChange={handleInputChange}
+          fullWidth
+          margin="dense"
+          inputProps={{ style: { textTransform: 'capitalize' } }}
+        />
+        <TextField
+          label="Correo Electrónico *"
           name="correo"
           value={formValues.correo}
           onChange={handleInputChange}
           fullWidth
-          margin="normal"
-          disabled={!!selectedUser} // Deshabilita el campo si se está actualizando
+          margin="dense"
+          helperText="Campo obligatorio"
+          type="email"
         />
         <TextField
           label="Contraseña"
@@ -354,132 +545,162 @@ const Usuarios = () => {
           value={formValues.password}
           onChange={handleInputChange}
           fullWidth
-          margin="normal"
+          margin="dense"
+          helperText={selectedUser ? "Dejar en blanco para mantener la contraseña actual" : "Mínimo 6 caracteres"}
         />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Roles</InputLabel>
+        <FormControl fullWidth margin="dense">
+          <InputLabel id="roles-label">Roles</InputLabel>
           <Select
+            labelId="roles-label"
             multiple
-            value={formValues.roles} // Los roles preseleccionados
+            value={formValues.roles || []}
             onChange={handleRoleChange}
-            input={<OutlinedInput label="Roles" />}
-            renderValue={(selected) => selected.join(", ")}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value, index) => (
+                  <Chip 
+                    key={`selected-${value}-${index}`} 
+                    label={value}
+                    onDelete={() => handleRemoveRole(formValues.numeroDocumento, value)}
+                    onMouseDown={(event) => {
+                      event.stopPropagation();
+                    }}
+                    sx={{
+                      backgroundColor: value === 'Root' ? '#ff9800' :
+                                     value === 'Administrativo' ? '#2196f3' :
+                                     value === 'Instructor' ? '#4caf50' :
+                                     value === 'Secretario' ? '#9c27b0' : '#757575',
+                      color: 'white',
+                      '& .MuiChip-deleteIcon': {
+                        color: 'white',
+                        '&:hover': { color: '#ffebee' }
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
+            )}
+            disabled={!formValues.numeroDocumento}
           >
-            {roles.map((rol) => (
-              <MenuItem key={rol} value={rol}>
-                <Checkbox checked={formValues.roles.includes(rol)} />
+            {rolesDisponibles.map((rol, index) => (
+              <MenuItem key={`rol-${rol}-${index}`} value={rol}>
+                <Checkbox checked={(formValues.roles || []).includes(rol)} />
                 <ListItemText primary={rol} />
               </MenuItem>
             ))}
           </Select>
+          <FormHelperText>
+            {!formValues.numeroDocumento ? 
+              "Debe crear o seleccionar un usuario antes de asignar roles" : 
+              "Seleccione los roles para el usuario"}
+          </FormHelperText>
         </FormControl>
-
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estadoUsuario}
-            onChange={handleSwitchChange}
-            name="estadoUsuario"
-            color="primary"
-          />
-          Estado Activo
-        </Box>
-        <Box marginTop={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={selectedUser ? handleUpdateUser : handleCreateUser}
-          >
-            {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
-          </Button>
-        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCreateOrUpdateUser}
+          sx={{ marginTop: "20px" }}
+        >
+          {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
+        </Button>
       </form>
-      <br></br>
-      
-       {/* Busqueda */}
-      <TextField
-        label="Buscar usuarios"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-       {/* cuerpo */}
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+
+      <TableContainer component={Paper} sx={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Apellido</TableCell>
-              <TableCell>Correo</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Roles</TableCell>
-              <TableCell>Acciones</TableCell>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+              <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Número de Documento</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Nombre</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Apellido</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Correo</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Estado</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Roles</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredUsuarios
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((usuario) => (
-                <TableRow key={usuario._id}>
-                  <TableCell>{usuario.nombreUsuario}</TableCell>
-                  <TableCell>{usuario.apellidoUsuario}</TableCell>
-                  <TableCell>{usuario.correo}</TableCell>
-                  <TableCell>{usuario.estadoUsuario ? "Activo" : "Inactivo"}</TableCell>
-                  <TableCell>
-                    {usuario.roles.map((rol) => rol).join(", ")}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEditClick(usuario)} color="primary">
-                      <Edit />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteClick(usuario)} color="error">
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {usuarios.map((usuario) => (
+              <TableRow 
+                key={usuario.numeroDocumento}
+                sx={{ 
+                  '&:hover': { backgroundColor: '#f8f8f8' },
+                  backgroundColor: usuario.estado ? 'inherit' : '#fafafa'
+                }}
+              >
+                <TableCell>{usuario.numeroDocumento}</TableCell>
+                <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.nombre || '-'}</TableCell>
+                <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.apellido || '-'}</TableCell>
+                <TableCell>{usuario.correo}</TableCell>
+                <TableCell>
+                  <Chip
+                    label={usuario.estado ? "Activo" : "Inactivo"}
+                    color={usuario.estado ? "success" : "default"}
+                    size="small"
+                    sx={{ width: '80px' }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {usuario.roles && usuario.roles.length > 0 ? (
+                      usuario.roles.map((rol, index) => (
+                        <Chip
+                          key={`${usuario.numeroDocumento}-${rol}-${index}`}
+                          label={rol}
+                          onDelete={() => handleRemoveRole(usuario.numeroDocumento, rol)}
+                          size="small"
+                          sx={{
+                            backgroundColor: rol === 'Root' ? '#ff9800' :
+                                           rol === 'Administrativo' ? '#2196f3' :
+                                           rol === 'Instructor' ? '#4caf50' :
+                                           rol === 'Secretario' ? '#9c27b0' : '#757575',
+                            color: 'white',
+                            '& .MuiChip-deleteIcon': {
+                              color: 'white',
+                              '&:hover': { color: '#ffebee' }
+                            }
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <Chip label="Sin roles" size="small" sx={{ backgroundColor: '#e0e0e0' }} />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      variant="contained"
+                      color="info"
+                      size="small"
+                      onClick={() => handleEdit(usuario)}
+                      sx={{ minWidth: 'auto' }}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      size="small"
+                      onClick={() => handleDeleteUser(usuario.numeroDocumento)}
+                      sx={{ minWidth: 'auto' }}
+                    >
+                      Eliminar
+                    </Button>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
-        
-        {/* Paginación */}
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredUsuarios.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </TableContainer>
-
-      {/* Confirmar eliminación */}
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Usuario</DialogTitle>
-        <DialogContent>
-          <Typography>
-            ¿Estás seguro que deseas eliminar al usuario{" "}
-            {userToDelete?.nombreUsuario}?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleDeleteUser} color="secondary">
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Notificación de errores */}
+      
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: "100%" }}>
+        <Alert onClose={handleCloseSnackbar} severity={severity} variant="filled">
           {message}
         </Alert>
       </Snackbar>

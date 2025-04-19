@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.dao.EmptyResultDataAccessException
 
 @Service
 class UsuarioService {
@@ -104,5 +105,14 @@ class UsuarioService {
     fun eliminarPorDocumento(documento: String): Int {
         val sql = "DELETE FROM usuario WHERE numero_documento = ?"
         return jdbcTemplate.update(sql, documento)
+    }
+
+    fun obtenerPorDocumento(documento: String): Usuario? {
+        val sql = "SELECT * FROM usuario WHERE numero_documento = ? AND estado = true"
+        return try {
+            jdbcTemplate.queryForObject(sql, rowMapper, documento)
+        } catch (e: EmptyResultDataAccessException) {
+            null
+        }
     }
 }
