@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 data class Auditoria(
-    @SerializedName("_id")
+    @SerializedName("id")
     private val id: String? = null,
     @SerializedName("fecha")
     private val fechaAuditoria: String,
