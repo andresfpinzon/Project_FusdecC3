@@ -27,11 +27,11 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                    android:id="@+id/tituloTextView"
+                    android:id="@+id/textViewCertificateIdC"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=""
+                    android:text="Certificado #"
                     android:textColor="@color/primaryColor"
                     android:textSize="16sp"
                     android:textStyle="bold"/>
@@ -42,29 +42,20 @@
                     android:orientation="horizontal">
 
                 <ImageButton
-                        android:id="@+id/infoButton"
+                        android:id="@+id/updateButtonC"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_info"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/info_button_description"
-                        android:tint="@color/primaryColor"/>
-
-                <ImageButton
-                        android:id="@+id/updateButton"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_edit"
+                        android:src="@drawable/baseline_refresh_24"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/update_button_description"
                         android:tint="@color/primaryColor"
                         android:layout_marginStart="8dp"/>
 
                 <ImageButton
-                        android:id="@+id/deleteButton"
+                        android:id="@+id/deleteButtonC"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_delete"
+                        android:src="@drawable/baseline_delete_24"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/delete_button_description"
                         android:tint="@color/red"
@@ -88,7 +79,7 @@
                     android:textColor="@color/textSecondary"/>
 
             <TextView
-                    android:id="@+id/fechaTextView"
+                    android:id="@+id/textViewFechaC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -113,18 +104,132 @@
                     android:textColor="@color/textSecondary"/>
 
             <TextView
-                    android:id="@+id/usuarioIdTextView"
+                    android:id="@+id/textViewUsuarioC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text=""
                     android:textColor="@color/textPrimary"/>
+        </LinearLayout>
 
-            <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
+        <!-- Tercera línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine2">
 
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Curso:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/textViewCursoC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+        </LinearLayout>
+
+        <!-- Cuarta línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine3">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estudiante:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/textViewEstudianteC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+        </LinearLayout>
+
+        <!-- Quinta línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine4">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Emisor:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/textViewNombreEmisorC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+        </LinearLayout>
+
+        <!-- Sexta línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine5">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Código:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/textViewCodeVerifyC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
+        </LinearLayout>
+
+        <!-- Séptima línea de información -->
+        <LinearLayout
+                android:id="@+id/infoLine7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/infoLine6">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estado:"
+                    android:textColor="@color/textSecondary"/>
+
+            <TextView
+                    android:id="@+id/textViewEstadoC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=""
+                    android:textColor="@color/textPrimary"/>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

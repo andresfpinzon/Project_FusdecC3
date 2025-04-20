@@ -2,110 +2,195 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:padding="16dp">
 
-
-    <TextView
-            android:id="@+id/textViewPadreC"
-            android:text="Crear Certificado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+    <!-- ScrollView para el formulario -->
+    <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="79dp"
-            android:textSize="27sp"
-            android:textStyle="bold"
-    />
-
-
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputTextUsuarioC"
-                android:layout_width="250dp"
-                android:layout_height="40dp"
-                android:hint="Usuario"
-                app:layout_constraintTop_toBottomOf="@+id/textViewPadreC"
-                app:layout_constraintStart_toStartOf="parent"
-                android:padding="8dp"
-                android:layout_marginStart="57dp"
-                android:layout_marginTop="10dp"
-
-        />
-
-
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputTextCursoC"
-                android:layout_width="250dp"
-                android:layout_height="40dp"
-                android:hint="Curso"
-                app:layout_constraintTop_toBottomOf="@+id/inputTextUsuarioC"
-                app:layout_constraintStart_toStartOf="parent"
-                android:padding="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="57dp"
-        />
-
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputTextEstudianteC"
-                android:layout_width="250dp"
-                android:layout_height="40dp"
-                android:hint="Estudiante"
-                app:layout_constraintTop_toBottomOf="@+id/inputTextCursoC"
-                app:layout_constraintStart_toStartOf="parent"
-                android:padding="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="57dp"
-        />
-
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputTextEmisorC"
-                android:layout_width="250dp"
-                android:layout_height="40dp"
-                android:hint="Emisor"
-                app:layout_constraintTop_toBottomOf="@+id/inputTextEstudianteC"
-                app:layout_constraintStart_toStartOf="parent"
-                android:padding="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="57dp"
-        />
-    <Button
-            android:text="Guardar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonGuardarC"
-            app:layout_constraintTop_toBottomOf="@+id/inputTextEmisorC"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="35dp"
-            android:layout_marginStart="65dp"
-            tools:layout_editor_absoluteX="65dp"
-    />
-    <Button
-            android:text="Cancelar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonCancelarC"
-            app:layout_constraintTop_toBottomOf="@+id/inputTextEmisorC"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="35dp"
-            android:layout_marginEnd="65dp"
-    />
+            app:layout_constraintBottom_toTopOf="@id/recyclerViewCertificates">
 
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
+            <!-- Título del formulario -->
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Registro de Certificado"
+                    android:textSize="20sp"
+                    android:textColor="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"/>
+
+            <!-- Campos del formulario agrupados en CardViews -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <!-- Nombre del Emisor -->
+                    <TextView
+                            android:id="@+id/emisorLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nombre del Emisor"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"/>
+
+                    <EditText
+                            android:id="@+id/inputTextEmisorC"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ingrese nombre del emisor"
+                            android:inputType="text"
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/primaryColor"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- CardView para selección de usuario -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Seleccionar Usuario"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"/>
+
+                    <Button
+                            android:id="@+id/btnSeleccionarUsuario"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Buscar Usuario"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/white"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <TextView
+                            android:id="@+id/tvUsuarioSeleccionado"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ningún usuario seleccionado"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/textSecondary"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- CardView para selección de estudiante -->
+            <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Seleccionar Estudiante"
+                            android:textColor="@color/primaryColor"
+                            android:textStyle="bold"/>
+
+                    <Button
+                            android:id="@+id/btnSeleccionarEstudiante"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Buscar Estudiante"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/white"
+                            android:backgroundTint="@color/primaryColor"/>
+
+                    <TextView
+                            android:id="@+id/tvEstudianteSeleccionado"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ningún estudiante seleccionado"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/textSecondary"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botones de acción -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:weightSum="2">
+
+                <Button
+                        android:id="@+id/buttonCancelarC"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cancelar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/red"
+                        android:layout_marginEnd="4dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+                <Button
+                        android:id="@+id/buttonGuardarC"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Guardar"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/green"
+                        android:layout_marginStart="4dp"
+                        style="@style/Widget.MaterialComponents.Button"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- RecyclerView para mostrar la lista de certificados -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewCertificates"
-            android:layout_width="320dp"
-            android:layout_height="150dp"
-            app:layout_constraintTop_toBottomOf="@+id/buttonGuardarC"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/scrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="25dp"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"
-    />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
