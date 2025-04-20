@@ -11,21 +11,21 @@ import retrofit2.Response
 
 interface CertificadoApi {
 
-    @GET("api/certificados")
+    @GET("certificados")
     suspend fun getCertificados(): Response<List<Certificado>>
 
-    @POST("api/certificados")
+    @POST("certificados")
     suspend fun createCertificado(@Body data: CreateCertificadoDto): Response<Certificado>
 
-    @PUT("api/certificados/{id}")
+    @PUT("certificados/{id}")
     suspend fun updateCertificado(
         @Path("id") id: String,
         @Body data: UpdateCertificadoDto
     ): Response<Certificado>
 
-    @GET("api/certificados/{id}")
+    @GET("certificados/{id}")
     suspend fun getCertificadoById(@Path("id") id: String): Response<Certificado>
 
-    @DELETE("api/certificados/{id}")
+    @DELETE("certificados/{id}")
     suspend fun deleteCertificadoById(@Path("id") id: String): Response<Certificado>
 }
