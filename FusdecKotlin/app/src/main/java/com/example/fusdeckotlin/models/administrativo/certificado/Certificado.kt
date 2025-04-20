@@ -4,20 +4,29 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Certificado(
-    @SerializedName("_id")
-    private val id: String? = null,
+    @SerializedName("id")
+    private val id: Int,
     @SerializedName("fechaEmision")
-    private val fechaEmision: String ,
+    private val fechaEmision: String,
     @SerializedName("usuarioId")
-    private val usuarioId: Any,
-    @SerializedName("cursoId")
-    private val cursoId: Any,
+    private val usuarioId: String,
     @SerializedName("estudianteId")
-    private val estudianteId: Any,
-    @SerializedName("nombreEmisorCertificado")
-    private var nombreEmisorCertificado: String,
+    private val estudianteId: String,
+    @SerializedName("nombreEmisor")
+    private val nombreEmisor: String,
     @SerializedName("codigoVerificacion")
     private val codigoVerificacion: String,
-    @SerializedName("estadoCertificado")
-    private var estadoCertificado: Boolean = true
-)
+    @SerializedName("estado")
+    private val estado: Boolean = true,
+    @SerializedName("create_at")
+    private val createdAt: String?
+){
+    fun getId(): Int = id
+    fun getFechaEmision(): String = fechaEmision
+    fun getUsuarioId(): String = usuarioId
+    fun getEstudiante(): String = estudianteId
+    fun getNombreEmisor(): String = nombreEmisor
+    fun getCodigoVerificacion(): String = codigoVerificacion
+    fun getEstado(): Boolean = estado
+    fun getCreateAt(): String? = createdAt
+}
