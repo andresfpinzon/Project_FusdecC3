@@ -31,14 +31,14 @@ class CertificadoServices {
         }
     }
 
-//    suspend fun getCertificatesActives(): Result<List<Certificado>> {
-//        return try {
-//            val res = certificadoApi.getCertificados()
-//            handleListResponse(res) {it.filter { certificate -> certificate.getEstadoCertificado() == true }}
-//        } catch (e: Exception) {
-//            Result.failure(e)
-//        }
-//    }
+    suspend fun getCertificatesActives(): Result<List<Certificado>> {
+        return try {
+            val res = certificadoApi.getCertificados()
+            handleListResponse(res) {it.filter { certificate -> certificate.getEstado() == true }}
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     suspend fun getCertficateById(id: String): Result<Certificado> {
         return  try {
