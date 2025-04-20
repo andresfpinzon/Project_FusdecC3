@@ -8,81 +8,84 @@ import java.util.UUID
 
 data class Auditoria(
     @SerializedName("_id")
-    private val _id: String? = null,
-    @SerializedName("fechaAuditoria")
-    private val fechaAuditoria: String = obtenerFechaActual(),
+    private val id: String? = null,
+    @SerializedName("fecha")
+    private val fechaAuditoria: String,
     @SerializedName("nombreEmisor")
     private val nombreEmisor: String,
     @SerializedName("certificadoId")
-    private val certificadoId: Any,
+    private val certificadoId: String,
     @SerializedName("estadoAuditoria")
     private var estadoAuditoria: Boolean = true
 ) {
 
-    fun getNombreEmisorAuditoria(): String = nombreEmisor
-    fun getIdAuditoria() : String = _id.toString()
+    fun getNombreEmisor(): String = nombreEmisor
+    fun getIdAuditoria() : String = id.toString()
     fun getFechaAuditoria() : String = fechaAuditoria
-    fun getCertificadoId(): String {
-        return when(certificadoId) {
-            is String -> certificadoId as String
-            //is Certificado -> (certificadoId as Certificado).getIdCertificado()
-            is Map<*, *> -> (certificadoId as Map<*, *>)["_id"] as? String ?: ""
-            else -> ""
-        }
-    }
+    fun getCertificadoId(): String = certificadoId
 
-//    fun getCertificateObject(): Certificado {
+    fun getEstado(): Boolean = estadoAuditoria
+//    fun getCertificadoId(): String {
 //        return when(certificadoId) {
-//            is Certificado -> certificadoId as Certificado
-//            is String -> createCertifiacteEmpty(certificadoId as String)
-//            is Map<*, *> -> convertMapToCetificate(certificadoId as Map<*, *>)
-//            else -> createCertifiacteEmpty("")
+//            is String -> certificadoId as String
+//            //is Certificado -> (certificadoId as Certificado).getIdCertificado()
+//            is Map<*, *> -> (certificadoId as Map<*, *>)["_id"] as? String ?: ""
+//            else -> ""
 //        }
 //    }
-
-//    fun createCertifiacteEmpty(id: String): Certificado {
-//        return Certificado(
-//            id = id,
-//            usuarioId = "",
-//            cursoId = "",
-//            estudianteId = "",
-//            nombreEmisorCertificado = ""
-//        )
-//    }
-
-//    fun convertMapToCetificate(map: Map<*,*>): Certificado {
-//        return Certificado(
-//            id = map["_id"] as? String ?: "",
-//            usuarioId = map["usuarioId"] as? String ?: "",
-//            cursoId = map["cursoId"] as? String ?: "",
-//            estudianteId = map["estudianteId"] as? String ?: "",
-//            nombreEmisorCertificado = map["nombreEmisorCertificado"] as? String ?: ""
 //
-//        )
+////    fun getCertificateObject(): Certificado {
+////        return when(certificadoId) {
+////            is Certificado -> certificadoId as Certificado
+////            is String -> createCertifiacteEmpty(certificadoId as String)
+////            is Map<*, *> -> convertMapToCetificate(certificadoId as Map<*, *>)
+////            else -> createCertifiacteEmpty("")
+////        }
+////    }
+//
+////    fun createCertifiacteEmpty(id: String): Certificado {
+////        return Certificado(
+////            id = id,
+////            usuarioId = "",
+////            cursoId = "",
+////            estudianteId = "",
+////            nombreEmisorCertificado = ""
+////        )
+////    }
+//
+////    fun convertMapToCetificate(map: Map<*,*>): Certificado {
+////        return Certificado(
+////            id = map["_id"] as? String ?: "",
+////            usuarioId = map["usuarioId"] as? String ?: "",
+////            cursoId = map["cursoId"] as? String ?: "",
+////            estudianteId = map["estudianteId"] as? String ?: "",
+////            nombreEmisorCertificado = map["nombreEmisorCertificado"] as? String ?: ""
+////
+////        )
+////    }
+//
+//    fun getEstadoAuditoria(): Boolean = estadoAuditoria
+//
+//    /*
+//    Setters
+//    */
+//    fun setEstadoAuditoria(newState: Boolean) {
+//        estadoAuditoria = newState
 //    }
-
-    fun getEstadoAuditoria(): Boolean = estadoAuditoria
-
-    /*
-    Setters
-    */
-    fun setEstadoAuditoria(newState: Boolean) {
-        estadoAuditoria = newState
-    }
-
-    companion object {
-        // Lista de auditorías quemadas
-        fun generarId(): String {
-            return UUID.randomUUID().toString()
-        }
-
-        fun obtenerFechaActual(): String {
-            val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            return LocalDate.now().format(formato)
-        }
-
-        fun generarIdCertificado(): String {
-            return UUID.randomUUID().toString().substring(0, 8)
-        }
-    }
+//
+//    companion object {
+//        // Lista de auditorías quemadas
+//        fun generarId(): String {
+//            return UUID.randomUUID().toString()
+//        }
+//
+//        fun obtenerFechaActual(): String {
+//            val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+//            return LocalDate.now().format(formato)
+//        }
+//
+//        fun generarIdCertificado(): String {
+//            return UUID.randomUUID().toString().substring(0, 8)
+//        }
+//    }
 }
