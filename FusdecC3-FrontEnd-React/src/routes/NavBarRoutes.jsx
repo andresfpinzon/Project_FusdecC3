@@ -17,7 +17,6 @@ import Comandos from "../pages/comandos/Comandos";
 import Certificados from "../pages/certificados/Certificados";
 import Brigadas from "../pages/brigadas/Brigadas";
 import Unidades from "../pages/unidades/Unidades";
-import Calificaciones from "../pages/calificaciones/Calificaciones";
 import Colegios from "../pages/colegios/Colegios";
 import Fundaciones from "../pages/fundaciones/Fundaciones";
 import ProtectedRoute from "../components/protectedRoute/ProtectedRoute";
@@ -46,7 +45,6 @@ const NavbarRoutes = () => {
       <Route path="/roles" element={<ProtectedRoute element={Roles} allowedRoles={["Administrativo","Root"]} />} />
       <Route path="/estudiantes" element={<ProtectedRoute element={Estudiantes} allowedRoles={["Instructor", "Secretario","Root"]} />} />
       <Route path="/asistencias" element={<ProtectedRoute element={Asistencias} allowedRoles={["Instructor", "Administrativo","Root"]} />} />
-      <Route path="/calificaciones" element={<ProtectedRoute element={Calificaciones} allowedRoles={["Instructor", "Administrativo","Root"]} />} />
     </Routes>
   );
 };

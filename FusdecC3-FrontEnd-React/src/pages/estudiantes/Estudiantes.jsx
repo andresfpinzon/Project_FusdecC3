@@ -26,35 +26,34 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
-  Checkbox,
-  ListItemText,
+  Chip,
   TablePagination
 } from "@mui/material";
-import { Edit, Delete, Info, Person, Description, CreditCard, Cake, Email, School, ToggleOn, CheckCircle, Cancel, Star, ConfirmationNumber } from "@mui/icons-material";
+import { Edit, Delete, Info, Person, Description, CreditCard, School, ToggleOn, CheckCircle, Star } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 
 const Estudiantes = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [unidades, setUnidades] = useState([]);
-  const [colegios, setColegios] = useState([]);
   const [ediciones, setEdiciones] = useState([]);
+  const [colegios, setColegios] = useState([]);
   const [selectedEstudiante, setSelectedEstudiante] = useState(null);
   const [formValues, setFormValues] = useState({
-    nombreEstudiante: "",
-    apellidoEstudiante: "",
     numeroDocumento: "",
-    correoEstudiante: "",
+    nombre: "",
+    apellido: "",
     tipoDocumento: "",
-    fechaNacimiento: "",
-    generoEstudiante: "",
-    unidadId: "",
-    colegioId: "",
-    estadoEstudiante: true,
-    ediciones: [],
+    genero: "",
+    unidad: "",
+    colegio: "",
+    edicion: "",
+    grado: "",
+    estado: true
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [estudianteToDelete, setEstudianteToDelete] = useState(null);
@@ -75,13 +74,13 @@ const Estudiantes = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes",{
+      const response = await fetch("http://localhost:8080/estudiantes", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       
@@ -89,7 +88,7 @@ const Estudiantes = () => {
       if (data.length === 0) {
         setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
-        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
+        setEstudiantes([]); 
       } else {
         setEstudiantes(data);
       }
@@ -102,21 +101,21 @@ const Estudiantes = () => {
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/unidades",{
+      const response = await fetch("http://localhost:3000/api/unidades", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
+      
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
-
-      // Condicion que verifica si el arreglo de unidades está vacío
+      
       if (data.length === 0) {
         setErrorMessage("No hay unidades registradas.");
         setOpenSnackbar(true);
-        setUnidades([]); // esto mantiene el estado vacío para evitar errores
+        setUnidades([]);
       } else {
         setUnidades(data);
       }
@@ -129,48 +128,57 @@ const Estudiantes = () => {
 
   const fetchColegios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/colegios",{
+      const response = await fetch("http://localhost:3000/api/colegios", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener colegios");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de colegios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay colegios registrados.");
-        setOpenSnackbar(true);
-        setColegios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setColegios(data);
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
+  
+      // Manejo de errores detallado
+      if (response.status === 401) {
+        const errorData = await response.json();
+        console.error("Detalles error 401:", errorData);
+        throw new Error(errorData.message || "No autorizado");
       }
+  
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      setColegios(data);
     } catch (error) {
-      console.error("Error al obtener colegios:", error);
-      setErrorMessage("Error al obtener colegios");
+      console.error("Error en fetchColegios:", error);
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
+      
+      // Redirigir a login si es error de autenticación
+      if (error.message.includes("No autorizado") || error.message.includes("401")) {
+        localStorage.removeItem("token");
+        // window.location.href = "/login"; // Descomenta si necesitas redirección
+      }
     }
   };
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones",{
+      const response = await fetch("http://localhost:3000/api/ediciones", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
+      
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
-
-      // Condicion que verifica si el arreglo de ediciones está vacío
+      
       if (data.length === 0) {
         setErrorMessage("No hay ediciones registradas.");
         setOpenSnackbar(true);
-        setEdiciones([]); // esto mantiene el estado vacío para evitar errores
+        setEdiciones([]);
       } else {
         setEdiciones(data);
       }
@@ -183,13 +191,14 @@ const Estudiantes = () => {
 
   // Filtrar usuarios según el término de búsqueda
   const filteredEstudiantes = estudiantes.filter((estudiante) =>
-    estudiante.nombreEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    estudiante.apellidoEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
     estudiante.tipoDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
     estudiante.numeroDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    estudiante.correoEstudiante.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (estudiante.unidadId?.nombreUnidad?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-    (estudiante.colegioId?.nombreColegio?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
+    estudiante.unidad?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.colegio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.edicion?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    estudiante.grado?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Cambiar página
@@ -217,25 +226,15 @@ const Estudiantes = () => {
     });
   };
 
-  const handleEditionChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setFormValues({
-      ...formValues,
-      ediciones: typeof value === "string" ? value.split(",") : value,
-    });
-  };
-
   const handleCreateEstudiante = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes", {
+      const response = await fetch("http://localhost:8080/estudiantes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(formValues)
       });
 
       if (response.ok) {
@@ -246,17 +245,16 @@ const Estudiantes = () => {
         setOpenSnackbar(true);
 
         setFormValues({
-          nombreEstudiante: "",
-          apellidoEstudiante: "",
           numeroDocumento: "",
-          correoEstudiante: "",
+          nombre: "",
+          apellido: "",
           tipoDocumento: "",
-          fechaNacimiento: "",
-          generoEstudiante: "",
-          unidadId: "",
-          colegioId: "",
-          estadoEstudiante: true,
-          ediciones: [],
+          genero: "",
+          unidad: "",
+          colegio: "",
+          edicion: "",
+          grado: "",
+          estado: true
         });
       } else {
         const errorData = await response.json();
@@ -272,14 +270,14 @@ const Estudiantes = () => {
   const handleUpdateEstudiante = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/estudiantes/${selectedEstudiante._id}`,
+        `http://localhost:8080/estudiantes/${selectedEstudiante.numeroDocumento}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify(formValues),
+          body: JSON.stringify(formValues)
         }
       );
 
@@ -287,17 +285,16 @@ const Estudiantes = () => {
         await fetchEstudiantes()
         setSelectedEstudiante(null);
         setFormValues({
-          nombreEstudiante: "",
-          apellidoEstudiante: "",
           numeroDocumento: "",
-          correoEstudiante: "",
+          nombre: "",
+          apellido: "",
           tipoDocumento: "",
-          fechaNacimiento: "",
-          generoEstudiante: "",
-          unidadId: "",
-          colegioId: "",
-          estadoEstudiante: true,
-          ediciones: [],
+          genero: "",
+          unidad: "",
+          colegio: "",
+          edicion: "",
+          grado: "",
+          estado: true
         });
 
         // Mostrar mensaje de éxito
@@ -318,17 +315,17 @@ const Estudiantes = () => {
     if (!estudianteToDelete) return;
     try {
       const response = await fetch(
-        `http://localhost:3000/api/estudiantes/${estudianteToDelete._id}`,
+        `http://localhost:8080/estudiantes/${estudianteToDelete.numeroDocumento}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
-        }
+            "Authorization": `Bearer ${token}`
+          }
         }
       );
       if (response.ok) {
-        setEstudiantes(estudiantes.filter((estudiante) => estudiante._id !== estudianteToDelete._id));
+        setEstudiantes(estudiantes.filter((est) => est.numeroDocumento !== estudianteToDelete.numeroDocumento));
         handleCloseDeleteDialog();
 
         // Mostrar mensaje de éxito
@@ -349,17 +346,16 @@ const Estudiantes = () => {
   const handleEditClick = (estudiante) => {
     setSelectedEstudiante(estudiante);
     setFormValues({
-      nombreEstudiante: estudiante.nombreEstudiante,
-      apellidoEstudiante: estudiante.apellidoEstudiante,
       numeroDocumento: estudiante.numeroDocumento,
-      correoEstudiante: estudiante.correoEstudiante,
+      nombre: estudiante.nombre,
+      apellido: estudiante.apellido,
       tipoDocumento: estudiante.tipoDocumento,
-      fechaNacimiento: estudiante.fechaNacimiento,
-      generoEstudiante: estudiante.generoEstudiante,
-      unidadId: estudiante.unidadId?._id || "", 
-      colegioId: estudiante.colegioId?._id || "", 
-      estadoEstudiante: estudiante.estadoEstudiante,
-      ediciones: estudiante.ediciones.map((edicion) => edicion._id),
+      genero: estudiante.genero,
+      unidad: estudiante.unidad,
+      colegio: estudiante.colegio,
+      edicion: estudiante.edicion,
+      grado: estudiante.grado,
+      estado: estudiante.estado
     });
   };
 
@@ -374,16 +370,55 @@ const Estudiantes = () => {
   };
 
   const handleInfoClick = async (estudiante) => {
-    const response = await fetch(`http://localhost:3000/api/estudiantes/${estudiante._id}`,{
-      method: "GET",
-      headers: {
+    try {
+      // Obtener todas las relaciones asistencia-estudiante
+      const relacionesResponse = await fetch("http://localhost:8080/asistencia-estudiantes", {
+        method: "GET",
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
-      }
-  });
-    const data = await response.json();
-    setInfoEstudiante(data);
-    setOpenInfoDialog(true);
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!relacionesResponse.ok) throw new Error("Error al obtener relaciones");
+      
+      const relaciones = await relacionesResponse.json();
+      
+      // Filtrar las relaciones de este estudiante
+      const relacionesDelEstudiante = relaciones.filter(
+        rel => rel.estudianteId === estudiante.numeroDocumento
+      );
+      
+      // Obtener los detalles de cada asistencia
+      const asistenciasResponse = await fetch("http://localhost:8080/asistencias", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!asistenciasResponse.ok) throw new Error("Error al obtener asistencias");
+      
+      const todasAsistencias = await asistenciasResponse.json();
+      
+      // Filtrar las asistencias de este estudiante
+      const asistenciasDelEstudiante = todasAsistencias.filter(asistencia => 
+        relacionesDelEstudiante.some(rel => rel.asistenciaId === asistencia.id)
+      );
+      
+      // Actualizar el estado con la información
+      setInfoEstudiante({
+        ...estudiante,
+        asistencias: asistenciasDelEstudiante
+      });
+      setOpenInfoDialog(true);
+      
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Error al obtener las asistencias del estudiante");
+      setOpenSnackbar(true);
+    }
   };
 
   const handleCloseInfoDialog = () => {
@@ -395,34 +430,7 @@ const Estudiantes = () => {
     <Container>
       <h1>Gestión de Estudiantes:</h1>
       <form noValidate autoComplete="off">
-        <TextField
-          label="Nombre"
-          name="nombreEstudiante"
-          value={formValues.nombreEstudiante}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Apellido"
-          name="apellidoEstudiante"
-          value={formValues.apellidoEstudiante}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Tipo de Documento</InputLabel>
-          <Select
-            name="tipoDocumento"
-            value={formValues.tipoDocumento}
-            onChange={handleInputChange}
-            input={<OutlinedInput label="Tipo de Documento" />}
-          >
-            <MenuItem value="T.I">T.I</MenuItem>
-            <MenuItem value="C.C">C.C</MenuItem>
-          </Select>
-        </FormControl>
+        {/* Número de Documento */}
         <TextField
           label="Número de Documento"
           name="numeroDocumento"
@@ -430,43 +438,73 @@ const Estudiantes = () => {
           onChange={handleInputChange}
           fullWidth
           margin="normal"
+          required
         />
+
+        {/* Nombre */}
         <TextField
-          label="Correo Electrónico"
-          name="correoEstudiante"
-          value={formValues.correoEstudiante}
+          label="Nombre"
+          name="nombre"
+          value={formValues.nombre}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
+          required
         />
+
+        {/* Apellido */}
         <TextField
-          label="Fecha de Nacimiento"
-          type="date"
-          name="fechaNacimiento"
-          value={formValues.fechaNacimiento}
+          label="Apellido"
+          name="apellido"
+          value={formValues.apellido}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
-          InputLabelProps={{ shrink: true }}
+          required
         />
-        <FormControl fullWidth margin="normal">
+
+        {/* Tipo de Documento */}
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel>Tipo de Documento</InputLabel>
+          <Select
+            name="tipoDocumento"
+            value={formValues.tipoDocumento}
+            onChange={handleInputChange}
+            input={<OutlinedInput label="Tipo de Documento" />}
+          >
+            <MenuItem value="C.C">Cédula de Ciudadanía</MenuItem>
+            <MenuItem value="T.I">Tarjeta de Identidad</MenuItem>
+            <MenuItem value="C.E">Cédula de Extranjería</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* Género */}
+        <FormControl fullWidth margin="normal" required>
           <InputLabel>Género</InputLabel>
           <Select
-            name="generoEstudiante"
-            value={formValues.generoEstudiante}
+            name="genero"
+            value={formValues.genero}
             onChange={handleInputChange}
             input={<OutlinedInput label="Género" />}
           >
             <MenuItem value="Masculino">Masculino</MenuItem>
             <MenuItem value="Femenino">Femenino</MenuItem>
+            <MenuItem value="Otro">Otro</MenuItem>
           </Select>
         </FormControl>
-        <FormControl fullWidth margin="normal">
+
+        {/* Unidad */}
+        <FormControl fullWidth margin="normal" required>
           <InputLabel>Unidad</InputLabel>
           <Select
-            name="unidadId"
-            value={formValues.unidadId}
-            onChange={handleInputChange}
+            value={unidades.find(u => u.nombreUnidad === formValues.unidad)?._id || ""}
+            onChange={(e) => {
+              const unidadSeleccionada = unidades.find(u => u._id === e.target.value);
+              setFormValues({
+                ...formValues,
+                unidad: unidadSeleccionada?.nombreUnidad || ""
+              });
+            }}
             input={<OutlinedInput label="Unidad" />}
           >
             {unidades.map((unidad) => (
@@ -476,12 +514,19 @@ const Estudiantes = () => {
             ))}
           </Select>
         </FormControl>
-        <FormControl fullWidth margin="normal">
+
+        {/* Colegio */}
+        <FormControl fullWidth margin="normal" required>
           <InputLabel>Colegio</InputLabel>
           <Select
-            name="colegioId"
-            value={formValues.colegioId}
-            onChange={handleInputChange}
+            value={colegios.find(c => c.nombreColegio === formValues.colegio)?._id || ""}
+            onChange={(e) => {
+              const colegioSeleccionado = colegios.find(c => c._id === e.target.value);
+              setFormValues({
+                ...formValues,
+                colegio: colegioSeleccionado?.nombreColegio || ""
+              });
+            }}
             input={<OutlinedInput label="Colegio" />}
           >
             {colegios.map((colegio) => (
@@ -491,45 +536,119 @@ const Estudiantes = () => {
             ))}
           </Select>
         </FormControl>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Ediciones</InputLabel>
+
+        {/* Edición - Versión más robusta */}
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel>Edición</InputLabel>
           <Select
-            multiple
-            value={formValues.ediciones}
-            onChange={handleEditionChange}
-            input={<OutlinedInput label="Ediciones" />}
-            renderValue={(selected) =>
-              ediciones
-                .filter((edicion) => selected.includes(edicion._id))
-                .map((edicion) => edicion.tituloEdicion)
-                .join(", ")
+            value={
+              ediciones.find(e => 
+                e.tituloEdicion === formValues.edicion || 
+                e._id === formValues.edicion
+              )?._id || ""
             }
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              const edicionSeleccionada = ediciones.find(e => e._id === selectedId);
+              
+              if (edicionSeleccionada) {
+                setFormValues({
+                  ...formValues,
+                  edicion: edicionSeleccionada.tituloEdicion
+                });
+              } else {
+                // Opcional: resetear si no se encuentra
+                setFormValues({
+                  ...formValues,
+                  edicion: ""
+                });
+              }
+            }}
+            input={<OutlinedInput label="Edición" />}
           >
+            <MenuItem value="" disabled>
+              Seleccione una edición
+            </MenuItem>
             {ediciones.map((edicion) => (
               <MenuItem key={edicion._id} value={edicion._id}>
-                <Checkbox checked={formValues.ediciones.indexOf(edicion._id) > -1} />
-                <ListItemText primary={edicion.tituloEdicion} />
+                {edicion.tituloEdicion}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+
+        {/* Grado */}
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel>Grado</InputLabel>
+          <Select
+            name="grado"
+            value={formValues.grado}
+            onChange={handleInputChange}
+            input={<OutlinedInput label="Grado" />}
+          >
+            {[ 8, 9, 10, 11].map((grado) => (
+              <MenuItem key={grado} value={`${grado}°`}>
+                {grado}° Grado
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Estado */}
         <Box marginTop={2} marginBottom={2}>
           <Switch
-            checked={formValues.estadoEstudiante}
+            checked={formValues.estado}
             onChange={handleSwitchChange}
-            name="estadoEstudiante"
+            name="estado"
             color="primary"
           />
-          Estado Activo
+          <Typography component="span">Estado Activo</Typography>
         </Box>
+
+        {/* Botón de enviar */}
         <Box marginTop={3}>
           <Button
             variant="contained"
             color="primary"
             onClick={selectedEstudiante ? handleUpdateEstudiante : handleCreateEstudiante}
+            disabled={
+              !formValues.numeroDocumento ||
+              !formValues.nombre ||
+              !formValues.apellido ||
+              !formValues.tipoDocumento ||
+              !formValues.genero ||
+              !formValues.unidad ||
+              !formValues.colegio ||
+              !formValues.edicion ||
+              !formValues.grado
+            }
           >
             {selectedEstudiante ? "Actualizar Estudiante" : "Crear Estudiante"}
           </Button>
+          {selectedEstudiante && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => {
+                setSelectedEstudiante(null);
+                setFormValues({
+                  numeroDocumento: "",
+                  nombre: "",
+                  apellido: "",
+                  tipoDocumento: "",
+                  genero: "",
+                  unidad: "",
+                  colegio: "",
+                  edicion: "",
+                  grado: "",
+                  estado: true
+                });
+              }}
+              style={{ marginLeft: '10px' }}
+            >
+              Cancelar Edición
+            </Button>
+          )}
         </Box>
       </form>
       <br></br>
@@ -548,43 +667,63 @@ const Estudiantes = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>N° Documento</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Apellido</TableCell>
-              <TableCell>Tipo de Documento</TableCell>
-              <TableCell>Número de Documento</TableCell>
-              <TableCell>Correo</TableCell>
+              <TableCell>Tipo Documento</TableCell>
               <TableCell>Unidad</TableCell>
               <TableCell>Colegio</TableCell>
+              <TableCell>Edición</TableCell>
+              <TableCell>Grado</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-          {filteredEstudiantes
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((estudiante) => (
-              <TableRow key={estudiante._id}>
-                <TableCell>{estudiante.nombreEstudiante}</TableCell>
-                <TableCell>{estudiante.apellidoEstudiante}</TableCell>
-                <TableCell>{estudiante.tipoDocumento}</TableCell>
-                <TableCell>{estudiante.numeroDocumento}</TableCell>
-                <TableCell>{estudiante.correoEstudiante}</TableCell>
-                <TableCell>{estudiante.unidadId?.nombreUnidad || "Unidad no encontrada"}</TableCell>
-                <TableCell>{estudiante.colegioId?.nombreColegio || "Colegio no encontrado"}</TableCell>
-                <TableCell>{estudiante.estadoEstudiante ? "Activo" : "Inactivo"}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(estudiante)} color="primary">
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleInfoClick(estudiante)} color="primary">
-                    <Info />
-                  </IconButton>
-                  <IconButton onClick={() => handleDeleteClick(estudiante)} color="error">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredEstudiantes
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((estudiante) => (
+                <TableRow key={estudiante.numeroDocumento}>
+                  <TableCell>{estudiante.numeroDocumento}</TableCell>
+                  <TableCell>{estudiante.nombre}</TableCell>
+                  <TableCell>{estudiante.apellido}</TableCell>
+                  <TableCell>{estudiante.tipoDocumento}</TableCell>
+                  <TableCell>{estudiante.unidad || "Sin unidad"}</TableCell>
+                  <TableCell>{estudiante.colegio || "Sin colegio"}</TableCell>
+                  <TableCell>{estudiante.edicion || "Sin edición"}</TableCell>
+                  <TableCell>{estudiante.grado || "Sin grado"}</TableCell>
+                  <TableCell>
+                    {estudiante.estado ? (
+                      <Chip label="Activo" color="success" size="small" />
+                    ) : (
+                      <Chip label="Inactivo" color="error" size="small" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton 
+                      onClick={() => handleEditClick(estudiante)} 
+                      color="primary"
+                      aria-label="editar"
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton 
+                      onClick={() => handleInfoClick(estudiante)} 
+                      color="info"
+                      aria-label="información"
+                    >
+                      <Info />
+                    </IconButton>
+                    <IconButton 
+                      onClick={() => handleDeleteClick(estudiante)} 
+                      color="error"
+                      aria-label="eliminar"
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
         {/* Paginación */}
@@ -602,7 +741,7 @@ const Estudiantes = () => {
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Eliminar Estudiante</DialogTitle>
         <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {estudianteToDelete?.nombreEstudiante}?</Typography>
+          <Typography>¿Estás seguro de que deseas eliminar a {estudianteToDelete?.nombre}?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
@@ -611,103 +750,60 @@ const Estudiantes = () => {
       </Dialog>
 
       
-      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+      <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="md" fullWidth>
         <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-          Información del Estudiante
+          Asistencias de {infoEstudiante?.nombre} {infoEstudiante?.apellido}
         </DialogTitle>
         <DialogContent dividers sx={{ padding: '20px' }}>
           {infoEstudiante && (
             <div>
-              {/* Nombre */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Person color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.nombreEstudiante || "Nombre no disponible"}</Typography>
-              </Box>
-
-              {/* Apellido */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Person color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Apellido:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.apellidoEstudiante || "Apellido no disponible"}</Typography>
-              </Box>
-
-              {/* Tipo de Documento */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Description color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Tipo de Documento:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.tipoDocumento || "Tipo no disponible"}</Typography>
-              </Box>
-
-              {/* Número de Documento */}
-              <Box display="flex" alignItems="center" mb={2}>
+              <Box display="flex" alignItems="center" mb={3}>
                 <CreditCard color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Número de Documento:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.numeroDocumento || "Número no disponible"}</Typography>
+                <Typography variant="h6">Documento: {infoEstudiante.numeroDocumento}</Typography>
               </Box>
 
-              {/* Fecha de Nacimiento */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Cake color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Nacimiento:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.fechaNacimiento || "Fecha no disponible"}</Typography>
-              </Box>
-
-              {/* Correo */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Email color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Correo:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.correoEstudiante || "Correo no disponible"}</Typography>
-              </Box>
-
-              {/* Unidad */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Unidad:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.unidadId?.nombreUnidad || "Unidad no encontrada"}</Typography>
-              </Box>
-
-              {/* Colegio */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Colegio:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.colegioId?.nombreColegio || "Colegio no encontrado"}</Typography>
-              </Box>
-
-              {/* Estado */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <ToggleOn color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.estadoEstudiante ? "Activo" : "Inactivo"}</Typography>
-              </Box>
-
-              {/* Ediciones */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Edit color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ediciones:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.ediciones?.map((ed) => ed.tituloEdicion).join(", ") || "Sin ediciones"}</Typography>
-              </Box>
-
-              {/* Asistencias */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <CheckCircle color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Asistencias:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.asistencias?.map((as) => as.tituloAsistencia).join(", ") || "Sin asistencias"}</Typography>
-              </Box>
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                Registro de Asistencias ({infoEstudiante.asistencias?.length || 0})
+              </Typography>
               
-              {/* Calificaciones */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Star color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Calificaciones:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.calificaciones?.map((ca) => ca.tituloCalificacion).join(", ") || "Sin calificaciones"}</Typography>
-              </Box>
-
-              {/* Certificados */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <ConfirmationNumber color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Certificados:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEstudiante.certificados?.map((ce) => ce.codigoVerificacion).join(", ") || "Sin certificados"}</Typography>
-              </Box>
+              {infoEstudiante.asistencias?.length > 0 ? (
+                <TableContainer component={Paper} sx={{ maxHeight: 400, overflow: 'auto' }}>
+                  <Table size="small" stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Fecha</TableCell>
+                        <TableCell>Título</TableCell>
+                        <TableCell>Estado</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {infoEstudiante.asistencias
+                        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)) // Ordenar por fecha descendente
+                        .map((asistencia) => (
+                          <TableRow key={asistencia.id}>
+                            <TableCell>{asistencia.id}</TableCell>
+                            <TableCell>
+                              {new Date(asistencia.fecha + 'T00:00:00').toLocaleDateString('es-ES')}
+                            </TableCell>
+                            <TableCell>{asistencia.titulo}</TableCell>
+                            <TableCell>
+                              <Chip 
+                                label={asistencia.estado ? "Activa" : "Inactiva"} 
+                                color={asistencia.estado ? "success" : "error"} 
+                                size="small" 
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Typography variant="body1" sx={{ fontStyle: 'italic', textAlign: 'center', py: 2 }}>
+                  El estudiante no tiene asistencias registradas
+                </Typography>
+              )}
             </div>
           )}
         </DialogContent>
@@ -719,11 +815,19 @@ const Estudiantes = () => {
       </Dialog>
 
 
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+      <Snackbar 
+        open={openSnackbar} 
+        autoHideDuration={6000} 
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert 
+          onClose={() => setOpenSnackbar(false)} 
+          severity={errorMessage ? "error" : "success"}
+        >
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
+      
     </Container>
   );
 };

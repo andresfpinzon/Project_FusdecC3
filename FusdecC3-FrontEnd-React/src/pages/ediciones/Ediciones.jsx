@@ -4,6 +4,7 @@ import {
   Container,
   TextField,
   Button,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -35,11 +36,25 @@ import { Edit, Delete, Info, School, DateRange, EventAvailable, ToggleOn, Class,
 
 const token = localStorage.getItem("token");
 
+const formatDate = (dateString) => {
+  if (!dateString) return "No disponible";
+  
+  const options = { 
+    year: 'numeric', 
+    month: '2-digit', 
+    day: '2-digit',
+    timeZone: 'UTC' // Asegura que no se ajuste por zona horaria
+  };
+  
+  return new Date(dateString).toLocaleDateString('es-ES', options);
+};
+
 const Ediciones = () => {
   const [ediciones, setEdiciones] = useState([]);
   const [cursos, setCursos] = useState([]);
   const [horarios, setHorarios] = useState([]);
   const [selectedEdicion, setSelectedEdicion] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null); // Agrégalo junto a los otros estados
   const [formValues, setFormValues] = useState({
     tituloEdicion: "",
     fechaInicioEdicion: "",
@@ -196,66 +211,65 @@ const Ediciones = () => {
 
   const handleCreateEdicion = async () => {
     try {
-        const response = await fetch("http://localhost:3000/api/ediciones", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token 
-            },
-            body: JSON.stringify(formValues),
-        });
-
-        // Maneja la respuesta
-        if (response.ok) {
-            const nuevaEdicion = await response.json();
-            setEdiciones([...ediciones, nuevaEdicion]);
-            setFormValues({
-              tituloEdicion: "",
-              fechaInicioEdicion: "",
-              fechaFinEdicion: "",
-              estadoEdicion: true,
-              cursoId: "",
-              horarios: [],
-              estudiantes: [],
-            });
-
-            // Muestra un mensaje de éxito (similar a handleCreateAsistencia)
-            setSuccessMessage("Edición creada exitosamente.");
-            setOpenSnackbar(true);
-        } else {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Error al crear edicion");
-        }
-    } catch (error) {
-        handleError("Error al crear edicion", error);
-        setErrorMessage(error.message);
-        setOpenSnackbar(true);
-    }
-  };
-
-const handleUpdateEdicion = async () => {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
-      {
-        method: "PUT",
+      const response = await fetch("http://localhost:3000/api/ediciones", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": token 
         },
-        
         body: JSON.stringify(formValues),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Error al crear edición");
       }
-      
-    );
-    console.log(formValues);
+  
+      setEdiciones([...ediciones, data]);
+      setFormValues({
+        tituloEdicion: "",
+        fechaInicioEdicion: "",
+        fechaFinEdicion: "",
+        estadoEdicion: true,
+        cursoId: "",
+        horarios: [],
+        estudiantes: [],
+      });
+  
+      setSuccessMessage("Edición creada exitosamente.");
+      setErrorMessage(null);
+      setOpenSnackbar(true);
+  
+    } catch (error) {
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+    }
+  };
 
-    if (response.ok) {
-      const updatedEdicion = await response.json();
-      const updatedEdiciones = ediciones.map((edicion) =>
-        edicion._id === updatedEdicion._id ? updatedEdicion : edicion
+  const handleUpdateEdicion = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token 
+          },
+          body: JSON.stringify(formValues),
+        }
       );
-      setEdiciones(updatedEdiciones);
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Error al actualizar edición");
+      }
+  
+      setEdiciones(ediciones.map(edicion => 
+        edicion._id === data._id ? data : edicion
+      ));
       setSelectedEdicion(null);
       setFormValues({
         tituloEdicion: "",
@@ -266,25 +280,21 @@ const handleUpdateEdicion = async () => {
         horarios: [],
         estudiantes: [],
       });
-
-      // Mostrar mensaje de éxito
-      setSuccessMessage("La edición se actualizó correctamente");
-      setOpenSnackbar(true); 
-    } else {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Error al actualizar edición");
+  
+      setSuccessMessage("Edición actualizada exitosamente.");
+      setErrorMessage(null);
+      setOpenSnackbar(true);
+  
+    } catch (error) {
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
     }
-  } catch (error) {
-    console.error("Error al actualizar edición:", error);
-    setErrorMessage(error.message);
-    setOpenSnackbar(true);
-  }
-};
+  };
 
 
   const handleDeleteEdicion = async () => {
     if (!edicionToDelete) return;
-
+  
     try {
       const response = await fetch(
         `http://localhost:3000/api/ediciones/${edicionToDelete._id}`,
@@ -293,24 +303,25 @@ const handleUpdateEdicion = async () => {
           headers: {
             "Content-Type": "application/json",
             "Authorization": token 
-        }
+          }
         }
       );
-
-      if (response.ok) {
-        setEdiciones(ediciones.filter((edicion) => edicion._id !== edicionToDelete._id));
-        handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
-
-        // Mostrar mensaje de éxito
-        setSuccessMessage("La edición se eliminó correctamente");
-        setOpenSnackbar(true);
-
-      } else {
+  
+      if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar edicion");
+        throw new Error(errorData.error || "Error al eliminar edición");
       }
+  
+      setEdiciones(ediciones.filter(edicion => edicion._id !== edicionToDelete._id));
+      handleCloseDeleteDialog();
+  
+      setSuccessMessage("Edición eliminada exitosamente.");
+      setErrorMessage(null);
+      setOpenSnackbar(true);
+  
     } catch (error) {
-      handleError("Error al eliminar edicion", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
     }
   };
 
@@ -470,13 +481,17 @@ const handleUpdateEdicion = async () => {
               .map((edicion) => (
               <TableRow key={edicion._id}>
                 <TableCell>{edicion.tituloEdicion}</TableCell>
-                <TableCell>{edicion.fechaInicioEdicion}</TableCell>
-                <TableCell>{edicion.fechaFinEdicion}</TableCell>
+                <TableCell>{formatDate(edicion.fechaInicioEdicion)}</TableCell>
+                <TableCell>{formatDate(edicion.fechaFinEdicion)}</TableCell>
                 <TableCell>
-                  {edicion.estadoEdicion ? "Activa" : "Inactiva"}
+                  {edicion.estadoEdicion ? (
+                                          <Chip label="Activo" color="success" size="small" />
+                                        ) : (
+                                          <Chip label="Inactivo" color="error" size="small" />
+                                        )}
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditClick(edicion)}>
+                  <IconButton onClick={() => handleEditClick(edicion)} color="primary">
                     <Edit />
                   </IconButton>
                   <IconButton onClick={() => handleInfoClick(edicion)} color="primary">
@@ -536,14 +551,18 @@ const handleUpdateEdicion = async () => {
               <Box display="flex" alignItems="center" mb={2}>
                 <DateRange color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Inicio:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaInicioEdicion || "Fecha no disponible"}</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {formatDate(infoEdicion.fechaInicioEdicion)}
+                </Typography>
               </Box>
-              
+
               {/* Fecha de Finalización */}
               <Box display="flex" alignItems="center" mb={2}>
                 <EventAvailable color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Finalización:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.fechaFinEdicion || "Fecha no disponible"}</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {formatDate(infoEdicion.fechaFinEdicion)}
+                </Typography>
               </Box>
               
               {/* Estado */}
@@ -588,8 +607,12 @@ const handleUpdateEdicion = async () => {
       </Dialog>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error">
-          {errorMessage}
+        <Alert 
+          onClose={() => setOpenSnackbar(false)} 
+          severity={errorMessage ? "error" : "success"}
+          sx={{ width: '100%' }}
+        >
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </Container>
