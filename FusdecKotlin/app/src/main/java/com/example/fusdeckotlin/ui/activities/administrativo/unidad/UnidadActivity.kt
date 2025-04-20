@@ -258,7 +258,7 @@ class UnidadActivity : AppCompatActivity() {
             }
 
             // Cargar usuario
-            val resultUsuario = usuarioService.getUserById(unidad.getUsuarioId())
+            val resultUsuario = usuarioService.getUserByDocument(unidad.getUsuarioId())
             resultUsuario.onSuccess { usuario ->
                 usuarioSeleccionado = usuario
                 actualizarTextoUsuarioSeleccionado()

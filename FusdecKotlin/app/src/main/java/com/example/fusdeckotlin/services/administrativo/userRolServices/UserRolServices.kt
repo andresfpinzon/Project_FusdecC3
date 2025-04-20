@@ -28,10 +28,10 @@ class UserRolServices {
         }
     }
 
-    suspend fun getRoleByUser(document: String): Result<UserRolModel> {
+    suspend fun getRoleByUser(document: String): Result<List<UserRolModel>> {
         return try {
             val res = userRolApi.getRolByDocumentUser(document)
-            handleResponse(res)
+            handleListResponse(res)
         }catch (e: Exception) {
             Result.failure(e)
         }

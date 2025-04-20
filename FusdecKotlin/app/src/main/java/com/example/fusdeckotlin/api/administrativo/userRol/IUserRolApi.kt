@@ -14,7 +14,7 @@ interface IUserRolApi {
     suspend fun addRolToUser(@Body data: AddRolUserDto): Response<UserRolModel>
 
     @GET("roles/{document}")
-    suspend fun getRolByDocumentUser(@Path("document") document: String): Response<UserRolModel>
+    suspend fun getRolByDocumentUser(@Path("document") document: String): Response<List<UserRolModel>>
 
     @DELETE("roles/{document}/{rol}")
     suspend fun deleteRolToUser(@Path("document") document: String, @Path("rol") rol: String ): Response<UserRolModel>

@@ -29,14 +29,7 @@ class UsuarioServices {
         }
     }
 
-    suspend fun getUserById(id: String): Result<Usuario>{
-        return try {
-            val res = userApi.getUserById(id)
-            handleResponse(res)
-        } catch (e: Exception){
-            Result.failure(e)
-        }
-    }
+
 
     suspend fun updateUser(id: String, data: UpdateUserDto): Result<Usuario>{
         return try {
@@ -61,6 +54,15 @@ class UsuarioServices {
                 }
             }
         } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUserByDocument(id: String): Result<Usuario>{
+        return try {
+            val res = userApi.getUserByDocument(id)
+            handleResponse(res)
+        }catch (e: Exception){
             Result.failure(e)
         }
     }

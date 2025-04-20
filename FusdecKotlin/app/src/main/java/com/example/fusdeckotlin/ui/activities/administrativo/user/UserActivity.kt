@@ -19,17 +19,17 @@ import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
 import com.example.fusdeckotlin.services.administrativo.userRolServices.UserRolServices
 import com.example.fusdeckotlin.ui.adapters.administrativo.user.UserAdapter
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
 class UserActivity : AppCompatActivity() {
+
     // Views
     private lateinit var nombre: EditText
     private lateinit var apellidos: EditText
     private lateinit var documento: EditText
     private lateinit var correo: EditText
     private lateinit var password: EditText
-    private lateinit var spinnerRole: Spinner // Cambiado a Spinner
+    private lateinit var spinnerRole: Spinner
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var userRecyclerView: RecyclerView
@@ -37,6 +37,8 @@ class UserActivity : AppCompatActivity() {
     // Services
     private val usuarioServices = UsuarioServices()
     private val rolServices = UserRolServices()
+
+    // Adapter
     private lateinit var adapter: UserAdapter
 
     // State
@@ -49,7 +51,7 @@ class UserActivity : AppCompatActivity() {
         setContentView(R.layout.activity_user)
         initViews()
         setupRecyclerView()
-        setupSpinner() // Configurar Spinner
+        setupSpinner()
         setupListeners()
         cargarUsuarios()
     }
@@ -60,7 +62,7 @@ class UserActivity : AppCompatActivity() {
         documento = findViewById(R.id.inputNumeroDocumento)
         correo = findViewById(R.id.inputCorreo)
         password = findViewById(R.id.inputPassword)
-        spinnerRole = findViewById(R.id.spinnerRole) // Nuevo ID
+        spinnerRole = findViewById(R.id.spinnerRole)
         confirmarButton = findViewById(R.id.buttonConfirmar)
         cancelarButton = findViewById(R.id.buttonCancelar)
         userRecyclerView = findViewById(R.id.recyclerViewUsers)
@@ -75,12 +77,14 @@ class UserActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         adapter = UserAdapter(
             emptyList(),
+            emptyMap(), // Inicialmente vacío
             ::onUpdateClick,
-            ::onDeleteClick
+            ::onDeleteClick,
+            ::onRoleDelete // Callback para eliminar roles
         )
         userRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@UserActivity)
-            adapter = this@UserActivity.adapter
+            this.adapter = this@UserActivity.adapter
             setHasFixedSize(true)
         }
     }
@@ -94,7 +98,17 @@ class UserActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 usuarioServices.getUsersActives().onSuccess { users ->
-                    adapter.actualizarLista(users)
+                    val rolesMap = mutableMapOf<String, List<String>>()
+                    users.forEach { user ->
+                        rolServices.getRoleByUser(user.getNumeroDocumento()).onSuccess { roleResponse ->
+                            if (roleResponse.isNotEmpty()) {
+                                rolesMap[user.getNumeroDocumento()] = roleResponse.map { it.getRol() }
+                            }
+                        }.onFailure { error ->
+                            showError("Error al obtener roles para el documento ${user.getNumeroDocumento()}: ${error.message}")
+                        }
+                    }
+                    adapter.actualizarDatos(users, rolesMap)
                 }.onFailure { error ->
                     showError("Error al cargar usuarios: ${error.message}")
                 }
@@ -110,20 +124,32 @@ class UserActivity : AppCompatActivity() {
         val numeroDocumento = documento.text.toString().trim()
         val correoUsuario = correo.text.toString().trim()
         val passwordUsuario = password.text.toString().trim()
-        val selectedRole = spinnerRole.selectedItem.toString() // Obtener selección del Spinner
-
-        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() || numeroDocumento.isEmpty() ||
-            correoUsuario.isEmpty() || passwordUsuario.isEmpty()) {
+        val selectedRole = spinnerRole.selectedItem.toString()
+        if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() ||
+            numeroDocumento.isEmpty() || correoUsuario.isEmpty() || passwordUsuario.isEmpty()) {
             showError("Complete todos los campos obligatorios")
             return
         }
-
         lifecycleScope.launch {
             try {
                 if (isEditing && currentNumeroDocument != null) {
-                    actualizarUsuario(numeroDocumento, nombreUsuario, apellidoUsuario, correoUsuario, passwordUsuario, selectedRole)
+                    actualizarUsuario(
+                        numeroDocumento,
+                        nombreUsuario,
+                        apellidoUsuario,
+                        correoUsuario,
+                        passwordUsuario,
+                        selectedRole
+                    )
                 } else {
-                    crearUsuario(numeroDocumento, nombreUsuario, apellidoUsuario, correoUsuario, passwordUsuario, selectedRole)
+                    crearUsuario(
+                        numeroDocumento,
+                        nombreUsuario,
+                        apellidoUsuario,
+                        correoUsuario,
+                        passwordUsuario,
+                        selectedRole
+                    )
                 }
             } catch (e: Exception) {
                 showError("Error inesperado: ${e.message}")
@@ -180,13 +206,19 @@ class UserActivity : AppCompatActivity() {
     }
 
     private suspend fun actualizarRolUsuario(documento: String, nuevoRol: String) {
-        rolServices.getRoleByUser(documento).onSuccess { currentRol ->
-            if (currentRol.getRol() != nuevoRol) {
-                rolServices.delteRoleOfUser(documento, currentRol.getRol()).onSuccess {
-                    asignarRolUsuario(documento, nuevoRol)
-                }.onFailure { error ->
-                    showError("Error al actualizar rol: ${error.message}")
+        rolServices.getRoleByUser(documento).onSuccess { userRoles ->
+            if (userRoles.isNotEmpty()) {
+                val currentRol = userRoles.first() // Obtiene el primer rol
+                if (currentRol.getRol() != nuevoRol) {
+                    rolServices.delteRoleOfUser(documento, currentRol.getRol()).onSuccess {
+                        asignarRolUsuario(documento, nuevoRol)
+                    }.onFailure { error ->
+                        showError("Error al actualizar rol: ${error.message}")
+                    }
                 }
+            } else {
+                // Si no hay roles actuales, simplemente asigna el nuevo rol
+                asignarRolUsuario(documento, nuevoRol)
             }
         }.onFailure {
             asignarRolUsuario(documento, nuevoRol)
@@ -203,10 +235,13 @@ class UserActivity : AppCompatActivity() {
         password.setText(usuario.getPassword())
 
         lifecycleScope.launch {
-            rolServices.getRoleByUser(usuario.getNumeroDocumento()).onSuccess { userRol ->
+            rolServices.getRoleByUser(usuario.getNumeroDocumento()).onSuccess { userRoles ->
                 runOnUiThread {
-                    val position = roles.indexOf(userRol.getRol())
-                    spinnerRole.setSelection(position) // Establecer selección del Spinner
+                    if (userRoles.isNotEmpty()) {
+                        val firstRole = userRoles.first().getRol() // Obtiene el primer rol
+                        val position = roles.indexOf(firstRole)
+                        spinnerRole.setSelection(position)
+                    }
                 }
             }.onFailure { error ->
                 showError("Error al obtener rol: ${error.message}")
@@ -221,12 +256,20 @@ class UserActivity : AppCompatActivity() {
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
                     usuarioServices.deleteUserById(usuario.getNumeroDocumento()).onSuccess {
-                        rolServices.getRoleByUser(usuario.getNumeroDocumento()).onSuccess { rol ->
-                            rolServices.delteRoleOfUser(usuario.getNumeroDocumento(), rol.getRol())
-                        }
-                        runOnUiThread {
-                            showSuccess("Usuario eliminado")
-                            cargarUsuarios()
+                        rolServices.getRoleByUser(usuario.getNumeroDocumento()).onSuccess { userRoles ->
+                            if (userRoles.isNotEmpty()) {
+                                userRoles.forEach { userRol ->
+                                    rolServices.delteRoleOfUser(usuario.getNumeroDocumento(), userRol.getRol())
+                                }
+                            } else {
+                                showError("No se encontraron roles para este usuario")
+                            }
+                            runOnUiThread {
+                                showSuccess("Usuario eliminado")
+                                cargarUsuarios()
+                            }
+                        }.onFailure { error ->
+                            showError("Error al obtener roles: ${error.message}")
                         }
                     }.onFailure { error ->
                         showError("Error al eliminar: ${error.message}")
@@ -235,6 +278,24 @@ class UserActivity : AppCompatActivity() {
             }
             .setNegativeButton("No", null)
             .show()
+    }
+
+    // Nuevo método requerido por el adapter
+    private fun onRoleDelete(documento: String, rol: String) {
+        lifecycleScope.launch {
+            try {
+                rolServices.delteRoleOfUser(documento, rol).onSuccess {
+                    runOnUiThread {
+                        showSuccess("Rol eliminado")
+                        cargarUsuarios()
+                    }
+                }.onFailure { error ->
+                    showError("Error al eliminar rol: ${error.message}")
+                }
+            } catch (e: Exception) {
+                showError("Error inesperado: ${e.message}")
+            }
+        }
     }
 
     private fun showError(message: String) {
@@ -253,6 +314,6 @@ class UserActivity : AppCompatActivity() {
         documento.text?.clear()
         correo.text?.clear()
         password.text?.clear()
-        spinnerRole.setSelection(0) // Reiniciar selección del Spinner
+        spinnerRole.setSelection(0)
     }
 }

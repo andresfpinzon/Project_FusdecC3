@@ -21,10 +21,11 @@ interface IUserApi {
         @Body data: UpdateUserDto
     ): Response<Usuario>
 
-    @GET("usuarios/{numeroDocumento}")
-    suspend fun getUserById(@Path("numeroDocumento") numeroDocumento: String): Response<Usuario>
 
     @DELETE("usuarios/{numeroDocumento}")
     suspend fun deleteUserById(@Path("numeroDocumento") numeroDocumento: String): Response<Usuario>
+
+    @GET("usuarios/numero-documento/{documento}")
+    suspend fun getUserByDocument(@Path("documento") documento: String): Response<Usuario>
 
 }

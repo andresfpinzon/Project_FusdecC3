@@ -20,4 +20,6 @@
     <string name="estado_activo">ACTIVO</string>
     <string name="estado_inactivo">INACTIVO</string>
     <string name="info_button_estudiante">Información del estudiante</string>
+    <string name="delete_role">Eliminar rol</string>
+
 </resources>

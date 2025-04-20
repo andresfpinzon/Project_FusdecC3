@@ -1,5 +1,6 @@
 package com.example.fusdeckotlin.ui.adapters.administrativo.user
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,27 +9,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
-import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UserAdapter(
     private var users: List<Usuario>,
+    private var rolesMap: Map<String, List<String>>,
     private val onUpdateClick: (Usuario) -> Unit,
-    private val onDeleteClick: (Usuario) -> Unit
+    private val onDeleteClick: (Usuario) -> Unit,
+    private val onRoleDelete: (String, String) -> Unit // Callback para eliminar roles
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    // Patrón ViewHolder similar al AsistenciaAdapter
-    class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-       // val textIdUser: TextView = itemView.findViewById(R.id.textViewUserId)
-        val textNombres: TextView = itemView.findViewById(R.id.textViewNombres)
-        val textApellidos: TextView = itemView.findViewById(R.id.textViewApellidos)
-        val textDocumento: TextView = itemView.findViewById(R.id.textViewDocumento)
-        val textCorreo: TextView = itemView.findViewById(R.id.textViewCorreo)
-        val textPassword: TextView = itemView.findViewById(R.id.textViewPassword)
-        //val textRol: TextView = itemView.findViewById(R.id.textViewRol)
-        val textEstado: TextView = itemView.findViewById(R.id.textViewEstado)
-        //val textCreadoEn: TextView = itemView.findViewById(R.id.textViewCreadoEn)
-        //val txtUpdateAt: TextView = itemView.findViewById(R.id.textViewUpdateAtUser)
-
+    inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textNombres: TextView = itemView.findViewById(R.id.nombreTextView)
+        val textDocumento: TextView = itemView.findViewById(R.id.numeroDocumentoTextView)
+        val txtCorreo: TextView = itemView.findViewById(R.id.correoTxtView)
+        val textEstado: TextView = itemView.findViewById(R.id.estadoTextView)
+        val rolContainer: ViewGroup = itemView.findViewById(R.id.rolesContainer) // Contenedor de roles
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
@@ -41,39 +39,52 @@ class UserAdapter(
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = users[position]
+        val documento = user.getNumeroDocumento()
+        val roles = rolesMap[documento] ?: emptyList()
 
-        // Configurar los textos similar al AsistenciaAdapter
-        //holder.textIdUser.text = "ID: ${user.getUserId()}"
         holder.textNombres.text = "Nombres: ${user.getNombreUsuario()}"
-        holder.textApellidos.text = "Apellidos: ${user.getApellidoUsuario()}"
-        holder.textDocumento.text = "Documento: ${user.getNumeroDocumento()}"
-        holder.textCorreo.text = "Correo: ${user.getCorreo()}"
-        holder.textPassword.text = "Contraseña: ${user.getPassword()}"
-        //holder.textRol.text = "Roles: ${formatRoles(user.getRoles())}"
-        holder.textEstado.text = "Estado: ${user.getEstadoUsuario()}"
-       // holder.textCreadoEn.text = "Creado: ${formatDate(user.getCreadoAt())}"
-        //holder.txtUpdateAt.text = "Actualizado: ${formatDate(user.getUpdateAt())}"
+        holder.textDocumento.text = "Documento: $documento"
+        holder.txtCorreo.text = "Correo: ${user.getCorreo()}"
+        holder.textEstado.text = "Estado: ${if (user.getEstadoUsuario()) "Activo" else "Inactivo"}"
 
-        // Configurar los listeners de los botones
+        // Mostrar roles
+        setupRolesView(holder.rolContainer, roles, documento)
+
+        // Configurar listeners para botones
         holder.updateButton.setOnClickListener { onUpdateClick(user) }
         holder.deleteButton.setOnClickListener { onDeleteClick(user) }
     }
 
+    private fun setupRolesView(container: ViewGroup, roles: List<String>, documento: String) {
+        container.removeAllViews()
+
+        roles.forEach { rol ->
+            val roleView = LayoutInflater.from(container.context)
+                .inflate(R.layout.item_role, container, false)
+
+            val tvRol = roleView.findViewById<TextView>(R.id.tvRoleName)
+            val btnDelete = roleView.findViewById<ImageButton>(R.id.btnDeleteRole)
+
+            tvRol.text = rol
+            btnDelete.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        onRoleDelete(documento, rol) // Llamar al callback para eliminar el rol
+                    } catch (e: Exception) {
+                        Log.e("UserAdapter", "Error deleting role: ${e.message}")
+                    }
+                }
+            }
+
+            container.addView(roleView)
+        }
+    }
+
     override fun getItemCount(): Int = users.size
 
-    // Método para actualizar la lista similar al AsistenciaAdapter
-    fun actualizarLista(nuevosUsuarios: List<Usuario>) {
+    fun actualizarDatos(nuevosUsuarios: List<Usuario>, nuevosRoles: Map<String, List<String>>) {
         users = nuevosUsuarios
+        rolesMap = nuevosRoles
         notifyDataSetChanged()
-    }
-
-    // Función auxiliar para formatear roles (similar al manejo de estudiantes en AsistenciaAdapter)
-    private fun formatRoles(roles: List<String>): String {
-        return roles.joinToString(", ")
-    }
-
-    // Función auxiliar para formatear fecha (similar al AsistenciaAdapter)
-    private fun formatDate(date: String): String {
-        return date?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) ?: "Fecha no disponible"
     }
 }
