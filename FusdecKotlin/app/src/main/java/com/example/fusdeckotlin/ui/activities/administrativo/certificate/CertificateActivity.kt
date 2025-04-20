@@ -1,184 +1,294 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.certificate
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.dto.administrativo.certificado.CreateCertificadoDto
 import com.example.fusdeckotlin.dto.administrativo.certificado.UpdateCertificadoDto
+import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
+import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
+import com.example.fusdeckotlin.models.auth.AuthManager
+import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.example.fusdeckotlin.services.administrativo.certificate.CertificadoServices
+import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
+import com.example.fusdeckotlin.services.secretario.estudiante.EstudianteServices
 import com.example.fusdeckotlin.ui.adapters.administrativo.certificate.CertificateAdapter
-import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CertificateActivity : AppCompatActivity() {
 
-    private lateinit var usuario: TextInputEditText
-    private lateinit var curso: TextInputEditText
-    private lateinit var estudiante: TextInputEditText
-    private lateinit var emisor: TextInputEditText
-    private lateinit var guardarButton: Button
-    private lateinit var cancelarButton: Button
-    private lateinit var certificateRecyclerView: RecyclerView
-
-    private val certificadoServices = CertificadoServices()
+    private lateinit var inputEmisor: EditText
+    private lateinit var btnGuardar: Button
+    private lateinit var btnCancelar: Button
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var tvUsuarioSeleccionado: TextView
+    private lateinit var tvEstudianteSeleccionado: TextView
+    private val certificadoService = CertificadoServices()
+    private val estudianteService = EstudianteServices()
+    private val userService = UsuarioServices()
     private lateinit var adapter: CertificateAdapter
     private var isEditing = false
     private var currentCertificateId: String? = null
+    private var usuarioSeleccionado: Usuario? = null
+    private var estudianteSeleccionado: Estudiante? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_certificate)
-
         initViews()
-       // setupRecyclerView()
-        //loadCertificates()
-        setupButtons()
+        setupRecyclerView()
+        setupListeners()
+        loadCertificadosActivos()
+        autoLlenarEmisor()
     }
 
     private fun initViews() {
-        usuario = findViewById(R.id.inputTextUsuarioC)
-        curso = findViewById(R.id.inputTextCursoC)
-        estudiante = findViewById(R.id.inputTextEstudianteC)
-        emisor = findViewById(R.id.inputTextEmisorC)
-        guardarButton = findViewById(R.id.buttonGuardarC)
-        cancelarButton = findViewById(R.id.buttonCancelarC)
-        certificateRecyclerView = findViewById(R.id.recyclerViewCertificates)
+        inputEmisor = findViewById(R.id.inputTextEmisorC)
+        btnGuardar = findViewById(R.id.buttonGuardarC)
+        btnCancelar = findViewById(R.id.buttonCancelarC)
+        recyclerView = findViewById(R.id.recyclerViewCertificates)
+        tvUsuarioSeleccionado = findViewById(R.id.tvUsuarioSeleccionado)
+        tvEstudianteSeleccionado = findViewById(R.id.tvEstudianteSeleccionado)
     }
 
-//    private fun setupRecyclerView() {
-//        adapter = CertificateAdapter(
-//            emptyList(),
-//            ::onUpdateClick,
-//            ::onDeleteClick
-//        )
-//        certificateRecyclerView.layoutManager = LinearLayoutManager(this)
-//        certificateRecyclerView.adapter = adapter
-//    }
+    private fun autoLlenarEmisor() {
+        val nombreUsuario = AuthManager.getUserIdFromToken() ?: "Administrador"
+        inputEmisor.setText(nombreUsuario)
+    }
 
-//    private fun loadCertificates() {
-//        lifecycleScope.launch {
-//            val result = certificadoServices.getCertificatesActives()
-//            result.onSuccess { certificates ->
-//                adapter.updateList(certificates)
-//            }.onFailure { error ->
-//                showError("Error al cargar certificados: ${error.message}")
-//            }
-//        }
-//    }
+    private fun setupRecyclerView() {
+        adapter = CertificateAdapter(
+            emptyList(),
+            ::onUpdateClick,
+            ::onDeleteClick,
+            ::onInfoClick
+        )
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+    }
 
-    private fun saveCertificate() {
-        val usuarioText = usuario.text.toString().trim()
-        val cursoText = curso.text.toString().trim()
-        val estudianteText = estudiante.text.toString().trim()
-        val emisorText = emisor.text.toString().trim()
+    private fun setupListeners() {
+        btnGuardar.setOnClickListener { crearCertificado() }
+        btnCancelar.setOnClickListener { finish() }
 
-        if (usuarioText.isEmpty() || cursoText.isEmpty() || estudianteText.isEmpty() || emisorText.isEmpty()) {
-            showError("Por favor, complete todos los campos")
-            return
+        // Listener para abrir el diálogo de selección de usuario
+        findViewById<Button>(R.id.btnSeleccionarUsuario).setOnClickListener {
+            mostrarDialogoSeleccionUsuario()
         }
 
+        // Listener para abrir el diálogo de selección de estudiante
+        findViewById<Button>(R.id.btnSeleccionarEstudiante).setOnClickListener {
+            mostrarDialogoSeleccionEstudiante()
+        }
+    }
+
+    private fun mostrarDialogoSeleccionUsuario() {
         lifecycleScope.launch {
-            if (isEditing && currentCertificateId != null) {
-                updateCertificate(currentCertificateId!!, usuarioText, cursoText, estudianteText, emisorText)
-            } else {
-                createCertificate(usuarioText, cursoText, estudianteText, emisorText)
+            try {
+                val usuarios = userService.getUsersActives().getOrThrow()
+                // Crear un diálogo con una lista de usuarios
+                val dialogBuilder = AlertDialog.Builder(this@CertificateActivity)
+                dialogBuilder.setTitle("Seleccionar Usuario")
+                // Convertir la lista de usuarios en un array de nombres
+                val nombresUsuarios = usuarios.map {
+                    "${it.getNombreUsuario()} ${it.getApellidoUsuario()} (${it.getNumeroDocumento()})"
+                }.toTypedArray()
+                dialogBuilder.setItems(nombresUsuarios) { _, which ->
+                    val usuario = usuarios[which]
+                    usuarioSeleccionado = usuario
+                    tvUsuarioSeleccionado.text =
+                        "${usuario.getNombreUsuario()} ${usuario.getApellidoUsuario()} (${usuario.getNumeroDocumento()})"
+                }
+                dialogBuilder.setNegativeButton("Cancelar", null)
+                dialogBuilder.show()
+            } catch (e: Exception) {
+                showError("Error al cargar usuarios: ${e.message}")
             }
         }
     }
 
-    private suspend fun createCertificate(
-        usuarioId: String,
-        cursoId: String,
-        estudianteId: String,
-        emisor: String
-    ) {
-        val dto = CreateCertificadoDto(
-            usuarioId = usuarioId,
-            cursoId = cursoId,
-            estudianteId = estudianteId,
-            nombreEmisorCertificado = emisor
-        )
-
-        certificadoServices.createCertificado(dto).onSuccess {
-            showSuccess("Certificado creado exitosamente")
-            resetEditingState()
-            //loadCertificates()
-        }.onFailure { error ->
-            showError("Error al crear certificado: ${error.message}")
+    private fun mostrarDialogoSeleccionEstudiante() {
+        lifecycleScope.launch {
+            try {
+                val estudiantes = estudianteService.listarEstudiantesActivos().getOrThrow()
+                // Crear un diálogo con una lista de estudiantes
+                val dialogBuilder = AlertDialog.Builder(this@CertificateActivity)
+                dialogBuilder.setTitle("Seleccionar Estudiante")
+                // Convertir la lista de estudiantes en un array de nombres
+                val nombresEstudiantes = estudiantes.map {
+                    "${it.getNombre()} ${it.getApellido()} (${it.getNumeroDocumento()})"
+                }.toTypedArray()
+                dialogBuilder.setItems(nombresEstudiantes) { _, which ->
+                    val estudiante = estudiantes[which]
+                    estudianteSeleccionado = estudiante
+                    tvEstudianteSeleccionado.text =
+                        "${estudiante.getNombre()} ${estudiante.getApellido()} (${estudiante.getNumeroDocumento()})"
+                }
+                dialogBuilder.setNegativeButton("Cancelar", null)
+                dialogBuilder.show()
+            } catch (e: Exception) {
+                showError("Error al cargar estudiantes: ${e.message}")
+            }
         }
     }
 
-    private suspend fun updateCertificate(
-        id: String,
-        usuarioId: String,
-        cursoId: String,
-        estudianteId: String,
-        emisor: String
-    ) {
-        val dto = UpdateCertificadoDto(
-            usuarioId = usuarioId,
-            cursoId = cursoId,
-            estudianteId = estudianteId,
-            nombreEmisorCertificado = emisor
-        )
-
-        certificadoServices.updateCertificate(id, dto).onSuccess {
-            showSuccess("Certificado actualizado exitosamente")
-            resetEditingState()
-            //loadCertificates()
-        }.onFailure { error ->
-            showError("Error al actualizar certificado: ${error.message}")
+    private fun crearCertificado() {
+        val nombreEmisor = inputEmisor.text.toString().trim()
+        if (usuarioSeleccionado == null) {
+            showError("Debe seleccionar un usuario")
+            return
+        }
+        if (estudianteSeleccionado == null) {
+            showError("Debe seleccionar un estudiante")
+            return
+        }
+        if (nombreEmisor.isEmpty()) {
+            showError("Ingrese el nombre del emisor")
+            return
+        }
+        lifecycleScope.launch {
+            try {
+                val nuevoCertificado = CreateCertificadoDto(
+                    usuarioId = usuarioSeleccionado!!.getNumeroDocumento(),
+                    estudianteId = estudianteSeleccionado!!.getNumeroDocumento(),
+                    nombreEmisor = nombreEmisor
+                )
+                if (isEditing && currentCertificateId != null) {
+                    val dto = UpdateCertificadoDto(
+                        usuarioId = usuarioSeleccionado!!.getNumeroDocumento(),
+                        estudianteId = estudianteSeleccionado!!.getNumeroDocumento(),
+                        nombreEmisor = nombreEmisor
+                    )
+                    certificadoService.updateCertificate(currentCertificateId!!, dto)
+                        .onSuccess {
+                            showSuccess("Certificado actualizado")
+                            resetEditingState()
+                            loadCertificadosActivos()
+                        }.onFailure {
+                            showError("Error al actualizar: ${it.message}")
+                        }
+                } else {
+                    certificadoService.createCertificado(nuevoCertificado)
+                        .onSuccess {
+                            showSuccess("Certificado creado")
+                            resetEditingState()
+                            loadCertificadosActivos()
+                        }.onFailure {
+                            showError("Error al crear: ${it.message}")
+                        }
+                }
+            } catch (e: Exception) {
+                showError("Error: ${e.message}")
+            }
         }
     }
 
-//    private fun onUpdateClick(certificate: Certificado) {
-//        isEditing = true
-//        currentCertificateId = certificate.getIdCertificado()
-//        usuario.setText(certificate.getUsuarioId())
-//        curso.setText(certificate.getCursoId())
-//        estudiante.setText(certificate.getEstudianteId())
-//        emisor.setText(certificate.getNombreEmisor())
-//    }
+    private fun onUpdateClick(certificado: Certificado) {
+        isEditing = true
+        currentCertificateId = certificado.getId().toString()
+        tvUsuarioSeleccionado.text = "Buscando usuario..."
+        tvEstudianteSeleccionado.text = "Buscando estudiante..."
+        lifecycleScope.launch {
+            try {
+                val usuarioResult = userService.getUserByDocument(certificado.getUsuarioId())
+                val estudianteResult = estudianteService.obtenerEstudiantePorDocumento(certificado.getEstudiante())
+                usuarioResult.onSuccess { usuario ->
+                    estudianteResult.onSuccess { estudiante ->
+                        withContext(Dispatchers.Main) {
+                            usuarioSeleccionado = usuario
+                            estudianteSeleccionado = estudiante
+                            tvUsuarioSeleccionado.text =
+                                "Usuario: ${usuario?.getNombreUsuario()} ${usuario?.getApellidoUsuario()} (${usuario?.getNumeroDocumento()})"
+                            tvEstudianteSeleccionado.text =
+                                "Estudiante: ${estudiante?.getNombre()} ${estudiante?.getApellido()} (${estudiante?.getNumeroDocumento()})"
+                            inputEmisor.setText(certificado.getNombreEmisor())
+                        }
+                    }.onFailure {
+                        withContext(Dispatchers.Main) {
+                            showError("Error al cargar estudiante: ${it.message}")
+                        }
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        showError("Error al cargar usuario: ${it.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    showError("Error al cargar datos: ${e.message}")
+                }
+            }
+        }
+    }
 
-//    private fun onDeleteClick(certificate: Certificado) {
-//        AlertDialog.Builder(this)
-//            .setTitle("Confirmar eliminación")
-//            .setMessage("¿Estás seguro de que deseas eliminar este certificado?")
-//            .setPositiveButton("Sí") { _, _ ->
-//                lifecycleScope.launch {
-//                    certificadoServices.deleteCertificateById(certificate.getIdCertificado())
-//                        .onSuccess {
-//                            showSuccess("Certificado eliminado")
-//                            loadCertificates()
-//                        }.onFailure { error ->
-//                            showError("Error al eliminar: ${error.message}")
-//                        }
-//                }
-//            }
-//            .setNegativeButton("No", null)
-//            .show()
-//    }
+    private fun onDeleteClick(certificado: Certificado) {
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Está seguro de eliminar este certificado?")
+            .setPositiveButton("Sí") { _, _ ->
+                lifecycleScope.launch {
+                    certificadoService.deleteCertificateById(certificado.getId().toString())
+                        .onSuccess {
+                            showSuccess("Certificado eliminado")
+                            // Actualizar la lista de certificados activos
+                            loadCertificadosActivos()
+                        }.onFailure {
+                            showError("Error al eliminar: ${it.message}")
+                        }
+                }
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
 
-    private fun setupButtons() {
-        guardarButton.setOnClickListener { saveCertificate() }
-        cancelarButton.setOnClickListener { finish() }
+    private fun onInfoClick(certificado: Certificado) {
+        val mensaje = """
+            Detalles del Certificado:
+            ID: ${certificado.getId()}
+            Fecha: ${certificado.getFechaEmision()}
+            Usuario: ${certificado.getUsuarioId()}
+            Estudiante: ${certificado.getEstudiante()}
+            Emisor: ${certificado.getNombreEmisor()}
+            Código: ${certificado.getCodigoVerificacion()}
+            Estado: ${if (certificado.getEstado()) "Activo" else "Inactivo"}
+        """.trimIndent()
+        AlertDialog.Builder(this)
+            .setTitle("Información del Certificado")
+            .setMessage(mensaje)
+            .setPositiveButton("Aceptar", null)
+            .show()
+    }
+
+    private fun loadCertificadosActivos() {
+        lifecycleScope.launch {
+            val result = certificadoService.getCertificatesActives()
+            result.onSuccess { certificados ->
+                adapter.updateList(certificados)
+            }.onFailure { error ->
+                showError("Error al cargar certificados: ${error.message}")
+            }
+        }
     }
 
     private fun resetEditingState() {
         isEditing = false
         currentCertificateId = null
-        cleanForm()
-    }
-
-    private fun cleanForm() {
-        usuario.text?.clear()
-        curso.text?.clear()
-        estudiante.text?.clear()
-        emisor.text?.clear()
+        usuarioSeleccionado = null
+        estudianteSeleccionado = null
+        inputEmisor.text?.clear()
+        tvUsuarioSeleccionado.text = "Ningún usuario seleccionado"
+        tvEstudianteSeleccionado.text = "Ningún estudiante seleccionado"
     }
 
     private fun showSuccess(message: String) {

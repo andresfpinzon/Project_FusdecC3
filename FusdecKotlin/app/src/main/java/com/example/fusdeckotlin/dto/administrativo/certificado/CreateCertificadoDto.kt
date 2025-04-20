@@ -7,6 +7,6 @@ data class CreateCertificadoDto(
     private val usuarioId: String?,
     @SerializedName("estudianteId")
     private val estudianteId: String?,
-    @SerializedName("nombreEmisorCertificado")
-    private var nombreEmisorCertificado: String?,
+    @SerializedName("nombreEmisor")
+    private var nombreEmisor: String?,
 )
