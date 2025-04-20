@@ -20,6 +20,10 @@ const UnidadSchema = new Schema({
         type: String,
         required: true,
     },
+    estudiantes: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Estudiante'
+    }]
 },
     {
         timestamps: true

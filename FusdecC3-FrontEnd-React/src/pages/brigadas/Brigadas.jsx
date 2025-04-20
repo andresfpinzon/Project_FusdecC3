@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Chart } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import './Brigadas.css';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Chip } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Chip, Grid, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox, Snackbar, Alert } from '@mui/material';
 import { Assignment, LocationOn, Group, CheckCircle, Cancel, Shield } from '@mui/icons-material';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -13,11 +13,12 @@ const Brigadas = () => {
   const [brigades, setBrigades] = useState([]);
   const [commands, setCommands] = useState([]);
   const [selectedBrigade, setSelectedBrigade] = useState(null);
-  const [formValues, setFormValues] = useState({
+  const [formData, setFormData] = useState({
     nombreBrigada: '',
     ubicacionBrigada: '',
     comandoId: '',
-    estadoBrigada: true,
+    horario: 'mañana',
+    estadoBrigada: true
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -25,10 +26,16 @@ const Brigadas = () => {
   const [showForm, setShowForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
 
   useEffect(() => {
     fetchBrigades();
     fetchCommands();
+    fetchUnidades();
   }, []);
 
   const fetchBrigades = async () => {
@@ -40,21 +47,36 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
-      const validatedBrigades = data.map(brigade => ({
-        ...brigade,
-        comandoId: brigade.comandoId || { nombreComando: 'Sin comando asignado' },
-        unidades: brigade.unidades || []
-      }));
+      
+      // Obtener las unidades para cada brigada
+      const unidadesResponse = await fetch('http://localhost:3000/api/unidades', {
+        headers: {
+          'Authorization': localStorage.getItem('token') || '',
+        },
+      });
+      const unidadesData = await unidadesResponse.json();
 
-      // Condicion que verifica si el arreglo de brigadas está vacío
+      // Mapear las unidades a sus brigadas correspondientes
+      const brigadasConUnidades = data.map(brigada => {
+        const unidadesDeBrigada = unidadesData.filter(unidad => 
+          unidad.brigadaId === brigada._id
+        );
+        return {
+          ...brigada,
+          comandoId: brigada.comandoId || { nombreComando: 'Sin comando asignado' },
+          unidades: unidadesDeBrigada.map(unidad => unidad.nombreUnidad)
+        };
+      });
+
       if (data.length === 0) {
         setErrorMessage("No hay brigadas registradas.");
         setOpenSnackbar(true);
-        setBrigades([]); // esto mantiene el estado vacío para evitar errores
+        setBrigades([]);
       } else {
-        setBrigades(validatedBrigades);
+        setBrigades(brigadasConUnidades);
       }
     } catch (error) {
+      console.error('Error detallado:', error);
       setError('Error al obtener brigadas');
     } finally {
       setIsLoading(false);
@@ -70,7 +92,7 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al obtener comandos');
       const data = await response.json();
-      
+
       // Condicion que verifica si el arreglo de comandos está vacío
       if (data.length === 0) {
         setErrorMessage("No hay comandos registrados.");
@@ -85,46 +107,87 @@ const Brigadas = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormValues(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+  const fetchUnidades = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/unidades', {
+        headers: {
+          'Authorization': localStorage.getItem('token') || '',
+        },
+      });
+      if (!response.ok) throw new Error('Error al obtener unidades');
+      const data = await response.json();
+      
+    } catch (error) {
+      console.error('Error al obtener unidades:', error);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    // Handle nested input changes
+    if (field.includes('.')) {
+        const [parent, child] = field.split('.');
+        setFormData(prev => ({
+            ...prev,
+            [parent]: {
+                ...prev[parent],
+                [child]: value
+            }
+        }));
+    } else {
+        // Handle regular input changes
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const url = selectedBrigade
-        ? `http://localhost:3000/api/brigadas/${selectedBrigade._id}`
-        : 'http://localhost:3000/api/brigadas';
-      const method = selectedBrigade ? 'PUT' : 'POST';
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('token') || '',
-        },
-        body: JSON.stringify(formValues),
-      });
-      if (!response.ok) throw new Error('Error al guardar brigada');
-      await fetchBrigades();
-
-      // Mostrar mensaje según la acción realizada (actualizar o crear)
-      if (selectedBrigade) {
-        setSuccessMessage("La brigada se actualizó correctamente");
-      } else {
-        setSuccessMessage("La brigada se creó correctamente");
-      }
     
-      setOpenSnackbar(true);
+    try {
+        const response = await fetch(
+            selectedBrigade 
+                ? `http://localhost:3000/api/brigadas/${selectedBrigade._id}` 
+                : 'http://localhost:3000/api/brigadas', 
+            {
+                method: selectedBrigade ? 'PUT' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token') || '',
+                },
+                body: JSON.stringify(formData)
+            }
+        );
 
-      setFormValues({ nombreBrigada: '', ubicacionBrigada: '', comandoId: '', estadoBrigada: true });
-      setSelectedBrigade(null);
-      setShowForm(false);
+        const responseText = await response.text();
+        let errorData;
+        try {
+            errorData = JSON.parse(responseText);
+        } catch (e) {
+            errorData = { error: responseText };
+        }
+
+        if (!response.ok) {
+            throw new Error(errorData.error || `Error al ${selectedBrigade ? 'actualizar' : 'crear'} la brigada`);
+        }
+
+        await fetchBrigades();
+        
+        resetForm();
+        
+        setSnackbar({
+            open: true,
+            message: selectedBrigade ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
+            severity: "success"
+        });
     } catch (error) {
-      setError('Error al guardar brigada');
+        console.error('Error al guardar brigada:', error);
+        setSnackbar({
+            open: true,
+            message: error.message,
+            severity: "error"
+        });
     }
   };
 
@@ -151,11 +214,11 @@ const Brigadas = () => {
 
   const handleEdit = (brigade) => {
     setSelectedBrigade(brigade);
-    setFormValues({
-      nombreBrigada: brigade.nombreBrigada,
-      ubicacionBrigada: brigade.ubicacionBrigada,
-      comandoId: brigade.comandoId._id,
-      estadoBrigada: brigade.estadoBrigada,
+    setFormData({
+        nombreBrigada: brigade.nombreBrigada,
+        comandoId: brigade.comandoId._id,
+        estadoBrigada: brigade.estadoBrigada,
+        horario: brigade.horario || 'mañana'
     });
     setShowForm(true);
   };
@@ -172,7 +235,12 @@ const Brigadas = () => {
 
   const handleAddBrigade = () => {
     setSelectedBrigade(null);
-    setFormValues({ nombreBrigada: '', ubicacionBrigada: '', comandoId: '', estadoBrigada: true });
+    setFormData({
+        nombreBrigada: '',
+        comandoId: '',
+        estadoBrigada: true,
+        horario: 'mañana'
+    });
     setShowForm(true);
   };
 
@@ -200,6 +268,81 @@ const Brigadas = () => {
         hoverBackgroundColor: ['#27ae60', '#c0392b']
       }
     ]
+  };
+
+  const renderBrigadaForm = () => {
+    return (
+        <form onSubmit={handleSubmit} className="brigade-form">
+            <input
+                type="text"
+                name="nombreBrigada"
+                value={formData.nombreBrigada}
+                onChange={(e) => handleInputChange('nombreBrigada', e.target.value)}
+                placeholder="Nombre de la Brigada"
+                required
+            />
+            <input
+                type="text"
+                name="ubicacionBrigada"
+                value={formData.ubicacionBrigada}
+                onChange={(e) => handleInputChange('ubicacionBrigada', e.target.value)}
+                placeholder="URL de Google Maps de la ubicación"
+                required
+            />
+            <select
+                name="comandoId"
+                value={formData.comandoId}
+                onChange={(e) => handleInputChange('comandoId', e.target.value)}
+                required
+            >
+                <option value="">Seleccionar Comando</option>
+                {commands.map(command => (
+                    <option key={command._id} value={command._id}>
+                        {command.nombreComando}
+                    </option>
+                ))}
+            </select>
+            <select
+                name="horario"
+                value={formData.horario}
+                onChange={(e) => handleInputChange('horario', e.target.value)}
+                required
+            >
+                <option value="mañana">Horario de Mañana (9 AM - 12 PM)</option>
+                <option value="tarde">Horario de Tarde (2 PM - 5 PM)</option>
+            </select>
+            <label className="switch">
+                <input
+                    type="checkbox"
+                    name="estadoBrigada"
+                    checked={formData.estadoBrigada}
+                    onChange={(e) => handleInputChange('estadoBrigada', e.target.checked)}
+                />
+                <span className="slider round"></span>
+                <span className="switch-label">Activo</span>
+            </label>
+            <div className="form-actions">
+                <button type="submit" className="submit-button">
+                    {selectedBrigade ? 'Actualizar' : 'Crear'} Brigada
+                </button>
+                <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    );
+  };
+
+  const resetForm = () => {
+    setFormData({
+        nombreBrigada: '',
+        ubicacionBrigada: '',
+        comandoId: '',
+        horario: 'mañana',
+        estadoBrigada: true
+    });
+    setSelectedBrigade(null);
+    setShowForm(false);
   };
 
   if (isLoading) return <div className="loading">Cargando...</div>;
@@ -242,55 +385,7 @@ const Brigadas = () => {
         <div className="modal">
           <div className="modal-content">
             <h2>{selectedBrigade ? 'Editar' : 'Agregar'} Brigada</h2>
-            <form onSubmit={handleSubmit} className="brigade-form">
-              <input
-                type="text"
-                name="nombreBrigada"
-                value={formValues.nombreBrigada}
-                onChange={handleInputChange}
-                placeholder="Nombre de la Brigada"
-                required
-              />
-              <input
-                type="text"
-                name="ubicacionBrigada"
-                value={formValues.ubicacionBrigada}
-                onChange={handleInputChange}
-                placeholder="Ubicación de la Brigada"
-                required
-              />
-              <select
-                name="comandoId"
-                value={formValues.comandoId}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Seleccionar Comando</option>
-                {commands.map(command => (
-                  <option key={command._id} value={command._id}>
-                    {command.nombreComando}
-                  </option>
-                ))}
-              </select>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  name="estadoBrigada"
-                  checked={formValues.estadoBrigada}
-                  onChange={handleInputChange}
-                />
-                <span className="slider round"></span>
-                <span className="switch-label">Activo</span>
-              </label>
-              <div className="form-actions">
-                <button type="submit" className="submit-button">
-                  {selectedBrigade ? 'Actualizar' : 'Crear'} Brigada
-                </button>
-                <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
-                  Cancelar
-                </button>
-              </div>
-            </form>
+            {renderBrigadaForm()}
           </div>
         </div>
       )}
@@ -341,69 +436,118 @@ const Brigadas = () => {
         <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
           Información de la Brigada
         </DialogTitle>
-        <DialogContent sx={{ padding: '20px' }}>
+        <DialogContent dividers sx={{ padding: '20px' }}>
           {selectedBrigade && (
-            <div>
+            <Box>
+              {/* Nombre de la Brigada */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Assignment color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{selectedBrigade.nombreBrigada || "N/A"}</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>{selectedBrigade.nombreBrigada}</Typography>
               </Box>
+              
+              {/* Comando */}
               <Box display="flex" alignItems="center" mb={2}>
-                <LocationOn color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  <a href={selectedBrigade.ubicacionBrigada} target="_blank" rel="noopener noreferrer" style={{ color: '#0288d1' }}>
-                    {selectedBrigade.ubicacionBrigada || "N/A"}
-                  </a>
-                </Typography>
-              </Box>
-              <Box display="flex" alignItems="center" mb={2}>
-                <Group color="primary" sx={{ mr: 1 }} />
+                <Shield color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedBrigade.comandoId?.nombreComando || "Sin comando asignado"}
+                  {selectedBrigade.comandoId?.nombreComando || 'Sin comando asignado'}
                 </Typography>
               </Box>
+              
+              {/* Estado */}
               <Box display="flex" alignItems="center" mb={2}>
-                {selectedBrigade.estadoBrigada ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
+                {selectedBrigade.estadoBrigada ? (
+                  <CheckCircle color="primary" sx={{ mr: 1 }} />
+                ) : (
+                  <Cancel color="error" sx={{ mr: 1 }} />
+                )}
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
+                <Chip
+                  label={selectedBrigade.estadoBrigada ? "Activo" : "Inactivo"}
+                  color={selectedBrigade.estadoBrigada ? "success" : "error"}
+                  variant="filled"
+                  size="small"
+                  sx={{
+                    ml: 1,
+                    borderRadius: '16px',
+                    minWidth: '80px',
+                    justifyContent: 'center'
+                  }}
+                />
+              </Box>
+
+              {/* Horario */}
+              <Box display="flex" alignItems="center" mb={2}>
+                <LocationOn color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Horario:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedBrigade.estadoBrigada ? "Activo" : "Inactivo"}
+                  {selectedBrigade.horario === 'mañana' ? '9:00 AM - 12:00 PM' : '2:00 PM - 5:00 PM'}
                 </Typography>
               </Box>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
-                <Shield sx={{ mr: 1 }} color="primary" />
-                Unidades Asignadas
-              </Typography>
-              {selectedBrigade.unidades && selectedBrigade.unidades.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
-                  {selectedBrigade.unidades.map((unidad) => (
-                    <Chip
-                      key={unidad._id}
-                      label={unidad.nombreUnidad || "Unidad no encontrada"}
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      sx={{ 
-                        borderRadius: '16px',
-                        fontSize: '1rem',
-                        maxWidth: '200px',
-                        width: '100%',
-                        color: 'black',
-                        '&:hover': {
-                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                        },
-                      }}
-                    />
-                  ))}
+              
+              {/* Unidades Asignadas */}
+              <Box mb={2}>
+                <Box display="flex" alignItems="center" mb={2}>
+                  <Group color="primary" sx={{ mr: 1 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    Unidades Asignadas: ({selectedBrigade.unidades?.length || 0})
+                  </Typography>
                 </Box>
-              ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  Sin unidades asignadas
-                </Typography>
-              )}
-            </div>
+                <Box sx={{ 
+                  pl: 4,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1
+                }}>
+                  {selectedBrigade.unidades && selectedBrigade.unidades.length > 0 ? (
+                    selectedBrigade.unidades.map((nombreUnidad, index) => (
+                      <Box 
+                        key={index}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          backgroundColor: '#f5f5f5',
+                          borderRadius: '8px',
+                          p: 1.5,
+                          border: '1px solid #e0e0e0',
+                          '&:hover': {
+                            backgroundColor: '#e8f4fd',
+                            borderColor: '#1d526eff'
+                          }
+                        }}
+                      >
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontWeight: 500,
+                            color: '#1d526eff',
+                            flex: 1,
+                            pl: 1,
+                            fontSize: '1rem'
+                          }}
+                        >
+                          {index + 1}. {nombreUnidad}
+                        </Typography>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                      sx={{ 
+                        pl: 2,
+                        fontStyle: 'italic',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      No hay unidades asignadas
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            </Box>
           )}
         </DialogContent>
         <DialogActions>
@@ -412,9 +556,23 @@ const Brigadas = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
 export default Brigadas;
-

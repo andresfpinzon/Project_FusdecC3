@@ -4,9 +4,9 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Chart } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import './Unidades.css';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Chip } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Chip, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import { Assignment, LocationOn, Group, CheckCircle, Cancel, Shield, Person } from '@mui/icons-material';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, CircularProgress } from '@mui/material';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -32,35 +32,99 @@ const Unidades = () => {
     message: '',
     severity: 'info' // 'error', 'warning', 'info', 'success'
   });
+  const [estudiantes, setEstudiantes] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
-    fetchUnidades();
-    fetchBrigadas();
-    fetchUsuarios();
+    const loadData = async () => {
+      try {
+        setIsInitialLoading(true);
+        // Cargar las brigadas primero
+        await fetchBrigadas();
+        // Luego cargar el resto de los datos
+        await Promise.all([
+          fetchUnidades(),
+          fetchUsuarios(),
+          fetchEstudiantes()
+        ]);
+      } catch (error) {
+        console.error('Error al cargar datos iniciales:', error);
+        setSnackbar({
+          open: true,
+          message: 'Error al cargar los datos. Por favor, verifique su conexión e intente nuevamente.',
+          severity: 'error'
+        });
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setSnackbar({
+        open: true,
+        message: 'No hay token de autenticación. Por favor, inicie sesión nuevamente.',
+        severity: 'error'
+      });
+      return;
+    }
+
+    loadData();
   }, []);
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/unidades?populate=estudiantes', {
+      const response = await fetch('http://localhost:3000/api/unidades', {
         headers: {
-          'Authorization': localStorage.getItem('token') || '',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Accept': 'application/json'
         },
       });
-      if (!response.ok) throw new Error('Error al obtener unidades');
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error ${response.status} al obtener unidades`);
+      }
+      
       const data = await response.json();
 
-      // Condicion que verifica si el arreglo de unidades está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay unidades registradas.");
-        setOpenSnackbar(true);
-        setUnidades([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setUnidades(data);
-      }
+      // Para cada unidad, obtener el nombre de su brigada
+      const unidadesConBrigadas = await Promise.all(data.map(async (unidad) => {
+        if (unidad.brigadaId) {
+          try {
+            const brigadaResponse = await fetch(`http://localhost:3000/api/brigadas/${unidad.brigadaId}`, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Accept': 'application/json'
+              },
+            });
+            
+            if (brigadaResponse.ok) {
+              const brigada = await brigadaResponse.json();
+              return {
+                ...unidad,
+                brigada: {
+                  nombreBrigada: brigada.nombreBrigada
+                }
+              };
+            }
+          } catch (error) {
+            // Manejar error silenciosamente
+          }
+        }
+        return unidad;
+      }));
+
+      setUnidades(unidadesConBrigadas);
     } catch (error) {
-      setError('Error al obtener unidades');
-    } finally {
-      setIsLoading(false);
+      setSnackbar({
+        open: true,
+        message: `Error al cargar las unidades: ${error.message}`,
+        severity: 'error'
+      });
+      throw error;
     }
   };
 
@@ -68,65 +132,147 @@ const Unidades = () => {
     try {
       const response = await fetch('http://localhost:3000/api/brigadas', {
         headers: {
-          'Authorization': localStorage.getItem('token') || '',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Accept': 'application/json'
         },
       });
-      if (!response.ok) throw new Error('Error al obtener brigadas');
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error ${response.status} al obtener brigadas`);
+      }
+      
       const data = await response.json();
 
-      // Condicion que verifica si el arreglo de brigadas está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay brigadas registradas.");
-        setOpenSnackbar(true);
-        setBrigadas([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setBrigadas(data);
-      }
+      // Filtrar solo brigadas activas y ordenar por nombre
+      const brigadasActivas = data
+        .filter(brigada => brigada.estadoBrigada)
+        .sort((a, b) => a.nombreBrigada.localeCompare(b.nombreBrigada));
+
+      setBrigadas(brigadasActivas);
     } catch (error) {
-      console.error('Error:', error);
+      setSnackbar({
+        open: true,
+        message: `Error al cargar las brigadas: ${error.message}`,
+        severity: 'error'
+      });
+      throw error;
     }
   };
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/usuarios', {
+      const response = await fetch('http://localhost:8080/usuarios', {
         headers: {
-          'Authorization': localStorage.getItem('token')
-        }
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Accept': 'application/json'
+        },
       });
-      if (response.ok) {
-        const data = await response.json();
-        //setUsuarios(data);
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener usuarios');
       }
       
-      // Condicion que verifica si el arreglo de usuarios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay usuarios registrados.");
-        setOpenSnackbar(true);
-        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setUsuarios(data);
-      }
+      const data = await response.json();
+      
+      // Obtener roles para cada usuario y filtrar solo instructores
+      const usuariosConRoles = await Promise.all(
+        data.map(async (usuario) => {
+          try {
+            const rolesResponse = await fetch(`http://localhost:8080/roles/${usuario.numeroDocumento}`, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Accept': 'application/json'
+              }
+            });
+
+            if (rolesResponse.ok) {
+              const rolesData = await rolesResponse.json();
+              const roles = rolesData.map(rolObj => rolObj.rol);
+              // Solo retornar si tiene rol de Instructor
+              if (roles.includes('Instructor')) {
+                return {
+                  id: usuario.numeroDocumento,
+                  nombre: `${usuario.nombre} ${usuario.apellido}`,
+                  roles: roles
+                };
+              }
+              return null;
+            }
+            return null;
+          } catch (error) {
+            return null;
+          }
+        })
+      );
+
+      // Filtrar usuarios nulos y ordenar por nombre
+      const instructores = usuariosConRoles
+        .filter(usuario => usuario !== null)
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+      setUsuarios(instructores);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
+      setSnackbar({
+        open: true,
+        message: 'Error al cargar usuarios',
+        severity: 'error'
+      });
+    }
+  };
+
+  const fetchEstudiantes = async (nombreUnidad) => {
+    try {
+      const response = await fetch("http://localhost:8080/estudiantes", {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Accept': 'application/json'
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error("Error al obtener estudiantes");
+      }
+      
+      const data = await response.json();
+      console.log('Estudiantes obtenidos:', data); // Debug
+
+      // Filtrar estudiantes que coincidan con el nombre de la unidad
+      const estudiantesFiltrados = data.filter(estudiante => 
+        estudiante.unidad?.toLowerCase() === nombreUnidad?.toLowerCase()
+      );
+
+      console.log('Estudiantes filtrados por unidad:', estudiantesFiltrados); // Debug
+      return estudiantesFiltrados.map(estudiante => ({
+        id: estudiante.id || estudiante._id,
+        nombre: `${estudiante.nombre} ${estudiante.apellido}`,
+        documento: estudiante.numeroDocumento
+      }));
+    } catch (error) {
+      console.error("Error al obtener estudiantes:", error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
+      return [];
     }
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormValues(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!formValues.nombreUnidad || !formValues.brigadaId) {
+      // Validación de campos
+      if (!formValues.nombreUnidad || !formValues.brigadaId || !formValues.usuarioId) {
         setSnackbar({
           open: true,
-          message: 'El nombre de la unidad y la brigada son obligatorios',
+          message: 'Todos los campos son obligatorios',
           severity: 'error'
         });
         return;
@@ -138,41 +284,57 @@ const Unidades = () => {
       
       const method = selectedUnidad ? 'PUT' : 'POST';
       
+      // Preparar datos para enviar
       const dataToSend = {
-        nombreUnidad: formValues.nombreUnidad,
+        nombreUnidad: formValues.nombreUnidad.trim(),
         brigadaId: formValues.brigadaId,
-        estadoUnidad: formValues.estadoUnidad,
-        ...(formValues.usuarioId && { usuarioId: formValues.usuarioId }),
+        usuarioId: formValues.usuarioId,
+        estadoUnidad: formValues.estadoUnidad
       };
 
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('token') || '',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Accept': 'application/json'
         },
         body: JSON.stringify(dataToSend),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al guardar la unidad');
+      const responseText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(responseText);
+      } catch (e) {
+        errorData = { message: responseText };
       }
 
-      await fetchUnidades();
-      setFormValues({ nombreUnidad: '', brigadaId: '', estadoUnidad: true });
-      setSelectedUnidad(null);
-      setShowForm(false);
+      if (!response.ok) {
+        throw new Error(errorData.message || `Error ${response.status} al guardar la unidad`);
+      }
+
       setSnackbar({
         open: true,
-        message: selectedUnidad ? 'Unidad actualizada con éxito' : 'Unidad creada con éxito',
+        message: selectedUnidad ? "Unidad actualizada correctamente" : "Unidad creada correctamente",
         severity: 'success'
       });
+      
+      setFormValues({
+        nombreUnidad: '',
+        brigadaId: '',
+        usuarioId: '',
+        estadoUnidad: true
+      });
+      setSelectedUnidad(null);
+      setShowForm(false);
+      
+      await fetchUnidades();
+
     } catch (error) {
-      console.error('Error detallado:', error);
       setSnackbar({
         open: true,
-        message: error.message,
+        message: error.message || 'Error al guardar la unidad. Por favor, intente nuevamente.',
         severity: 'error'
       });
     }
@@ -206,17 +368,33 @@ const Unidades = () => {
   const handleEdit = (unidad) => {
     setSelectedUnidad(unidad);
     setFormValues({
-      nombreUnidad: unidad.nombreUnidad,
-      brigadaId: unidad.brigadaId._id,
-      estadoUnidad: unidad.estadoUnidad,
-      usuarioId: unidad.usuarioId?._id || ''
+      nombreUnidad: unidad.nombreUnidad || '',
+      brigadaId: unidad.brigadaId?._id || unidad.brigadaId || '',
+      estadoUnidad: unidad.estadoUnidad || true,
+      usuarioId: unidad.usuarioId?._id || unidad.usuarioId || ''
     });
     setShowForm(true);
   };
 
-  const handleInfoClick = (unidad) => {
-    setSelectedUnidad(unidad);
-    setOpenInfoDialog(true);
+  const handleInfoClick = async (unidad) => {
+    try {
+      // Obtener estudiantes que coincidan con el nombre de la unidad
+      const estudiantesUnidad = await fetchEstudiantes(unidad.nombreUnidad);
+      
+      // Actualizar la unidad seleccionada con los estudiantes filtrados
+      setSelectedUnidad({
+        ...unidad,
+        estudiantes: estudiantesUnidad
+      });
+      
+      setOpenInfoDialog(true);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Error al cargar los estudiantes de la unidad",
+        severity: "error"
+      });
+    }
   };
 
   const handleCloseInfoDialog = () => {
@@ -260,7 +438,12 @@ const Unidades = () => {
     ]
   };
 
-  if (isLoading) return <div className="loading">Cargando...</div>;
+  if (isInitialLoading) return (
+    <div className="loading-container">
+      <CircularProgress />
+      <Typography variant="h6" sx={{ mt: 2 }}>Cargando datos...</Typography>
+    </div>
+  );
   if (error) return <div className="error">{error}</div>;
 
   return (
@@ -322,35 +505,100 @@ const Unidades = () => {
               </div>
 
               <div className="form-group">
-                <label>Brigada</label>
-                <select
-                  value={formValues.brigadaId}
-                  onChange={(e) => setFormValues({...formValues, brigadaId: e.target.value})}
-                  className="form-select"
-                >
-                  <option value="">Seleccione una brigada</option>
-                  {brigadas.map((brigada) => (
-                    <option key={brigada._id} value={brigada._id}>
-                      {brigada.nombreBrigada}
-                    </option>
-                  ))}
-                </select>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="brigada-select-label">Brigada</InputLabel>
+                  <Select
+                    labelId="brigada-select-label"
+                    id="brigada-select"
+                    value={formValues.brigadaId}
+                    onChange={(e) => {
+                      setFormValues(prev => ({
+                        ...prev,
+                        brigadaId: e.target.value
+                      }));
+                    }}
+                    label="Brigada"
+                    required
+                  >
+                    <MenuItem value="" disabled>
+                      <em>Seleccione una brigada</em>
+                    </MenuItem>
+                    {brigadas.map((brigada) => (
+                      <MenuItem 
+                        key={brigada._id} 
+                        value={brigada._id}
+                        sx={{
+                          padding: '10px 15px'
+                        }}
+                      >
+                        <Box sx={{ 
+                          display: 'flex', 
+                          flexDirection: 'column',
+                          width: '100%'
+                        }}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                            {brigada.nombreBrigada}
+                          </Typography>
+                        </Box>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>
+                    {formValues.brigadaId ? 
+                      `Brigada seleccionada: ${brigadas.find(b => b._id === formValues.brigadaId)?.nombreBrigada}` : 
+                      'Debe seleccionar una brigada para la unidad'}
+                  </FormHelperText>
+                </FormControl>
               </div>
 
               <div className="form-group">
-                <label>Usuario Responsable</label>
-                <select
-                  value={formValues.usuarioId}
-                  onChange={(e) => setFormValues({...formValues, usuarioId: e.target.value})}
-                  className="form-select"
-                >
-                  <option value="">Seleccione un usuario</option>
-                  {usuarios.map((usuario) => (
-                    <option key={usuario._id} value={usuario._id}>
-                      {usuario.nombreUsuario} {usuario.apellidoUsuario}
-                    </option>
-                  ))}
-                </select>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="usuario-select-label">Instructor Responsable</InputLabel>
+                  <Select
+                    labelId="usuario-select-label"
+                    id="usuario-select"
+                    value={formValues.usuarioId}
+                    onChange={(e) => {
+                      setFormValues(prev => ({
+                        ...prev,
+                        usuarioId: e.target.value
+                      }));
+                    }}
+                    label="Instructor Responsable"
+                    required
+                  >
+                    <MenuItem value="" disabled>
+                      <em>Seleccione un instructor</em>
+                    </MenuItem>
+                    {usuarios.map((usuario) => (
+                      <MenuItem 
+                        key={usuario.id} 
+                        value={usuario.id}
+                        sx={{
+                          padding: '10px 15px'
+                        }}
+                      >
+                        <Box sx={{ 
+                          display: 'flex', 
+                          flexDirection: 'column',
+                          width: '100%'
+                        }}>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                            {usuario.nombre}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            ID: {usuario.id}
+                          </Typography>
+                        </Box>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>
+                    {formValues.usuarioId ? 
+                      `Instructor seleccionado: ${usuarios.find(u => u.id === formValues.usuarioId)?.nombre}` : 
+                      'Debe seleccionar un instructor para la unidad'}
+                  </FormHelperText>
+                </FormControl>
               </div>
 
               <div className="form-group-inline">
@@ -406,7 +654,10 @@ const Unidades = () => {
                             {unidad.estadoUnidad ? 'Activo' : 'Inactivo'}
                           </span>
                         </div>
-                        <p><i className="fas fa-flag"></i> {unidad.brigadaId?.nombreBrigada || 'Sin brigada asignada'}</p>
+                        <p className="unit-brigada">
+                          <i className="fas fa-flag"></i> 
+                          {unidad.brigada?.nombreBrigada || 'Sin brigada asignada'}
+                        </p>
                         <div className="unit-actions">
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
@@ -442,7 +693,7 @@ const Unidades = () => {
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Brigada:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedUnidad.brigadaId?.nombreBrigada || "Sin brigada asignada"}
+                  {selectedUnidad.brigada?.nombreBrigada || 'Sin brigada asignada'}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
@@ -461,7 +712,7 @@ const Unidades = () => {
                 mb: 1 
               }}>
                 <Person sx={{ mr: 1 }} color="primary" />
-                Estudiantes Asignados
+                Estudiantes Asignados ({selectedUnidad.estudiantes?.length || 0})
               </Typography>
               {selectedUnidad.estudiantes && selectedUnidad.estudiantes.length > 0 ? (
                 <Box sx={{ 
@@ -474,29 +725,40 @@ const Unidades = () => {
                   backgroundColor: '#f5f5f5',
                   borderRadius: '8px'
                 }}>
-                  {selectedUnidad.estudiantes.map((estudiante) => (
-                    <Chip
-                      key={estudiante._id}
-                      label={`${estudiante.nombreEstudiante} ${estudiante.apellidoEstudiante}`}
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      icon={<Person />}
+                  {selectedUnidad.estudiantes?.map((estudiante) => (
+                    <Box 
+                      key={estudiante.id} 
+                      className="estudiante-card"
                       sx={{ 
-                        borderRadius: '16px',
-                        fontSize: '0.9rem',
-                        maxWidth: '100%',
-                        color: 'black',
-                        '&:hover': {
-                          backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                        },
+                        display: 'flex', 
+                        alignItems: 'center',
+                        padding: '12px',
+                        backgroundColor: 'white',
+                        borderRadius: '4px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
                       }}
-                    />
+                    >
+                      <Person sx={{ mr: 2, color: '#1d526eff' }} />
+                      <Typography variant="body1">
+                        {estudiante.nombre}
+                      </Typography>
+                      <Chip
+                        label={`ID: ${estudiante.documento}`}
+                        size="small"
+                        sx={{ ml: 2 }}
+                      />
+                    </Box>
                   ))}
                 </Box>
               ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  Sin estudiantes asignados
+                <Typography variant="body2" color="text.secondary" sx={{ 
+                  fontStyle: 'italic',
+                  backgroundColor: '#f5f5f5',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  No hay estudiantes asignados a esta unidad
                 </Typography>
               )}
             </div>
@@ -528,4 +790,3 @@ const Unidades = () => {
 };
 
 export default Unidades;
-

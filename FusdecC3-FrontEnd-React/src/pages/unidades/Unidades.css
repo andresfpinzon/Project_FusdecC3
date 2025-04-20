@@ -662,3 +662,63 @@ input:checked + .slider:before {
 .estudiantes-container::-webkit-scrollbar-thumb:hover {
   background: #16405a;
 }
+
+.unit-brigada {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.unit-brigada i {
+  color: #1d526eff;
+}
+
+.brigada-ubicacion {
+  margin-left: 4px;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 1000;
+}
+
+.loading-container .MuiCircularProgress-root {
+  color: #1d526e;
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.loading-container h6 {
+  margin-top: 20px !important;
+  color: #1d526e;
+  font-size: 1.2rem !important;
+  font-weight: 500 !important;
+  text-align: center;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

@@ -97,16 +97,23 @@ import {
 
   const handleCreateFundacion = async () => {
     try {
+      // Validar que el nombre no esté vacío
+      if (!formValues.nombreFundacion.trim()) {
+        setErrorMessage("El nombre de la fundación es requerido");
+        setOpenSnackbar(true);
+        return;
+      }
+
       const response = await fetch("http://localhost:3000/api/fundaciones", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-            "Authorization": token 
+          "Authorization": token 
         },
         body: JSON.stringify({
-          nombreFundacion: formValues.nombreFundacion,
+          nombreFundacion: formValues.nombreFundacion.trim(),
           estadoFundacion: formValues.estadoFundacion,
-          comando: formValues.comando,
+          comando: formValues.comando || []
         }),
       });
 
@@ -131,6 +138,13 @@ import {
 
   const handleUpdateFundacion = async () => {
     try {
+      // Validar que el nombre no esté vacío
+      if (!formValues.nombreFundacion.trim()) {
+        setErrorMessage("El nombre de la fundación es requerido");
+        setOpenSnackbar(true);
+        return;
+      }
+
       const response = await fetch(
         `http://localhost:3000/api/fundaciones/${selectedFundacion._id}`,
         {
@@ -138,9 +152,12 @@ import {
           headers: {
             "Content-Type": "application/json",
             "Authorization": token 
-            
           },
-          body: JSON.stringify(formValues),
+          body: JSON.stringify({
+            nombreFundacion: formValues.nombreFundacion.trim(),
+            estadoFundacion: formValues.estadoFundacion,
+            comando: formValues.comando || []
+          }),
         }
       );
 
