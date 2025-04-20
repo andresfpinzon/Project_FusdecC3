@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const Usuario = require('../models/usuario_model');
 require('dotenv').config();
 
 // Middleware para verificar el JWT

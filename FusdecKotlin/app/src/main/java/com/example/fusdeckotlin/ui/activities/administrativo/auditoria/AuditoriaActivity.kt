@@ -1,81 +1,79 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.auditoria
 
 import android.os.Bundle
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.databinding.ActivityAuditoriaBinding
 import com.example.fusdeckotlin.services.administrativo.auditoria.AuditoriaServices
-import com.example.fusdeckotlin.ui.adapters.administrador.auditoriaAdapter.AuditoriaAdapter
-import com.google.android.material.textfield.TextInputEditText
-import models.administrativo.auditoria.model.AuditoriaModel
+import com.example.fusdeckotlin.ui.adapters.administrativo.auditoria.AuditoriaAdapter
+import kotlinx.coroutines.launch
+import com.example.fusdeckotlin.models.administrativo.auditoria.Auditoria
 
 class AuditoriaActivity : AppCompatActivity() {
-    private lateinit var emisorAuditoria :TextInputEditText
-    private lateinit var auditoriaRecyclerView: RecyclerView
-    private lateinit var guardarButton: Button
-    private lateinit var cancelarButton: Button
 
-    private val auditorias = mutableListOf<AuditoriaModel>()
-
-    private lateinit var adapter : AuditoriaAdapter
+    private lateinit var binding: ActivityAuditoriaBinding
+    private lateinit var adapter: AuditoriaAdapter
+    private val auditorias = mutableListOf<Auditoria>()
+    private var auditoriasOriginales = listOf<Auditoria>() // Para mantener una copia original si necesitas filtrar
+    private val auditoriaServices = AuditoriaServices() // Tu servicio de auditorías
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auditoria)
+        binding = ActivityAuditoriaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        emisorAuditoria = findViewById(R.id.inputNombreEmisorAuditoria)
-        auditoriaRecyclerView = findViewById(R.id.recyclerViewAuditorias)
-
-        adapter = AuditoriaAdapter(auditorias, ::onUpdateClick, ::onDeleteClick)
-        auditoriaRecyclerView.layoutManager = LinearLayoutManager(this)
-        auditoriaRecyclerView.adapter = adapter
-        guardarButton.setOnClickListener {
-            guardarAuditoria()
-        }
-        cancelarButton.setOnClickListener {
-            finish()
-        }
-
-
-
+        setupRecyclerView()
+        cargarAuditorias()
     }
 
-    private fun guardarAuditoria(){
-        val nombreEmisor = emisorAuditoria.text.toString().trim()
-        if (nombreEmisor.isNotEmpty()){
-            Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
-            return
+    private fun setupRecyclerView() {
+        adapter = AuditoriaAdapter(auditorias)
+
+        binding.recyclerViewAuditorias.apply {
+            layoutManager = LinearLayoutManager(this@AuditoriaActivity)
+            adapter = this@AuditoriaActivity.adapter
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@AuditoriaActivity,
+                    LinearLayoutManager.VERTICAL
+                )
+            )
         }
-
-        val newAuditoria = AuditoriaModel(
-            nombreEmisor = nombreEmisor
-        )
-
-        val usuarioCreado = AuditoriaServices.createAuditoria(auditorias, newAuditoria)
-        adapter.notifyDataSetChanged()
-        Toast.makeText(this, "Auditoria guardada exitosamente", Toast.LENGTH_SHORT).show()
-
-        limpiarFormulario()
-    }
-    private fun limpiarFormulario(){
-        emisorAuditoria.text?.clear()
     }
 
-    private fun onUpdateClick(auditoria: AuditoriaModel){
-        emisorAuditoria.setText(auditoria.getNombreEmisorAuditoria())
-        auditorias.remove(auditoria)
-        adapter.notifyDataSetChanged()
-    }
-
-    private fun onDeleteClick(auditoria: AuditoriaModel){
-        val isRemoved = AuditoriaServices.removeAuditoriaById(auditorias, auditoria.getIdAuditoria())
-        if (isRemoved) {
-            Toast.makeText(this, "Auditoria eliminada", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Error al eliminar la Auditoria", Toast.LENGTH_SHORT).show()
+    private fun cargarAuditorias() {
+        lifecycleScope.launch {
+            try {
+                val result = auditoriaServices.getAuditorias()
+                result.onSuccess { auditorias ->
+                    auditoriasOriginales = auditorias
+                    runOnUiThread {
+                        adapter.actualizarLista(auditorias)
+                        if (auditorias.isEmpty()) {
+                            showInfo("No hay auditorías registradas")
+                        }
+                    }
+                }.onFailure { error ->
+                    runOnUiThread {
+                        showError("Error al cargar auditorías: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    showError("Error inesperado: ${e.message}")
+                }
+            }
         }
+    }
+
+    private fun showInfo(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

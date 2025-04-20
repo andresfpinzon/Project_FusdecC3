@@ -56,8 +56,8 @@ async function actualizarColegio(id, body) {
 // Función asíncrona para listar los colegio activos
 async function listarColegios() {
   try {
-  let colegios = await Colegio.find({ estadoColegio: true })
-  return colegios; 
+  let colegios = await Colegio.find({ estadoColegio: true });
+  return colegios;
   } catch (error) {
     console.error('Error al listar los colegios (colegio_logic):', error);
     throw error;
@@ -91,6 +91,7 @@ async function desactivarColegio(id) {
     throw error;
   }
 }
+
 
 module.exports = {
   crearColegio,

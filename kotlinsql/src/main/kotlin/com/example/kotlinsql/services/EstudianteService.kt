@@ -21,7 +21,9 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
             edicion = rs.getString("edicion"),
             colegio = rs.getString("colegio"),
             grado = rs.getString("grado"),
-            estado = rs.getBoolean("estado")
+            estado = rs.getBoolean("estado"),
+            asistenciasRegistradas = rs.getInt("asistencias_registradas"),
+            aprobado = rs.getBoolean("aprobado")
         )
     }
 
@@ -82,3 +84,4 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.update(sql, documento)
     }
 }
+

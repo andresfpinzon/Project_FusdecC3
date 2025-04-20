@@ -46,7 +46,6 @@ class Curso(
             id = id,
             nombreFundacion = "",
             estadoFundacion = true,
-            comando = emptyList()
         )
     }
 
@@ -55,7 +54,6 @@ class Curso(
             id = map["_id"] as? String ?: "",
             nombreFundacion = map["nombreFundacion"] as? String ?: "",
             estadoFundacion = map["estadoFundacion"] as? Boolean ?: true,
-            comando = map["comando"] as? List<String> ?: emptyList()
         )
     }
 
@@ -71,7 +69,6 @@ class Curso(
                     fechaFinString = LocalDate.now().toString(),
                     cursoId = this.id,
                     estadoEdicion = true,
-                    estudiantes = emptyList()
                 )
                 is Map<*, *> -> convertMapToEdicion(it)
                 else -> null
@@ -100,38 +97,9 @@ class Curso(
             fechaFinString = (map["fechaFin"] as? String)?.substring(0, 10) ?: LocalDate.now().toString(),
             cursoId = map["cursoId"] as? String ?: this.id,
             estadoEdicion = map["estadoEdicion"] as? Boolean ?: true,
-            estudiantes = map["estudiantes"] as? List<Any> ?: emptyList()
         )
     }
 
-    // Setters
-    fun setNombreCurso(nombre: String) {
-        this.nombreCurso = nombre
-    }
-
-    fun setDescripcionCurso(descripcion: String) {
-        this.descripcionCurso = descripcion
-    }
-
-    fun setIntensidadHorariaCurso(intensidad: String) {
-        this.intensidadHorariaCurso = intensidad
-    }
-
-    fun setEstadoCurso(estado: Boolean) {
-        this.estadoCurso = estado
-    }
-
-    fun setFundacionId(fundacion: String) {
-        this.fundacionId = fundacion
-    }
-
-    fun setEdiciones(ediciones: List<Edicion>) {
-        this.ediciones = ediciones
-    }
-
-    fun setEdicionesIds(edicionesIds: List<String>) {
-        this.ediciones = edicionesIds
-    }
 
     override fun toString(): String {
         return "Curso(id='$id', nombre='$nombreCurso', descripción='$descripcionCurso', " +

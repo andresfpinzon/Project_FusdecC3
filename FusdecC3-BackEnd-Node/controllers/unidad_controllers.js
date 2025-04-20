@@ -23,13 +23,12 @@ const crearUnidad = async (req, res) => {
             return res.status(400).json({ error: error.details[0].message });
         }
 
-        const { nombreUnidad, estadoUnidad, brigadaId, usuarioId, estudiantes } = value; // Usar los valores validados
+        const { nombreUnidad, estadoUnidad, brigadaId, usuarioId} = value; 
         const unidad = new Unidad({
             nombreUnidad,
             estadoUnidad,
             brigadaId,
             usuarioId,
-            estudiantes,
         });
         
         // Guardar la unidad
