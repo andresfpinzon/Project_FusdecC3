@@ -22,49 +22,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="28dp"
                 app:layout_constraintHorizontal_bias="0.486"/>
-        <Button
-                android:id="@+id/administrativoButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Administrativo"
-                app:layout_constraintTop_toBottomOf="@id/bienvenidoTextView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        <Button
-                android:id="@+id/instructorButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Instructor"
-                app:layout_constraintTop_toBottomOf="@id/administrativoButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        <Button
-                android:id="@+id/secretarioButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Secretario"
-                app:layout_constraintTop_toBottomOf="@id/instructorButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
-        <Button
-                android:id="@+id/rootButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Root"
-                app:layout_constraintTop_toBottomOf="@id/secretarioButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
 
         <Button
                 android:id="@+id/loginButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Login"
-                app:layout_constraintTop_toBottomOf="@id/rootButton"
+                app:layout_constraintTop_toBottomOf="@id/bienvenidoTextView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
                 app:layout_constraintHorizontal_bias="0.0"/>
