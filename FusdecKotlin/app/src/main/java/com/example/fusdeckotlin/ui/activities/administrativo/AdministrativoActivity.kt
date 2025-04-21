@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.auth.AuthManager
 import com.example.fusdeckotlin.ui.activities.administrativo.auditoria.AuditoriaActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.certificate.CertificateActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.user.UserActivity
@@ -13,6 +14,7 @@ import com.example.fusdeckotlin.ui.activities.administrativo.brigada.BrigadaActi
 import com.example.fusdeckotlin.ui.activities.administrativo.colegio.ColegioActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.comando.ComandoActivity
 import com.example.fusdeckotlin.ui.activities.administrativo.unidad.UnidadActivity
+import com.example.fusdeckotlin.ui.activities.instructor.asistencia.AsistenciaActivity
 
 class AdministrativoActivity : AppCompatActivity() {
 
@@ -21,6 +23,7 @@ class AdministrativoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_administrativo)
 
         // Referencias a los botones
+        val asistenciaButton: Button = findViewById(R.id.asistenciaButton)
         val userButton: Button = findViewById(R.id.userButton)
         val colegioButton: Button = findViewById(R.id.colegioButton)
         val comandoButton: Button = findViewById(R.id.comandoButton)
@@ -28,7 +31,7 @@ class AdministrativoActivity : AppCompatActivity() {
         val unidadButton: Button = findViewById(R.id.unidadButton)
         val certificadoButton: Button = findViewById(R.id.certificadoButton)
         val auditoriaButton: Button = findViewById(R.id.auditoriaButton)
-        val volverButton: Button = findViewById(R.id.volverButton)
+        val logoutButton: Button = findViewById(R.id.logoutButton)
 
         // Botón para ir a UserActivity
         userButton.setOnClickListener {
@@ -60,6 +63,12 @@ class AdministrativoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Botón para ir a Asistencia
+        asistenciaButton.setOnClickListener {
+            val intent = Intent(this, AsistenciaActivity::class.java)
+            startActivity(intent)
+        }
+
         // Botón para ir a CertificateActivity
         certificadoButton.setOnClickListener {
             val intent = Intent(this, CertificateActivity::class.java)
@@ -72,8 +81,8 @@ class AdministrativoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Botón para volver a MainActivity
-        volverButton.setOnClickListener {
+        logoutButton.setOnClickListener {
+            AuthManager.clearToken()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

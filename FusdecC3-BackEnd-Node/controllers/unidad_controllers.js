@@ -124,6 +124,21 @@ const buscarUnidadesPorUsuarioId = async (req, res) => {
     }
 };
 
+const obtenerEstudiantesPorUnidad = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const unidad = await Unidad.findById(id).populate('estudiantes');
+        
+        if (!unidad) {
+            return res.status(404).json({ mensaje: "Unidad no encontrada" });
+        }
+
+        res.json(unidad.estudiantes);
+    } catch (error) {
+        res.status(500).json({ mensaje: "Error al obtener estudiantes", error: error.message });
+    }
+};
+
 // Exportar los controladores
 module.exports = {
     listarUnidades,
@@ -132,5 +147,6 @@ module.exports = {
     desactivarUnidad,
     obtenerUnidadPorId,
     buscarUnidadesPorBrigadaId,
-    buscarUnidadesPorUsuarioId
+    buscarUnidadesPorUsuarioId,
+    obtenerEstudiantesPorUnidad
 };

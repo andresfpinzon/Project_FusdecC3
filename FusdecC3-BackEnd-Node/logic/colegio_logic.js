@@ -41,7 +41,6 @@ async function actualizarColegio(id, body) {
         nombreColegio: body.nombreColegio,
         emailColegio: body.emailColegio,
         estadoColegio: body.estadoColegio,
-        estudiantes: body.estudiantes,
       },
     },
     { new: true }
@@ -58,7 +57,7 @@ async function actualizarColegio(id, body) {
 async function listarColegios() {
   try {
   let colegios = await Colegio.find({ estadoColegio: true });
-  return colegios; 
+  return colegios;
   } catch (error) {
     console.error('Error al listar los colegios (colegio_logic):', error);
     throw error;
@@ -69,7 +68,6 @@ async function listarColegios() {
 async function buscarColegiosPorId(id) {
   try {
     const colegio = await Colegio.findById(id)
-    .populate('estudiantes');
     if (!colegio) {
       throw new Error(`Colegio con ID ${id} no encontrado`);
     }

@@ -6,8 +6,8 @@ import com.example.kotlinsql.model.Usuario
 import com.example.kotlinsql.services.UsuarioService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -58,11 +58,7 @@ class UsuarioController @Autowired constructor(private val usuarioService: Usuar
     fun crearUsuario(@Valid @RequestBody usuario: UsuarioCreateRequest): ResponseEntity<Any> {
         return try {
             val nuevoUsuario = usuarioService.crear(usuario)
-            if (nuevoUsuario != null) {
-                ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario)
-            } else {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("mensaje" to "No se pudo crear el usuario"))
-            }
+            ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("mensaje" to e.message))
         }
@@ -133,6 +129,31 @@ class UsuarioController @Autowired constructor(private val usuarioService: Usuar
             ResponseEntity.ok(mapOf("mensaje" to "Usuario eliminado"))
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("mensaje" to "Usuario no encontrado"))
+        }
+    }
+
+    @Operation(summary = "Obtener usuario por documento", description = "Obtiene un usuario por su número de documento.")
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "Usuario encontrado",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = Usuario::class))]
+        ),
+        ApiResponse(
+            responseCode = "404",
+            description = "Usuario no encontrado",
+            content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "Usuario no encontrado")])]
+        )
+    )
+    @GetMapping("/numero-documento/{documento}")
+    fun obtenerPorDocumento(@PathVariable documento: String): ResponseEntity<Any> {
+        return try {
+            val usuario = usuarioService.obtenerPorDocumento(documento)
+            ResponseEntity.ok(usuario)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(404).body(mapOf("error" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(mapOf("error" to "Error al buscar el usuario: ${e.message}"))
         }
     }
 }

@@ -12,6 +12,10 @@ import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.auth.AuthManager
 import com.example.fusdeckotlin.services.auth.AuthService
+import com.example.fusdeckotlin.ui.activities.administrativo.AdministrativoActivity
+import com.example.fusdeckotlin.ui.activities.instructor.InstructorActivity
+import com.example.fusdeckotlin.ui.activities.root.RootActivity
+import com.example.fusdeckotlin.ui.activities.secretario.SecretarioActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Si ya está logueado, redirigir
         if (AuthManager.isLoggedIn()) {
-            navigateToMain()
+           redirectBasedOnRole()
             return
         }
 
@@ -62,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
                         AuthManager.saveToken(it)
 
                         // Redirigir a la actividad principal
-                        navigateToMain()
+                        redirectBasedOnRole()
                     } ?: run {
                         Toast.makeText(this@LoginActivity, "Token no recibido", Toast.LENGTH_SHORT).show()
                     }
@@ -77,9 +81,30 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToMain() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+    private fun redirectBasedOnRole() {
+        when {
+            AuthManager.hasRole("ROLE_ROOT") -> {
+                startActivity(Intent(this, RootActivity::class.java))
+            }
+            AuthManager.hasRole("ROLE_ADMINISTRATIVO") -> {
+                startActivity(Intent(this, AdministrativoActivity::class.java))
+            }
+            AuthManager.hasRole("ROLE_SECRETARIO") -> {
+                startActivity(Intent(this, SecretarioActivity::class.java))
+            }
+            AuthManager.hasRole("ROLE_INSTRUCTOR") -> {
+                startActivity(Intent(this, InstructorActivity::class.java))
+            }
+            else -> {
+
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
         finish()
     }
+
+    fun onBackToHomeClicked(view: android.view.View) {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
+
 }

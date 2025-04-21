@@ -1,83 +1,69 @@
-<ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:padding="24dp"
+                                                   android:background="@color/white"
+                                                   tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <!-- Botón en la esquina superior izquierda -->
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:textAllCaps="false"
+            android:icon="@drawable/ic_login"
+            app:iconPadding="8dp"
+            android:backgroundTint="@color/primaryColor"
+            android:textColor="@color/white"
+            app:cornerRadius="12dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+    <!-- Contenido centrado -->
+    <LinearLayout
+            android:id="@+id/centerContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@id/loginButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+                android:id="@+id/logoImageView"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/logo_fusdec"
+                android:contentDescription="@string/app_logo"
+                android:layout_marginBottom="24dp"/>
 
         <TextView
-                android:id="@+id/bienvenidoTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bienvenido a Fusdec"
-                android:textSize="24sp"
+                android:text="FUSDEC"
+                android:textSize="32sp"
+                android:textColor="@color/primaryColor"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="28dp"
-                app:layout_constraintHorizontal_bias="0.486"/>
-        <Button
-                android:id="@+id/administrativoButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Administrativo"
-                app:layout_constraintTop_toBottomOf="@id/bienvenidoTextView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:layout_marginBottom="16dp"/>
 
-        <Button
-                android:id="@+id/instructorButton"
-                android:layout_width="0dp"
+        <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Instructor"
-                app:layout_constraintTop_toBottomOf="@id/administrativoButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:text="@string/fusdec_description"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="4dp"
+                android:textAlignment="center"
+                android:layout_marginBottom="32dp"/>
+    </LinearLayout>
 
-        <Button
-                android:id="@+id/secretarioButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Secretario"
-                app:layout_constraintTop_toBottomOf="@id/instructorButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
-        <Button
-                android:id="@+id/rootButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Root"
-                app:layout_constraintTop_toBottomOf="@id/secretarioButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
-
-        <Button
-                android:id="@+id/loginButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Login"
-                app:layout_constraintTop_toBottomOf="@id/rootButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
-
-        <Button
-                android:id="@+id/logoutButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                app:layout_constraintTop_toBottomOf="@id/loginButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

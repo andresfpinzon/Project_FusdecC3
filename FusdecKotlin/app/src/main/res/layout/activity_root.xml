@@ -1,30 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:gravity="center"
-              android:padding="16dp">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:background="@color/white">
 
-    <TextView
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Módulo Root"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <Button
-            android:id="@+id/fundacionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fundación"/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
 
-    <Button
-            android:id="@+id/volverButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Volver"
-            android:layout_marginTop="24dp"/>
+            <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/logo_fusdec"
+                    android:contentDescription="@string/app_logo"/>
 
-</LinearLayout>
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/welcome_root"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+
+                <TextView
+                        android:id="@+id/tvUserInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryColor"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modules"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+        <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="6"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false"
+                android:useDefaultMargins="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold"
+                >
+
+            <!-- Fila 1 -->
+            <Button
+                    android:id="@+id/userButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/users"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    />
+
+            <Button
+                    android:id="@+id/colegioButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/schools"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    />
+
+            <!-- Fila 2 -->
+            <Button
+                    android:id="@+id/comandoButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/commands"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    />
+
+            <Button
+                    android:id="@+id/brigadaButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/brigades"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    />
+
+            <!-- Fila 3 -->
+            <Button
+                    android:id="@+id/unidadButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/units"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    />
+
+            <Button
+                    android:id="@+id/certificadoButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/certificates"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    />
+
+            <!-- Fila 4 -->
+            <Button
+                    android:id="@+id/auditoriaButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/audit"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/primaryColor"
+
+                    />
+
+            <Button
+                    android:id="@+id/cursoButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/courses"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    />
+
+            <!-- Fila 5 -->
+            <Button
+                    android:id="@+id/edicionButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/editions"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    />
+
+            <Button
+                    android:id="@+id/estudianteButton"
+                    android:layout_width="0dp"
+
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/students"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    />
+
+            <Button
+                    android:id="@+id/asistenciaButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/attendance"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/primaryColor" />
+
+        </GridLayout>
+
+        <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/red"
+                android:textColor="@color/white"
+        />
+
+    </LinearLayout>
+</ScrollView>

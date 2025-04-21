@@ -55,4 +55,43 @@ object AuthManager {
             return null
         }
     }
+
+    fun getUserRolesFromToken(): List<String>? {
+        val token = getToken() ?: return null
+        try {
+            val parts = token.split(".")
+            if (parts.size != 3) return null
+
+            val payload = parts[1]
+            val paddedPayload = when (payload.length % 4) {
+                2 -> "$payload=="
+                3 -> "$payload="
+                else -> payload
+            }
+
+            val decodedPayload = String(
+                android.util.Base64.decode(paddedPayload, android.util.Base64.URL_SAFE),
+                Charsets.UTF_8
+            )
+
+            // Parsear el JSON y extraer los roles
+            val jsonObject = org.json.JSONObject(decodedPayload)
+            val rolesArray = jsonObject.getJSONArray("roles")
+
+            val rolesList = mutableListOf<String>()
+            for (i in 0 until rolesArray.length()) {
+                rolesList.add(rolesArray.getString(i))
+            }
+
+            return rolesList
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    fun hasRole(role: String): Boolean {
+        val roles = getUserRolesFromToken()
+        return roles?.any { it.equals(role, ignoreCase = true) } ?: false
+    }
 }

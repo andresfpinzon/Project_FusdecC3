@@ -16,6 +16,7 @@ import {
   TableRow,
   Checkbox,
   Box,
+  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -25,20 +26,31 @@ import {
 } from "@mui/material"
 import SaveIcon from "@mui/icons-material/Save"
 import HistoryIcon from "@mui/icons-material/History"
+import InfoIcon from "@mui/icons-material/Info"
+import Delete from "@mui/icons-material/Delete";
 
 const Asistencias = () => {
-  // Estado para almacenar el token JWT
-  const token = localStorage.getItem("token")
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [students, setStudents] = useState([]);
+  const [attendance, setAttendance] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openHistory, setOpenHistory] = useState(false);
+  const [attendanceHistory, setAttendanceHistory] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [userId, setUserId] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [attendanceToDelete, setAttendanceToDelete] = useState(null);
+  const token = localStorage.getItem("token");
+  
+  // Nuevos estados para el diálogo de estudiantes
+  const [openStudentsDialog, setOpenStudentsDialog] = useState(false);
+  const [currentAttendanceStudents, setCurrentAttendanceStudents] = useState([]);
+  const [currentAttendanceInfo, setCurrentAttendanceInfo] = useState(null);
 
-  // Estados para manejar la interfaz y los datos
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
-  const [students, setStudents] = useState([])
-  const [attendance, setAttendance] = useState({})
-  const [searchTerm, setSearchTerm] = useState("")
-  const [openHistory, setOpenHistory] = useState(false)
-  const [attendanceHistory, setAttendanceHistory] = useState([])
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" })
-  const [userId, setUserId] = useState(null)
+  // Función para mostrar notificaciones
+  const showSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   // Efecto para cargar datos iniciales
   useEffect(() => {
@@ -49,88 +61,193 @@ const Asistencias = () => {
         fetchStudents()
         fetchAttendanceHistory()
       } catch (error) {
-        setSnackbar({ open: true, message: "Error al decodificar el token", severity: "error" })
+        showSnackbar("Error al decodificar el token", "error")
       }
     }
   }, [token])
 
+  // Cargar estudiantes
   const fetchStudents = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      })
-      if (!response.ok) throw new Error("Error al obtener estudiantes")
-      const data = await response.json()
-      if (data.length === 0) {
-        setSnackbar({ open: true, message: "No hay estudiantes registrados", severity: "warning" })
-      }
-      setStudents(data)
-      setAttendance(data.reduce((acc, student) => ({ ...acc, [student._id]: false }), {}))
+      const response = await fetch("http://localhost:8080/estudiantes", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      
+      if (!response.ok) throw new Error(await response.text());
+      
+      const data = await response.json();
+      const initialAttendance = {};
+      data.forEach(student => {
+        initialAttendance[student.numeroDocumento] = false;
+      });
+      
+      setStudents(data);
+      setAttendance(initialAttendance);
     } catch (error) {
-      setSnackbar({ open: true, message: "Error al cargar estudiantes", severity: "error" })
+      showSnackbar("Error al cargar estudiantes: " + error.message, "error");
     }
-  }
+  };
 
-  // Función para obtener el historial de asistencias
+  // Obtener historial de asistencias
   const fetchAttendanceHistory = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/asistencias", {
-        headers: { Authorization: token },
+      const response = await fetch("http://localhost:8080/asistencias", {
+        headers: { 
+          "Authorization": `Bearer ${token}` 
+        },
       })
+      
       if (!response.ok) throw new Error("Error al obtener historial")
+      
       const data = await response.json()
       setAttendanceHistory(data)
     } catch (error) {
-      setSnackbar({ open: true, message: "Error al cargar historial", severity: "error" })
+      showSnackbar("Error al cargar historial: " + error.message, "error")
     }
   }
 
+  // Obtener estudiantes de una asistencia específica
+  const fetchStudentsForAttendance = async (attendanceId) => {
+    try {
+      // Primero obtener las relaciones asistencia-estudiante
+      const relationsRes = await fetch(
+        `http://localhost:8080/asistencia-estudiantes?asistenciaId=${attendanceId}`,
+        {
+          headers: { "Authorization": `Bearer ${token}` }
+        }
+      );
+      
+      if (!relationsRes.ok) throw new Error("Error al obtener relaciones");
+      
+      const relations = await relationsRes.json();
+      
+      // Obtener los IDs de los estudiantes
+      const studentIds = relations.map(rel => rel.estudianteId);
+      
+      // Obtener los datos completos de los estudiantes
+      const studentsRes = await fetch(
+        `http://localhost:8080/estudiantes?ids=${studentIds.join(",")}`,
+        {
+          headers: { "Authorization": `Bearer ${token}` }
+        }
+      );
+      
+      if (!studentsRes.ok) throw new Error("Error al obtener estudiantes");
+      
+      const studentsData = await studentsRes.json();
+      
+      setCurrentAttendanceStudents(studentsData);
+    } catch (error) {
+      showSnackbar("Error al cargar estudiantes: " + error.message, "error");
+    }
+  };
 
-  // Manejador para cambiar el estado de asistencia
+  // Manejar cambio en checkbox de asistencia
   const handleAttendanceChange = (studentId) => {
-    setAttendance((prev) => ({ ...prev, [studentId]: !prev[studentId] }))
+    setAttendance(prev => ({
+      ...prev,
+      [studentId]: !prev[studentId]
+    }))
   }
 
-
-  // Función para guardar la asistencia
+  // Guardar asistencia 
   const handleSaveAttendance = async () => {
     try {
-      const presentStudents = Object.entries(attendance).filter(([_, present]) => present).map(([id]) => id)
-      const absentStudents = Object.entries(attendance).filter(([_, present]) => !present).map(([id]) => id)
-
-      const attendanceData = {
-        tituloAsistencia: `Asistencia ${selectedDate}`,
-        fechaAsistencia: selectedDate,
-        usuarioId: userId,
-        estudiantes: presentStudents,
-        inasistencias: absentStudents,
+      // Validación
+      if (!userId) throw new Error("No se identificó al usuario");
+      if (Object.values(attendance).every(v => !v)) {
+        return showSnackbar("Marque al menos un estudiante presente", "warning");
       }
 
-      const response = await fetch("http://localhost:3000/api/asistencias", {
+      // Crear asistencia
+      const asistenciaRes = await fetch("http://localhost:8080/asistencias", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(attendanceData),
-      })
-      if (!response.ok) throw new Error("Error al guardar asistencia")
-      setSnackbar({ open: true, message: "Asistencia guardada exitosamente", severity: "success" })
-      fetchAttendanceHistory()
+        body: JSON.stringify({
+          titulo: `Asistencia ${selectedDate}`,
+          fecha: selectedDate,
+          usuarioId: userId,
+        }),
+      });
+      
+      if (!asistenciaRes.ok) throw new Error(await asistenciaRes.text());
+      
+      const asistencia = await asistenciaRes.json();
+
+      // Registrar estudiantes presentes
+      const presentes = Object.entries(attendance)
+        .filter(([_, presente]) => presente)
+        .map(([doc]) => doc);
+
+      await Promise.all(
+        presentes.map(doc =>
+          fetch("http://localhost:8080/asistencia-estudiantes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              asistenciaId: asistencia.id,
+              estudianteId: doc,
+            }),
+          })
+        )
+      );
+
+      showSnackbar("Asistencia registrada correctamente", "success");
+      fetchAttendanceHistory();
     } catch (error) {
-      setSnackbar({ open: true, message: "Error al guardar asistencia", severity: "error" })
+      showSnackbar("Error: " + error.message, "error");
+      console.error("Error al guardar:", error);
     }
-  }
+  };
+
+  // Función para eliminar asistencia
+  const handleDeleteAttendance = async () => {
+    if (!attendanceToDelete) return;
+    
+    try {
+      const response = await fetch(`http://localhost:8080/asistencias/${attendanceToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error("Error al eliminar asistencia");
+
+      const result = await response.text();
+      showSnackbar(result, "success");
+      fetchAttendanceHistory(); // Refrescar el historial
+      handleCloseDeleteDialog();
+    } catch (error) {
+      showSnackbar(error.message, "error");
+      console.error("Error al eliminar asistencia:", error);
+    }
+  };
+
+  // Función para abrir el diálogo de confirmación
+  const handleOpenDeleteDialog = (attendance) => {
+    setAttendanceToDelete(attendance);
+    setOpenDeleteDialog(true);
+  };
+
+  // Función para cerrar el diálogo
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setAttendanceToDelete(null);
+  };
 
   // Filtrar estudiantes basado en el término de búsqueda
-  const filteredStudents = students.filter((student) =>
-    student.nombreEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.apellidoEstudiante?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.documentoEstudiante?.includes(searchTerm),
-  )
+  const filteredStudents = students.filter(student =>
+    student.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.apellido?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.numeroDocumento?.includes(searchTerm))
+  
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -149,10 +266,19 @@ const Asistencias = () => {
               shrink: true,
             }}
           />
-          <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSaveAttendance} color="primary">
+          <Button 
+            variant="contained" 
+            startIcon={<SaveIcon />} 
+            onClick={handleSaveAttendance} 
+            color="primary"
+          >
             Guardar Asistencia
           </Button>
-          <Button variant="outlined" startIcon={<HistoryIcon />} onClick={() => setOpenHistory(true)}>
+          <Button 
+            variant="outlined" 
+            startIcon={<HistoryIcon />} 
+            onClick={() => setOpenHistory(true)}
+          >
             Ver Historial
           </Button>
         </Box>
@@ -170,22 +296,22 @@ const Asistencias = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>Documento</TableCell>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Apellido</TableCell>
-                <TableCell>Documento</TableCell>
                 <TableCell align="center">Asistencia</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredStudents.map((student) => (
-                <TableRow key={student._id}>
-                  <TableCell>{student.nombreEstudiante}</TableCell>
-                  <TableCell>{student.apellidoEstudiante}</TableCell>
-                  <TableCell>{student.documentoEstudiante}</TableCell>
+                <TableRow key={student.numeroDocumento}>
+                  <TableCell>{student.numeroDocumento}</TableCell>
+                  <TableCell>{student.nombre}</TableCell>
+                  <TableCell>{student.apellido}</TableCell>
                   <TableCell align="center">
                     <Checkbox
-                      checked={attendance[student._id] || false}
-                      onChange={() => handleAttendanceChange(student._id)}
+                      checked={attendance[student.numeroDocumento] || false}
+                      onChange={() => handleAttendanceChange(student.numeroDocumento)}
                       color="primary"
                     />
                   </TableCell>
@@ -196,6 +322,7 @@ const Asistencias = () => {
         </TableContainer>
       </Paper>
 
+      {/* Diálogo de historial */}
       <Dialog open={openHistory} onClose={() => setOpenHistory(false)} maxWidth="md" fullWidth>
         <DialogTitle>Historial de Asistencias</DialogTitle>
         <DialogContent>
@@ -203,19 +330,44 @@ const Asistencias = () => {
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell>ID</TableCell>
                   <TableCell>Fecha</TableCell>
                   <TableCell>Título</TableCell>
-                  <TableCell align="center">Presentes</TableCell>
                   <TableCell align="center">Estado</TableCell>
+                  <TableCell align="center">Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {attendanceHistory.map((record) => (
-                  <TableRow key={record._id}>
-                    <TableCell>{new Date(record.fechaAsistencia).toLocaleDateString()}</TableCell>
-                    <TableCell>{record.tituloAsistencia}</TableCell>
-                    <TableCell align="center">{record.estudiantes?.length || 0}</TableCell>
-                    <TableCell align="center">{record.estadoAsistencia ? "Activa" : "Inactiva"}</TableCell>
+                  <TableRow key={record.id}>
+                    <TableCell>{record.id}</TableCell>
+                    <TableCell>{new Date(record.fecha+ 'T00:00:00').toLocaleDateString('es-ES')}</TableCell>
+                    <TableCell>{record.titulo}</TableCell>
+                    <TableCell align="center">
+                      {record.estado ? "Activa" : "Inactiva"}
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={async () => {
+                          setCurrentAttendanceInfo(record);
+                          await fetchStudentsForAttendance(record.id);
+                          setOpenStudentsDialog(true);
+                        }}
+                        color="info"
+                        aria-label="ver estudiantes"
+                      >
+                        <InfoIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleOpenDeleteDialog(record)}
+                        color="error"
+                        aria-label="eliminar asistencia"
+                        sx={{ ml: 1 }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>
@@ -227,8 +379,83 @@ const Asistencias = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-        <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+      {/* Diálogo de estudiantes de la asistencia */}
+      <Dialog 
+        open={openStudentsDialog} 
+        onClose={() => setOpenStudentsDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+      >
+        <DialogTitle>
+          Estudiantes en la asistencia del {currentAttendanceInfo && new Date(currentAttendanceInfo.fecha).toLocaleDateString()}
+        </DialogTitle>
+        <DialogContent>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Tipo Documento</TableCell>
+                  <TableCell>Documento</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Apellido</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentAttendanceStudents.length > 0 ? (
+                  currentAttendanceStudents.map((student) => (
+                    <TableRow key={student.numeroDocumento}>
+                      <TableCell>{student.tipoDocumento}</TableCell>
+                      <TableCell>{student.numeroDocumento}</TableCell>
+                      <TableCell>{student.nombre}</TableCell>
+                      <TableCell>{student.apellido}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center">
+                      No hay estudiantes registrados en esta asistencia
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenStudentsDialog(false)}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Eliminar Asistencia</DialogTitle>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que deseas eliminar la asistencia del día {attendanceToDelete && new Date(attendanceToDelete.fecha).toLocaleDateString()}?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mt={2}>
+            Título: {attendanceToDelete?.titulo}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleDeleteAttendance} color="error" variant="contained">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar para notificaciones */}
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+      >
+        <Alert 
+          severity={snackbar.severity} 
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
@@ -237,4 +464,3 @@ const Asistencias = () => {
 }
 
 export default Asistencias
-

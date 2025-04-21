@@ -6,7 +6,9 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.auth.AuthManager
 import com.example.fusdeckotlin.ui.activities.instructor.asistencia.AsistenciaActivity
+import com.example.fusdeckotlin.ui.activities.secretario.estudiante.EstudianteActivity
 
 class InstructorActivity : AppCompatActivity() {
 
@@ -16,7 +18,8 @@ class InstructorActivity : AppCompatActivity() {
 
         // Referencias a los botones
         val asistenciaButton: Button = findViewById(R.id.asistenciaButton)
-        val volverButton: Button = findViewById(R.id.volverButton)
+        val estudianteButton: Button = findViewById(R.id.estudianteButton)
+        val logoutButton: Button = findViewById(R.id.logoutButton)
 
         // Botón para ir a Asistencia
         asistenciaButton.setOnClickListener {
@@ -24,8 +27,15 @@ class InstructorActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Botón para volver a MainActivity
-        volverButton.setOnClickListener {
+        estudianteButton.setOnClickListener {
+
+            val intent = Intent(this, EstudianteActivity::class.java)
+            startActivity(intent)
+
+        }
+
+        logoutButton.setOnClickListener {
+            AuthManager.clearToken()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

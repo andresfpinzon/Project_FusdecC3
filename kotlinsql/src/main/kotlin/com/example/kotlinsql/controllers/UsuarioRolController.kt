@@ -87,5 +87,6 @@ class UsuarioRolController {
         val resultado = usuarioRolService.eliminar(documento, rol)
         return if (resultado > 0) "Rol eliminado correctamente" else "No se encontró el rol para eliminar"
     }
+
 }
 

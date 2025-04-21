@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FusdecKotlin</string>
+    <string name="app_name">Fusdec</string>
     <string name="update_button_description">Actualizar</string>
     <string name="delete_button_description">Eliminar</string>
     <string name="info_button_description">Información de la asistencia</string>
@@ -22,4 +22,30 @@
     <string name="info_button_estudiante">Información del estudiante</string>
     <string name="delete_role">Eliminar rol</string>
 
+    <string name="app_description">Sistema de gestión para la Fundación de Desarrollo Educativo</string>
+    <string name="app_logo">Logo FUSDEC</string>
+    <string name="fusdec_description">La Fundación FUSDEC es una organización comprometida con el desarrollo social, educativo y comunitario. </string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="back_to_home">Volver al inicio</string>
+    <string name="welcome_root">Usted ingresó como ROOT</string>
+    <string name="welcome_secretario">Usted ingresó como Secretario</string>
+    <string name="welcome_instructor">Usted ingresó como Instructor</string>
+    <string name="welcome_administrativo">Usted ingresó como Administrativo</string>
+    <string name="modules">Módulos disponibles</string>
+    <string name="users">Usuarios</string>
+    <string name="schools">Colegios</string>
+    <string name="commands">Comandos</string>
+    <string name="brigades">Brigadas</string>
+    <string name="units">Unidades</string>
+    <string name="certificates">Certificados</string>
+    <string name="audit">Auditoría</string>
+    <string name="courses">Cursos</string>
+    <string name="editions">Ediciones</string>
+    <string name="students">Estudiantes</string>
+    <string name="attendance">Asistencias</string>
+    <string name="error_generic">Ocurrió un error. Por favor intente nuevamente.</string>
 </resources>

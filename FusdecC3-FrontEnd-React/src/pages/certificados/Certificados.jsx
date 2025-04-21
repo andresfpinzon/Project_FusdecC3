@@ -1,663 +1,452 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import {
   Container,
   TextField,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Snackbar,
-  Alert,
   Grid,
+  Paper,
+  Typography,
+  FormControl,
+  InputLabel,
   Select,
   MenuItem,
-  InputLabel,
-  FormControl,
-  OutlinedInput,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
+  Snackbar,
+  Alert,
   Box,
-  TablePagination,
 } from "@mui/material";
-import { Edit, Delete, Info, CalendarToday, VerifiedUser, School, Person } from "@mui/icons-material";
-
-const token = localStorage.getItem("token");
+import { School } from "@mui/icons-material";
+import jsPDF from "jspdf";
+import encabezadoCertificado from "../../assets/images/encabezadocertificado.png";
+import firmaPresenteCertificado from "../../assets/images/firmapresidentecertificado.png";
+import "./Certificados.css";
 
 const Certificados = () => {
-  // Estado para almacenar los valores del formulario
   const [formValues, setFormValues] = useState({
-    fechaEmision: "",
-    usuarioId: "",
-    cursoId: "",
     estudianteId: "",
-    nombreEmisorCertificado: "", 
-    codigoVerificacion: "",
+    horasCompletadas: "80",
+    fechaEmision: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
   });
-  
-  // Estados para almacenar datos de usuarios, cursos, estudiantes y certificados
-  const [usuarios, setUsuarios] = useState([]);
-  const [cursos, setCursos] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
-  const [certificados, setCertificados] = useState([]);
-  const [auditorias, setAuditorias] = useState([]);
-  
-  // Estados para manejar la selección y visualización de certificados
-  const [selectedCertificado, setSelectedCertificado] = useState(null);
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [certificadoToDelete, setCertificadoToDelete] = useState(null);
-  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [certificadoDetails, setCertificadoDetails] = useState(null);
-  
-  // Estados para paginación y mensajes
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState("success"); // "success" o "error"
+  const [severity, setSeverity] = useState("success");
+  const [estudiantes, setEstudiantes] = useState([]);
+  const [usuarioActual, setUsuarioActual] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      const usuarioId = decodedToken.id;
-  
-      // Obtener nombre y apellido del usuario
-      const fetchNombreApellido = async () => {
+    const inicializarDatos = async () => {
+      if (token) {
         try {
-          const response = await fetch(`http://localhost:3000/api/usuarios/${usuarioId}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": token
-            }
-          });
-  
-          if (!response.ok) throw new Error("Error al obtener datos del usuario");
+          const decodedToken = jwtDecode(token);
           
-          const data = await response.json();
-          setFormValues((prevFormValues) => ({
-            ...prevFormValues,
-            usuarioId: usuarioId,
-            nombreEmisorCertificado: data.nombreUsuario + " " + data.apellidoUsuario
-          }));
+          if (decodedToken.exp * 1000 < Date.now()) {
+            handleSessionError("Su sesión ha expirado");
+            return;
+          }
+
+          const numeroDocumento = decodedToken.id;
+          if (numeroDocumento) {
+            setLoading(true);
+            try {
+              await Promise.all([
+                fetchEstudiantes(),
+                fetchUsuarioActual(numeroDocumento)
+              ]);
+            } catch (error) {
+              if (error.message.includes('401')) {
+                handleSessionError("Su sesión ha expirado");
+              } else {
+                handleError("Error al cargar los datos: " + error.message);
+              }
+            } finally {
+              setLoading(false);
+            }
+          } else {
+            setLoading(true);
+            await fetchEstudiantes();
+            setLoading(false);
+          }
         } catch (error) {
-          console.error("Error al obtener datos del usuario:", error);
-          setErrorMessage("Error al obtener datos del usuario");
-          setOpenSnackbar(true);
+          handleSessionError("Error con el token de sesión");
+          setLoading(false);
         }
-      };
-  
-      fetchNombreApellido();
-    }
-  }, []);
-  
-  useEffect(() => {
-    // Llamadas a las funciones para obtener datos al cargar el componente
-    fetchUsuarios();
-    fetchCursos();
-    fetchEstudiantes();
-    fetchCertificados();
-    fetchAuditorias();
-  }, []);
+      }
+    };
 
-  // Obtener nombre y apellido del usuario
-  const fetchNombreApellido = async () => {
+    inicializarDatos();
+  }, [token]);
+
+  const fetchUsuarioActual = async (numeroDocumento) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/usuarios/${usuarioId}`, {
-        method: "GET",
+      const response = await fetch(`http://localhost:8080/usuarios`, {
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
         }
       });
-
-      if (!response.ok) throw new Error("Error al obtener datos del usuario");
       
-      const data = await response.json();
-      setFormValues((prevFormValues) => ({
-        ...prevFormValues,
-        usuarioId: usuarioId,
-        nombreEmisorCertificado: data.nombreUsuario + " " + data.apellidoUsuario
-      }));
-    } catch (error) {
-      console.error("Error al obtener datos del usuario:", error);
-      setErrorMessage("Error al obtener datos del usuario");
-      setOpenSnackbar(true);
-    }
-  };
-
-  // Función para obtener usuarios
-  const fetchUsuarios = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/usuarios", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-      });
-      if (!response.ok) throw new Error("Error al obtener usuarios");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de usuarios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay usuarios registrados.");
-        setOpenSnackbar(true);
-        setUsuarios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setUsuarios(data);
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
-    } catch (error) {
-      console.error("Error al obtener usuarios:", error);
-      setErrorMessage("Error al obtener usuarios");
-      setOpenSnackbar(true);
-    }
-  };
 
-  // Función para obtener cursos
-  const fetchCursos = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/cursos", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-      });
-      if (!response.ok) throw new Error("Error al obtener cursos");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de cursos está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay cursos registrados.");
-        setOpenSnackbar(true);
-        setCursos([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setCursos(data);
+      const usuarios = await response.json();
+      const usuario = usuarios.find(u => u.numeroDocumento === numeroDocumento);
+      
+      if (!usuario) {
+        return;
       }
+
+      setUsuarioActual(usuario);
     } catch (error) {
-      console.error("Error al obtener cursos:", error);
-      setErrorMessage("Error al obtener cursos");
-      setOpenSnackbar(true);
+      handleError("Error al obtener usuario: " + error.message);
     }
   };
 
-  // Función para obtener estudiantes
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/estudiantes", {
-        method: "GET",
+      if (!token) {
+        throw new Error('No hay token de autenticación');
+      }
+
+      const response = await fetch("http://localhost:8080/estudiantes", {
+        method: 'GET',
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
+          'Authorization': `Bearer ${token}`
         }
       });
-      if (!response.ok) throw new Error("Error al obtener estudiantes");
-      const data = await response.json();
 
-      // Condicion que verifica si el arreglo de estudiantes está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay estudiantes registrados.");
-        setOpenSnackbar(true);
-        setEstudiantes([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setEstudiantes(data);
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
-    } catch (error) {
-      console.error("Error al obtener estudiantes:", error);
-      setErrorMessage("Error al obtener estudiantes");
-      setOpenSnackbar(true);
-    }
-  };
 
-  // Función para obtener certificados
-  const fetchCertificados = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/certificados", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-      });
-      if (!response.ok) throw new Error("Error al obtener certificados");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de certificados está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay certificados registrados.");
-        setOpenSnackbar(true);
-        setCertificados([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setCertificados(data);
+      const estudiantes = await response.json();
+      
+      if (!Array.isArray(estudiantes)) {
+        throw new Error('Formato de respuesta inválido');
       }
-    } catch (error) {
-      console.error("Error al obtener certificados:", error);
-      setErrorMessage("Error al obtener certificados");
-      setOpenSnackbar(true);
-    }
-  };
 
-  // Función para obtener auditorías
-  const fetchAuditorias = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/auditorias", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-      });
-      if (!response.ok) throw new Error("Error al obtener auditorías");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de auditorias está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay auditorias registradas.");
-        setOpenSnackbar(true);
-        setAuditorias([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setAuditorias(data);
-      }
-    } catch (error) {
-      console.error("Error al obtener auditorías:", error);
-      setErrorMessage("Error al obtener auditorías");
-      setOpenSnackbar(true);
-    }
-  };
-
-  // Manejar cambios en los campos del formulario
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  // Función para crear un nuevo certificado
-  const handleCreateCertificado = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/certificados", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-        },
-        body: JSON.stringify({
-          ...formValues,
-          fechaEmision: formValues.fechaEmision,
-        }),
-      });
-
-      if (response.ok) {
-        await fetchCertificados();
-
-        // Muestra un mensaje de éxito
-        /* setSuccessMessage("Certificado creado exitosamente.");
-        setOpenSnackbar(true); */
-
-        setFormValues({
-          fechaEmision: "",
-          usuarioId: formValues.usuarioId,
-          cursoId: "",
-          estudianteId: "",
-          nombreEmisorCertificado: formValues.nombreEmisorCertificado,
-          codigoVerificacion: "",
+      const estudiantesAprobados = estudiantes
+        .filter(est => est.estado && est.asistenciasRegistradas >= 15)
+        .sort((a, b) => {
+          const nombreA = `${a.nombre} ${a.apellido}`.toLowerCase();
+          const nombreB = `${b.nombre} ${b.apellido}`.toLowerCase();
+          return nombreA.localeCompare(nombreB);
         });
-        clearForm();
-        setMessage("Certificado guardado exitosamente!");
-        setSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear certificado");
+
+      if (estudiantesAprobados.length === 0) {
+        handleError("No hay estudiantes con los 15 sábados completados");
+        setEstudiantes([]);
+        return;
       }
+
+      setEstudiantes(estudiantesAprobados);
     } catch (error) {
-      console.error("Error al crear certificado:", error);
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+      handleError("Error al cargar los estudiantes: " + error.message);
     }
   };
 
-  // Función para actualizar un certificado existente
-  const handleUpdateCertificado = async () => {
-    if (!selectedCertificado) return;
-    try {
-      const response = await fetch(`http://localhost:3000/api/certificados/${selectedCertificado._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-        },
-        body: JSON.stringify({
-          fechaEmision: formValues.fechaEmision,
-          usuarioId: formValues.usuarioId,
-          cursoId: formValues.cursoId,
-          estudianteId: formValues.estudianteId,
-          nombreEmisorCertificado: formValues.nombreEmisorCertificado,
-          codigoVerificacion: formValues.codigoVerificacion,
-        }),
-      });
-
-      if (response.ok) {
-        await fetchCertificados();
-        clearForm();
-        setMessage("Certificado actualizado exitosamente!");
-        setSeverity("success");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar certificado");
-      }
-    } catch (error) {
-      console.error("Error al actualizar certificado:", error);
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
-    }
-  };
-
-  // Manejar clic en el botón de editar
-  const handleEditClick = (certificado) => {
-    setSelectedCertificado(certificado);
+  const handleEstudianteChange = (e) => {
     setFormValues({
-      fechaEmision: certificado.fechaEmision,
-      usuarioId: certificado.usuarioId,
-      cursoId: certificado.cursoId._id,
-      estudianteId: certificado.estudianteId._id,
-      nombreEmisorCertificado: certificado.nombreEmisorCertificado, 
-      codigoVerificacion: certificado.codigoVerificacion,
+      ...formValues,
+      estudianteId: e.target.value
     });
   };
 
-  // Manejar el cierre del diálogo de eliminación
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setCertificadoToDelete(null);
-  };
-
-  // Función para eliminar un certificado
-  const handleDeleteCertificado = async () => {
-    if (!certificadoToDelete) return;
+  const generateCertificate = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/certificados/${certificadoToDelete._id}`,
-        {
-          method: "DELETE",
+      setLoading(true);
+
+      if (!formValues.estudianteId || !formValues.fechaEmision) {
+        handleError("Por favor complete todos los campos requeridos");
+        setLoading(false);
+        return;
+      }
+
+      const estudianteSeleccionado = estudiantes.find(est => est.numeroDocumento === formValues.estudianteId);
+      if (!estudianteSeleccionado) {
+        handleError("No se encontró la información del estudiante");
+        setLoading(false);
+        return;
+      }
+
+      if (!token) {
+        handleSessionError("No hay token de autenticación");
+        setLoading(false);
+        return;
+      }
+
+      let decodedToken;
+      try {
+        decodedToken = jwtDecode(token);
+        if (!decodedToken?.id) {
+          handleError("Token inválido o sin ID de usuario");
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        handleSessionError("Error al decodificar el token");
+        setLoading(false);
+        return;
+      }
+
+      const fechaEmision = formValues.fechaEmision;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaEmision)) {
+        handleError("Formato de fecha inválido. Debe ser YYYY-MM-DD");
+        setLoading(false);
+        return;
+      }
+
+      const certificadoData = {
+        fechaEmision: formValues.fechaEmision,
+        usuarioId: String(decodedToken.id),
+        estudianteId: String(estudianteSeleccionado.numeroDocumento),
+        nombreEmisor: "Fundacion Fusdec",
+        codigoVerificacion: `FSC-${Date.now().toString(36).slice(-4)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+      };
+
+      try {
+        const certificadoResponse = await fetch("http://localhost:8080/certificados", {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(certificadoData)
+        });
+
+        const responseText = await certificadoResponse.text();
+        let responseData;
+        try {
+          responseData = JSON.parse(responseText);
+        } catch (e) {
+          throw new Error('Respuesta del servidor no válida');
+        }
+
+        if (!certificadoResponse.ok) {
+          if (certificadoResponse.status === 400) {
+            throw new Error(responseData.message || "Datos inválidos enviados al servidor");
+          } else if (certificadoResponse.status === 401) {
+            handleSessionError("Sesión expirada o no autorizada");
+            return;
+          } else if (certificadoResponse.status === 500) {
+            throw new Error(responseData.message || "Error interno del servidor");
+          } else {
+            throw new Error(responseData.message || `Error del servidor: ${certificadoResponse.status}`);
           }
         }
-      );
-      if (response.ok) {
-        setCertificados(certificados.filter(certificado => certificado._id !== certificadoToDelete._id));
-        handleCloseDeleteDialog();
 
-        // Mostrar mensaje de éxito
-        setSuccessMessage("La asistencia se eliminó correctamente");
-        setOpenSnackbar(true);
-        
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al eliminar certificado");
+        if (!responseData || !responseData.id) {
+          throw new Error("El servidor no devolvió un certificado válido");
+        }
+
+        generatePDF(responseData, estudianteSeleccionado);
+        handleSuccess("Certificado generado exitosamente");
+        resetForm();
+
+      } catch (error) {
+        if (error.message.includes('Failed to fetch')) {
+          handleError("Error de conexión con el servidor. Verifique su conexión a internet.");
+        } else {
+          handleError(error.message);
+        }
       }
+
     } catch (error) {
-      console.error("Error al eliminar certificado:", error);
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
+      handleError("Ocurrió un error inesperado al procesar la solicitud");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Limpiar el formulario
-  const clearForm = () => {
-    setFormValues({
-      fechaEmision: "",
-      usuarioId: "",
-      cursoId: "",
-      estudianteId: "",
-      nombreEmisorCertificado: "",
-      codigoVerificacion: "",
+  const generatePDF = (certificado, estudiante) => {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "letter"
     });
-    setSelectedCertificado(null);
+
+    // Configuración del PDF
+    doc.addImage(encabezadoCertificado, "PNG", 30, 15, 150, 25);
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("LA FUNDACIÓN SOCORRISTAS DE", doc.internal.pageSize.width / 2, 65, { align: "center" });
+    doc.text("COLOMBIA", doc.internal.pageSize.width / 2, 72, { align: "center" });
+    
+    doc.setFontSize(12);
+    doc.text("CERTIFICA", doc.internal.pageSize.width / 2, 85, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+
+    const textoCompleto = `Que ${estudiante.nombre} ${estudiante.apellido} identificado(a) con ${estudiante.tipoDocumento} ${estudiante.numeroDocumento} del\n${estudiante.colegio} del curso ${estudiante.grado} prestó ${formValues.horasCompletadas} horas de servicio social\nestudiantil en nuestra entidad. De acuerdo a lo establecido en\nla resolución 4210 del ministerio de educación nacional y\nnormas concordantes.`;
+
+    const lineas = textoCompleto.split('\n');
+    let y = 100;
+    lineas.forEach(linea => {
+      doc.text(linea.trim(), doc.internal.pageSize.width / 2, y, { align: "center" });
+      y += 6;
+    });
+
+    const fechaEmisionFormateada = new Date(certificado.fechaEmision).toLocaleDateString('es-CO', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    doc.text(`Dada en Bogotá a los ${fechaEmisionFormateada}`, doc.internal.pageSize.width / 2, y + 8, { align: "center" });
+
+    doc.addImage(firmaPresenteCertificado, "PNG", doc.internal.pageSize.width / 2 - 30, y + 15, 60, 30);
+    
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text("BRIGADIER G.", doc.internal.pageSize.width / 2, y + 50, { align: "center" });
+    doc.text("FERNELLY GÓMEZ GONZÁLEZ", doc.internal.pageSize.width / 2, y + 55, { align: "center" });
+    doc.text("PRESIDENTE", doc.internal.pageSize.width / 2, y + 60, { align: "center" });
+    doc.text("WWW.FUSDEC.COM", doc.internal.pageSize.width / 2, y + 65, { align: "center" });
+
+    doc.setFontSize(9);
+    doc.text(`Código de Verificación: ${certificado.codigoVerificacion}`, doc.internal.pageSize.width / 2, y + 75, { align: "center" });
+
+    doc.save(`certificado_${estudiante.nombre}_${estudiante.apellido}.pdf`);
   };
 
-  // Manejar auditoría
-  const handleAuditoria = (id) => {
-    const auditoria = auditorias.find(aud => aud.certificadoId === id);
-    if (auditoria) {
-      console.log(`Auditoría para el certificado con ID: ${id}`, auditoria);
-    } else {
-      console.log(`No se encontró auditoría para el certificado con ID: ${id}`);
-    }
+  const generateVerificationCode = () => {
+    return `FSC-${Date.now().toString(36).slice(-4)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
   };
 
-  // Manejar clic en detalles del certificado
-  const handleDetailsClick = (certificado) => {
-    setCertificadoDetails(certificado);
-    setOpenDetailsDialog(true);
+  const handleSuccess = (msg) => {
+    setMessage(msg);
+    setSeverity("success");
+    setOpenSnackbar(true);
   };
 
-  // Cerrar el Snackbar
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
+  const handleError = (msg) => {
+    setMessage(msg);
+    setSeverity("error");
+    setOpenSnackbar(true);
+  };
+
+  const handleSessionError = (message) => {
+    setMessage(message);
+    setSeverity("error");
+    setOpenSnackbar(true);
+    localStorage.removeItem("token");
+    // Redirigir a login
+    window.location.href = '/login';
+  };
+
+  const resetForm = () => {
+    setFormValues({
+      estudianteId: "",
+      horasCompletadas: "80",
+      fechaEmision: new Date().toISOString().split('T')[0]
+    });
   };
 
   return (
-    <Container maxWidth="lg">
-      <h1>Gestión de Certificados</h1>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={12} xl={12}>
-          <TextField
-            label="Fecha de Emisión"
-            type="date"
-            name="fechaEmision"
-            value={formValues.fechaEmision}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="curso-select-label">Curso</InputLabel>
-            <Select
-              labelId="curso-select-label"
-              name="cursoId"
-              value={formValues.cursoId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Curso" />}
-            >
-              {cursos.map((curso) => (
-                <MenuItem key={curso._id} value={curso._id}>
-                  {curso.nombreCurso}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="estudiante-select-label">Estudiante</InputLabel>
-            <Select
-              labelId="estudiante-select-label"
-              name="estudianteId"
-              value={formValues.estudianteId}
-              onChange={handleInputChange}
-              input={<OutlinedInput label="Estudiante" />}
-            >
-              {estudiantes.map((estudiante) => (
-                <MenuItem key={estudiante._id} value={estudiante._id}>
-                  {estudiante.nombreEstudiante}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            label="Código de Verificación"
-            name="codigoVerificacion"
-            value={formValues.codigoVerificacion}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={selectedCertificado ? handleUpdateCertificado : handleCreateCertificado}
-          >
-            {selectedCertificado ? "Actualizar Certificado" : "Crear Certificado"}
-          </Button>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <h2>Lista de Certificados</h2>
-          <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Codigo</TableCell>
-                  <TableCell>Fecha de Emisión</TableCell>
-                  <TableCell>Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {certificados.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((certificado) => (
-                  <TableRow key={certificado._id}>
-                    <TableCell>
-                      {certificado.codigoVerificacion}
-                    </TableCell>
-                    <TableCell>
-                      {certificado.fechaEmision}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleEditClick(certificado)} color="primary">
-                        <Edit />
-                      </IconButton>
-                      <IconButton onClick={() => {
-                        setCertificadoToDelete(certificado);
-                        setOpenDeleteDialog(true);
-                      }} color="error">
-                        <Delete />
-                      </IconButton>
-                      <IconButton onClick={() => handleDetailsClick(certificado)} color="primary">
-                        <Info />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={certificados.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={(event, newPage) => setPage(newPage)}
-              onRowsPerPageChange={(event) => {
-                setRowsPerPage(parseInt(event.target.value, 10));
-                setPage(0);
-              }}
-            />
-          </TableContainer>
-        </Grid>
-      </Grid>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+        <Typography variant="h6" gutterBottom>
+          Generación de Certificados
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel>Estudiante</InputLabel>
+              <Select
+                value={formValues.estudianteId}
+                onChange={handleEstudianteChange}
+                label="Estudiante"
+                disabled={loading || estudiantes.length === 0}
+              >
+                {estudiantes.length === 0 ? (
+                  <MenuItem value="" disabled>
+                    No hay estudiantes disponibles
+                  </MenuItem>
+                ) : (
+                  estudiantes.map((estudiante) => (
+                    <MenuItem 
+                      key={estudiante.numeroDocumento} 
+                      value={estudiante.numeroDocumento}
+                      sx={{ 
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        '& > *': { width: '100%' }
+                      }}
+                    >
+                      <Typography variant="subtitle1">
+                        {`${estudiante.nombre} ${estudiante.apellido} - ${estudiante.numeroDocumento}`}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        {`${estudiante.colegio} - ${estudiante.grado}`}
+                      </Typography>
+                    </MenuItem>
+                  ))
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
 
-      {/* Snackbar para mensajes de error */}
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel>Horas Completadas</InputLabel>
+              <Select
+                value={formValues.horasCompletadas}
+                onChange={(e) => setFormValues({...formValues, horasCompletadas: e.target.value})}
+                label="Horas Completadas"
+                disabled={loading}
+              >
+                <MenuItem value="80">80 Horas</MenuItem>
+                <MenuItem value="120">120 Horas</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              type="date"
+              label="Fecha de Emisión"
+              value={formValues.fechaEmision}
+              onChange={(e) => setFormValues({...formValues, fechaEmision: e.target.value})}
+              InputLabelProps={{ shrink: true }}
+              disabled={loading}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              startIcon={<School />}
+              onClick={generateCertificate}
+              sx={{ mt: 2 }}
+              disabled={loading || !formValues.estudianteId || estudiantes.length === 0}
+            >
+              {loading ? 'Generando...' : 'Generar Certificado'}
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={severity} sx={{ width: "100%" }}>
+        <Alert 
+          severity={severity} 
+          onClose={() => setOpenSnackbar(false)}
+          sx={{ width: '100%' }}
+        >
           {message}
         </Alert>
       </Snackbar>
-
-      {/* Diálogo de confirmación de eliminación */}
-      <Dialog
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-      >
-        <DialogTitle>Confirmar Eliminación</DialogTitle>
-        <DialogContent>
-          <Typography>
-            ¿Estás seguro de que deseas eliminar este certificado?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="default">
-            Cancelar
-          </Button>
-          <Button onClick={handleDeleteCertificado} color="error">
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Diálogo para mostrar detalles del certificado */}
-      <Dialog open={openDetailsDialog} onClose={() => setOpenDetailsDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ backgroundColor: '#208DC7FF', color: '#fff', textAlign: 'center' }}>
-          Detalles del Certificado
-        </DialogTitle>
-        <DialogContent sx={{ padding: '20px' }}>
-          {certificadoDetails && (
-            <div>
-              {/* Código de Verificación */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <VerifiedUser color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Código de Verificación:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.codigoVerificacion || "N/A"}</Typography>
-              </Box>
-              
-              {/* Fecha de Emisión */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <CalendarToday color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Emisión:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {certificadoDetails.fechaEmision ? new Date(certificadoDetails.fechaEmision).toLocaleDateString() : "N/A"}
-                </Typography>
-              </Box>
-              
-              {/* Nombre del Emisor */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Person color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Emisor:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.nombreEmisorCertificado || "N/A"}</Typography>
-              </Box>
-              
-              {/* Nombre del Curso */}
-              {certificadoDetails.cursoId && (
-                <Box display="flex" alignItems="center" mb={2}>
-                  <School color="primary" sx={{ mr: 1 }} />
-                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Curso:</Typography>
-                  <Typography variant="body1" sx={{ ml: 1 }}>{certificadoDetails.cursoId.nombreCurso || "N/A"}</Typography>
-                </Box>
-              )}
-              
-              {/* Nombre del Estudiante */}
-              {certificadoDetails.estudianteId && (
-                <Box display="flex" alignItems="center" mb={2}>
-                  <Person color="primary" sx={{ mr: 1 }} />
-                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre del Estudiante:</Typography>
-                  <Typography variant="body1" sx={{ ml: 1 }}>
-                    {`${certificadoDetails.estudianteId.nombreEstudiante} ${certificadoDetails.estudianteId.apellidoEstudiante}`}
-                  </Typography>
-                </Box>
-              )}
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDetailsDialog(false)} variant="contained" color="primary">
-            Cerrar
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Container>
   );
 };

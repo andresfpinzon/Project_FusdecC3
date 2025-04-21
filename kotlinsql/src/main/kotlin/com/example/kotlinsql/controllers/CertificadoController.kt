@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*
 import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.responses.*
 import io.swagger.v3.oas.annotations.media.*
+import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus
 
 @RestController
 @RequestMapping("/certificados")
@@ -41,8 +43,27 @@ class CertificadoController {
         )
     )
     @PostMapping
-    fun crear(@Valid @RequestBody certificado: CertificadoCreateRequest): Certificado? {
-        return certificadoService.crear(certificado)
+    fun crear(@Valid @RequestBody certificado: CertificadoCreateRequest): ResponseEntity<Any> {
+        try {
+            val resultado = certificadoService.crear(certificado)
+            
+            if (resultado == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(mapOf("message" to "No se pudo crear el certificado"))
+            }
+            
+            return ResponseEntity.ok(resultado)
+            
+        } catch (e: IllegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(mapOf("message" to e.message))
+        } catch (e: IllegalStateException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(mapOf("message" to e.message))
+        } catch (e: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(mapOf("message" to "Error al crear el certificado: ${e.message}"))
+        }
     }
 
     @Operation(summary = "Actualizar certificado", description = "Actualiza un certificado existente mediante su ID.")

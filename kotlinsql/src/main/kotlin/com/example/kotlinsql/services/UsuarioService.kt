@@ -115,8 +115,16 @@ class UsuarioService(
             throw IllegalArgumentException("El número de documento ya está registrado")
         }
     }
-}
 
+    fun obtenerPorDocumento(documento: String): Usuario? {
+        val sql = "SELECT * FROM usuario WHERE numero_documento = ? AND estado = true"
+        return try {
+            jdbcTemplate.queryForObject(sql, rowMapper, documento)
+        } catch (e: EmptyResultDataAccessException) {
+            null
+        }
+    }
+}
 private fun UsuarioUpdateRequest.isEmpty(): Boolean {
     return nombre == null && apellido == null && correo == null && password == null && estado == null
 }
