@@ -1,19 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/layoutAuditorias"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
-    <ProgressBar
-            android:id="@+id/progressBar"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content" />
+        <!-- Barra de progreso con borde y fondo sutil -->
+        <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:progressDrawable="@drawable/progress_bar_style"
+        android:layout_marginBottom="16dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerAuditorias"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-</LinearLayout>
+                <!-- Barra de búsqueda (con borde y sombra) -->
+        <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="Buscar por emisor, fecha o código"
+        android:background="@drawable/search_view_background"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"/>
+
+                <!-- RecyclerView con bordes y sombras -->
+        <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAuditorias"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/recycler_view_background"
+        android:padding="8dp" /> <!-- Espaciado interno -->
+        </LinearLayout>

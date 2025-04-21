@@ -1,0 +1,7 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:drawable="@android:color/darker_gray" />
+    <item
+            android:drawable="@android:color/white"
+            android:right="5dp" />
+</layer-list>

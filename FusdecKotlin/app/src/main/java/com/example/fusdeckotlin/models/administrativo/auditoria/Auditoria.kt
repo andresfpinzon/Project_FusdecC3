@@ -14,7 +14,7 @@ data class Auditoria(
     @SerializedName("nombreEmisor")
     private val nombreEmisor: String,
     @SerializedName("certificadoId")
-    private val certificadoId: String,
+    private val certificadoId: Int,
     @SerializedName("estadoAuditoria")
     private var estadoAuditoria: Boolean = true
 ) {
@@ -22,7 +22,7 @@ data class Auditoria(
     fun getNombreEmisor(): String = nombreEmisor
     fun getIdAuditoria() : String = id.toString()
     fun getFechaAuditoria() : String = fechaAuditoria
-    fun getCertificadoId(): String = certificadoId
+    fun getCertificadoId(): String = certificadoId.toString()
 
     fun getEstado(): Boolean = estadoAuditoria
 //    fun getCertificadoId(): String {
