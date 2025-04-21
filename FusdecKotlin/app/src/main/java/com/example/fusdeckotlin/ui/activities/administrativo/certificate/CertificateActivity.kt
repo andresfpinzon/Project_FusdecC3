@@ -50,7 +50,7 @@ class CertificateActivity : AppCompatActivity() {
         setupRecyclerView()
         setupListeners()
         loadCertificadosActivos()
-        autoLlenarEmisor()
+        autoLlenarUsuarioDesdeToken()
     }
 
     private fun initViews() {
@@ -62,9 +62,27 @@ class CertificateActivity : AppCompatActivity() {
         tvEstudianteSeleccionado = findViewById(R.id.tvEstudianteSeleccionado)
     }
 
-    private fun autoLlenarEmisor() {
-        val nombreUsuario = AuthManager.getUserIdFromToken() ?: "Administrador"
-        inputEmisor.setText(nombreUsuario)
+    private fun autoLlenarUsuarioDesdeToken() {
+        val userId = AuthManager.getUserIdFromToken()
+        if (userId == null) {
+            showError("Error al obtener ID de usuario del token.")
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val result = userService.getUserByDocument(userId)
+                result.onSuccess { usuario ->
+                    usuarioSeleccionado = usuario
+                    tvUsuarioSeleccionado.text = "${usuario.getNombreUsuario()} ${usuario.getApellidoUsuario()} (${usuario.getNumeroDocumento()})"
+                    inputEmisor.setText("${usuario.getNombreUsuario()} ${usuario.getApellidoUsuario()}")
+                }.onFailure {
+                    showError("Error al obtener usuario desde el token: ${it.message}")
+                }
+            } catch (e: Exception) {
+                showError("Error inesperado: ${e.message}")
+            }
+        }
     }
 
     private fun setupRecyclerView() {
