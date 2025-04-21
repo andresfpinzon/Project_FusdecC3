@@ -21,15 +21,15 @@
 
                 <!-- Barra de búsqueda (con borde y sombra) -->
         <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:queryHint="Buscar por emisor, fecha o código"
-        android:background="@drawable/search_view_background"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"/>
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:queryHint="Buscar por emisor, fecha o código"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp" />
 
-                <!-- RecyclerView con bordes y sombras -->
+
+        <!-- RecyclerView con bordes y sombras -->
         <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerAuditorias"
         android:layout_width="match_parent"
@@ -39,4 +39,4 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/recycler_view_background"
         android:padding="8dp" /> <!-- Espaciado interno -->
-        </LinearLayout>
+</LinearLayout>
