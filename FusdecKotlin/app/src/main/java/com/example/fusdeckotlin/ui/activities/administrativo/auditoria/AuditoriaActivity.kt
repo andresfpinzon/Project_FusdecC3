@@ -1,79 +1,47 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.auditoria
-
+import com.example.fusdeckotlin.R
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.databinding.ActivityAuditoriaBinding
+import com.example.fusdeckotlin.models.administrativo.auditoria.Auditoria
 import com.example.fusdeckotlin.services.administrativo.auditoria.AuditoriaServices
 import com.example.fusdeckotlin.ui.adapters.administrativo.auditoria.AuditoriaAdapter
 import kotlinx.coroutines.launch
-import com.example.fusdeckotlin.models.administrativo.auditoria.Auditoria
 
 class AuditoriaActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAuditoriaBinding
-    private lateinit var adapter: AuditoriaAdapter
-    private val auditorias = mutableListOf<Auditoria>()
-    private var auditoriasOriginales = listOf<Auditoria>() // Para mantener una copia original si necesitas filtrar
-    private val auditoriaServices = AuditoriaServices() // Tu servicio de auditorías
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private val auditoriaService = AuditoriaServices()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAuditoriaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_auditoria)
 
-        setupRecyclerView()
-        cargarAuditorias()
+        recyclerView = findViewById(R.id.recyclerAuditorias)
+        progressBar = findViewById(R.id.progressBar)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        obtenerAuditorias()
     }
 
-    private fun setupRecyclerView() {
-        adapter = AuditoriaAdapter(auditorias)
-
-        binding.recyclerViewAuditorias.apply {
-            layoutManager = LinearLayoutManager(this@AuditoriaActivity)
-            adapter = this@AuditoriaActivity.adapter
-            addItemDecoration(
-                DividerItemDecoration(
-                    this@AuditoriaActivity,
-                    LinearLayoutManager.VERTICAL
-                )
-            )
-        }
-    }
-
-    private fun cargarAuditorias() {
+    private fun obtenerAuditorias() {
         lifecycleScope.launch {
-            try {
-                val result = auditoriaServices.getAuditorias()
-                result.onSuccess { auditorias ->
-                    auditoriasOriginales = auditorias
-                    runOnUiThread {
-                        adapter.actualizarLista(auditorias)
-                        if (auditorias.isEmpty()) {
-                            showInfo("No hay auditorías registradas")
-                        }
-                    }
-                }.onFailure { error ->
-                    runOnUiThread {
-                        showError("Error al cargar auditorías: ${error.message}")
-                    }
-                }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    showError("Error inesperado: ${e.message}")
-                }
+            progressBar.visibility = View.VISIBLE
+            val result = auditoriaService.getAuditorias()
+            progressBar.visibility = View.GONE
+
+            result.onSuccess { auditorias ->
+                recyclerView.adapter = AuditoriaAdapter(auditorias)
+            }.onFailure { error ->
+                Toast.makeText(this@AuditoriaActivity, "Error: ${error.message}", Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    private fun showInfo(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
