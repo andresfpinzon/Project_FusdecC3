@@ -7,16 +7,16 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.certificado.Certificado
-import java.time.format.DateTimeFormatter
 
 class CertificateAdapter(
     private var certificates: List<Certificado>,
-    private val onUpdateClick: (Certificado) -> Unit,
+    private val fragmentManager: FragmentManager, // Se pasa el FragmentManager
     private val onDeleteClick: (Certificado) -> Unit,
-    private val onInfoClick: (Certificado) -> Unit?
+    private val onInfoClick: (Certificado) -> Unit
 ) : RecyclerView.Adapter<CertificateAdapter.CertificateViewHolder>(), Filterable {
 
     private var certificatesFiltrados: List<Certificado> = certificates
@@ -32,7 +32,7 @@ class CertificateAdapter(
 
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButtonC)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButtonC)
-        val infoButton: ImageButton? = itemView.findViewById(R.id.infoButtonC)
+        val infoButton: ImageButton = itemView.findViewById(R.id.infoButtonC)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CertificateViewHolder {
@@ -47,16 +47,24 @@ class CertificateAdapter(
         // Configurar los textos de las vistas
         holder.textViewCertificateId.text = "Certificado #${certificate.getId()}"
         holder.textViewFecha.text = certificate.getFechaEmision()
-        holder.textViewUsuario.text = "Doc: ${certificate.getUsuarioId()}" // Cambiado a documento
-        holder.textViewEstudiante.text = "Est: ${certificate.getEstudiante()}" // Cambiado a documento
+        holder.textViewUsuario.text = "Doc: ${certificate.getUsuarioId()}"
+        holder.textViewEstudiante.text = "Est: ${certificate.getEstudiante()}"
         holder.textViewEmisor.text = certificate.getNombreEmisor()
         holder.textViewCodeVerify.text = certificate.getCodigoVerificacion()
         holder.textViewState.text = if (certificate.getEstado()) "Activo" else "Inactivo"
 
         // Configurar los listeners de los botones
-        holder.updateButton.setOnClickListener { onUpdateClick(certificate) }
+        holder.updateButton.setOnClickListener {
+            // Crear y mostrar el dialog cuando se haga click en el botón de actualizar
+            val dialog = UpdateCertificateDialog(certificate) {
+                // Acción después de la actualización, por ejemplo recargar la lista
+                notifyItemChanged(position) // Solo actualizamos el item actual
+            }
+            dialog.show(fragmentManager, "UpdateCertificateDialog")
+        }
+
         holder.deleteButton.setOnClickListener { onDeleteClick(certificate) }
-        holder.infoButton?.setOnClickListener { onInfoClick?.invoke(certificate) }
+        holder.infoButton.setOnClickListener { onInfoClick(certificate) }
     }
 
     override fun getItemCount(): Int = certificatesFiltrados.size
@@ -93,12 +101,14 @@ class CertificateAdapter(
         }
     }
 
+    // Método para actualizar la lista de certificados
     fun updateList(newList: List<Certificado>) {
         certificates = newList
-        certificatesFiltrados = newList
-        notifyDataSetChanged()
+        certificatesFiltrados = newList // Actualiza ambos
+        notifyDataSetChanged() // Notifica el cambio a RecyclerView
     }
 
+    // Método para limpiar el filtro
     fun limpiarFiltro() {
         certificatesFiltrados = certificates
         notifyDataSetChanged()

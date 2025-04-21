@@ -28,7 +28,8 @@ class AuditoriaAdapter(private val auditorias: List<Auditoria>) :
         holder.fecha.text = "Fecha: ${auditoria.getFechaAuditoria()}"
         holder.emisor.text = "Emisor: ${auditoria.getNombreEmisor()}"
         holder.certificado.text = "Certificado: ${auditoria.getCertificadoId()}"
-        holder.estado.text = "Estado: ${if (auditoria.getEstado()) "Activa" else "Inactiva"}"
+        holder.estado.text = "Estado: ${(auditoria.getEstado())}"
+
     }
 
     override fun getItemCount() = auditorias.size

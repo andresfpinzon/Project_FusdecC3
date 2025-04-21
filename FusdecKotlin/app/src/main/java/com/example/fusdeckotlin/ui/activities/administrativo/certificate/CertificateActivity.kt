@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.certificate
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
@@ -34,18 +33,21 @@ class CertificateActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var tvUsuarioSeleccionado: TextView
     private lateinit var tvEstudianteSeleccionado: TextView
+
     private val certificadoService = CertificadoServices()
     private val estudianteService = EstudianteServices()
     private val userService = UsuarioServices()
+
     private lateinit var adapter: CertificateAdapter
     private var isEditing = false
-    private var currentCertificateId: String? = null
+    private var currentCertificateId: Int? = null
     private var usuarioSeleccionado: Usuario? = null
     private var estudianteSeleccionado: Estudiante? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_certificate)
+
         initViews()
         setupRecyclerView()
         setupListeners()
@@ -74,7 +76,8 @@ class CertificateActivity : AppCompatActivity() {
                 val result = userService.getUserByDocument(userId)
                 result.onSuccess { usuario ->
                     usuarioSeleccionado = usuario
-                    tvUsuarioSeleccionado.text = "${usuario.getNombreUsuario()} ${usuario.getApellidoUsuario()} (${usuario.getNumeroDocumento()})"
+                    tvUsuarioSeleccionado.text =
+                        "${usuario.getNombreUsuario()} ${usuario.getApellidoUsuario()} (${usuario.getNumeroDocumento()})"
                     inputEmisor.setText("${usuario.getNombreUsuario()} ${usuario.getApellidoUsuario()}")
                 }.onFailure {
                     showError("Error al obtener usuario desde el token: ${it.message}")
@@ -87,25 +90,24 @@ class CertificateActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         adapter = CertificateAdapter(
-            emptyList(),
-            ::onUpdateClick,
-            ::onDeleteClick,
-            ::onInfoClick
+            certificates = emptyList(),
+            fragmentManager = supportFragmentManager,  // Pasa el FragmentManager aquí
+            onDeleteClick = ::onDeleteClick,
+            onInfoClick = ::onInfoClick
         )
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
     }
 
+
     private fun setupListeners() {
         btnGuardar.setOnClickListener { crearCertificado() }
         btnCancelar.setOnClickListener { finish() }
 
-        // Listener para abrir el diálogo de selección de usuario
         findViewById<Button>(R.id.btnSeleccionarUsuario).setOnClickListener {
             mostrarDialogoSeleccionUsuario()
         }
 
-        // Listener para abrir el diálogo de selección de estudiante
         findViewById<Button>(R.id.btnSeleccionarEstudiante).setOnClickListener {
             mostrarDialogoSeleccionEstudiante()
         }
@@ -115,10 +117,8 @@ class CertificateActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val usuarios = userService.getUsersActives().getOrThrow()
-                // Crear un diálogo con una lista de usuarios
                 val dialogBuilder = AlertDialog.Builder(this@CertificateActivity)
                 dialogBuilder.setTitle("Seleccionar Usuario")
-                // Convertir la lista de usuarios en un array de nombres
                 val nombresUsuarios = usuarios.map {
                     "${it.getNombreUsuario()} ${it.getApellidoUsuario()} (${it.getNumeroDocumento()})"
                 }.toTypedArray()
@@ -140,10 +140,8 @@ class CertificateActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val estudiantes = estudianteService.listarEstudiantesActivos().getOrThrow()
-                // Crear un diálogo con una lista de estudiantes
                 val dialogBuilder = AlertDialog.Builder(this@CertificateActivity)
                 dialogBuilder.setTitle("Seleccionar Estudiante")
-                // Convertir la lista de estudiantes en un array de nombres
                 val nombresEstudiantes = estudiantes.map {
                     "${it.getNombre()} ${it.getApellido()} (${it.getNumeroDocumento()})"
                 }.toTypedArray()
@@ -175,6 +173,7 @@ class CertificateActivity : AppCompatActivity() {
             showError("Ingrese el nombre del emisor")
             return
         }
+
         lifecycleScope.launch {
             try {
                 val nuevoCertificado = CreateCertificadoDto(
@@ -188,6 +187,7 @@ class CertificateActivity : AppCompatActivity() {
                         estudianteId = estudianteSeleccionado!!.getNumeroDocumento(),
                         nombreEmisor = nombreEmisor
                     )
+
                     certificadoService.updateCertificate(currentCertificateId!!, dto)
                         .onSuccess {
                             showSuccess("Certificado actualizado")
@@ -214,7 +214,7 @@ class CertificateActivity : AppCompatActivity() {
 
     private fun onUpdateClick(certificado: Certificado) {
         isEditing = true
-        currentCertificateId = certificado.getId().toString()
+        currentCertificateId = certificado.getId().toInt()
         tvUsuarioSeleccionado.text = "Buscando usuario..."
         tvEstudianteSeleccionado.text = "Buscando estudiante..."
         lifecycleScope.launch {
@@ -227,25 +227,19 @@ class CertificateActivity : AppCompatActivity() {
                             usuarioSeleccionado = usuario
                             estudianteSeleccionado = estudiante
                             tvUsuarioSeleccionado.text =
-                                "Usuario: ${usuario?.getNombreUsuario()} ${usuario?.getApellidoUsuario()} (${usuario?.getNumeroDocumento()})"
+                                "${usuario.getNombreUsuario()} ${usuario.getApellidoUsuario()} (${usuario.getNumeroDocumento()})"
                             tvEstudianteSeleccionado.text =
-                                "Estudiante: ${estudiante?.getNombre()} ${estudiante?.getApellido()} (${estudiante?.getNumeroDocumento()})"
+                                "${estudiante.getNombre()} ${estudiante.getApellido()} (${estudiante.getNumeroDocumento()})"
                             inputEmisor.setText(certificado.getNombreEmisor())
                         }
                     }.onFailure {
-                        withContext(Dispatchers.Main) {
-                            showError("Error al cargar estudiante: ${it.message}")
-                        }
+                        showError("Error al cargar estudiante: ${it.message}")
                     }
                 }.onFailure {
-                    withContext(Dispatchers.Main) {
-                        showError("Error al cargar usuario: ${it.message}")
-                    }
+                    showError("Error al cargar usuario: ${it.message}")
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    showError("Error al cargar datos: ${e.message}")
-                }
+                showError("Error al cargar datos: ${e.message}")
             }
         }
     }
@@ -259,7 +253,6 @@ class CertificateActivity : AppCompatActivity() {
                     certificadoService.deleteCertificateById(certificado.getId().toString())
                         .onSuccess {
                             showSuccess("Certificado eliminado")
-                            // Actualizar la lista de certificados activos
                             loadCertificadosActivos()
                         }.onFailure {
                             showError("Error al eliminar: ${it.message}")
@@ -272,48 +265,45 @@ class CertificateActivity : AppCompatActivity() {
 
     private fun onInfoClick(certificado: Certificado) {
         val mensaje = """
-            Detalles del Certificado:
             ID: ${certificado.getId()}
-            Fecha: ${certificado.getFechaEmision()}
-            Usuario: ${certificado.getUsuarioId()}
-            Estudiante: ${certificado.getEstudiante()}
+            Usuario ID: ${certificado.getUsuarioId()}
+            Estudiante ID: ${certificado.getEstudiante()}
             Emisor: ${certificado.getNombreEmisor()}
-            Código: ${certificado.getCodigoVerificacion()}
-            Estado: ${if (certificado.getEstado()) "Activo" else "Inactivo"}
         """.trimIndent()
-        AlertDialog.Builder(this)
-            .setTitle("Información del Certificado")
-            .setMessage(mensaje)
-            .setPositiveButton("Aceptar", null)
-            .show()
-    }
 
-    private fun loadCertificadosActivos() {
-        lifecycleScope.launch {
-            val result = certificadoService.getCertificatesActives()
-            result.onSuccess { certificados ->
-                adapter.updateList(certificados)
-            }.onFailure { error ->
-                showError("Error al cargar certificados: ${error.message}")
-            }
-        }
+        AlertDialog.Builder(this)
+            .setTitle("Detalle del Certificado")
+            .setMessage(mensaje)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun resetEditingState() {
         isEditing = false
         currentCertificateId = null
+        inputEmisor.setText("")
         usuarioSeleccionado = null
         estudianteSeleccionado = null
-        inputEmisor.text?.clear()
-        tvUsuarioSeleccionado.text = "Ningún usuario seleccionado"
-        tvEstudianteSeleccionado.text = "Ningún estudiante seleccionado"
+        tvUsuarioSeleccionado.text = "Sin usuario seleccionado"
+        tvEstudianteSeleccionado.text = "Sin estudiante seleccionado"
     }
 
-    private fun showSuccess(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private fun loadCertificadosActivos() {
+        lifecycleScope.launch {
+            try {
+                val certificados = certificadoService.getCertificatesActives().getOrThrow()
+                adapter.updateList(certificados)
+            } catch (e: Exception) {
+                showError("Error al cargar certificados: ${e.message}")
+            }
+        }
     }
 
     private fun showError(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "⚠️ $message", Toast.LENGTH_LONG).show()
+    }
+
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, "✅ $message", Toast.LENGTH_SHORT).show()
     }
 }

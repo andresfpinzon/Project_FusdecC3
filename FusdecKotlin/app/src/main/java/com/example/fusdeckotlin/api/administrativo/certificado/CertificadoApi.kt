@@ -19,7 +19,7 @@ interface CertificadoApi {
 
     @PUT("certificados/{id}")
     suspend fun updateCertificado(
-        @Path("id") id: String,
+        @Path("id") id: Int,
         @Body data: UpdateCertificadoDto
     ): Response<Certificado>
 

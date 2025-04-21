@@ -22,7 +22,7 @@ class CertificadoServices {
         }
     }
 
-    suspend fun updateCertificate(id: String, data: UpdateCertificadoDto): Result<Certificado> {
+    suspend fun updateCertificate(id: Int, data: UpdateCertificadoDto): Result<Certificado> {
         return try {
             val res = certificadoApi.updateCertificado(id, data)
             handleResponse(res)
