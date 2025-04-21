@@ -1,37 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:gravity="center"
-              android:padding="16dp">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:background="@color/white">
 
-    <TextView
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Módulo Instructor"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <Button
-            android:id="@+id/asistenciaButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Asistencia"
-            android:layout_marginBottom="16dp"/>
+        <!-- Header con logo y saludo -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
 
-    <Button
-            android:id="@+id/calificacionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calificación"/>
+            <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/logo_fusdec"
+                    android:contentDescription="@string/app_logo" />
 
-    <Button
-            android:id="@+id/volverButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Volver"
-            android:layout_marginTop="24dp"/>
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
 
-</LinearLayout>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/welcome_instructor"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                <TextView
+                        android:id="@+id/tvUserInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryColor" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modules"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+        <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="2"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false"
+                android:useDefaultMargins="true">
+
+            <Button
+                    android:id="@+id/asistenciaButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/attendance"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold" />
+
+            <Button
+                    android:id="@+id/estudianteButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:text="@string/students"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold" />
+        </GridLayout>
+
+        <!-- Botón logout -->
+        <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/red"
+                android:textColor="@color/white" />
+    </LinearLayout>
+</ScrollView>
+

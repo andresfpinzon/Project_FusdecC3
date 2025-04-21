@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fusdeckotlin.MainActivity
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.auth.AuthManager
 import com.example.fusdeckotlin.ui.activities.secretario.curso.CursoActivity
 import com.example.fusdeckotlin.ui.activities.secretario.edicion.EdicionActivity
 import com.example.fusdeckotlin.ui.activities.secretario.estudiante.EstudianteActivity
@@ -16,12 +17,11 @@ class SecretarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_secretario)
 
-
+        // Referencias a los botones
         val cursoButton: Button = findViewById(R.id.cursoButton)
         val edicionButton: Button = findViewById(R.id.edicionButton)
         val estudianteButton: Button = findViewById(R.id.estudianteButton)
-        val horarioButton: Button = findViewById(R.id.horarioButton)
-        val volverButton: Button = findViewById(R.id.volverButton)
+        val logoutButton: Button = findViewById(R.id.logoutButton)
 
 
         cursoButton.setOnClickListener {
@@ -44,13 +44,12 @@ class SecretarioActivity : AppCompatActivity() {
 
         }
 
-        // Botón para volver a MainActivity
-        volverButton.setOnClickListener {
+        logoutButton.setOnClickListener {
+            AuthManager.clearToken()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
-
 
     }
 }

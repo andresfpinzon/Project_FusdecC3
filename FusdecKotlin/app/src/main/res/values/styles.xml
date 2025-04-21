@@ -1,0 +1,25 @@
+<resources>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="GridButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">@drawable/button_rounded</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <!-- TextInputLayout Style -->
+    <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/primaryColor</item>
+        <item name="hintTextColor">@color/primaryColor</item>
+    </style>
+</resources>

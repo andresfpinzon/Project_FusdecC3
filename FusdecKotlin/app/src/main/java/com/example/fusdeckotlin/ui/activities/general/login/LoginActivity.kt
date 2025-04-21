@@ -102,4 +102,9 @@ class LoginActivity : AppCompatActivity() {
         }
         finish()
     }
+
+    fun onBackToHomeClicked(view: android.view.View) {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
+
 }

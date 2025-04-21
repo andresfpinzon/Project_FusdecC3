@@ -1,110 +1,164 @@
-<ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        tools:context=".ui.activities.administrativo.AdministrativoActivity">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:background="@color/white">
 
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <!-- Encabezado -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+            <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/logo_fusdec"
+                    android:contentDescription="@string/app_logo" />
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/welcome_administrativo"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                <TextView
+                        android:id="@+id/tvUserInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/primaryColor" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Módulos -->
         <TextView
-                android:id="@+id/titleTextView"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Módulo Administrativo"
-                android:textSize="24sp"
+                android:text="Módulos"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="#000000"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="32dp"/>
+                android:layout_marginBottom="8dp" />
 
-        <Button
-                android:id="@+id/auditoriaButton"
-                android:layout_width="0dp"
+        <GridLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Auditoría"
-                app:layout_constraintTop_toBottomOf="@id/titleTextView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"/>
+                android:columnCount="2"
+                android:rowCount="4"
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="true">
 
-        <Button
-                android:id="@+id/brigadaButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Brigada"
-                app:layout_constraintTop_toBottomOf="@id/auditoriaButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"/>
+            <!-- Fila 1 -->
+            <Button
+                    android:id="@+id/userButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Usuarios"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-                android:id="@+id/certificadoButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Certificado"
-                app:layout_constraintTop_toBottomOf="@id/brigadaButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"/>
+            <Button
+                    android:id="@+id/colegioButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Colegios"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-                android:id="@+id/colegioButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Colegio"
-                app:layout_constraintTop_toBottomOf="@id/certificadoButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"/>
+            <!-- Fila 2 -->
+            <Button
+                    android:id="@+id/comandoButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Comandos"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-                android:id="@+id/comandoButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Comando"
-                app:layout_constraintTop_toBottomOf="@id/colegioButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"/>
+            <Button
+                    android:id="@+id/brigadaButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Brigadas"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-                android:id="@+id/unidadButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Unidad"
-                app:layout_constraintTop_toBottomOf="@id/comandoButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"
-                android:layout_marginTop="304dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
-        <Button
-                android:id="@+id/userButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="User"
-                app:layout_constraintTop_toBottomOf="@id/unidadButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"/>
+            <!-- Fila 3 -->
+            <Button
+                    android:id="@+id/unidadButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Unidades"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-                android:id="@+id/volverButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Volver"
-                app:layout_constraintTop_toBottomOf="@id/userButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="8dp"/>
+            <Button
+                    android:id="@+id/certificadoButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Certificados"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Fila 4 -->
+            <Button
+                    android:id="@+id/auditoriaButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Auditoría"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Button
+                    android:id="@+id/asistenciaButton"
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:text="Asistencia"
+                    android:gravity="center"
+                    android:backgroundTint="@color/primaryColor"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+        </GridLayout>
+
+        <!-- Botón cerrar sesión -->
+        <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cerrar sesión"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/red"
+                android:textColor="@color/white" />
+
+    </LinearLayout>
 </ScrollView>
+

@@ -7,7 +7,6 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
     ];
   
     const rutasAdministrativo = [
-      { nombre: "Fundaciones", ruta: "/fundaciones", roles: ["Administrativo", "Root"] },
       { nombre: "Comandos", ruta: "/comandos", roles: ["Administrativo", "Root"] },
       { nombre: "Brigadas", ruta: "/brigadas", roles: ["Administrativo", "Root"] },
       { nombre: "Unidades", ruta: "/unidades", roles: ["Administrativo", "Root"] },
@@ -16,21 +15,17 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
       { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrativo", "Root"] },
       { nombre: "Certificados", ruta: "/certificados", roles: ["Administrativo", "Root"] },
       { nombre: "Usuarios", ruta: "/usuarios", roles: ["Administrativo", "Root"] },
-      { nombre: "Roles", ruta: "/roles", roles: ["Administrativo", "Root"] },
-      { nombre: "Calificaciones", ruta: "/calificaciones", roles: ["Administrativo", "Root"] },
     ];
   
     const rutasSecretario = [
       { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Secretario", "Root"] },
       { nombre: "Cursos", ruta: "/cursos", roles: ["Secretario", "Root"] },
-      { nombre: "Horarios", ruta: "/horarios", roles: ["Secretario", "Root"] },
       { nombre: "Ediciones", ruta: "/ediciones", roles: ["Secretario", "Root"] },
     ];
   
     const rutasInstructor = [
       { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor", "Root"] },
       { nombre: "Asistencias", ruta: "/asistencias", roles: ["Instructor", "Root"] },
-      { nombre: "Calificaciones", ruta: "/calificaciones", roles: ["Instructor", "Root"] },
     ];
 
     // Combinar las rutas según los roles del usuario
