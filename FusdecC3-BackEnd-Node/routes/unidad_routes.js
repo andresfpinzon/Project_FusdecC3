@@ -1,6 +1,6 @@
 const express = require('express');
-const unidadControllers = require('../controllers/unidad_controllers'); // Importa el controlador
-const router = express.Router(); // Define el enrutador
+const unidadControllers = require('../controllers/unidad_controllers');
+const router = express.Router();
 const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
@@ -9,151 +9,105 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *   schemas:
  *     Unidad:
  *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID autogenerado de la unidad
+ *         nombreUnidad:
+ *           type: string
+ *           description: Nombre de la unidad
+ *         estadoUnidad:
+ *           type: boolean
+ *           description: Estado de la unidad (activa/inactiva)
+ *           default: true
+ *         brigadaId:
+ *           type: string
+ *           description: ID de la brigada asociada
+ *         usuarioId:
+ *           type: string
+ *           description: ID del usuario responsable
+
+ *     UnidadCreate:
+ *       type: object
  *       required:
  *         - nombreUnidad
- *         - estadoUnidad
  *         - brigadaId
  *         - usuarioId
  *       properties:
- *         id:
- *           type: string
- *           description: ID autogenerado de la unidad.
  *         nombreUnidad:
  *           type: string
- *           description: Nombre de la unidad.
+ *           description: Nombre de la unidad
  *         estadoUnidad:
  *           type: boolean
- *           description: Estado de la unidad (activo/inactivo).
+ *           description: Estado de la unidad (activa/inactiva)
  *           default: true
  *         brigadaId:
- *           type: object
- *           description: Información de la brigada a la que pertenece la unidad.
- *           properties:
- *             _id:
- *               type: string
- *               description: ID de la brigada.
- *             nombre:
- *               type: string
- *               description: Nombre de la brigada.
+ *           type: string
+ *           description: ID de la brigada asociada
  *         usuarioId:
- *           type: object
- *           description: Información del usuario responsable de la unidad.
- *           properties:
- *             _id:
- *               type: string
- *               description: ID del usuario.
- *             nombre:
- *               type: string
- *               description: Nombre del usuario.
- *         estudiantes:
- *           type: array
- *           items:
- *             type: string
- *           description: IDs de los estudiantes asociados a la unidad.
+ *           type: string
+ *           description: ID del usuario responsable
+
+ *     UnidadUpdate:
+ *       type: object
+ *       properties:
+ *         nombreUnidad:
+ *           type: string
+ *           description: Nombre de la unidad
+ *         estadoUnidad:
+ *           type: boolean
+ *           description: Estado de la unidad (activa/inactiva)
+ *         brigadaId:
+ *           type: string
+ *           description: ID de la brigada asociada
+ *         usuarioId:
+ *           type: string
+ *           description: ID del usuario responsable
  */
 
 /**
  * @swagger
  * tags:
- *   - name: Unidades
- *     description: API para gestionar Unidades
+ *   - name: Unidad
+ *     description: API para gestionar unidades
  */
 
-// Listar todas las unidades
 /**
  * @swagger
  * /api/unidades:
  *   get:
- *     summary: Lista todas las unidades
- *     tags: [Unidades]
+ *     tags:
+ *       - Unidad
+ *     summary: Obtener todas las unidades activas
  *     responses:
  *       200:
- *         description: Lista de unidades
+ *         description: Lista de unidades activas
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Unidad'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   - id: "63f7d2bbf1a2b4b5c3cdb800"
- *                     nombreUnidad: "Unidad de Rescate"
- *                     estadoUnidad: true
- *                     brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
- *                     usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb802", nombre: "Usuario 1" }
- *                     estudiantes: [
- *                       { _id: "63f7d2bbf1a2b4b5c3cdb803", nombre: "Estudiante 1" },
- *                       { _id: "63f7d2bbf1a2b4b5c3cdb804", nombre: "Estudiante 2" }
- *                     ]
- *                   - id: "63f7d2bbf1a2b4b5c3cdb801"
- *                     nombreUnidad: "Unidad de Emergencia"
- *                     estadoUnidad: false
- *                     brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
- *                     usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb804", nombre: "Usuario 2" }
- *                     estudiantes: [
- *                       { _id: "63f7d2bbf1a2b4b5c3cdb805", nombre: "Estudiante 3" }
- *                     ]
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error interno del servidor
  */
 router.get('/', verifyJWT, verifyRole(['Instructor','Administrativo', 'Root']), unidadControllers.listarUnidades);
 
-// Obtener unidad por ID
-/**
- * @swagger
- * /api/unidades/{id}:
- *   get:
- *     summary: Obtener una unidad por ID
- *     tags: [Unidades]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID de la unidad
- *     responses:
- *       200:
- *         description: Unidad encontrada
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Unidad'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "63f7d2bbf1a2b4b5c3cdb800"
- *                   nombreUnidad: "Unidad de Rescate"
- *                   estadoUnidad: true
- *                   brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
- *                   usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb802", nombre: "Usuario 1" }
- *                   estudiantes: ["63f7d2bbf1a2b4b5c3cdb803"]
- *       404:
- *         description: Unidad no encontrada
- */
-router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), unidadControllers.obtenerUnidadPorId);
-
-// Crear una unidad
 /**
  * @swagger
  * /api/unidades:
  *   post:
+ *     tags: 
+ *       - Unidad
  *     summary: Crear una nueva unidad
- *     tags: [Unidades]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Unidad'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreUnidad: "Unidad de Emergencia"
- *                 estadoUnidad: true
- *                 brigadaId: "63f7d2bbf1a2b4b5c3cdb801"
- *                 usuarioId: "63f7d2bbf1a2b4b5c3cdb802"
- *                 estudiantes: ["63f7d2bbf1a2b4b5c3cdb803"]
+ *             $ref: '#/components/schemas/UnidadCreate'
  *     responses:
  *       201:
  *         description: Unidad creada exitosamente
@@ -161,57 +115,40 @@ router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), unidadCont
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Unidad'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "63f7d2bbf1a2b4b5c3cdb900"
- *                   nombreUnidad: "Unidad de Emergencia"
- *                   estadoUnidad: true
- *                   brigadaId: { _id: "63f7d2bbf1a2b4b5c3cdb801", nombre: "Comando de Emergencia" }
- *                   usuarioId: { _id: "63f7d2bbf1a2b4b5c3cdb802", nombre: "Usuario 1" }
- *                   estudiantes: ["63f7d2bbf1a2b4b5c3cdb803"]
  *       400:
- *         description: Datos inválidos en la solicitud
+ *         description: Datos inválidos
+ *       500:
+ *         description: Error interno del servidor
  */
 router.post('/', verifyJWT, verifyRole(['Administrativo', 'Root']), unidadControllers.crearUnidad);
 
-// Actualizar unidad
 /**
  * @swagger
  * /api/unidades/{id}:
  *   put:
- *     summary: Actualizar una unidad
- *     tags: [Unidades]
+ *     tags: 
+ *       - Unidad
+ *     summary: Actualizar unidad por ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID de la unidad
  *         schema:
  *           type: string
- *         description: ID de la unidad a actualizar
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Unidad'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreUnidad: "Unidad de Rescate Actualizada"
- *                 estadoUnidad: false
- *                 brigadaId: "63f7d2bbf1a2b4b5c3cdb801"
- *                 usuarioId: "63f7d2bbf1a2b4b5c3cdb802"
- *                 estudiantes: ["63f7d2bbf1a2b4b5c3cdb803"]
+ *             $ref: '#/components/schemas/UnidadUpdate'
  *     responses:
  *       200:
- *         description: Unidad actualizada con éxito
+ *         description: Unidad actualizada exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Unidad'
- *       400:
- *         description: Error de validación
  *       404:
  *         description: Unidad no encontrada
  *       500:
@@ -219,25 +156,55 @@ router.post('/', verifyJWT, verifyRole(['Administrativo', 'Root']), unidadContro
  */
 router.put('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), unidadControllers.actualizarUnidad);
 
-// Desactivar unidad
 /**
  * @swagger
  * /api/unidades/{id}:
- *   delete:
- *     summary: Desactivar una unidad existente
- *     tags: [Unidades]
+ *   get:
+ *     tags:
+ *       - Unidad
+ *     summary: Obtener unidad por ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID de la unidad a obtener
  *         schema:
  *           type: string
- *         description: ID de la unidad a desactivar
  *     responses:
  *       200:
- *         description: Unidad desactivada exitosamente
+ *         description: Unidad obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Unidad'
  *       404:
  *         description: Unidad no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), unidadControllers.obtenerUnidadPorId);
+
+/**
+ * @swagger
+ * /api/unidades/{id}:
+ *   delete:
+ *     tags: 
+ *       - Unidad
+ *     summary: Desactivar unidad por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la unidad
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Unidad desactivada correctamente
+ *       404:
+ *         description: Unidad no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
 router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), unidadControllers.desactivarUnidad);
 

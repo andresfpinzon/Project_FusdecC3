@@ -96,7 +96,6 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(Intent(this, InstructorActivity::class.java))
             }
             else -> {
-
                 startActivity(Intent(this, MainActivity::class.java))
             }
         }

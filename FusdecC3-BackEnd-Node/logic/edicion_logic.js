@@ -1,8 +1,6 @@
 const Curso = require("../models/curso_model");
 const Edicion = require("../models/edicion_model");
 
-const Estudiante = require('../models/estudiante_model');
-
 // Función asíncrona para crear ediciones
 async function crearEdicion(body) {
   try {
@@ -110,8 +108,7 @@ async function listarEdicionesActivas() {
 async function buscarEdicionPorId(id) {
   try {
     const edicion = await Edicion.findById(id)
-    .populate('cursoId')
-    .populate('estudiantes');
+    .populate('cursoId');
     if (!edicion) {
       throw new Error(`Edición con ID ${id} no encontrado`);
     }

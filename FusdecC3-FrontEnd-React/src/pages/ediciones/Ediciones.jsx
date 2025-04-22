@@ -52,7 +52,6 @@ const formatDate = (dateString) => {
 const Ediciones = () => {
   const [ediciones, setEdiciones] = useState([]);
   const [cursos, setCursos] = useState([]);
-  const [horarios, setHorarios] = useState([]);
   const [selectedEdicion, setSelectedEdicion] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null); // Agrégalo junto a los otros estados
   const [formValues, setFormValues] = useState({
@@ -131,37 +130,9 @@ const Ediciones = () => {
     }
   };
 
-  const fetchHorarios = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/horarios",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": token 
-        }
-    });
-      if (!response.ok) throw new Error("Error al obtener horarios");
-      const data = await response.json();
-
-      // Condicion que verifica si el arreglo de horarios está vacío
-      if (data.length === 0) {
-        setErrorMessage("No hay horarios registrados.");
-        setOpenSnackbar(true);
-        setHorarios([]); // esto mantiene el estado vacío para evitar errores
-      } else {
-        setHorarios(data);
-      }
-    } catch (error) {
-      console.error("Error al obtener horarios:", error);
-      setErrorMessage("Error al obtener horarios");
-      setOpenSnackbar(true);
-    }
-  };
-
   useEffect(() => {
     fetchEdiciones();
     fetchCursos();
-    fetchHorarios();
   }, []);
 
   // Filtrar usuarios según el término de búsqueda
@@ -201,13 +172,6 @@ const Ediciones = () => {
     });
   };
 
-  const handleHorarioChange = (e) => {
-    const { target: { value } } = e;
-    setFormValues({
-      ...formValues,
-      horarios: typeof value === "string" ? value.split(",") : value,
-    });
-  };
 
   const handleCreateEdicion = async () => {
     try {
@@ -233,7 +197,6 @@ const Ediciones = () => {
         fechaFinEdicion: "",
         estadoEdicion: true,
         cursoId: "",
-        horarios: [],
         estudiantes: [],
       });
   
@@ -277,7 +240,6 @@ const Ediciones = () => {
         fechaFinEdicion: "",
         estadoEdicion: true,
         cursoId: "",
-        horarios: [],
         estudiantes: [],
       });
   
@@ -333,7 +295,6 @@ const Ediciones = () => {
       fechaFinEdicion: edicion.fechaFinEdicion,
       estadoEdicion: edicion.estadoEdicion,
       cursoId: edicion.cursoId?._id || "",
-      horarios: edicion.horarios.map((horario) => horario._id),
     });
   };
 
@@ -405,29 +366,6 @@ const Ediciones = () => {
             {cursos.map((curso) => (
               <MenuItem key={curso._id} value={curso._id}>
                 {curso.nombreCurso}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Horarios</InputLabel>
-          <Select
-            multiple
-            value={formValues.horarios}
-            onChange={handleHorarioChange}
-            input={<OutlinedInput label="Horarios" />}
-            renderValue={(selected) =>
-              horarios
-                .filter((hor) => selected.includes(hor._id))
-                .map((ho) => ho.tituloHorario)
-                .join(", ")
-            }
-          >
-            {horarios.map((hor) => (
-              <MenuItem key={hor._id} value={hor._id}>
-                <Checkbox checked={formValues.horarios.indexOf(hor._id) > -1} />
-                <ListItemText primary={hor.tituloHorario} />
               </MenuItem>
             ))}
           </Select>
@@ -577,15 +515,6 @@ const Ediciones = () => {
                 <School color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Curso:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.cursoId?.nombreCurso || "Curso no encontrado"}</Typography>
-              </Box>
-
-              {/* Horarios */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Grade color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Horarios:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoEdicion.horarios?.map((horario) => horario.tituloHorario).join(", ") || "Sin horarios"}
-                </Typography>
               </Box>
               
               {/* Estudiantes */}

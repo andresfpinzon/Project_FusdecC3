@@ -1,6 +1,6 @@
 const express = require('express');
-const cursoController = require('../controllers/curso_controllers'); // Importa el controlador
-const router = express.Router(); // Define el enrutador
+const cursoController = require('../controllers/curso_controllers');
+const router = express.Router();
 const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
@@ -9,40 +9,79 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *   schemas:
  *     Curso:
  *       type: object
- *       required:
- *         - nombreCurso
- *         - intensidadHorariaCurso
  *       properties:
- *         id:
+ *         _id:
  *           type: string
- *           description: ID autogenerado del curso.
+ *           description: ID autogenerado del curso
  *         nombreCurso:
  *           type: string
- *           description: Nombre del curso.
+ *           description: Nombre del curso
  *         descripcionCurso:
  *           type: string
- *           description: Descripción del curso.
+ *           description: Descripción del curso
  *         intensidadHorariaCurso:
  *           type: string
- *           description: Intensidad horaria del curso.
+ *           description: Intensidad horaria del curso
  *         estadoCurso:
  *           type: boolean
- *           description: Estado del curso (activo/inactivo).
+ *           description: Estado del curso (activo/inactivo)
  *           default: true
  *         fundacionId:
  *           type: string
- *           description: ID de la fundación asociada.
+ *           description: ID de la fundación asociada
  *         ediciones:
  *           type: array
  *           items:
  *             type: string
- *             description: IDs de las ediciones del curso.
+ *             description: IDs de las ediciones del curso
+
+ *     CursoCreate:
+ *       type: object
+ *       required:
+ *         - nombreCurso
+ *         - intensidadHorariaCurso
+ *       properties:
+ *         nombreCurso:
+ *           type: string
+ *           description: Nombre del curso
+ *         descripcionCurso:
+ *           type: string
+ *           description: Descripción del curso
+ *         intensidadHorariaCurso:
+ *           type: string
+ *           description: Intensidad horaria del curso
+ *         estadoCurso:
+ *           type: boolean
+ *           description: Estado del curso (activo/inactivo)
+ *           default: true
+ *         fundacionId:
+ *           type: string
+ *           description: ID de la fundación asociada
+
+ *     CursoUpdate:
+ *       type: object
+ *       properties:
+ *         nombreCurso:
+ *           type: string
+ *           description: Nombre del curso
+ *         descripcionCurso:
+ *           type: string
+ *           description: Descripción del curso
+ *         intensidadHorariaCurso:
+ *           type: string
+ *           description: Intensidad horaria del curso
+ *         estadoCurso:
+ *           type: boolean
+ *           description: Estado del curso (activo/inactivo)
+ *         fundacionId:
+ *           type: string
+ *           description: ID de la fundación asociada
  */
 
 /**
  * @swagger
  * tags:
- *   - name: Cursos
+ *   - name: Curso
  *     description: API para gestionar cursos
  */
 
@@ -51,74 +90,63 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  * /api/cursos:
  *   get:
  *     tags:
- *       - Cursos
- *     summary: Obtener una lista de cursos activos
+ *       - Curso
+ *     summary: Obtener todos los cursos activos
  *     responses:
  *       200:
- *         description: Una colección de cursos activos.
+ *         description: Lista de cursos activos
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Curso'
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error interno del servidor
  */
-router.get('/', verifyJWT, verifyRole(['Secretario','Root']), cursoController.listarCursosActivos);
+router.get('/', verifyJWT, verifyRole(['Secretario', 'Root']), cursoController.listarCursosActivos);
 
 /**
  * @swagger
  * /api/cursos:
  *   post:
- *     tags:
- *       - Cursos
+ *     tags: 
+ *       - Curso
  *     summary: Crear un nuevo curso
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Curso'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreCurso: "Curso de Programación"
- *                 descripcionCurso: "Curso básico de programación."
- *                 intensidadHorariaCurso: "40 horas"
- *                 estadoCurso: true
- *                 fundacionId: "605c72ef56d7b3e0e0f8b8d5"
- *                 ediciones: ["605c72ef56d7b3e0e0f8b8d6"]
+ *             $ref: '#/components/schemas/CursoCreate'
  *     responses:
  *       201:
- *         description: Curso creado correctamente.
+ *         description: Curso creado exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Curso'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71d"
- *                   nombreCurso: "Curso de Programación"
- *                   descripcionCurso: "Curso básico de programación."
- *                   intensidadHorariaCurso: "40 horas"
- *                   estadoCurso: true
- *                   fundacionId: "605c72ef56d7b3e0e0f8b8d5"
- *                   ediciones: ["605c72ef56d7b3e0e0f8b8d6"]
+ *       400:
+ *         description: Datos inválidos
+ *       500:
+ *         description: Error interno del servidor
  */
-router.post('/', verifyJWT, verifyRole(['Secretario','Root']), cursoController.crearCurso);
+router.post('/', verifyJWT, verifyRole(['Secretario', 'Root']), cursoController.crearCurso);
 
 /**
  * @swagger
  * /api/cursos/{id}:
  *   put:
- *     tags:
- *       - Cursos
- *     summary: Actualizar un curso mediante su ID
+ *     tags: 
+ *       - Curso
+ *     summary: Actualizar curso por ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del curso a actualizar.
+ *         description: ID del curso
  *         schema:
  *           type: string
  *     requestBody:
@@ -126,79 +154,56 @@ router.post('/', verifyJWT, verifyRole(['Secretario','Root']), cursoController.c
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Curso'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreCurso: "Curso de Programación Avanzado"
- *                 descripcionCurso: "Curso avanzado de programación."
- *                 intensidadHorariaCurso: "60 horas"
- *                 ediciones: ["605c72ef56d7b3e0e0f8b8d6"]
+ *             $ref: '#/components/schemas/CursoUpdate'
  *     responses:
  *       200:
- *         description: Curso actualizado correctamente.
+ *         description: Curso actualizado exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Curso'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71d"
- *                   nombreCurso: "Curso de Programación Avanzado"
- *                   descripcionCurso: "Curso avanzado de programación."
- *                   intensidadHorariaCurso: "60 horas"
- *                   estadoCurso: true
- *                   fundacionId: "605c72ef56d7b3e0e0f8b8d5"
- *                   ediciones: ["605c72ef56d7b3e0e0f8b8d6"]
  *       404:
- *         description: Curso no encontrado.
+ *         description: Curso no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
-router.put('/:id', verifyJWT, verifyRole(['Secretario','Root']), cursoController.actualizarCurso);
-
-/**
- * @swagger
- * /api/cursos/{id}:
- *   delete:
- *     tags:
- *       - Cursos
- *     summary: Desactivar un curso mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del curso a desactivar.
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Curso desactivado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Curso'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71d"
- *                   nombreCurso: "Curso de Programación"
- *                   descripcionCurso: "Curso básico de programación."
- *                   intensidadHorariaCurso: "40 horas"
- *                   estadoCurso: false
- *                   fundacionId: "605c72ef56d7b3e0e0f8b8d5"
- *                   ediciones: []
- *       404:
- *         description: Curso no encontrado.
- */
-router.delete('/:id', verifyJWT, verifyRole(['Secretario','Root']), cursoController.desactivarCurso);
+router.put('/:id', verifyJWT, verifyRole(['Secretario', 'Root']), cursoController.actualizarCurso);
 
 /**
  * @swagger
  * /api/cursos/{id}:
  *   get:
  *     tags:
- *       - Cursos
- *     summary: Obtener un curso mediante su ID
+ *       - Curso
+ *     summary: Obtener curso por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del curso a obtener
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Curso obtenido exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Curso'
+ *       404:
+ *         description: Curso no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id', verifyJWT, verifyRole(['Secretario', 'Root']), cursoController.obtenerCursoPorId);
+
+/**
+ * @swagger
+ * /api/cursos/{id}:
+ *   delete:
+ *     tags: 
+ *       - Curso
+ *     summary: Desactivar curso por ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -208,32 +213,13 @@ router.delete('/:id', verifyJWT, verifyRole(['Secretario','Root']), cursoControl
  *           type: string
  *     responses:
  *       200:
- *         description: Curso obtenido correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Curso'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71d"
- *                   nombreCurso: "Curso de Programación"
- *                   descripcionCurso: "Curso básico de programación."
- *                   intensidadHorariaCurso: "40 horas"
- *                   estadoCurso: true
- *                   fundacionId: "605c72ef56d7b3e0e0f8b8d5"
- *                   ediciones: ["605c72ef56d7b3e0e0f8b8d6"]
+ *         description: Curso desactivado correctamente
  *       404:
- *         description: Curso no encontrado.
+ *         description: Curso no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
-router.get('/:id', verifyJWT, verifyRole(['Secretario','Root']), cursoController.obtenerCursoPorId);
+router.delete('/:id', verifyJWT, verifyRole(['Secretario', 'Root']), cursoController.desactivarCurso);
 
 module.exports = router;
 
-/* 
-router.get('/', cursoController.listarCursosActivos);
-router.post('/', cursoController.crearCurso);
-router.put('/:id', cursoController.actualizarCurso);
-router.delete('/:id', cursoController.desactivarCurso);
-router.get('/:id', cursoController.obtenerCursoPorId);
-*/

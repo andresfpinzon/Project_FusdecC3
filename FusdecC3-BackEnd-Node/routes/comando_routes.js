@@ -9,49 +9,81 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *   schemas:
  *     Comando:
  *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID autogenerado del comando
+ *         nombreComando:
+ *           type: string
+ *           description: Nombre del comando
+ *         estadoComando:
+ *           type: boolean
+ *           description: Estado del comando (activo/inactivo)
+ *         ubicacionComando:
+ *           type: string
+ *           description: Ubicación del comando
+ *         fundacionId:
+ *           type: string
+ *           description: ID de la fundación asociada
+ *         brigadas:
+ *           type: array
+ *           items:
+ *             type: string
+ *             description: ID de brigada asociada
+
+ *     ComandoCreate:
+ *       type: object
  *       required:
  *         - nombreComando
  *         - estadoComando
  *         - ubicacionComando
  *         - fundacionId
  *       properties:
- *         id:
- *           type: string
- *           description: ID autogenerado del comando.
  *         nombreComando:
  *           type: string
- *           description: Nombre del comando.
+ *           description: Nombre del comando
  *         estadoComando:
  *           type: boolean
- *           description: Estado del comando (activo/inactivo).
+ *           description: Estado del comando (activo/inactivo)
  *           default: true
  *         ubicacionComando:
  *           type: string
- *           description: Ubicación del comando.
+ *           description: Ubicación del comando
  *         fundacionId:
  *           type: string
- *           description: ID de la fundación a la que pertenece el comando.
- *         brigadas:
- *           type: array
- *           items:
- *             type: string
- *           description: IDs de las brigadas asociadas al comando.
+ *           description: ID de la fundación asociada
+
+ *     ComandoUpdate:
+ *       type: object
+ *       properties:
+ *         nombreComando:
+ *           type: string
+ *           description: Nombre del comando
+ *         estadoComando:
+ *           type: boolean
+ *           description: Estado del comando (activo/inactivo)
+ *         ubicacionComando:
+ *           type: string
+ *           description: Ubicación del comando
+ *         fundacionId:
+ *           type: string
+ *           description: ID de la fundación asociada
  */
 
 /**
  * @swagger
  * tags:
- *   - name: Comandos
- *     description: API para gestionar Comandos
+ *   - name: Comando
+ *     description: API para gestionar comandos
  */
 
-// Listar todos los comandos
 /**
  * @swagger
  * /api/comandos:
  *   get:
- *     summary: Lista todos los comandos
- *     tags: [Comandos]
+ *     tags:
+ *       - Comando
+ *     summary: Obtener todos los comandos
  *     responses:
  *       200:
  *         description: Lista de comandos
@@ -61,158 +93,138 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Comando'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   - id: "63f7d2bbf1a2b4b5c3cdb900"
- *                     nombreComando: "Comando de Rescate"
- *                     estadoComando: true
- *                     ubicacionComando: "Sector 5, Zona Norte"
- *                     fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
- *                     brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
- *                   - id: "63f7d2bbf1a2b4b5c3cdb901"
- *                     nombreComando: "Comando de Emergencia"
- *                     estadoComando: false
- *                     ubicacionComando: "Sector 3, Zona Sur"
- *                     fundacionId: "63f7d2bbf1a2b4b5c3cdb903"
- *                     brigadas: ["63f7d2bbf1a2b4b5c3cdb904"]
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error interno del servidor
  */
 router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrativo', 'Root']), comandoControllers.listarComandos);
 
-// Obtener comando por Id
-/**
- * @swagger
- * /api/comandos/{id}:
- *   get:
- *     summary: Obtener un comando por ID
- *     tags: [Comandos]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID del comando
- *     responses:
- *       200:
- *         description: Comando encontrado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comando'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "63f7d2bbf1a2b4b5c3cdb900"
- *                   nombreComando: "Comando de Rescate"
- *                   estadoComando: true
- *                   ubicacionComando: "https://maps.app.goo.gl/ZtQUhaMdhQyDVc9r5"
- *                   fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
- *                   brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
- *       404:
- *         description: Comando no encontrado
- */
-router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), comandoControllers.obtenerComandoPorId);
-
-// Crear un comando
 /**
  * @swagger
  * /api/comandos:
  *   post:
+ *     tags: 
+ *       - Comando
  *     summary: Crear un nuevo comando
- *     tags: [Comandos]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Comando'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreComando: "Comando 3"
- *                 estadoComando: true
- *                 ubicacionComando: "https://maps.app.goo.gl/ZtQUhaMdhQyDVc9r5"
- *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
- *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
+ *             $ref: '#/components/schemas/ComandoCreate'
  *     responses:
  *       201:
  *         description: Comando creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comando'
  *       400:
- *         description: Datos inválidos en la solicitud
+ *         description: Datos inválidos
+ *       500:
+ *         description: Error interno del servidor
  */
 router.post('/', verifyJWT, verifyRole(['Administrativo', 'Root']), comandoControllers.crearComando);
 
-// Actualizar comando
 /**
  * @swagger
  * /api/comandos/{id}:
  *   put:
- *     summary: Actualizar un comando
- *     tags: [Comandos]
+ *     tags: 
+ *       - Comando
+ *     summary: Actualizar comando por ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID del comando
  *         schema:
  *           type: string
- *         description: ID del comando
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Comando'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreComando: "Comando de Rescate Actualizado"
- *                 estadoComando: false
- *                 ubicacionComando: "https://maps.app.goo.gl/ZtQUhaMdhQyDVc9r5"
- *                 fundacionId: "63f7d2bbf1a2b4b5c3cdb901"
- *                 brigadas: ["63f7d2bbf1a2b4b5c3cdb902"]
+ *             $ref: '#/components/schemas/ComandoUpdate'
  *     responses:
  *       200:
- *         description: Comando actualizado con éxito
+ *         description: Comando actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comando'
  *       404:
  *         description: Comando no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
 router.put('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), comandoControllers.actualizarComando);
 
-// Desactivar comando
+/**
+ * @swagger
+ * /api/comandos/{id}:
+ *   get:
+ *     tags:
+ *       - Comando
+ *     summary: Obtener comando por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del comando a obtener
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Comando obtenido exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comando'
+ *       404:
+ *         description: Comando no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), comandoControllers.obtenerComandoPorId);
+
 /**
  * @swagger
  * /api/comandos/{id}:
  *   delete:
- *     summary: Desactivar un comando existente
- *     tags: [Comandos]
+ *     tags: 
+ *       - Comando
+ *     summary: Desactivar comando por ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID del comando
  *         schema:
  *           type: string
- *         description: ID del comando a desactivar
  *     responses:
  *       200:
- *         description: Comando desactivado exitosamente
+ *         description: Comando desactivado correctamente
  *       404:
  *         description: Comando no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
 router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), comandoControllers.desactivarComando);
 
-// Ruta para agregar brigadas a un comando
 /**
  * @swagger
  * /api/comandos/{id}/brigadas:
  *   post:
+ *     tags:
+ *       - Comando
  *     summary: Agregar brigadas a un comando
- *     tags: [Comandos]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: El ID del comando al que se le agregarán las brigadas.
+ *         description: ID del comando
  *         schema:
  *           type: string
  *     requestBody:
@@ -226,23 +238,20 @@ router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), comando
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: IDs de las brigadas a agregar.
- *           examples:
- *             ejemplo1:
- *               value:
- *                 brigadasIds: [
- *                   "67102a9b00c1dbc1ac85ab1f",
- *                 ]
- *             ejemplo2:
- *               value:
- *                 brigadasIds: [
- *                   "67102b0c00c1dbc1ac85ab22",
- *                 ]
+ *                 description: IDs de las brigadas a agregar
  *     responses:
  *       200:
- *         description: Brigadas agregadas con éxito
+ *         description: Brigadas agregadas correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comando'
  *       400:
- *         description: Datos inválidos en la solicitud
+ *         description: Datos inválidos
+ *       404:
+ *         description: Comando no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
 router.post('/:id/brigadas', verifyJWT, verifyRole(['Administrativo', 'Root']), comandoControllers.agregarBrigadasAComandos);
 

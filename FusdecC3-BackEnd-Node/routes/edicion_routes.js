@@ -9,50 +9,83 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *   schemas:
  *     Edicion:
  *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID autogenerado de la edición
+ *         tituloEdicion:
+ *           type: string
+ *           description: Título de la edición
+ *         fechaInicioEdicion:
+ *           type: string
+ *           format: date
+ *           description: Fecha de inicio de la edición (YYYY-MM-DD)
+ *         fechaFinEdicion:
+ *           type: string
+ *           format: date
+ *           description: Fecha de fin de la edición (YYYY-MM-DD)
+ *         estadoEdicion:
+ *           type: boolean
+ *           description: Estado de la edición (activa/inactiva)
+ *           default: true
+ *         cursoId:
+ *           type: string
+ *           description: ID del curso asociado
+
+ *     EdicionCreate:
+ *       type: object
  *       required:
  *         - tituloEdicion
  *         - fechaInicioEdicion
  *         - fechaFinEdicion
  *         - cursoId
  *       properties:
- *         id:
- *           type: string
- *           description: ID autogenerado de la edición.
  *         tituloEdicion:
  *           type: string
- *           description: Título de la edición.
+ *           description: Título de la edición
  *         fechaInicioEdicion:
  *           type: string
  *           format: date
- *           description: Fecha de inicio de la edición.
+ *           description: Fecha de inicio de la edición (YYYY-MM-DD)
  *         fechaFinEdicion:
  *           type: string
  *           format: date
- *           description: Fecha de fin de la edición.
+ *           description: Fecha de fin de la edición (YYYY-MM-DD)
  *         estadoEdicion:
  *           type: boolean
- *           description: Estado de la edición (activa/inactiva).
+ *           description: Estado de la edición (activa/inactiva)
  *           default: true
  *         cursoId:
  *           type: string
- *           description: ID del curso asociado.
- *         horarios:
- *           type: array
- *           items:
- *             type: string
- *             description: IDs de los horarios relacionados.
- *         estudiantes:
- *           type: array
- *           items:
- *             type: string
- *             description: IDs de los estudiantes inscritos.
+ *           description: ID del curso asociado
+
+ *     EdicionUpdate:
+ *       type: object
+ *       properties:
+ *         tituloEdicion:
+ *           type: string
+ *           description: Título de la edición
+ *         fechaInicioEdicion:
+ *           type: string
+ *           format: date
+ *           description: Fecha de inicio de la edición (YYYY-MM-DD)
+ *         fechaFinEdicion:
+ *           type: string
+ *           format: date
+ *           description: Fecha de fin de la edición (YYYY-MM-DD)
+ *         estadoEdicion:
+ *           type: boolean
+ *           description: Estado de la edición (activa/inactiva)
+ *         cursoId:
+ *           type: string
+ *           description: ID del curso asociado
  */
 
 /**
  * @swagger
  * tags:
- *   - name: Ediciones
- *     description: API para gestionar ediciones
+ *   - name: Edicion
+ *     description: API para gestionar ediciones de cursos
  */
 
 /**
@@ -60,87 +93,63 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  * /api/ediciones:
  *   get:
  *     tags:
- *       - Ediciones
- *     summary: Obtener una lista de ediciones activas
+ *       - Edicion
+ *     summary: Obtener todas las ediciones activas
  *     responses:
  *       200:
- *         description: Una colección de ediciones activas.
+ *         description: Lista de ediciones activas
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Edicion'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   - id: "61f7d2bbf1a2b4b5c3cdb71d"
- *                     tituloEdicion: "Edición 2024-1"
- *                     fechaInicioEdicion: "2024-01-10"
- *                     fechaFinEdicion: "2024-06-30"
- *                     estadoEdicion: true
- *                     cursoId: "curso123"
- *                     horarios: ["horario1", "horario2"]
- *                     estudiantes: ["estudiante1", "estudiante2"]
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error interno del servidor
  */
-router.get("/", verifyJWT, verifyRole(['Secretario','Root', 'Instructor']), edicionController.listarEdicionesActivas);
+router.get("/", verifyJWT, verifyRole(['Secretario', 'Root', 'Instructor']), edicionController.listarEdicionesActivas);
 
 /**
  * @swagger
  * /api/ediciones:
  *   post:
- *     tags:
- *       - Ediciones
- *     summary: Crear una edición
+ *     tags: 
+ *       - Edicion
+ *     summary: Crear una nueva edición
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Edicion'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 tituloEdicion: "Edición 2024-2"
- *                 fechaInicioEdicion: "2024-07-01"
- *                 fechaFinEdicion: "2024-12-31"
- *                 estadoEdicion: true
- *                 cursoId: "curso456"
- *                 horarios: ["horario3", "horario4"]
- *                 estudiantes: ["estudiante3", "estudiante4"]
+ *             $ref: '#/components/schemas/EdicionCreate'
  *     responses:
  *       201:
- *         description: Edición creada correctamente.
+ *         description: Edición creada exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Edicion'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
- *                   tituloEdicion: "Edición 2024-2"
- *                   fechaInicioEdicion: "2024-07-01"
- *                   fechaFinEdicion: "2024-12-31"
- *                   estadoEdicion: true
- *                   cursoId: "curso456"
- *                   horarios: ["horario3", "horario4"]
- *                   estudiantes: ["estudiante3", "estudiante4"]
+ *       400:
+ *         description: Datos inválidos
+ *       500:
+ *         description: Error interno del servidor
  */
-router.post("/", verifyJWT, verifyRole(['Secretario','Root']), edicionController.crearEdicion);
+router.post("/", verifyJWT, verifyRole(['Secretario', 'Root']), edicionController.crearEdicion);
 
 /**
  * @swagger
  * /api/ediciones/{id}:
  *   put:
- *     tags:
- *       - Ediciones
- *     summary: Actualizar una edición mediante su ID
+ *     tags: 
+ *       - Edicion
+ *     summary: Actualizar edición por ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID de la edición a actualizar.
+ *         description: ID de la edición
  *         schema:
  *           type: string
  *     requestBody:
@@ -148,81 +157,56 @@ router.post("/", verifyJWT, verifyRole(['Secretario','Root']), edicionController
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Edicion'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 fechaInicioEdicion: "2024-07-01"
- *                 fechaFinEdicion: "2025-01-01"
- *                 horarios: ["horario5", "horario6"]
- *                 estudiantes: ["estudiante5", "estudiante6"]
+ *             $ref: '#/components/schemas/EdicionUpdate'
  *     responses:
  *       200:
- *         description: Edición actualizada correctamente.
+ *         description: Edición actualizada exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Edicion'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
- *                   tituloEdicion: "Edición 2024-2"
- *                   fechaInicioEdicion: "2024-07-01"
- *                   fechaFinEdicion: "2025-01-01"
- *                   estadoEdicion: true
- *                   cursoId: "curso456"
- *                   horarios: ["horario5", "horario6"]
- *                   estudiantes: ["estudiante5", "estudiante6"]
  *       404:
- *         description: Edición no encontrada.
+ *         description: Edición no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
-router.put("/:id", verifyJWT, verifyRole(['Secretario','Root']), edicionController.actualizarEdicion);
-
-/**
- * @swagger
- * /api/ediciones/{id}:
- *   delete:
- *     tags:
- *       - Ediciones
- *     summary: Desactivar una edición mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la edición a desactivar.
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Edición desactivada correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Edicion'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
- *                   tituloEdicion: "Edición 2024-2"
- *                   fechaInicioEdicion: "2024-07-01"
- *                   fechaFinEdicion: "2025-01-01"
- *                   estadoEdicion: false
- *                   cursoId: "curso456"
- *                   horarios: []
- *                   estudiantes: []
- *       404:
- *         description: Edición no encontrada.
- */
-router.delete("/:id", verifyJWT, verifyRole(['Secretario','Root']), edicionController.desactivarEdicion);
+router.put("/:id", verifyJWT, verifyRole(['Secretario', 'Root']), edicionController.actualizarEdicion);
 
 /**
  * @swagger
  * /api/ediciones/{id}:
  *   get:
  *     tags:
- *       - Ediciones
- *     summary: Obtener una edición mediante su ID
+ *       - Edicion
+ *     summary: Obtener edición por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la edición a obtener
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Edición obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Edicion'
+ *       404:
+ *         description: Edición no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get("/:id", verifyJWT, verifyRole(['Secretario', 'Root']), edicionController.obtenerEdicionPorId);
+
+/**
+ * @swagger
+ * /api/ediciones/{id}:
+ *   delete:
+ *     tags: 
+ *       - Edicion
+ *     summary: Desactivar edición por ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -232,25 +216,12 @@ router.delete("/:id", verifyJWT, verifyRole(['Secretario','Root']), edicionContr
  *           type: string
  *     responses:
  *       200:
- *         description: Edición obtenida correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Edicion'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71f"
- *                   tituloEdicion: "Edición 2024-2"
- *                   fechaInicioEdicion: "2024-07-01"
- *                   fechaFinEdicion: "2025-01-01"
- *                   estadoEdicion: true
- *                   cursoId: "curso456"
- *                   horarios: ["horario5", "horario6"]
- *                   estudiantes: ["estudiante5", "estudiante6"]
+ *         description: Edición desactivada correctamente
  *       404:
- *         description: Edición no encontrada.
+ *         description: Edición no encontrada
+ *       500:
+ *         description: Error interno del servidor
  */
-router.get("/:id", verifyJWT, verifyRole(['Secretario','Root']), edicionController.obtenerEdicionPorId);
+router.delete("/:id", verifyJWT, verifyRole(['Secretario', 'Root']), edicionController.desactivarEdicion);
 
 module.exports = router;

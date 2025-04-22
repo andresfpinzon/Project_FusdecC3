@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router(); // Crear router
-const colegioController = require("../controllers/colegio_controllers"); // Importar controladores
+const express = require('express');
+const router = express.Router();
+const colegioController = require('../controllers/colegio_controllers');
 const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
@@ -9,35 +9,61 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *   schemas:
  *     Colegio:
  *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID autogenerado del colegio
+ *         nombreColegio:
+ *           type: string
+ *           description: Nombre del colegio
+ *         emailColegio:
+ *           type: string
+ *           description: Correo electrónico del colegio
+ *         estadoColegio:
+ *           type: boolean
+ *           description: Estado del colegio (activo/inactivo)
+ *         estudiantes:
+ *           type: array
+ *           items:
+ *             type: string
+ *             description: ID de estudiante asociado
+
+ *     ColegioCreate:
+ *       type: object
  *       required:
  *         - nombreColegio
  *         - emailColegio
  *         - estadoColegio
  *       properties:
- *         id:
- *           type: string
- *           description: ID autogenerado del colegio.
  *         nombreColegio:
  *           type: string
- *           description: Nombre del colegio.
+ *           description: Nombre del colegio
  *         emailColegio:
  *           type: string
- *           description: Correo electrónico del colegio.
+ *           description: Correo electrónico del colegio
  *         estadoColegio:
  *           type: boolean
- *           description: Estado del colegio (activo/inactivo).
+ *           description: Estado del colegio (activo/inactivo)
  *           default: true
- *         estudiantes:
- *           type: array
- *           items:
- *             type: string
- *             description: ID de los estudiantes asociados al colegio.
+
+ *     ColegioUpdate:
+ *       type: object
+ *       properties:
+ *         nombreColegio:
+ *           type: string
+ *           description: Nombre del colegio
+ *         emailColegio:
+ *           type: string
+ *           description: Correo electrónico del colegio
+ *         estadoColegio:
+ *           type: boolean
+ *           description: Estado del colegio (activo/inactivo)
  */
 
 /**
  * @swagger
  * tags:
- *   - name: Colegios
+ *   - name: Colegio
  *     description: API para gestionar colegios
  */
 
@@ -46,148 +72,60 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  * /api/colegios:
  *   get:
  *     tags:
- *       - Colegios
- *     summary: Obtener una lista de colegios
+ *       - Colegio
+ *     summary: Obtener todos los colegios activos
  *     responses:
  *       200:
- *         description: Una colección de colegios.
+ *         description: Lista de colegios activos
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Colegio'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   - id: "61f7d2bbf1a2b4b5c3cdb71d"
- *                     nombreColegio: "Colegio Nacional"
- *                     emailColegio: "contacto@colegionacional.edu"
- *                     estadoColegio: true
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error interno del servidor
  */
-router.get("/", verifyJWT, verifyRole(['Secretario','Instructor','Administrativo', 'Root']), colegioController.listarColegiosActivos);
+router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrativo', 'Root']), colegioController.listarColegiosActivos);
 
 /**
  * @swagger
  * /api/colegios:
  *   post:
- *     tags:
- *       - Colegios
- *     summary: Crear un colegio
+ *     tags: 
+ *       - Colegio
+ *     summary: Crear un nuevo colegio
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Colegio'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreColegio: "Nuevo Colegio"
- *                 emailColegio: "contacto@nuevo-colegio.edu"
- *                 estadoColegio: true
+ *             $ref: '#/components/schemas/ColegioCreate'
  *     responses:
  *       201:
- *         description: Colegio creado correctamente.
+ *         description: Colegio creado exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Colegio'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
- *                   nombreColegio: "Nuevo Colegio"
- *                   emailColegio: "contacto@nuevo-colegio.edu"
- *                   estadoColegio: true
+ *       400:
+ *         description: Datos inválidos
+ *       409:
+ *         description: Conflicto, colegio ya existe
+ *       500:
+ *         description: Error interno del servidor
  */
-router.post("/", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.crearColegio);
+router.post('/', verifyJWT, verifyRole(['Administrativo', 'Root']), colegioController.crearColegio);
 
 /**
  * @swagger
  * /api/colegios/{id}:
  *   put:
- *     tags:
- *       - Colegios
- *     summary: Actualizar un colegio mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del colegio a actualizar.
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Colegio'
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreColegio: "Colegio Modificado"
- *                 emailColegio: "contacto@colegio-modificado.edu"
- *                 estadoColegio: false
- *     responses:
- *       200:
- *         description: Colegio actualizado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Colegio'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
- *                   nombreColegio: "Colegio Modificado"
- *                   emailColegio: "contacto@colegio-modificado.edu"
- *                   estadoColegio: false
- *       404:
- *         description: Colegio no encontrado.
- */
-router.put("/:id", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.actualizarColegio);
-
-/**
- * @swagger
- * /api/colegios/{id}:
- *   delete:
- *     tags:
- *       - Colegios
- *     summary: Desactivar un colegio mediante su ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del colegio a desactivar.
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Colegio desactivado correctamente.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Colegio'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
- *                   nombreColegio: "Colegio Nacional"
- *                   emailColegio: "contacto@colegionacional.edu"
- *                   estadoColegio: false
- *       404:
- *         description: Colegio no encontrado.
- */
-router.delete("/:id", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.desactivarColegio);
-
-/**
- * @swagger
- * /api/colegios/{id}:
- *   get:
- *     tags:
- *       - Colegios
- *     summary: Obtener un colegio mediante su ID
+ *     tags: 
+ *       - Colegio
+ *     summary: Actualizar colegio por ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -195,23 +133,78 @@ router.delete("/:id", verifyJWT, verifyRole(['Administrativo','Root']), colegioC
  *         description: ID del colegio
  *         schema:
  *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ColegioUpdate'
  *     responses:
  *       200:
- *         description: Colegio obtenido correctamente.
+ *         description: Colegio actualizado exitosamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Colegio'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   id: "61f7d2bbf1a2b4b5c3cdb71e"
- *                   nombreColegio: "Colegio Nacional"
- *                   emailColegio: "contacto@colegionacional.edu"
- *                   estadoColegio: true
  *       404:
- *         description: Colegio no encontrado.
+ *         description: Colegio no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
-router.get("/:id", verifyJWT, verifyRole(['Administrativo','Root']), colegioController.obtenerColegiosPorId);
+router.put('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), colegioController.actualizarColegio);
+
+/**
+ * @swagger
+ * /api/colegios/{id}:
+ *   get:
+ *     tags:
+ *       - Colegio
+ *     summary: Obtener colegio por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del colegio a obtener
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Colegio obtenido exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Colegio'
+ *       404:
+ *         description: Colegio no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), colegioController.obtenerColegiosPorId);
+
+/**
+ * @swagger
+ * /api/colegios/{id}:
+ *   delete:
+ *     tags: 
+ *       - Colegio
+ *     summary: Desactivar colegio por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del colegio
+ *         schema:
+ *           type: string
+ *           example: string
+ *     responses:
+ *       200:
+ *         description: Colegio desactivado correctamente
+ *       404:
+ *         description: Colegio no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), colegioController.desactivarColegio);
+
 
 module.exports = router;

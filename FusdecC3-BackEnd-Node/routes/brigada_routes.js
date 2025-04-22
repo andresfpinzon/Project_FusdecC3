@@ -9,38 +9,66 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *   schemas:
  *     Brigada:
  *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID autogenerado de la brigada
+ *         nombreBrigada:
+ *           type: string
+ *           description: Nombre de la brigada
+ *         ubicacionBrigada:
+ *           type: string
+ *           description: Ubicación de la brigada
+ *         estadoBrigada:
+ *           type: boolean
+ *           description: Estado de la brigada (activo/inactivo)
+ *         comandoId:
+ *           type: string
+ *           description: ID del comando asociado
+ *         unidades:
+ *           type: array
+ *           items:
+ *             type: string
+ *             description: ID de unidad asociada
+
+ *     BrigadaCreate:
+ *       type: object
  *       required:
  *         - nombreBrigada
  *         - ubicacionBrigada
  *         - estadoBrigada
  *         - comandoId
  *       properties:
- *         _id:
- *           type: string
- *           description: ID autogenerado de la brigada.
  *         nombreBrigada:
  *           type: string
- *           description: Nombre de la brigada.
- *           minLength: 3
- *           maxLength: 100
+ *           description: Nombre de la brigada
  *         ubicacionBrigada:
  *           type: string
- *           description: Ubicación de la brigada.
- *           minLength: 3
- *           maxLength: 200
+ *           description: Ubicación de la brigada
  *         estadoBrigada:
  *           type: boolean
- *           description: Estado de la brigada (activo/inactivo).
+ *           description: Estado de la brigada (activo/inactivo)
  *         comandoId:
  *           type: string
- *           description: ID del comando asociado (ObjectId).
- *           pattern: '^[0-9a-fA-F]{24}$'
- *         unidades:
- *           type: array
- *           items:
- *             type: string
- *             pattern: '^[0-9a-fA-F]{24}$'
+ *           description: ID del comando asociado
+
+ *     BrigadaUpdate:
+ *       type: object
+ *       properties:
+ *         nombreBrigada:
+ *           type: string
+ *           description: Nombre de la brigada
+ *         ubicacionBrigada:
+ *           type: string
+ *           description: Ubicación de la brigada
+ *         estadoBrigada:
+ *           type: boolean
+ *           description: Estado de la brigada (activo/inactivo)
+ *         comandoId:
+ *           type: string
+ *           description: ID del comando asociado
  */
+
 
 /**
  * @swagger
@@ -53,9 +81,9 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  * @swagger
  * /api/brigadas:
  *   get:
- *     tags: 
+ *     tags:
  *       - Brigada
- *     summary: Listar todas las brigadas
+ *     summary: Obtener todas las brigadas
  *     responses:
  *       200:
  *         description: Lista de brigadas
@@ -65,23 +93,8 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Brigada'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   - _id: "60d5ec49f1a2c8b1f8e4e1a3"
- *                     nombreBrigada: "Brigada Alpha"
- *                     ubicacionBrigada: "Ciudad A"
- *                     estadoBrigada: true
- *                     comandoId: "60d5ec49f1a2c8b1f8e4e1a4"
- *                     unidades: ["60d5ec49f1a2c8b1f8e4e1a5"]
- *                   - _id: "60d5ec49f1a2c8b1f8e4e1a6"
- *                     nombreBrigada: "Brigada Beta"
- *                     ubicacionBrigada: "Ciudad B"
- *                     estadoBrigada: true
- *                     comandoId: "60d5ec49f1a2c8b1f8e4e1a7"
- *                     unidades: []
- *       204:
- *         description: No hay brigadas disponibles
+ *       401:
+ *         description: No autorizado
  *       500:
  *         description: Error interno del servidor
  */
@@ -99,33 +112,7 @@ router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrati
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - nombreBrigada
- *               - ubicacionBrigada
- *               - estadoBrigada
- *               - comandoId
- *             properties:
- *               nombreBrigada:
- *                 type: string
- *               ubicacionBrigada:
- *                 type: string
- *               estadoBrigada:
- *                 type: boolean
- *               comandoId:
- *                 type: string
- *               unidades:
- *                 type: array
- *                 items:
- *                   type: string
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreBrigada: "Brigada Gamma"
- *                 ubicacionBrigada: "Ciudad C"
- *                 estadoBrigada: true
- *                 comandoId: "60d5ec49f1a2c8b1f8e4e1a9"
- *                 unidades: []
+ *             $ref: '#/components/schemas/BrigadaCreate'
  *     responses:
  *       201:
  *         description: Brigada creada exitosamente
@@ -133,60 +120,12 @@ router.get('/', verifyJWT, verifyRole(['Secretario', 'Instructor', 'Administrati
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Brigada'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   _id: "60d5ec49f1a2c8b1f8e4e1a8"
- *                   nombreBrigada: "Brigada Gamma"
- *                   ubicacionBrigada: "Ciudad C"
- *                   estadoBrigada: true
- *                   comandoId: "60d5ec49f1a2c8b1f8e4e1a9"
- *                   unidades: []
  *       400:
  *         description: Datos inválidos
- *       409:
- *         description: Conflicto, brigada ya existe
  *       500:
  *         description: Error interno del servidor
  */
 router.post('/', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.crearBrigada);
-
-/**
- * @swagger
- * /api/brigadas/{id}:
- *   get:
- *     tags: 
- *       - Brigada
- *     summary: Obtener brigada por ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la brigada
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Detalles de la brigada
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Brigada'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   _id: "60d5ec49f1a2c8b1f8e4e1a3"
- *                   nombreBrigada: "Brigada Alpha"
- *                   ubicacionBrigada: "Ciudad A"
- *                   estadoBrigada: true
- *                   comandoId: "60d5ec49f1a2c8b1f8e4e1a4"
- *                   unidades: ["60d5ec49f1a2c8b1f8e4e1a5"]
- *       404:
- *         description: Brigada no encontrada
- *       500:
- *         description: Error interno del servidor
- */
-router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.obtenerBrigadaPorId);
 
 /**
  * @swagger
@@ -207,42 +146,49 @@ router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaCon
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - nombreBrigada
- *               - ubicacionBrigada
- *               - estadoBrigada
- *               - comandoId
- *             properties:
- *               nombreBrigada:
- *                 type: string
- *               ubicacionBrigada:
- *                 type: string
- *               estadoBrigada:
- *                 type: boolean
- *               comandoId:
- *                 type: string
- *               unidades:
- *                 type: array
- *                 items:
- *                   type: string
- *           examples:
- *             ejemplo1:
- *               value:
- *                 nombreBrigada: "Brigada Alpha Actualizada"
- *                 ubicacionBrigada: "Ciudad A"
- *                 estadoBrigada: true
- *                 comandoId: "60d5ec49f1a2c8b1f8e4e1a4"
- *                 unidades: ["60d5ec49f1a2c8b1f8e4e1a5"]
+ *             $ref: '#/components/schemas/BrigadaUpdate'
  *     responses:
  *       200:
  *         description: Brigada actualizada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Brigada'
  *       404:
  *         description: Brigada no encontrada
  *       500:
  *         description: Error interno del servidor
  */
 router.put('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.actualizarBrigada);
+
+/**
+ * @swagger
+ * /api/brigadas/{id}:
+ *   get:
+ *     tags:
+ *       - Brigada
+ *     summary: Obtener brigada por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la brigada a obtener
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Brigada obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Brigada'
+ *       404:
+ *         description: Brigada no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaController.obtenerBrigadaPorId);
+
 
 /**
  * @swagger
@@ -258,6 +204,7 @@ router.put('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigadaCon
  *         description: ID de la brigada
  *         schema:
  *           type: string
+ *           example: string
  *     responses:
  *       200:
  *         description: Brigada desactivada correctamente
@@ -279,9 +226,10 @@ router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigada
  *       - in: path
  *         name: id
  *         required: true
- *         description: El ID de la brigada a la que se le agregarán las unidades.
+ *         description: ID de la brigada
  *         schema:
  *           type: string
+ *           example: string
  *     requestBody:
  *       required: true
  *       content:
@@ -293,28 +241,14 @@ router.delete('/:id', verifyJWT, verifyRole(['Administrativo', 'Root']), brigada
  *                 type: array
  *                 items:
  *                   type: string
- *           examples:
- *             ejemplo1:
- *               value:
- *                 unidadIds: [
- *                   "60d21b4667d0d8992e610c81",
- *                 ]
+ *                   example: string
  *     responses:
  *       200:
- *         description: Unidades agregadas correctamente a la brigada.
+ *         description: Unidades agregadas correctamente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Brigada'
- *             examples:
- *               ejemplo1:
- *                 value:
- *                   _id: "60d21b4667d0d8992e610c84"
- *                   nombreBrigada: "Brigada A"
- *                   unidades: [
- *                     "60d21b4667d0d8992e610c81",
- *                     "60d21b4667d0d8992e610c82"
- *                   ]
  *       400:
  *         description: Datos inválidos
  *       404:

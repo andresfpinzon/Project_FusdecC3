@@ -4,7 +4,7 @@ const fundacionController = require('../controllers/fundacion_controllers');
 const { verifyJWT, verifyRole } = require('../config/authMiddleware');
 
 /**
-* @swagger
+ * @swagger
  * components:
  *   schemas:
  *     Fundacion:
@@ -29,12 +29,39 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  *           items:
  *             type: string
  *             description: ID de comando asociado a la fundación.
+ *
+ *     FundacionCreateRequest:
+ *       type: object
+ *       required:
+ *         - nombreFundacion
+ *         - estadoFundacion
+ *       properties:
+ *         nombreFundacion:
+ *           type: string
+ *           example: "FUSDEC"
+ *         estadoFundacion:
+ *           type: boolean
+ *           default: true
+ *
+ *     FundacionUpdateRequest:
+ *       type: object
+ *       required:
+ *         - nombreFundacion
+ *         - estadoFundacion
+ *       properties:
+ *         nombreFundacion:
+ *           type: string
+ *           example: "FUSDEC"
+ *         estadoFundacion:
+ *           type: boolean
+ *           default: true
  */
+
 
 /**
  * @swagger
  * tags:
- *   - name: Fundaciones
+ *   - name: Fundacion
  *     description: API para gestionar fundaciones
  */
 
@@ -43,7 +70,7 @@ const { verifyJWT, verifyRole } = require('../config/authMiddleware');
  * /api/fundaciones:
  *   get:
  *     tags:
- *       - Fundaciones
+ *       - Fundacion
  *     summary: Obtener una lista de fundaciones
  *     responses:
  *       200:
@@ -62,14 +89,14 @@ router.get('/', verifyJWT, verifyRole(['Root','Administrativo','secretario']), f
  * /api/fundaciones:
  *   post:
  *     tags:
- *       - Fundaciones
+ *       - Fundacion
  *     summary: Crear una nueva fundación
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Fundacion'
+ *             $ref: '#/components/schemas/FundacionCreateRequest'
  *     responses:
  *       201:
  *         description: Fundación creada correctamente.
@@ -78,6 +105,7 @@ router.get('/', verifyJWT, verifyRole(['Root','Administrativo','secretario']), f
  *             schema:
  *               $ref: '#/components/schemas/Fundacion'
  */
+
 router.post('/',verifyJWT, verifyRole(['Root']), fundacionController.crearFundacion);
 
 /**
@@ -85,13 +113,13 @@ router.post('/',verifyJWT, verifyRole(['Root']), fundacionController.crearFundac
  * /api/fundaciones/{id}:
  *   get:
  *     tags:
- *       - Fundaciones
+ *       - Fundacion
  *     summary: Obtener una fundación mediante su ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID de la fundación.
+ *         description: ID de la fundación a obtener.
  *         schema:
  *           type: string
  *     responses:
@@ -111,7 +139,7 @@ router.get('/:id',verifyJWT, verifyRole(['Root']), fundacionController.obtenerFu
  * /api/fundaciones/{id}:
  *   put:
  *     tags:
- *       - Fundaciones
+ *       - Fundacion
  *     summary: Actualizar una fundación mediante su ID
  *     parameters:
  *       - in: path
@@ -143,7 +171,7 @@ router.put('/:id',verifyJWT, verifyRole(['Root']), fundacionController.actualiza
  * /api/fundaciones/{id}:
  *   delete:
  *     tags:
- *       - Fundaciones
+ *       - Fundacion
  *     summary: Desactivar una fundación mediante su ID
  *     parameters:
  *       - in: path
