@@ -304,16 +304,42 @@ const Ediciones = () => {
   };
 
   const handleInfoClick = async (edicion) => {
-    const response = await fetch(`http://localhost:3000/api/ediciones/${edicion._id}`,{
-      method: "GET",
-      headers: {
+    try {
+      // 1. Obtener los estudiantes que pertenecen a esta edición
+      const responseEstudiantes = await fetch("http://localhost:8080/estudiantes", {
+        method: "GET",
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      const todosEstudiantes = await responseEstudiantes.json();
+      
+      // Filtrar estudiantes por edición (comparando el título de la edición)
+      const estudiantesFiltrados = todosEstudiantes
+        .filter(est => est.edicion?.toLowerCase() === edicion.tituloEdicion?.toLowerCase())
+        .map(est => `${est.nombre} ${est.apellido}`);// se puede adicionar el numero de documento(${est.numeroDocumento})
+  
+      // 2. Obtener el curso relacionado
+      let cursoInfo = "No asignado";
+      if (edicion.cursoId) {
+        const curso = cursos.find(c => c._id === edicion.cursoId);
+        cursoInfo = curso ? curso.nombreCurso : "Curso no encontrado";
       }
-  });
-    const data = await response.json();
-    setInfoEdicion(data);
-    setOpenInfoDialog(true);
+  
+      setInfoEdicion({
+        ...edicion,
+        estudiantes: estudiantesFiltrados,
+        curso: cursoInfo
+      });
+      setOpenInfoDialog(true);
+  
+    } catch (error) {
+      console.error("Error al obtener información:", error);
+      setErrorMessage("Error al cargar información detallada");
+      setOpenSnackbar(true);
+    }
   };
 
   const handleCloseInfoDialog = () => {
@@ -472,64 +498,79 @@ const Ediciones = () => {
       </Dialog>
 
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-          Información de la Edición
+        <DialogTitle sx={{ 
+          backgroundColor: '#1d526eff', 
+          color: '#fff', 
+          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <School sx={{ mr: 1 }} />
+          Detalles de la Edición
         </DialogTitle>
+        
         <DialogContent dividers sx={{ padding: '20px' }}>
           {infoEdicion && (
-            <div>
-              {/* Título */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Class color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Título:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.tituloEdicion || "Título no disponible"}</Typography>
-              </Box>
-              
-              {/* Fecha de Inicio */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <DateRange color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Inicio:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {formatDate(infoEdicion.fechaInicioEdicion)}
+            <Box>
+              {/* Información del Curso */}
+              <Box mb={3} sx={{ p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                  Curso Asociado:
+                </Typography>
+                <Typography variant="body1">
+                  {infoEdicion.curso}
                 </Typography>
               </Box>
 
-              {/* Fecha de Finalización */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <EventAvailable color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fecha de Finalización:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {formatDate(infoEdicion.fechaFinEdicion)}
+              {/* Lista de Estudiantes */}
+              <Box sx={{ p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                  Estudiantes Inscritos ({infoEdicion.estudiantes?.length || 0}):
                 </Typography>
+                
+                {infoEdicion.estudiantes?.length > 0 ? (
+                  <Box component="ul" sx={{ 
+                    pl: 2, 
+                    maxHeight: '200px', 
+                    overflowY: 'auto',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: 1,
+                    backgroundColor: 'white',
+                    p: 1
+                  }}>
+                    {infoEdicion.estudiantes.map((estudiante, index) => (
+                      <Box 
+                        component="li" 
+                        key={index}
+                        sx={{ 
+                          py: 1,
+                          borderBottom: index < infoEdicion.estudiantes.length - 1 ? '1px solid #eeeeee' : 'none'
+                        }}
+                      >
+                        <Typography variant="body2">
+                          {estudiante}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+                    No hay estudiantes inscritos en esta edición
+                  </Typography>
+                )}
               </Box>
-              
-              {/* Estado */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <ToggleOn color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.estadoEdicion ? "Activa" : "Inactiva"}</Typography>
-              </Box>
-              
-              {/* Curso */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Curso:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoEdicion.cursoId?.nombreCurso || "Curso no encontrado"}</Typography>
-              </Box>
-              
-              {/* Estudiantes */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Grade color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estudiantes:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoEdicion.estudiantes?.map((estudiante) => estudiante.nombreEstudiante).join(", ") || "Sin estudiantes"}
-                </Typography>
-              </Box>
-            </div>
+            </Box>
           )}
         </DialogContent>
+
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+          <Button 
+            onClick={handleCloseInfoDialog} 
+            variant="contained" 
+            color="primary"
+            sx={{ mb: 1, mr: 1 }}
+          >
             Cerrar
           </Button>
         </DialogActions>
