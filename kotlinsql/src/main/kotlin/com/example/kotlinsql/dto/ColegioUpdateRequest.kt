@@ -1,4 +1,11 @@
 package com.example.kotlinsql.dto
 
-class ColegioUpdateRequest {
-}
+import java.time.LocalDate
+
+class ColegioUpdateRequest (
+
+    val nombreColegio: String? = null,
+    val emailColegio: String? = null,
+    val estadoColegio: Boolean? = null
+
+)
