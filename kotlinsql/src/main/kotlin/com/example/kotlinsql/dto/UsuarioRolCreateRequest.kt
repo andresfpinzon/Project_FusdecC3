@@ -9,5 +9,5 @@ data class UsuarioRolCreateRequest(
 
     @field:NotBlank(message = "El rol es obligatorio")
     @field:Pattern(regexp = "^(Administrativo|Instructor|Secretario|Root)$", message = "Rol no válido")
-    val rol: String
+    val rolId: Int
 )
