@@ -1,4 +1,8 @@
 package com.example.kotlinsql.dto
 
-class ComandoUpdateRequest {
-}
+data class ComandoUpdateRequest(
+    val nombreComando: String? = null,
+    val ubicacionComando: String? = null,
+    val estadoComando: Boolean? = null,
+    val brigadasNombres: List<String>? = null
+)

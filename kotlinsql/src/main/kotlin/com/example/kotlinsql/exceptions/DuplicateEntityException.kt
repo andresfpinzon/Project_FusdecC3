@@ -1,4 +1,3 @@
 package com.example.kotlinsql.exceptions
 
-class DuplicateEntityException {
-}
+class DuplicateEntityException(message: String) : RuntimeException(message)

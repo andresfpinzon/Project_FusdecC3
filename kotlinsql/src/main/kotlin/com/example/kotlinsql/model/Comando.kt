@@ -1,4 +1,10 @@
 package com.example.kotlinsql.model
 
-class comando {
-}
+data class Comando(
+    val id: Int,
+    val nombreComando: String,
+    val estadoComando: Boolean = true,
+    val ubicacionComando: String,
+    val fundacionId: Int,
+    val createdAt: String
+)
