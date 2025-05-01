@@ -1,22 +1,13 @@
 package com.example.kotlinsql.services
 
-import com.example.kotlinsql.dto.ComandoResponse
-import com.example.kotlinsql.dto.ComandoCreateRequest
-import com.example.kotlinsql.dto.ComandoUpdateRequest
-import com.example.kotlinsql.exceptions.DuplicateEntityException
-import com.example.kotlinsql.exceptions.EntityNotFoundException
+import com.example.kotlinsql.dto.*
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ComandoService(private val jdbcTemplate: JdbcTemplate) {
-
-    companion object {
-        const val FUSDEC_NOMBRE = "FUSDEC"
-    }
 
     private val rowMapper = RowMapper<ComandoResponse> { rs, _ ->
         val comandoId = rs.getInt("id")
@@ -25,9 +16,19 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
             nombreComando = rs.getString("nombre_comando"),
             estadoComando = rs.getBoolean("estado_comando"),
             ubicacionComando = rs.getString("ubicacion_comando"),
-            fundacionNombre = FUSDEC_NOMBRE,
-            brigadas = obtenerNombresBrigadasPorComandoId(comandoId),
-            createdAt = rs.getString("created_at")
+            fundacionNombre = obtenerNombreFundacion(rs.getInt("fundacion_id")),
+            brigadas = obtenerNombresBrigadasPorComandoId(comandoId)
+        )
+    }
+
+    private val brigadaMapper = RowMapper<BrigadaResponse> { rs, _ ->
+        BrigadaResponse(
+            id = rs.getInt("id"),
+            nombreBrigada = rs.getString("nombre_brigada"),
+            ubicacionBrigada = rs.getString("ubicacion_brigada"),
+            estadoBrigada = rs.getBoolean("estado_brigada"),
+            comandoNombre = obtenerNombreComando(rs.getInt("comando_id")),
+            unidades = null
         )
     }
 
@@ -35,162 +36,74 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
         val sql = """
             SELECT c.*
             FROM comando c
-            INNER JOIN fundacion f ON c.fundacion_id = f.id
             WHERE c.estado_comando = true
-            AND f.nombre = ?
             ORDER BY c.nombre_comando ASC
         """.trimIndent()
-
-        return try {
-            jdbcTemplate.query(sql, rowMapper, FUSDEC_NOMBRE)
-        } catch (e: EmptyResultDataAccessException) {
-            emptyList()
-        }
+        return jdbcTemplate.query(sql, rowMapper)
     }
 
-    @Transactional
-    fun crear(request: ComandoCreateRequest): ComandoResponse {
-        validarNombreComandoUnico(request.nombreComando)
-
-        request.brigadasNombres?.let { brigadasNombres ->
-            validarBrigadasDisponibles(brigadasNombres)
-        }
+    fun crear(request: ComandoCreateRequest): ComandoResponse? {
+        val fundacionId = if (request.fundacionNombre != null)
+            obtenerFundacionIdPorNombre(request.fundacionNombre) else null
 
         val sql = """
-            INSERT INTO comando (nombre_comando, ubicacion_comando, estado_comando, fundacion_id)
-            VALUES (?, ?, true, (SELECT id FROM fundacion WHERE nombre = ?))
+            INSERT INTO comando (nombre_comando, ubicacion_comando, fundacion_id, estado_comando)
+            VALUES (?, ?, ?, true)
             RETURNING *
         """.trimIndent()
 
         return jdbcTemplate.queryForObject(sql, rowMapper,
             request.nombreComando,
             request.ubicacionComando,
-            FUSDEC_NOMBRE
-        )?.also { comando ->
-            request.brigadasNombres?.let { brigadasNombres ->
-                agregarBrigadasPorNombres(comando.id, brigadasNombres)
-            }
-        } ?: throw RuntimeException("Error al crear el comando")
+            fundacionId
+        )
     }
 
-    @Transactional
-    fun actualizar(id: Int, request: ComandoUpdateRequest): ComandoResponse {
-        val comandoExistente = obtenerPorId(id)
-            ?: throw EntityNotFoundException("No se encontró el comando con id $id")
-
-        request.nombreComando?.let {
-            if (it != comandoExistente.nombreComando) {
-                validarNombreComandoUnico(it)
-            }
-        }
-
-        request.brigadasNombres?.let { brigadasNombres ->
-            validarBrigadasDisponibles(brigadasNombres)
-        }
-
+    fun actualizar(id: Int, request: ComandoUpdateRequest): ComandoResponse? {
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
         request.nombreComando?.let { campos.add("nombre_comando = ?"); valores.add(it) }
         request.ubicacionComando?.let { campos.add("ubicacion_comando = ?"); valores.add(it) }
         request.estadoComando?.let { campos.add("estado_comando = ?"); valores.add(it) }
-
-        if (campos.isNotEmpty()) {
-            val sqlUpdate = """
-                UPDATE comando
-                SET ${campos.joinToString(", ")}
-                WHERE id = ?
-                AND estado_comando = true
-                AND fundacion_id = (SELECT id FROM fundacion WHERE nombre = ?)
-                RETURNING *
-            """.trimIndent()
-
-            valores.add(id)
-            valores.add(FUSDEC_NOMBRE)
-
-            jdbcTemplate.queryForObject(sqlUpdate, rowMapper, *valores.toTypedArray())
-                ?: throw EntityNotFoundException("Error al actualizar el comando")
-        }
-
-        request.brigadasNombres?.let { brigadasNombres ->
-            val sqlLiberarBrigadas = """
-                UPDATE brigada
-                SET comando_id = NULL
-                WHERE comando_id = ?
-            """.trimIndent()
-            jdbcTemplate.update(sqlLiberarBrigadas, id)
-            agregarBrigadasPorNombres(id, brigadasNombres)
-        }
-
-        return obtenerPorId(id) ?: throw EntityNotFoundException("No se encontró el comando actualizado")
-    }
-
-    private fun validarNombreComandoUnico(nombreComando: String) {
-        val sql = """
-            SELECT COUNT(*) FROM comando c
-            INNER JOIN fundacion f ON c.fundacion_id = f.id
-            WHERE c.nombre_comando = ?
-            AND c.estado_comando = true
-            AND f.nombre = ?
-        """.trimIndent()
-
-        val count = jdbcTemplate.queryForObject(sql, Int::class.java, nombreComando, FUSDEC_NOMBRE) ?: 0
-        if (count > 0) {
-            throw DuplicateEntityException("Ya existe un comando activo con el nombre: $nombreComando")
-        }
-    }
-
-    private fun validarBrigadasDisponibles(brigadasNombres: List<String>) {
-        val sql = """
-            SELECT COUNT(*) FROM brigada b
-            INNER JOIN fundacion f ON b.fundacion_id = f.id
-            WHERE b.nombre_brigada = ?
-            AND b.estado_brigada = true
-            AND b.comando_id IS NULL
-            AND f.nombre = ?
-        """.trimIndent()
-
-        brigadasNombres.forEach { nombreBrigada ->
-            val count = jdbcTemplate.queryForObject(sql, Int::class.java, nombreBrigada, FUSDEC_NOMBRE) ?: 0
-            if (count == 0) {
-                throw EntityNotFoundException("La brigada $nombreBrigada no existe o no está disponible")
+        request.fundacionNombre?.let {
+            val fundacionId = obtenerFundacionIdPorNombre(it)
+            if (fundacionId != null) {
+                campos.add("fundacion_id = ?")
+                valores.add(fundacionId)
             }
         }
-    }
 
-    private fun agregarBrigadasPorNombres(comandoId: Int, brigadasNombres: List<String>) {
+        if (campos.isEmpty()) return null
+
         val sql = """
-            UPDATE brigada
-            SET comando_id = ?
-            WHERE nombre_brigada = ?
-            AND estado_brigada = true
-            AND comando_id IS NULL
-            AND fundacion_id = (SELECT id FROM fundacion WHERE nombre = ?)
+            UPDATE comando
+            SET ${campos.joinToString(", ")}
+            WHERE id = ?
+            AND estado_comando = true
+            RETURNING *
         """.trimIndent()
 
-        brigadasNombres.forEach { nombreBrigada ->
-            val filasAfectadas = jdbcTemplate.update(sql, comandoId, nombreBrigada, FUSDEC_NOMBRE)
-            if (filasAfectadas == 0) {
-                throw EntityNotFoundException("No se pudo asignar la brigada: $nombreBrigada")
-            }
-        }
+        valores.add(id)
+
+        return jdbcTemplate.queryForObject(sql, rowMapper, *valores.toTypedArray())
     }
 
-    private fun obtenerNombresBrigadasPorComandoId(comandoId: Int): List<String> {
+    fun asignarFundacion(comandoId: Int, fundacionNombre: String): ComandoResponse? {
+        val fundacionId = obtenerFundacionIdPorNombre(fundacionNombre) ?: return null
+
         val sql = """
-            SELECT b.nombre_brigada
-            FROM brigada b
-            INNER JOIN fundacion f ON b.fundacion_id = f.id
-            WHERE b.comando_id = ?
-            AND b.estado_brigada = true
-            AND f.nombre = ?
-            ORDER BY b.nombre_brigada ASC
+            UPDATE comando
+            SET fundacion_id = ?
+            WHERE id = ?
+            AND estado_comando = true
+            RETURNING *
         """.trimIndent()
 
         return try {
-            jdbcTemplate.queryForList(sql, String::class.java, comandoId, FUSDEC_NOMBRE)
+            jdbcTemplate.queryForObject(sql, rowMapper, fundacionId, comandoId)
         } catch (e: EmptyResultDataAccessException) {
-            emptyList()
+            null
         }
     }
 
@@ -198,35 +111,98 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
         val sql = """
             SELECT c.*
             FROM comando c
-            INNER JOIN fundacion f ON c.fundacion_id = f.id
             WHERE c.id = ?
             AND c.estado_comando = true
-            AND f.nombre = ?
         """.trimIndent()
 
         return try {
-            jdbcTemplate.queryForObject(sql, rowMapper, id, FUSDEC_NOMBRE)
+            jdbcTemplate.queryForObject(sql, rowMapper, id)
         } catch (e: EmptyResultDataAccessException) {
             null
         }
     }
 
     fun desactivar(id: Int): ComandoResponse? {
-        obtenerPorId(id) ?: throw EntityNotFoundException("No se encontró el comando con id $id")
-
         val sql = """
             UPDATE comando
             SET estado_comando = false
             WHERE id = ?
             AND estado_comando = true
-            AND fundacion_id = (SELECT id FROM fundacion WHERE nombre = ?)
             RETURNING *
         """.trimIndent()
 
         return try {
-            jdbcTemplate.queryForObject(sql, rowMapper, id, FUSDEC_NOMBRE)
+            jdbcTemplate.queryForObject(sql, rowMapper, id)
         } catch (e: EmptyResultDataAccessException) {
             null
+        }
+    }
+
+    fun obtenerBrigadasPorComandoId(comandoId: Int): List<BrigadaResponse> {
+        val sql = """
+            SELECT b.*
+            FROM brigada b
+            WHERE b.comando_id = ?
+            AND b.estado_brigada = true
+            ORDER BY b.nombre_brigada ASC
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, brigadaMapper, comandoId)
+    }
+
+    private fun obtenerNombresBrigadasPorComandoId(comandoId: Int): List<String> {
+        val sql = """
+            SELECT nombre_brigada
+            FROM brigada
+            WHERE comando_id = ?
+            AND estado_brigada = true
+            ORDER BY nombre_brigada ASC
+        """.trimIndent()
+
+        return jdbcTemplate.queryForList(sql, String::class.java, comandoId)
+    }
+
+    private fun obtenerFundacionIdPorNombre(nombreFundacion: String): Int? {
+        val sql = """
+            SELECT id FROM fundacion
+            WHERE nombre_fundacion = ?
+            AND estado_fundacion = true
+        """.trimIndent()
+
+        return try {
+            jdbcTemplate.queryForObject(sql, Int::class.java, nombreFundacion)
+        } catch (e: EmptyResultDataAccessException) {
+            null
+        }
+    }
+
+    private fun obtenerNombreFundacion(fundacionId: Int): String? {
+        val sql = """
+            SELECT nombre_fundacion
+            FROM fundacion
+            WHERE id = ?
+            AND estado_fundacion = true
+        """.trimIndent()
+
+        return try {
+            jdbcTemplate.queryForObject(sql, String::class.java, fundacionId)
+        } catch (e: EmptyResultDataAccessException) {
+            null
+        }
+    }
+
+    private fun obtenerNombreComando(comandoId: Int): String {
+        val sql = """
+            SELECT nombre_comando
+            FROM comando
+            WHERE id = ?
+            AND estado_comando = true
+        """.trimIndent()
+
+        return try {
+            jdbcTemplate.queryForObject(sql, String::class.java, comandoId) ?: "Sin comando"
+        } catch (e: EmptyResultDataAccessException) {
+            "Sin comando"
         }
     }
 }

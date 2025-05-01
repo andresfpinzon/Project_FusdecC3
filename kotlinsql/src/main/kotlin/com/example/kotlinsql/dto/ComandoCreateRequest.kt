@@ -9,5 +9,5 @@ data class ComandoCreateRequest(
     @field:NotBlank(message = "La ubicación del comando es obligatoria")
     val ubicacionComando: String,
 
-    val brigadasNombres: List<String>? = null
+    val fundacionNombre: String? = null
 )

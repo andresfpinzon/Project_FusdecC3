@@ -1,15 +1,13 @@
 package com.example.kotlinsql.controllers
 
 import com.example.kotlinsql.dto.*
-import com.example.kotlinsql.exceptions.DuplicateEntityException
-import com.example.kotlinsql.exceptions.EntityNotFoundException
 import com.example.kotlinsql.services.ComandoService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import jakarta.validation.Valid
-import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.Operation
 
 @RestController
 @RequestMapping("/api/comandos")
@@ -17,20 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 @Tag(name = "Comandos", description = "API para gestionar comandos")
 class ComandoController(private val comandoService: ComandoService) {
 
-    @ExceptionHandler(DuplicateEntityException::class)
-    fun handleDuplicateEntity(e: DuplicateEntityException): ResponseEntity<Map<String, String>> {
-        return ResponseEntity
-            .status(HttpStatus.CONFLICT)
-            .body(mapOf("error" to e.message!!))
-    }
-
-    @ExceptionHandler(EntityNotFoundException::class)
-    fun handleEntityNotFound(e: EntityNotFoundException): ResponseEntity<Map<String, String>> {
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(mapOf("error" to e.message!!))
-    }
-
+    @Operation(summary = "Obtener todos los comandos")
     @GetMapping
     fun obtenerTodos(): ResponseEntity<List<ComandoResponse>> {
         val comandos = comandoService.obtenerTodos()
@@ -41,48 +26,68 @@ class ComandoController(private val comandoService: ComandoService) {
         }
     }
 
+    @Operation(summary = "Crear nuevo comando")
     @PostMapping
     fun crear(@Valid @RequestBody request: ComandoCreateRequest): ResponseEntity<ComandoResponse> {
-        return try {
-            val comando = comandoService.crear(request)
-            ResponseEntity.status(HttpStatus.CREATED).body(comando)
-        } catch (e: DuplicateEntityException) {
-            throw e
-        } catch (e: EntityNotFoundException) {
-            throw e
-        } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
-        }
+        val comando = comandoService.crear(request)
+        return ResponseEntity.status(HttpStatus.CREATED).body(comando)
     }
 
-    @PutMapping("/{id}")
-    fun actualizar(
-        @PathVariable id: Int,
-        @Valid @RequestBody request: ComandoUpdateRequest
-    ): ResponseEntity<ComandoResponse> {
-        return try {
-            val comando = comandoService.actualizar(id, request)
-            ResponseEntity.ok(comando)
-        } catch (e: DuplicateEntityException) {
-            throw e
-        } catch (e: EntityNotFoundException) {
-            throw e
-        } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
-        }
-    }
-
+    @Operation(summary = "Obtener comando por ID")
     @GetMapping("/{id}")
     fun obtenerPorId(@PathVariable id: Int): ResponseEntity<ComandoResponse> {
         val comando = comandoService.obtenerPorId(id)
-            ?: throw EntityNotFoundException("No se encontró el comando con id $id")
-        return ResponseEntity.ok(comando)
+        return if (comando != null) {
+            ResponseEntity.ok(comando)
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 
+    @Operation(summary = "Actualizar comando")
+    @PutMapping("/{id}")
+    fun actualizar(@PathVariable id: Int, @Valid @RequestBody request: ComandoUpdateRequest): ResponseEntity<ComandoResponse> {
+        val comando = comandoService.actualizar(id, request)
+        return if (comando != null) {
+            ResponseEntity.ok(comando)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @Operation(summary = "Asignar fundación a comando")
+    @PutMapping("/{id}/fundacion")
+    fun asignarFundacion(
+        @PathVariable id: Int,
+        @RequestParam fundacionNombre: String
+    ): ResponseEntity<ComandoResponse> {
+        val comando = comandoService.asignarFundacion(id, fundacionNombre)
+        return if (comando != null) {
+            ResponseEntity.ok(comando)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @Operation(summary = "Desactivar comando")
     @PutMapping("/{id}/desactivar")
     fun desactivar(@PathVariable id: Int): ResponseEntity<ComandoResponse> {
         val comando = comandoService.desactivar(id)
-            ?: throw EntityNotFoundException("No se encontró el comando con id $id")
-        return ResponseEntity.ok(comando)
+        return if (comando != null) {
+            ResponseEntity.ok(comando)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @Operation(summary = "Obtener brigadas de un comando")
+    @GetMapping("/{id}/brigadas")
+    fun obtenerBrigadas(@PathVariable id: Int): ResponseEntity<List<BrigadaResponse>> {
+        val brigadas = comandoService.obtenerBrigadasPorComandoId(id)
+        return if (brigadas.isNotEmpty()) {
+            ResponseEntity.ok(brigadas)
+        } else {
+            ResponseEntity.noContent().build()
+        }
     }
 }

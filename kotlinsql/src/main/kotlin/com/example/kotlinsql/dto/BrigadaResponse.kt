@@ -6,6 +6,5 @@ data class BrigadaResponse(
     val ubicacionBrigada: String,
     val estadoBrigada: Boolean,
     val comandoNombre: String,
-    val unidades: List<String>?,
-    val createdAt: String
+    val unidades: List<String>?
 )
