@@ -1,6 +1,6 @@
 package com.example.kotlinsql.model
 
-class curso (
+class Curso (
 
     val id: Int,
     val nombre: String,
