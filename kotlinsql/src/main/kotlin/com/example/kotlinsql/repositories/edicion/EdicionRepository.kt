@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface EdicionRepository : JpaRepository<Edicion, Long> {
-
+    fun getEdicionById(id: Long): Edicion?
 }
