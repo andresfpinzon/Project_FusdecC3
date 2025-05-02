@@ -24,7 +24,7 @@ data class Edicion(
 
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = true)
-    val curso: Int? = null,
+    val curso: Long? = null,
 
     val estado: Boolean = true
 )
