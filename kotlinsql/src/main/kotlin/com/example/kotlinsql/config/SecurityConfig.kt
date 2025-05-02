@@ -50,6 +50,7 @@ class SecurityConfig {
                         "/webjars/**"
                     ).permitAll()
                     .requestMatchers("/usuarios/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
+                    .requestMatchers("/fundaciones/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
                     .requestMatchers("/roles/**", "/usuario-roles/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
                     .requestMatchers("/rolesAsignados/**", "/usuario-roles/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
                     .requestMatchers("/estudiantes/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
