@@ -1,6 +1,7 @@
 package com.example.kotlinsql.services.unidad
 
 import com.example.kotlinsql.dto.unidad.CreateUnidadDto
+import com.example.kotlinsql.dto.unidad.UpdateUnidadDto
 import com.example.kotlinsql.model.unidad.Unidad
 import com.example.kotlinsql.repositories.unidad.UnidadRespository
 
@@ -34,5 +35,17 @@ class UnidadServices (
         } else {
             false
         }
+    }
+    fun actualizarUnidad(id: Long, data: UpdateUnidadDto): Unidad? {
+        val unidad = unidadRepository.findById(id).orElse(null)
+        return if (unidad != null) {
+            val updatedUnidad = unidad.copy(
+                nombreUnidad = data.nombreUnidad ?: unidad.nombreUnidad,
+                brigadaId = data.brigadaId ?: unidad.brigadaId,
+                usuarioId = data.usuarioId ?: unidad.usuarioId,
+
+                )
+            unidadRepository.save(updatedUnidad)
+        } else null
     }
 }
