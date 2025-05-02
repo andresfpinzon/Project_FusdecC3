@@ -170,14 +170,20 @@ class UserActivity : AppCompatActivity() {
             try {
                 usuarioServices.getUsersActives().onSuccess { users ->
                     val rolesMap = mutableMapOf<String, List<String>>()
+                    val filteredUsers = mutableListOf<Usuario>()
+
                     users.forEach { user ->
                         rolServices.getRolesByUser(user.getNumeroDocumento()).onSuccess { roles ->
-                            rolesMap[user.getNumeroDocumento()] = roles.map { it.rolNombre }
+                            if (!roles.any { it.rolNombre.equals("root", ignoreCase = true) }) {
+                                filteredUsers.add(user)
+                                rolesMap[user.getNumeroDocumento()] = roles.map { it.rolNombre }
+                            }
                         }.onFailure { error ->
                             showError("Error al obtener roles: ${error.message}")
                         }
                     }
-                    adapter.actualizarDatos(users, rolesMap)
+
+                    adapter.actualizarDatos(filteredUsers, rolesMap)
                 }.onFailure { error ->
                     showError("Error al cargar usuarios: ${error.message}")
                 }
