@@ -41,15 +41,6 @@
                     android:orientation="horizontal">
 
                 <ImageButton
-                        android:id="@+id/infoButton"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_info"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/info_button_description"
-                        android:tint="@color/primaryColor"/>
-
-                <ImageButton
                         android:id="@+id/updateButton"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
@@ -71,102 +62,51 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Primera línea de información -->
-        <LinearLayout
-                android:id="@+id/infoLine1"
-                android:layout_width="match_parent"
+        <!-- Documento -->
+        <TextView
+                android:id="@+id/numeroDocumentoTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/headerLayout">
+                android:text="Documento: "
+                android:textColor="@color/textPrimary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/headerLayout"/>
 
-
-            <TextView
-                    android:id="@+id/numeroDocumentoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="Documento: "
-                    android:textColor="@color/textPrimary"
-                    android:textStyle="bold"/>
-
-
-        </LinearLayout>
-
-        <!-- Segunda línea de información -->
-        <LinearLayout
-                android:id="@+id/infoLine2"
-                android:layout_width="match_parent"
+        <!-- Correo -->
+        <TextView
+                android:id="@+id/correoTxtView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/infoLine1">
+                android:text="Correo:"
+                android:textColor="@color/textPrimary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/numeroDocumentoTextView"/>
 
-
-        </LinearLayout>
-
-        <!-- Tercera línea de información -->
-        <LinearLayout
-                android:id="@+id/infoLine3"
-                android:layout_width="match_parent"
+        <!-- Estado -->
+        <TextView
+                android:id="@+id/estadoTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/infoLine2">
+                android:text="Estado:"
+                android:textColor="@color/textPrimary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/correoTxtView"/>
 
-            <TextView
-                    android:id="@+id/rolTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rol:"
-                    android:textColor="@color/textPrimary"
-                    android:textStyle="bold"/>
-
-
-
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
-                android:id="@+id/infoLine4"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/infoLine3">
-            >
-            <TextView
-                    android:id="@+id/correoTxtView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Correo:"
-                    android:textColor="@color/textPrimary"
-                    android:textStyle="bold"/>
-
-        </LinearLayout>
-
+        <!-- Roles -->
         <LinearLayout
                 android:id="@+id/rolesContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="4dp"/>
-        <LinearLayout
-                android:id="@+id/infoLine5"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/infoLine4">
-
-            <TextView
-                    android:id="@+id/estadoTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Estado:"
-                    android:textColor="@color/textPrimary"
-                    android:textStyle="bold"/>
-        </LinearLayout>
-
+                android:padding="4dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/estadoTextView"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -18,6 +18,7 @@ class WebConfig(val jwtFilter: JwtFilter) {
         val registrationBean = FilterRegistrationBean(jwtFilter)
         registrationBean.addUrlPatterns(
             "/usuarios/*",
+            "/rolesAsignados/*",
             "/roles/*",
             "/usuario-roles/*",
             "/brigadas/*",
@@ -27,8 +28,14 @@ class WebConfig(val jwtFilter: JwtFilter) {
             "/asistencia-estudiantes/*",
             "/calificaciones/*",
             "/calificacion-estudiantes/*",
+            "/usuarios-management/*",
             "/certificados/*",
-            "/auditorias/*"
+            "/auditorias/*",
+            "/fundaciones/*",
+            "/colegios/*",
+            "/cursos/*"
+
+
         )
         return registrationBean
     }

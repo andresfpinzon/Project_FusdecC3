@@ -75,7 +75,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputNombres"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="45dp"
                             android:hint="Ingrese los nombres"
                             android:inputType="textPersonName"
                             android:layout_marginTop="4dp"
@@ -136,20 +136,27 @@
                             android:backgroundTint="@color/primaryColor"
                             android:padding="8dp"/>
 
-                    <!-- Selector de Rol -->
+                    <!-- Roles -->
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rol"
+                            android:text="Roles"
                             android:textColor="@color/primaryColor"
                             android:textStyle="bold"
                             android:layout_marginTop="16dp"/>
-                    <Spinner
-                            android:id="@+id/spinnerRole"
+
+                    <LinearLayout
+                            android:id="@+id/rolesCheckboxContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:layout_marginTop="4dp"
-                            android:backgroundTint="@color/primaryColor"/>
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="8dp"/>
+
+                    <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/selectedRolesChipGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

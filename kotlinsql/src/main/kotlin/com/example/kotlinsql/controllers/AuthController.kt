@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.security.crypto.password.PasswordEncoder
 
-
 @RestController
 @RequestMapping("/auth")
 class AuthController(
@@ -67,16 +66,22 @@ class AuthController(
             return ResponseEntity.status(401).body(mapOf("error" to "Contraseña incorrecta"))
         }
 
+        
         val roles = jdbcTemplate.queryForList(
-            "SELECT rol FROM usuario_rol WHERE usuario_numero_documento = ?",
+            "SELECT rol_id FROM usuario_rol WHERE usuario_numero_documento = ?",
             usuario["numero_documento"]
         ).map {
-            val rol = it["rol"] as String
-            "ROLE_${rol.uppercase()}"
+            val rolId = it["rol_id"] as Int
+            val rolNombre = jdbcTemplate.queryForObject(
+                "SELECT nombre FROM rol WHERE id = ?",
+                String::class.java, rolId
+            ) ?: ""
+            "ROLE_${rolNombre.uppercase()}"
         }
+
 
         val token = jwtUtil.generateToken(usuario["numero_documento"].toString(), roles)
         return ResponseEntity.ok(LoginResponse(token))
     }
-
 }
+
