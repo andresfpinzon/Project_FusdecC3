@@ -53,6 +53,8 @@ class SecurityConfig {
                     .requestMatchers("/fundaciones/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
                     .requestMatchers("/roles/**", "/usuario-roles/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
                     .requestMatchers("/rolesAsignados/**", "/usuario-roles/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
+                    .requestMatchers("/brigadas/**").hasAnyRole("ADMINISTRATIVO", "ROOT", "INSTRUCTOR")
+                    .requestMatchers("/comandos/**").hasAnyRole("ADMINISTRATIVO", "ROOT", "INSTRUCTOR")
                     .requestMatchers("/estudiantes/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
                     .requestMatchers("/colegios/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")
                     .requestMatchers("/cursos/**").hasAnyRole("ADMINISTRATIVO", "ROOT","SECRETARIO", "INSTRUCTOR")

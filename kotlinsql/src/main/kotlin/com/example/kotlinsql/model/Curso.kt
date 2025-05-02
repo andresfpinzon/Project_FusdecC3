@@ -15,7 +15,7 @@ data class Curso(
 
     val intensidadHoraria: String,
 
-    val fundacionId: String,
+    val fundacionId: Int,
 
     val estado: Boolean = true
 )

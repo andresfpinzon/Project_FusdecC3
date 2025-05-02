@@ -21,6 +21,8 @@ class WebConfig(val jwtFilter: JwtFilter) {
             "/rolesAsignados/*",
             "/roles/*",
             "/usuario-roles/*",
+            "/brigadas/*",
+            "/comandos/*",
             "/estudiantes/*",
             "/asistencias/*",
             "/asistencia-estudiantes/*",
