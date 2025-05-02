@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,8 +19,7 @@ class UserAdapter(
     private var users: List<Usuario>,
     private var rolesMap: Map<String, List<String>>,
     private val onUpdateClick: (Usuario) -> Unit,
-    private val onDeleteClick: (Usuario) -> Unit,
-    private val onRoleDelete: (String, String) -> Unit // Callback para eliminar roles
+    private val onDeleteClick: (Usuario) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,7 +27,7 @@ class UserAdapter(
         val textDocumento: TextView = itemView.findViewById(R.id.numeroDocumentoTextView)
         val txtCorreo: TextView = itemView.findViewById(R.id.correoTxtView)
         val textEstado: TextView = itemView.findViewById(R.id.estadoTextView)
-        val rolContainer: ViewGroup = itemView.findViewById(R.id.rolesContainer) // Contenedor de roles
+        val rolesContainer: LinearLayout = itemView.findViewById(R.id.rolesContainer)
         val updateButton: ImageButton = itemView.findViewById(R.id.updateButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
@@ -47,37 +48,26 @@ class UserAdapter(
         holder.txtCorreo.text = "Correo: ${user.getCorreo()}"
         holder.textEstado.text = "Estado: ${if (user.getEstadoUsuario()) "Activo" else "Inactivo"}"
 
-        // Mostrar roles
-        setupRolesView(holder.rolContainer, roles, documento)
+        // Mostrar roles como chips
+        holder.rolesContainer.removeAllViews()
+        roles.forEach { rol ->
+            val chip = Chip(holder.itemView.context).apply {
+                text = rol
+                setTextColor(context.resources.getColor(android.R.color.white, null))
+                setChipBackgroundColorResource(
+                    when (rol) {
+                        "Administrativo" -> R.color.role_admin
+                        "Instructor" -> R.color.role_instructor
+                        "Secretario" -> R.color.role_secretary
+                        else -> R.color.role_default
+                    }
+                )
+            }
+            holder.rolesContainer.addView(chip)
+        }
 
-        // Configurar listeners para botones
         holder.updateButton.setOnClickListener { onUpdateClick(user) }
         holder.deleteButton.setOnClickListener { onDeleteClick(user) }
-    }
-
-    private fun setupRolesView(container: ViewGroup, roles: List<String>, documento: String) {
-        container.removeAllViews()
-
-        roles.forEach { rol ->
-            val roleView = LayoutInflater.from(container.context)
-                .inflate(R.layout.item_role, container, false)
-
-            val tvRol = roleView.findViewById<TextView>(R.id.tvRoleName)
-            val btnDelete = roleView.findViewById<ImageButton>(R.id.btnDeleteRole)
-
-            tvRol.text = rol
-            btnDelete.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        onRoleDelete(documento, rol) // Llamar al callback para eliminar el rol
-                    } catch (e: Exception) {
-                        Log.e("UserAdapter", "Error deleting role: ${e.message}")
-                    }
-                }
-            }
-
-            container.addView(roleView)
-        }
     }
 
     override fun getItemCount(): Int = users.size
