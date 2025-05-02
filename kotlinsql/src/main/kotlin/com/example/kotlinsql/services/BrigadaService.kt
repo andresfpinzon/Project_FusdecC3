@@ -16,15 +16,15 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
             nombreBrigada = rs.getString("nombre_brigada"),
             ubicacionBrigada = rs.getString("ubicacion_brigada"),
             estadoBrigada = rs.getBoolean("estado_brigada"),
-            comandoNombre = obtenerNombreComando(rs.getInt("comando_id")),
-            unidades = obtenerNombresUnidadesPorBrigadaId(brigadaId)
+            comandoNombre = rs.getString("nombre_comando"),
+            unidades = obtenerUnidadesAsignadas(brigadaId)  // Corregido aquí
         )
     }
-
     fun obtenerTodos(): List<BrigadaResponse> {
         val sql = """
-            SELECT b.*
+            SELECT b.*, c.nombre_comando
             FROM brigada b
+            LEFT JOIN comando c ON b.comando_id = c.id
             WHERE b.estado_brigada = true
             ORDER BY b.nombre_brigada ASC
         """.trimIndent()
@@ -38,26 +38,15 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
         val sql = """
             INSERT INTO brigada (nombre_brigada, ubicacion_brigada, comando_id, estado_brigada)
             VALUES (?, ?, ?, true)
-            RETURNING *
+            RETURNING *, (SELECT nombre_comando FROM comando WHERE id = ?)
         """.trimIndent()
 
-        val brigada = jdbcTemplate.queryForObject(sql, rowMapper,
+        return jdbcTemplate.queryForObject(sql, rowMapper,
             request.nombreBrigada,
             request.ubicacionBrigada,
+            comandoId,
             comandoId
         )
-
-        request.unidadesNombres?.forEach { nombreUnidad ->
-            val updateUnidad = """
-                UPDATE unidad
-                SET brigada_id = ?
-                WHERE nombre_unidad = ?
-                AND estado_unidad = true
-            """.trimIndent()
-            jdbcTemplate.update(updateUnidad, brigada?.id, nombreUnidad)
-        }
-
-        return brigada
     }
 
     fun actualizar(id: Int, request: BrigadaUpdateRequest): BrigadaResponse? {
@@ -78,40 +67,24 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
         if (campos.isEmpty()) return null
 
         val sql = """
-            UPDATE brigada
+            UPDATE brigada b
             SET ${campos.joinToString(", ")}
-            WHERE id = ?
-            AND estado_brigada = true
-            RETURNING *
+            FROM comando c
+            WHERE b.id = ?
+            AND b.estado_brigada = true
+            AND b.comando_id = c.id
+            RETURNING b.*, c.nombre_comando
         """.trimIndent()
 
         valores.add(id)
-
-        val brigada = jdbcTemplate.queryForObject(sql, rowMapper, *valores.toTypedArray())
-
-        request.unidadesNombres?.let { nombres ->
-            // Primero desvinculamos las unidades actuales
-            jdbcTemplate.update(
-                "UPDATE unidad SET brigada_id = NULL WHERE brigada_id = ?",
-                id
-            )
-
-            // Luego asignamos las nuevas unidades
-            nombres.forEach { nombre ->
-                jdbcTemplate.update(
-                    "UPDATE unidad SET brigada_id = ? WHERE nombre_unidad = ? AND estado_unidad = true",
-                    id, nombre
-                )
-            }
-        }
-
-        return brigada
+        return jdbcTemplate.queryForObject(sql, rowMapper, *valores.toTypedArray())
     }
 
     fun obtenerPorId(id: Int): BrigadaResponse? {
         val sql = """
-            SELECT b.*
+            SELECT b.*, c.nombre_comando
             FROM brigada b
+            LEFT JOIN comando c ON b.comando_id = c.id
             WHERE b.id = ?
             AND b.estado_brigada = true
         """.trimIndent()
@@ -125,11 +98,13 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
 
     fun desactivar(id: Int): BrigadaResponse? {
         val sql = """
-            UPDATE brigada
+            UPDATE brigada b
             SET estado_brigada = false
-            WHERE id = ?
-            AND estado_brigada = true
-            RETURNING *
+            FROM comando c
+            WHERE b.id = ?
+            AND b.estado_brigada = true
+            AND b.comando_id = c.id
+            RETURNING b.*, c.nombre_comando
         """.trimIndent()
 
         return try {
@@ -139,7 +114,25 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
         }
     }
 
-    fun obtenerNombresUnidadesPorBrigadaId(brigadaId: Int): List<String> {
+    fun asignarComando(brigadaId: Int, comandoId: Int): BrigadaResponse? {
+        val sql = """
+            UPDATE brigada b
+            SET comando_id = ?
+            FROM comando c
+            WHERE b.id = ?
+            AND b.estado_brigada = true
+            AND c.id = ?
+            RETURNING b.*, c.nombre_comando
+        """.trimIndent()
+
+        return try {
+            jdbcTemplate.queryForObject(sql, rowMapper, comandoId, brigadaId, comandoId)
+        } catch (e: EmptyResultDataAccessException) {
+            null
+        }
+    }
+
+    fun obtenerUnidadesAsignadas(brigadaId: Int): List<String> {
         val sql = """
             SELECT nombre_unidad
             FROM unidad
@@ -162,21 +155,6 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
             jdbcTemplate.queryForObject(sql, Int::class.java, nombreComando)
         } catch (e: EmptyResultDataAccessException) {
             null
-        }
-    }
-
-    private fun obtenerNombreComando(comandoId: Int): String {
-        val sql = """
-            SELECT nombre_comando
-            FROM comando
-            WHERE id = ?
-            AND estado_comando = true
-        """.trimIndent()
-
-        return try {
-            jdbcTemplate.queryForObject(sql, String::class.java, comandoId) ?: "Sin comando"
-        } catch (e: EmptyResultDataAccessException) {
-            "Sin comando"
         }
     }
 }

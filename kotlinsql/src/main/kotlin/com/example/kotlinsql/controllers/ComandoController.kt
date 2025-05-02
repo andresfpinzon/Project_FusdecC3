@@ -56,12 +56,12 @@ class ComandoController(private val comandoService: ComandoService) {
     }
 
     @Operation(summary = "Asignar fundación a comando")
-    @PutMapping("/{id}/fundacion")
+    @PutMapping("/{id}/fundacion/{fundacionId}")
     fun asignarFundacion(
         @PathVariable id: Int,
-        @RequestParam fundacionNombre: String
+        @PathVariable fundacionId: Int
     ): ResponseEntity<ComandoResponse> {
-        val comando = comandoService.asignarFundacion(id, fundacionNombre)
+        val comando = comandoService.asignarFundacion(id, fundacionId)
         return if (comando != null) {
             ResponseEntity.ok(comando)
         } else {
@@ -77,17 +77,6 @@ class ComandoController(private val comandoService: ComandoService) {
             ResponseEntity.ok(comando)
         } else {
             ResponseEntity.notFound().build()
-        }
-    }
-
-    @Operation(summary = "Obtener brigadas de un comando")
-    @GetMapping("/{id}/brigadas")
-    fun obtenerBrigadas(@PathVariable id: Int): ResponseEntity<List<BrigadaResponse>> {
-        val brigadas = comandoService.obtenerBrigadasPorComandoId(id)
-        return if (brigadas.isNotEmpty()) {
-            ResponseEntity.ok(brigadas)
-        } else {
-            ResponseEntity.noContent().build()
         }
     }
 }

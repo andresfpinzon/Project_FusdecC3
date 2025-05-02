@@ -26,7 +26,7 @@ class BrigadaController(private val brigadaService: BrigadaService) {
         }
     }
 
-    @Operation(summary = "Crear nueva brigada", description = "Crea una brigada y la asigna a un comando")
+    @Operation(summary = "Crear nueva brigada")
     @PostMapping
     fun crear(@Valid @RequestBody request: BrigadaCreateRequest): ResponseEntity<BrigadaResponse> {
         val brigada = brigadaService.crear(request)
@@ -44,7 +44,7 @@ class BrigadaController(private val brigadaService: BrigadaService) {
         }
     }
 
-    @Operation(summary = "Actualizar brigada", description = "Actualiza una brigada y su asignación a comando")
+    @Operation(summary = "Actualizar brigada")
     @PutMapping("/{id}")
     fun actualizar(@PathVariable id: Int, @Valid @RequestBody request: BrigadaUpdateRequest): ResponseEntity<BrigadaResponse> {
         val brigada = brigadaService.actualizar(id, request)
@@ -66,10 +66,24 @@ class BrigadaController(private val brigadaService: BrigadaService) {
         }
     }
 
-    @Operation(summary = "Obtener unidades asignadas a una brigada", description = "Lista todas las unidades que pertenecen a una brigada específica")
+    @Operation(summary = "Asignar comando a brigada")
+    @PutMapping("/{id}/comando/{comandoId}")
+    fun asignarComando(
+        @PathVariable id: Int,
+        @PathVariable comandoId: Int
+    ): ResponseEntity<BrigadaResponse> {
+        val brigada = brigadaService.asignarComando(id, comandoId)
+        return if (brigada != null) {
+            ResponseEntity.ok(brigada)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @Operation(summary = "Obtener unidades asignadas a una brigada")
     @GetMapping("/{id}/unidades")
-    fun obtenerUnidades(@PathVariable id: Int): ResponseEntity<List<String>> {
-        val unidades = brigadaService.obtenerNombresUnidadesPorBrigadaId(id)
+    fun obtenerUnidadesAsignadas(@PathVariable id: Int): ResponseEntity<List<String>> {
+        val unidades = brigadaService.obtenerUnidadesAsignadas(id)
         return if (unidades.isEmpty()) {
             ResponseEntity.noContent().build()
         } else {
