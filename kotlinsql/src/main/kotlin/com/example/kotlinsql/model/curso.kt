@@ -6,7 +6,7 @@ class curso (
     val nombre: String,
     val descripcion: String,
     val intensidadHoraria: String,
-    val estado: Boolean = true,
-    val fundacionId: String
+    val fundacionId: String,
+    val estado: Boolean = true
 
 )
