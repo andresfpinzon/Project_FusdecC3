@@ -1,6 +1,7 @@
 package com.example.kotlinsql.dto
 
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 
 data class ComandoCreateRequest(
     @field:NotBlank(message = "El nombre del comando es obligatorio")
@@ -9,5 +10,6 @@ data class ComandoCreateRequest(
     @field:NotBlank(message = "La ubicación del comando es obligatoria")
     val ubicacionComando: String,
 
-    val fundacionNombre: String? = null
+    @field:NotNull(message = "El nombre de la fundacion es obligatorio")
+    val fundacionId: Int
 )

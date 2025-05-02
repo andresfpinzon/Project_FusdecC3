@@ -1,7 +1,8 @@
 package com.example.kotlinsql.services
 
-import com.example.kotlinsql.dto.*
-import org.springframework.dao.EmptyResultDataAccessException
+import com.example.kotlinsql.dto.BrigadaCreateRequest
+import com.example.kotlinsql.dto.BrigadaUpdateRequest
+import com.example.kotlinsql.model.Brigada
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
@@ -9,127 +10,59 @@ import org.springframework.stereotype.Service
 @Service
 class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
 
-    private val rowMapper = RowMapper<BrigadaResponse> { rs, _ ->
-        val brigadaId = rs.getInt("id")
-        BrigadaResponse(
-            id = brigadaId,
+    val rowMapper = RowMapper<Brigada> { rs, _ ->
+        Brigada(
+            id = rs.getInt("id"),
             nombreBrigada = rs.getString("nombre_brigada"),
             ubicacionBrigada = rs.getString("ubicacion_brigada"),
             estadoBrigada = rs.getBoolean("estado_brigada"),
-            comandoNombre = rs.getString("nombre_comando"),
-            unidades = obtenerUnidadesAsignadas(brigadaId)  // Corregido aquí
+            comandoId = rs.getString("comando_id")
         )
     }
-    fun obtenerTodos(): List<BrigadaResponse> {
-        val sql = """
-            SELECT b.*, c.nombre_comando
-            FROM brigada b
-            LEFT JOIN comando c ON b.comando_id = c.id
-            WHERE b.estado_brigada = true
-            ORDER BY b.nombre_brigada ASC
-        """.trimIndent()
 
-        return jdbcTemplate.query(sql, rowMapper)
+    fun obtenerTodas(): List<Brigada> {
+        return jdbcTemplate.query("SELECT * FROM brigada", rowMapper)
     }
 
-    fun crear(request: BrigadaCreateRequest): BrigadaResponse? {
-        val comandoId = obtenerComandoIdPorNombre(request.comandoNombre)
+    fun obtenerPorId(id: Int): Brigada? {
+        val sql = "SELECT * FROM brigada WHERE id = ?"
+        return jdbcTemplate.query(sql, rowMapper, id).firstOrNull()
+    }
 
+    fun crear(request: BrigadaCreateRequest): Brigada? {
         val sql = """
-            INSERT INTO brigada (nombre_brigada, ubicacion_brigada, comando_id, estado_brigada)
-            VALUES (?, ?, ?, true)
-            RETURNING *, (SELECT nombre_comando FROM comando WHERE id = ?)
+        INSERT INTO brigada (nombre_brigada, ubicacion_brigada, comando_id)
+        VALUES (?, ?, ?)
+        RETURNING *
         """.trimIndent()
-
-        return jdbcTemplate.queryForObject(sql, rowMapper,
+        return jdbcTemplate.queryForObject(
+            sql,
+            rowMapper,
             request.nombreBrigada,
             request.ubicacionBrigada,
-            comandoId,
-            comandoId
+            request.comandoId
         )
     }
 
-    fun actualizar(id: Int, request: BrigadaUpdateRequest): BrigadaResponse? {
+    fun actualizar(id: Int, request: BrigadaUpdateRequest): Brigada? {
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
         request.nombreBrigada?.let { campos.add("nombre_brigada = ?"); valores.add(it) }
         request.ubicacionBrigada?.let { campos.add("ubicacion_brigada = ?"); valores.add(it) }
         request.estadoBrigada?.let { campos.add("estado_brigada = ?"); valores.add(it) }
-        request.comandoNombre?.let {
-            val comandoId = obtenerComandoIdPorNombre(it)
-            if (comandoId != null) {
-                campos.add("comando_id = ?")
-                valores.add(comandoId)
-            }
-        }
 
         if (campos.isEmpty()) return null
 
-        val sql = """
-            UPDATE brigada b
-            SET ${campos.joinToString(", ")}
-            FROM comando c
-            WHERE b.id = ?
-            AND b.estado_brigada = true
-            AND b.comando_id = c.id
-            RETURNING b.*, c.nombre_comando
-        """.trimIndent()
-
+        val sqlUpdate = "UPDATE brigada SET ${campos.joinToString(", ")} WHERE id = ?"
         valores.add(id)
-        return jdbcTemplate.queryForObject(sql, rowMapper, *valores.toTypedArray())
+        jdbcTemplate.update(sqlUpdate, *valores.toTypedArray())
+
+        return jdbcTemplate.queryForObject("SELECT * FROM brigada WHERE id = ?", rowMapper, id)
     }
 
-    fun obtenerPorId(id: Int): BrigadaResponse? {
-        val sql = """
-            SELECT b.*, c.nombre_comando
-            FROM brigada b
-            LEFT JOIN comando c ON b.comando_id = c.id
-            WHERE b.id = ?
-            AND b.estado_brigada = true
-        """.trimIndent()
-
-        return try {
-            jdbcTemplate.queryForObject(sql, rowMapper, id)
-        } catch (e: EmptyResultDataAccessException) {
-            null
-        }
-    }
-
-    fun desactivar(id: Int): BrigadaResponse? {
-        val sql = """
-            UPDATE brigada b
-            SET estado_brigada = false
-            FROM comando c
-            WHERE b.id = ?
-            AND b.estado_brigada = true
-            AND b.comando_id = c.id
-            RETURNING b.*, c.nombre_comando
-        """.trimIndent()
-
-        return try {
-            jdbcTemplate.queryForObject(sql, rowMapper, id)
-        } catch (e: EmptyResultDataAccessException) {
-            null
-        }
-    }
-
-    fun asignarComando(brigadaId: Int, comandoId: Int): BrigadaResponse? {
-        val sql = """
-            UPDATE brigada b
-            SET comando_id = ?
-            FROM comando c
-            WHERE b.id = ?
-            AND b.estado_brigada = true
-            AND c.id = ?
-            RETURNING b.*, c.nombre_comando
-        """.trimIndent()
-
-        return try {
-            jdbcTemplate.queryForObject(sql, rowMapper, comandoId, brigadaId, comandoId)
-        } catch (e: EmptyResultDataAccessException) {
-            null
-        }
+    fun eliminar(id: Int): Int {
+        return jdbcTemplate.update("DELETE FROM brigada WHERE id = ?", id)
     }
 
     fun obtenerUnidadesAsignadas(brigadaId: Int): List<String> {
@@ -144,17 +77,4 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.queryForList(sql, String::class.java, brigadaId)
     }
 
-    private fun obtenerComandoIdPorNombre(nombreComando: String): Int? {
-        val sql = """
-            SELECT id FROM comando
-            WHERE nombre_comando = ?
-            AND estado_comando = true
-        """.trimIndent()
-
-        return try {
-            jdbcTemplate.queryForObject(sql, Int::class.java, nombreComando)
-        } catch (e: EmptyResultDataAccessException) {
-            null
-        }
-    }
 }

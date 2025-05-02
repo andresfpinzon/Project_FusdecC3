@@ -1,82 +1,126 @@
 package com.example.kotlinsql.controllers
 
-import com.example.kotlinsql.dto.*
+import com.example.kotlinsql.dto.ComandoCreateRequest
+import com.example.kotlinsql.dto.ComandoUpdateRequest
+import com.example.kotlinsql.model.Comando
 import com.example.kotlinsql.services.ComandoService
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
-import jakarta.validation.Valid
-import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import jakarta.validation.Valid
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/comandos")
-@CrossOrigin(origins = ["http://localhost:4200"])
-@Tag(name = "Comandos", description = "API para gestionar comandos")
-class ComandoController(private val comandoService: ComandoService) {
+@RequestMapping("/comandos")
+class ComandoController {
 
-    @Operation(summary = "Obtener todos los comandos")
+    @Autowired
+    lateinit var comandoService: ComandoService
+
+    @Operation(summary = "Obtener todos los comandos", description = "Devuelve una lista de todos los comandos registrados.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Lista de comandos",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Comando::class))]
+            )
+        ]
+    )
     @GetMapping
-    fun obtenerTodos(): ResponseEntity<List<ComandoResponse>> {
-        val comandos = comandoService.obtenerTodos()
-        return if (comandos.isEmpty()) {
-            ResponseEntity.noContent().build()
-        } else {
-            ResponseEntity.ok(comandos)
-        }
-    }
+    fun obtenerTodos(): List<Comando> = comandoService.obtenerTodos()
 
-    @Operation(summary = "Crear nuevo comando")
-    @PostMapping
-    fun crear(@Valid @RequestBody request: ComandoCreateRequest): ResponseEntity<ComandoResponse> {
-        val comando = comandoService.crear(request)
-        return ResponseEntity.status(HttpStatus.CREATED).body(comando)
-    }
-
-    @Operation(summary = "Obtener comando por ID")
+    @Operation(summary = "Obtener comando por ID", description = "Devuelve un comando específico por su ID.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Comando encontrado",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Comando::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Comando no encontrado",
+                content = [Content(mediaType = "text/plain")]
+            )
+        ]
+    )
     @GetMapping("/{id}")
-    fun obtenerPorId(@PathVariable id: Int): ResponseEntity<ComandoResponse> {
-        val comando = comandoService.obtenerPorId(id)
-        return if (comando != null) {
-            ResponseEntity.ok(comando)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+    fun obtenerPorId(@PathVariable id: Int): Comando? = comandoService.obtenerPorId(id)
+
+    @Operation(summary = "Crear nuevo comando", description = "Crea un nuevo comando con los datos proporcionados.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Comando creado exitosamente",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Comando::class))]
+            )
+        ]
+    )
+    @PostMapping
+    fun crear(@Valid @RequestBody request: ComandoCreateRequest): Comando? {
+        return comandoService.crear(request)
     }
 
-    @Operation(summary = "Actualizar comando")
+    @Operation(summary = "Actualizar comando", description = "Actualiza un comando existente mediante su ID.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Comando actualizado",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Comando::class))]
+            )
+        ]
+    )
     @PutMapping("/{id}")
-    fun actualizar(@PathVariable id: Int, @Valid @RequestBody request: ComandoUpdateRequest): ResponseEntity<ComandoResponse> {
-        val comando = comandoService.actualizar(id, request)
-        return if (comando != null) {
-            ResponseEntity.ok(comando)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+    fun actualizar(@PathVariable id: Int, @Valid @RequestBody request: ComandoUpdateRequest): Comando? {
+        return comandoService.actualizar(id, request)
     }
 
-    @Operation(summary = "Asignar fundación a comando")
-    @PutMapping("/{id}/fundacion/{fundacionId}")
-    fun asignarFundacion(
-        @PathVariable id: Int,
-        @PathVariable fundacionId: Int
-    ): ResponseEntity<ComandoResponse> {
-        val comando = comandoService.asignarFundacion(id, fundacionId)
-        return if (comando != null) {
-            ResponseEntity.ok(comando)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+    @Operation(summary = "Eliminar comando", description = "Elimina un comando mediante su ID.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Comando eliminado",
+                content = [Content(mediaType = "text/plain", examples = [ExampleObject(value = "Comando eliminado")])]
+            )
+        ]
+    )
+    @DeleteMapping("/{id}")
+    fun eliminar(@PathVariable id: Int): String {
+        val resultado = comandoService.eliminar(id)
+        return if (resultado > 0) "Comando eliminado" else "Comando no encontrado"
     }
 
-    @Operation(summary = "Desactivar comando")
-    @PutMapping("/{id}/desactivar")
-    fun desactivar(@PathVariable id: Int): ResponseEntity<ComandoResponse> {
-        val comando = comandoService.desactivar(id)
-        return if (comando != null) {
-            ResponseEntity.ok(comando)
-        } else {
-            ResponseEntity.notFound().build()
-        }
+    @Operation(
+        summary = "Obtener nombres de brigadas activas por comando",
+        description = "Devuelve una lista de nombres de brigadas activas pertenecientes a un comando específico, ordenadas alfabéticamente"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Lista de nombres de brigadas activas",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = List::class)
+                )]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Comando no encontrado o sin brigadas activas",
+                content = [Content(mediaType = "application/json")]
+            )
+        ]
+    )
+    @GetMapping("/activas/comando/{comandoId}")
+    fun obtenerNombresBrigadasActivasPorComando(@PathVariable comandoId: Int): List<String> {
+        return comandoService.obtenerNombresBrigadas(comandoId)
     }
 }

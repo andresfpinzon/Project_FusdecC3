@@ -6,5 +6,5 @@ data class CertificadoUpdateRequest(
     val estudianteId: String? = null,
     val nombreEmisor: String? = null,
     val codigoVerificacion: String? = null,
-    val estado: Boolean? = null
+    val estado: Int? = null
 )

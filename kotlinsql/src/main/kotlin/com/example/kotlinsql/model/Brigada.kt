@@ -5,5 +5,5 @@ data class Brigada(
     var nombreBrigada: String,
     var ubicacionBrigada: String,
     var estadoBrigada: Boolean = true,
-    var comandoId: Int
+    var comandoId: String
 )

@@ -17,14 +17,13 @@ class CursoService(private val jdbcTemplate: JdbcTemplate) {
         )
     }
 
-
     val rowMapper = RowMapper<Curso> { rs, _ ->
         Curso(
             id = rs.getInt("id"),
             nombre = rs.getString("nombre"),
             descripcion = rs.getString("descripcion"),
             intensidadHoraria = rs.getString("intensidad_horaria"),
-            fundacionId = rs.getString("fundacion_id"),
+            fundacionId = rs.getInt("fundacion_id"),
             estado = rs.getBoolean("estado")
         )
     }

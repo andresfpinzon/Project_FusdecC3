@@ -6,5 +6,4 @@ data class ComandoResponse(
     val estadoComando: Boolean,
     val ubicacionComando: String,
     val fundacionNombre: String?,
-    val brigadas: List<String>?
 )

@@ -14,6 +14,6 @@ class CursoCreateRequest (
     val intensidadHoraria: String,
 
     @NotBlank(message = "El id de la fundación es obligatorio")
-    val fundacionId: String,
+    val fundacionId: Int,
 
 )

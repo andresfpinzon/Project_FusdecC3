@@ -5,5 +5,5 @@ data class Comando(
     val nombreComando: String,
     val estadoComando: Boolean = true,
     val ubicacionComando: String,
-    val fundacionNombre: String
+    val fundacionId: String
 )
