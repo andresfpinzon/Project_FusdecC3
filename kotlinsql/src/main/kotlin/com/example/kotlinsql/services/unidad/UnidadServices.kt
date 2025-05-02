@@ -2,8 +2,11 @@ package com.example.kotlinsql.services.unidad
 
 import com.example.kotlinsql.dto.unidad.CreateUnidadDto
 import com.example.kotlinsql.model.unidad.Unidad
+import com.example.kotlinsql.repositories.unidad.UnidadRespository
 
-class UnidadServices {
+class UnidadServices (
+    private val unidadRepository: UnidadRespository,
+){
     fun crearUnidadService(data: CreateUnidadDto): Unidad {
 
         val unidad = Unidad(
@@ -14,4 +17,6 @@ class UnidadServices {
 
         return unidadRepository.save(unidad)
     }
+
+
 }
