@@ -23,5 +23,9 @@ class UnidadServices (
         return  unidades
     }
 
+    fun obtenerUnidadPorId(id: Long): Unidad? {
+        return unidadRepository.findById(id).orElse(null)
     }
+
+
 }
