@@ -27,5 +27,12 @@ class UnidadServices (
         return unidadRepository.findById(id).orElse(null)
     }
 
-
+    fun eliminarUnidadPorId(id: Long): Boolean {
+        return if (unidadRepository.existsById(id)) {
+            unidadRepository.deleteById(id)
+            true
+        } else {
+            false
+        }
+    }
 }
