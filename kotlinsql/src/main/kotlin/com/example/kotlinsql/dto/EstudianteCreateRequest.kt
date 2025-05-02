@@ -1,6 +1,7 @@
 package com.example.kotlinsql.dto
 
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 
 data class EstudianteCreateRequest(
     @NotBlank(message = "El número de documento es obligatorio")
@@ -18,16 +19,15 @@ data class EstudianteCreateRequest(
     @NotBlank(message = "El género es obligatorio")
     val genero: String,
 
-    @NotBlank(message = "La unidad es obligatoria")
-    val unidad: String,
-
-    @NotBlank(message = "El colegio es obligatorio")
-    val colegio: String,
-
-    @NotBlank(message = "La edición es obligatoria")
-    val edicion: String,
-
     @NotBlank(message = "El grado es obligatorio")
-    val grado: String
+    val grado: String,
 
+    @NotNull(message = "El ID de unidad es obligatorio")
+    val unidadId: Int,
+
+    @NotNull(message = "El ID de colegio es obligatorio")
+    val colegioId: Int,
+
+    @NotNull(message = "El ID de edición es obligatorio")
+    val edicionId: Int
 )

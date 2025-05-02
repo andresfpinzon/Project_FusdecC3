@@ -17,13 +17,14 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
             apellido = rs.getString("apellido"),
             tipoDocumento = rs.getString("tipo_documento"),
             genero = rs.getString("genero"),
-            unidad = rs.getString("unidad"),
-            edicion = rs.getString("edicion"),
-            colegio = rs.getString("colegio"),
             grado = rs.getString("grado"),
             estado = rs.getBoolean("estado"),
             asistenciasRegistradas = rs.getInt("asistencias_registradas"),
-            aprobado = rs.getBoolean("aprobado")
+            aprobado = rs.getBoolean("aprobado"),
+            unidadId = rs.getInt("unidad_id"),
+            colegioId = rs.getInt("colegio_id"),
+            edicionId = rs.getInt("edicion_id")
+
         )
     }
 
@@ -36,7 +37,7 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         val sql = """
             INSERT INTO estudiante (
                 numero_documento, nombre, apellido, tipo_documento,
-                genero, unidad, colegio, edicion, grado
+                genero, grado, unidad_id, colegio_id, edicion_id
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             RETURNING *
         """.trimIndent()
@@ -48,10 +49,10 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
             request.apellido,
             request.tipoDocumento,
             request.genero,
-            request.unidad,
-            request.colegio,
-            request.edicion,
-            request.grado
+            request.grado,
+            request.unidadId,
+            request.colegioId,
+            request.edicionId
         )
     }
 
@@ -63,11 +64,11 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         request.apellido?.let { campos.add("apellido = ?"); valores.add(it) }
         request.tipoDocumento?.let { campos.add("tipo_documento = ?"); valores.add(it) }
         request.genero?.let { campos.add("genero = ?"); valores.add(it) }
-        request.unidad?.let { campos.add("unidad = ?"); valores.add(it) }
-        request.colegio?.let { campos.add("colegio = ?"); valores.add(it) }
         request.grado?.let { campos.add("grado = ?"); valores.add(it) }
-        request.edicion?.let { campos.add("edicion = ?"); valores.add(it) }
         request.estado?.let { campos.add("estado = ?"); valores.add(it) }
+        request.unidadId?.let { campos.add("unidad_id = ?"); valores.add(it) }
+        request.colegioId?.let { campos.add("colegio_id = ?"); valores.add(it) }
+        request.edicionId?.let { campos.add("edicion_id = ?"); valores.add(it) }
 
         if (campos.isEmpty()) return null
 
@@ -84,4 +85,3 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.update(sql, documento)
     }
 }
-
