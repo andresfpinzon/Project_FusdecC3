@@ -1,12 +1,21 @@
 package com.example.kotlinsql.model
 
-class Curso (
+import jakarta.persistence.*
 
-    val id: Int,
+@Entity
+@Table(name = "curso")
+data class Curso(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Int = 0,
+
     val nombre: String,
-    val descripcion: String,
-    val intensidadHoraria: String,
-    val fundacionId: String,
-    val estado: Boolean = true
 
+    val descripcion: String,
+
+    val intensidadHoraria: String,
+
+    val fundacionId: String,
+
+    val estado: Boolean = true
 )

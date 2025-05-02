@@ -1,5 +1,6 @@
 package com.example.kotlinsql.model.edicion
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -14,7 +15,7 @@ import java.time.LocalDate
 data class Edicion(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id_edicion: Long = 0,
+    val id: Long = 0,
 
     val titulo: String,
 
@@ -22,9 +23,8 @@ data class Edicion(
 
     val fechaFin: LocalDate,
 
-    @ManyToOne
-    @JoinColumn(name = "curso_id", nullable = true)
-    val curso: Long? = null,
+    @Column(name = "curso_id", nullable = true, insertable = true, updatable = true)
+    val cursoId: Int? = null,
 
     val estado: Boolean = true
 )

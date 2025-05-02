@@ -4,7 +4,9 @@ import com.example.kotlinsql.dto.unidad.CreateUnidadDto
 import com.example.kotlinsql.dto.unidad.UpdateUnidadDto
 import com.example.kotlinsql.model.unidad.Unidad
 import com.example.kotlinsql.repositories.unidad.UnidadRespository
+import org.springframework.stereotype.Service
 
+@Service
 class UnidadServices (
     private val unidadRepository: UnidadRespository,
 ){

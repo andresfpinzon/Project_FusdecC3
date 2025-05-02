@@ -21,7 +21,6 @@ class EdicionServices (
             titulo = edicion.titulo,
             fechaInicio = edicion.fechaInicio,
             fechaFin = edicion.fechaFin,
-            curso = null
         )
         return edicionRepository.save(edicion)
     }
