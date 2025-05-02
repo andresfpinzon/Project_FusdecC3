@@ -1,6 +1,7 @@
 package com.example.kotlinsql.controllers
 
 import com.example.kotlinsql.dto.UsuarioRolCreateRequest
+import com.example.kotlinsql.dto.UsuarioRolResponse
 import com.example.kotlinsql.model.UsuarioRol
 import com.example.kotlinsql.services.UsuarioRolService
 import jakarta.validation.Valid
@@ -14,7 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/rolesAsignados")
 class UsuarioRolController {
 
     @Autowired
@@ -80,12 +81,32 @@ class UsuarioRolController {
             )
         ]
     )
-    @DeleteMapping("/{documento}/{rol}")
+    @DeleteMapping("/{documento}/{rolId}")
     fun eliminar(
         @PathVariable documento: String,
-        @PathVariable rol: String): String {
-        val resultado = usuarioRolService.eliminar(documento, rol)
+        @PathVariable rolId: Int
+    ): String {
+        val resultado = usuarioRolService.eliminar(documento, rolId)
         return if (resultado > 0) "Rol eliminado correctamente" else "No se encontró el rol para eliminar"
+    }
+
+
+    @Operation(
+        summary = "Obtener roles detallados por número de documento",
+        description = "Devuelve los roles de un usuario, incluyendo el nombre del rol."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Lista de roles con nombre",
+                content = [Content(mediaType = "application/json")]
+            )
+        ]
+    )
+    @GetMapping("/{documento}/detallado")
+    fun obtenerRolesConNombre(@PathVariable documento: String): List<UsuarioRolResponse> {
+        return usuarioRolService.obtenerConNombreRolPorDocumento(documento)
     }
 
 }

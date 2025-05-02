@@ -1,24 +1,23 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.user
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.dto.administrativo.user.CreateUserDto
-import com.example.fusdeckotlin.dto.administrativo.user.UpdateUserDto
-import com.example.fusdeckotlin.dto.administrativo.userRol.AddRolUserDto
+import com.example.fusdeckotlin.dto.administrativo.userRol.UsuarioRolResponse
 import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
-import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
 import com.example.fusdeckotlin.services.administrativo.userRolServices.UserRolServices
+import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
 import com.example.fusdeckotlin.ui.adapters.administrativo.user.UserAdapter
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 
 class UserActivity : AppCompatActivity() {
@@ -29,7 +28,8 @@ class UserActivity : AppCompatActivity() {
     private lateinit var documento: EditText
     private lateinit var correo: EditText
     private lateinit var password: EditText
-    private lateinit var spinnerRole: Spinner
+    private lateinit var rolesCheckboxContainer: LinearLayout
+    private lateinit var selectedRolesChipGroup: ChipGroup
     private lateinit var confirmarButton: Button
     private lateinit var cancelarButton: Button
     private lateinit var userRecyclerView: RecyclerView
@@ -44,14 +44,24 @@ class UserActivity : AppCompatActivity() {
     // State
     private var isEditing = false
     private var currentNumeroDocument: String? = null
-    private val roles = arrayOf("Administrativo", "Instructor", "Secretario")
+    private val roles = listOf("Administrativo", "Instructor", "Secretario")
+    private val roleIds = mapOf(
+        "Administrativo" to 1,
+        "Instructor" to 2,
+        "Secretario" to 3
+    )
+    private val roleColors = mapOf(
+        "Administrativo" to R.color.role_admin,
+        "Instructor" to R.color.role_instructor,
+        "Secretario" to R.color.role_secretary
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
         initViews()
         setupRecyclerView()
-        setupSpinner()
+        setupRolesSelection()
         setupListeners()
         cargarUsuarios()
     }
@@ -62,25 +72,19 @@ class UserActivity : AppCompatActivity() {
         documento = findViewById(R.id.inputNumeroDocumento)
         correo = findViewById(R.id.inputCorreo)
         password = findViewById(R.id.inputPassword)
-        spinnerRole = findViewById(R.id.spinnerRole)
+        rolesCheckboxContainer = findViewById(R.id.rolesCheckboxContainer)
+        selectedRolesChipGroup = findViewById(R.id.selectedRolesChipGroup)
         confirmarButton = findViewById(R.id.buttonConfirmar)
         cancelarButton = findViewById(R.id.buttonCancelar)
         userRecyclerView = findViewById(R.id.recyclerViewUsers)
     }
 
-    private fun setupSpinner() {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roles)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerRole.adapter = adapter
-    }
-
     private fun setupRecyclerView() {
         adapter = UserAdapter(
             emptyList(),
-            emptyMap(), // Inicialmente vacío
+            emptyMap(),
             ::onUpdateClick,
-            ::onDeleteClick,
-            ::onRoleDelete // Callback para eliminar roles
+            ::onDeleteClick
         )
         userRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@UserActivity)
@@ -89,9 +93,76 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupRolesSelection() {
+        rolesCheckboxContainer.removeAllViews()
+
+        roles.forEach { role ->
+            val checkBox = CheckBox(this).apply {
+                text = role
+                id = View.generateViewId()
+            }
+
+            rolesCheckboxContainer.addView(checkBox)
+        }
+    }
+
     private fun setupListeners() {
         confirmarButton.setOnClickListener { guardarUsuario() }
         cancelarButton.setOnClickListener { finish() }
+
+        // Actualizar chips cuando cambian los checkboxes
+        rolesCheckboxContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+            override fun onChildViewAdded(parent: View?, child: View?) {
+                updateSelectedRolesChips()
+            }
+            override fun onChildViewRemoved(parent: View?, child: View?) {
+                updateSelectedRolesChips()
+            }
+        })
+    }
+
+    private fun updateSelectedRolesChips() {
+        selectedRolesChipGroup.removeAllViews()
+
+        for (i in 0 until rolesCheckboxContainer.childCount) {
+            val checkBox = rolesCheckboxContainer.getChildAt(i) as? CheckBox
+            if (checkBox?.isChecked == true) {
+                val roleName = checkBox.text.toString()
+                val chip = Chip(this).apply {
+                    text = roleName
+                    isCloseIconVisible = true
+                    setTextColor(resources.getColor(android.R.color.white, null))
+                    setChipBackgroundColorResource(roleColors[roleName] ?: R.color.role_default)
+
+                    setOnCloseIconClickListener {
+                        checkBox.isChecked = false
+                        selectedRolesChipGroup.removeView(this)
+                    }
+                }
+                selectedRolesChipGroup.addView(chip)
+            }
+        }
+    }
+
+    private fun getSelectedRoles(): List<String> {
+        val selected = mutableListOf<String>()
+        for (i in 0 until rolesCheckboxContainer.childCount) {
+            val checkBox = rolesCheckboxContainer.getChildAt(i) as? CheckBox
+            if (checkBox?.isChecked == true) {
+                selected.add(checkBox.text.toString())
+            }
+        }
+        return selected
+    }
+
+    private fun setSelectedRoles(roles: List<String>) {
+        for (i in 0 until rolesCheckboxContainer.childCount) {
+            val checkBox = rolesCheckboxContainer.getChildAt(i) as? CheckBox
+            if (checkBox != null) {
+                checkBox?.isChecked = roles.contains(checkBox.text.toString())
+            }
+        }
+        updateSelectedRolesChips()
     }
 
     private fun cargarUsuarios() {
@@ -99,16 +170,20 @@ class UserActivity : AppCompatActivity() {
             try {
                 usuarioServices.getUsersActives().onSuccess { users ->
                     val rolesMap = mutableMapOf<String, List<String>>()
+                    val filteredUsers = mutableListOf<Usuario>()
+
                     users.forEach { user ->
-                        rolServices.getRoleByUser(user.getNumeroDocumento()).onSuccess { roleResponse ->
-                            if (roleResponse.isNotEmpty()) {
-                                rolesMap[user.getNumeroDocumento()] = roleResponse.map { it.getRol() }
+                        rolServices.getRolesByUser(user.getNumeroDocumento()).onSuccess { roles ->
+                            if (!roles.any { it.rolNombre.equals("root", ignoreCase = true) }) {
+                                filteredUsers.add(user)
+                                rolesMap[user.getNumeroDocumento()] = roles.map { it.rolNombre }
                             }
                         }.onFailure { error ->
-                            showError("Error al obtener roles para el documento ${user.getNumeroDocumento()}: ${error.message}")
+                            showError("Error al obtener roles: ${error.message}")
                         }
                     }
-                    adapter.actualizarDatos(users, rolesMap)
+
+                    adapter.actualizarDatos(filteredUsers, rolesMap)
                 }.onFailure { error ->
                     showError("Error al cargar usuarios: ${error.message}")
                 }
@@ -124,22 +199,30 @@ class UserActivity : AppCompatActivity() {
         val numeroDocumento = documento.text.toString().trim()
         val correoUsuario = correo.text.toString().trim()
         val passwordUsuario = password.text.toString().trim()
-        val selectedRole = spinnerRole.selectedItem.toString()
+        val selectedRoles = getSelectedRoles()
+        val rolesIds = selectedRoles.mapNotNull { roleIds[it] }
+
         if (nombreUsuario.isEmpty() || apellidoUsuario.isEmpty() ||
-            numeroDocumento.isEmpty() || correoUsuario.isEmpty() || passwordUsuario.isEmpty()) {
+            numeroDocumento.isEmpty() || correoUsuario.isEmpty()) {
             showError("Complete todos los campos obligatorios")
             return
         }
+
+        if (!isEditing && passwordUsuario.isEmpty()) {
+            showError("La contraseña es obligatoria para nuevos usuarios")
+            return
+        }
+
         lifecycleScope.launch {
             try {
                 if (isEditing && currentNumeroDocument != null) {
                     actualizarUsuario(
-                        numeroDocumento,
+                        currentNumeroDocument!!,
                         nombreUsuario,
                         apellidoUsuario,
                         correoUsuario,
                         passwordUsuario,
-                        selectedRole
+                        rolesIds
                     )
                 } else {
                     crearUsuario(
@@ -148,7 +231,7 @@ class UserActivity : AppCompatActivity() {
                         apellidoUsuario,
                         correoUsuario,
                         passwordUsuario,
-                        selectedRole
+                        rolesIds
                     )
                 }
             } catch (e: Exception) {
@@ -163,13 +246,13 @@ class UserActivity : AppCompatActivity() {
         apellido: String,
         correo: String,
         password: String,
-        rol: String
+        rolesIds: List<Int>
     ) {
-        val createData = CreateUserDto(documento, nombre, apellido, correo, password)
-        usuarioServices.createUser(createData).onSuccess {
-            asignarRolUsuario(documento, rol)
+        rolServices.createUserWithRoles(
+            documento, nombre, apellido, correo, password, rolesIds
+        ).onSuccess {
             runOnUiThread {
-                showSuccess("Usuario creado")
+                showSuccess("Usuario creado con roles")
                 resetEditingState()
                 cargarUsuarios()
             }
@@ -184,44 +267,24 @@ class UserActivity : AppCompatActivity() {
         apellido: String,
         correo: String,
         password: String,
-        nuevoRol: String
+        rolesIds: List<Int>
     ) {
-        val updateData = UpdateUserDto(nombre, apellido, correo, password)
-        usuarioServices.updateUser(documento, updateData).onSuccess {
-            actualizarRolUsuario(documento, nuevoRol)
+        rolServices.updateUserWithRoles(
+            documento,
+            nombre,
+            apellido,
+            correo,
+            if (password.isNotEmpty()) password else null,
+            true,
+            rolesIds
+        ).onSuccess {
             runOnUiThread {
-                showSuccess("Usuario actualizado")
+                showSuccess("Usuario actualizado con roles")
                 resetEditingState()
                 cargarUsuarios()
             }
         }.onFailure { error ->
             showError("Error al actualizar usuario: ${error.message}")
-        }
-    }
-
-    private suspend fun asignarRolUsuario(documento: String, rol: String) {
-        rolServices.addRolToUser(AddRolUserDto(documento, rol)).onFailure { error ->
-            showError("Error al asignar rol: ${error.message}")
-        }
-    }
-
-    private suspend fun actualizarRolUsuario(documento: String, nuevoRol: String) {
-        rolServices.getRoleByUser(documento).onSuccess { userRoles ->
-            if (userRoles.isNotEmpty()) {
-                val currentRol = userRoles.first() // Obtiene el primer rol
-                if (currentRol.getRol() != nuevoRol) {
-                    rolServices.delteRoleOfUser(documento, currentRol.getRol()).onSuccess {
-                        asignarRolUsuario(documento, nuevoRol)
-                    }.onFailure { error ->
-                        showError("Error al actualizar rol: ${error.message}")
-                    }
-                }
-            } else {
-                // Si no hay roles actuales, simplemente asigna el nuevo rol
-                asignarRolUsuario(documento, nuevoRol)
-            }
-        }.onFailure {
-            asignarRolUsuario(documento, nuevoRol)
         }
     }
 
@@ -232,19 +295,15 @@ class UserActivity : AppCompatActivity() {
         nombre.setText(usuario.getNombreUsuario())
         apellidos.setText(usuario.getApellidoUsuario())
         correo.setText(usuario.getCorreo())
-        password.setText(usuario.getPassword())
+        password.setText("")
 
         lifecycleScope.launch {
-            rolServices.getRoleByUser(usuario.getNumeroDocumento()).onSuccess { userRoles ->
+            rolServices.getRolesByUser(usuario.getNumeroDocumento()).onSuccess { roles ->
                 runOnUiThread {
-                    if (userRoles.isNotEmpty()) {
-                        val firstRole = userRoles.first().getRol() // Obtiene el primer rol
-                        val position = roles.indexOf(firstRole)
-                        spinnerRole.setSelection(position)
-                    }
+                    setSelectedRoles(roles.map { it.rolNombre })
                 }
             }.onFailure { error ->
-                showError("Error al obtener rol: ${error.message}")
+                showError("Error al obtener roles: ${error.message}")
             }
         }
     }
@@ -256,20 +315,9 @@ class UserActivity : AppCompatActivity() {
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
                     usuarioServices.deleteUserById(usuario.getNumeroDocumento()).onSuccess {
-                        rolServices.getRoleByUser(usuario.getNumeroDocumento()).onSuccess { userRoles ->
-                            if (userRoles.isNotEmpty()) {
-                                userRoles.forEach { userRol ->
-                                    rolServices.delteRoleOfUser(usuario.getNumeroDocumento(), userRol.getRol())
-                                }
-                            } else {
-                                showError("No se encontraron roles para este usuario")
-                            }
-                            runOnUiThread {
-                                showSuccess("Usuario eliminado")
-                                cargarUsuarios()
-                            }
-                        }.onFailure { error ->
-                            showError("Error al obtener roles: ${error.message}")
+                        runOnUiThread {
+                            showSuccess("Usuario eliminado")
+                            cargarUsuarios()
                         }
                     }.onFailure { error ->
                         showError("Error al eliminar: ${error.message}")
@@ -278,24 +326,6 @@ class UserActivity : AppCompatActivity() {
             }
             .setNegativeButton("No", null)
             .show()
-    }
-
-    // Nuevo método requerido por el adapter
-    private fun onRoleDelete(documento: String, rol: String) {
-        lifecycleScope.launch {
-            try {
-                rolServices.delteRoleOfUser(documento, rol).onSuccess {
-                    runOnUiThread {
-                        showSuccess("Rol eliminado")
-                        cargarUsuarios()
-                    }
-                }.onFailure { error ->
-                    showError("Error al eliminar rol: ${error.message}")
-                }
-            } catch (e: Exception) {
-                showError("Error inesperado: ${e.message}")
-            }
-        }
     }
 
     private fun showError(message: String) {
@@ -314,6 +344,6 @@ class UserActivity : AppCompatActivity() {
         documento.text?.clear()
         correo.text?.clear()
         password.text?.clear()
-        spinnerRole.setSelection(0)
+        setSelectedRoles(emptyList())
     }
 }

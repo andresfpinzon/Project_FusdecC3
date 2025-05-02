@@ -27,9 +27,7 @@ import { useNavigate } from "react-router-dom";
 const Usuarios = () => {
   const navigate = useNavigate();
   const [usuarios, setUsuarios] = useState([]);
-  const [roles, setRoles] = useState([]);
   const [rolesDisponibles, setRolesDisponibles] = useState([]);
-  const [rolesAsignados, setRolesAsignados] = useState([]);
   const [formValues, setFormValues] = useState({
     numeroDocumento: "",
     nombre: "",
@@ -54,12 +52,13 @@ const Usuarios = () => {
       setMessage("Token no encontrado. Por favor, inicia sesión.");
       setSeverity("error");
       setOpenSnackbar(true);
+      navigate("/login");
     }
-  }, [token]);
+  }, [token, navigate]);
 
   const fetchRolesDisponibles = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/roles/enum", {
+      const response = await fetch("http://localhost:8080/roles", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -68,15 +67,12 @@ const Usuarios = () => {
       });
       
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("No autorizado. Por favor, inicia sesión nuevamente.");
-        }
         throw new Error("Error al obtener roles disponibles");
       }
       
       const data = await response.json();
-      setRolesDisponibles(data);
-      setRoles(data);
+      const rolesFiltrados = data.filter(rol => rol.nombre !== "Root");
+      setRolesDisponibles(rolesFiltrados);
     } catch (error) {
       console.error("Error en fetchRolesDisponibles:", error);
       setMessage("Error al obtener roles disponibles. Por favor, intente nuevamente.");
@@ -96,35 +92,32 @@ const Usuarios = () => {
       });
       
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("No autorizado. Por favor, inicia sesión nuevamente.");
-        }
         throw new Error("Error al obtener usuarios");
       }
       
       const data = await response.json();
       
-      // Obtener roles para cada usuario
       const usuariosConRoles = await Promise.all(
         data.map(async (usuario) => {
           try {
-            const rolesResponse = await fetch(`http://localhost:8080/roles/${usuario.numeroDocumento}`, {
-              headers: {
-                "Authorization": `Bearer ${token}`,
-                "Accept": "application/json"
+            const rolesResponse = await fetch(
+              `http://localhost:8080/rolesAsignados/${usuario.numeroDocumento}/detallado`,
+              {
+                headers: {
+                  "Authorization": `Bearer ${token}`,
+                  "Accept": "application/json"
+                }
               }
-            });
+            );
 
+            let rolesData = [];
             if (rolesResponse.ok) {
-              const rolesData = await rolesResponse.json();
-              return {
-                ...usuario,
-                roles: rolesData.map(rolObj => rolObj.rol)
-              };
+              rolesData = await rolesResponse.json();
             }
+            
             return {
               ...usuario,
-              roles: []
+              roles: rolesData.map(rolObj => rolObj.rolNombre)
             };
           } catch (error) {
             return {
@@ -135,7 +128,11 @@ const Usuarios = () => {
         })
       );
 
-      setUsuarios(usuariosConRoles);
+      const usuariosFiltrados = usuariosConRoles.filter(usuario => 
+        !usuario.roles.includes("Root")
+      );
+
+      setUsuarios(usuariosFiltrados);
     } catch (error) {
       console.error("Error en fetchUsuarios:", error);
       setMessage("Error al obtener usuarios. Por favor, intente nuevamente.");
@@ -145,47 +142,30 @@ const Usuarios = () => {
   };
 
   const fetchRolesAsignados = async (documento) => {
-    if (!documento) {
-      console.error("No se proporcionó un número de documento");
-      return;
-    }
+    if (!documento) return;
 
     try {
-      if (!token) {
-        setMessage("No hay token de autenticación. Por favor, inicie sesión nuevamente.");
-        setSeverity("error");
-        setOpenSnackbar(true);
-        return;
-      }
-
-      const response = await fetch(`http://localhost:8080/roles/${documento}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json"
+      const response = await fetch(
+        `http://localhost:8080/rolesAsignados/${documento}/detallado`,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+          }
         }
-      });
+      );
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Sesión expirada. Por favor, inicie sesión nuevamente.");
-        } else if (response.status === 403) {
-          throw new Error("No tienes permisos para ver los roles asignados.");
-        } else {
-          throw new Error(`Error al obtener roles asignados: ${response.status}`);
-        }
+        throw new Error(`Error al obtener roles asignados: ${response.status}`);
       }
 
       const rolesData = await response.json();
-      const rolesAsignados = rolesData.map(rolObj => rolObj.rol);
-      setRoles(rolesAsignados);
-
-      // Si estamos en modo edición, actualizar también formValues.roles
-      if (formValues.numeroDocumento === documento) {
-        setFormValues(prev => ({
-          ...prev,
-          roles: rolesAsignados
-        }));
-      }
+      const rolesAsignados = rolesData.map(rolObj => rolObj.rolNombre);
+      
+      setFormValues(prev => ({
+        ...prev,
+        roles: rolesAsignados
+      }));
 
     } catch (error) {
       console.error("Error en fetchRolesAsignados:", error);
@@ -195,284 +175,148 @@ const Usuarios = () => {
     }
   };
 
-  const sincronizarRoles = async (numeroDocumento) => {
-    await Promise.all([
-      fetchRolesDisponibles(),
-      fetchRolesAsignados(numeroDocumento)
-    ]);
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleRoleChange = async (event) => {
+  const handleRoleChange = (event) => {
+    // Solo actualiza el estado local, no hace llamada API
     const { value } = event.target;
-    const selectedRole = value[value.length - 1];
+    const selectedRoles = rolesDisponibles
+      .filter(rol => value.includes(rol.id))
+      .map(rol => rol.nombre);
+    
+    setFormValues({ ...formValues, roles: selectedRoles });
+  };
 
-    if (!formValues.numeroDocumento) {
-      setMessage("Debe crear o seleccionar un usuario antes de asignar roles");
-      setSeverity("warning");
+  const handleCreateUser = async () => {
+    // Validaciones
+    if (!formValues.numeroDocumento || !formValues.correo || !formValues.password) {
+      setMessage("Documento, correo y contraseña son obligatorios");
+      setSeverity("error");
       setOpenSnackbar(true);
       return;
     }
 
-    // Verificar que el rol no sea undefined y sea válido
-    if (!selectedRole || !rolesDisponibles.includes(selectedRole)) {
-      setMessage("Debe seleccionar un rol válido");
-      setSeverity("warning");
-      setOpenSnackbar(true);
-      return;
-    }
-
-    // Verificar si el rol ya está asignado
-    if (formValues.roles && formValues.roles.includes(selectedRole)) {
-      setMessage("Este rol ya está asignado al usuario");
-      setSeverity("warning");
+    if (formValues.password.length < 6) {
+      setMessage("La contraseña debe tener al menos 6 caracteres");
+      setSeverity("error");
       setOpenSnackbar(true);
       return;
     }
 
     try {
-      // Verificar si el token existe
-      if (!token) {
-        setMessage("No hay token de autenticación. Por favor, inicie sesión nuevamente.");
-        setSeverity("error");
-        setOpenSnackbar(true);
-        return;
-      }
-
-      const requestData = {
-        usuarioNumeroDocumento: formValues.numeroDocumento,
-        rol: selectedRole
-      };
-
-      const response = await fetch("http://localhost:8080/roles", {
+      const response = await fetch("http://localhost:8080/usuarios-management/con-roles", {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log("Error response:", errorText);
-        
-        if (response.status === 403) {
-          throw new Error("No tienes permisos para asignar roles. Verifica que tengas el rol Root o Administrativo.");
-        } else if (response.status === 401) {
-          throw new Error("Sesión expirada. Por favor, inicie sesión nuevamente.");
-        } else {
-          throw new Error(errorText || "Error al asignar el rol");
-        }
-      }
-
-      // Actualizar el estado local
-      setFormValues(prev => ({
-        ...prev,
-        roles: [...(prev.roles || []), selectedRole]
-      }));
-
-      setMessage("Rol asignado correctamente");
-      setSeverity("success");
-      setOpenSnackbar(true);
-
-      // Recargar los roles del usuario
-      await fetchRolesAsignados(formValues.numeroDocumento);
-      // Recargar la lista de usuarios para actualizar la vista
-      await fetchUsuarios();
-
-    } catch (error) {
-      console.error("Error en handleRoleChange:", error);
-      setMessage(error.message);
-      setSeverity("error");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const handleRemoveRole = async (documento, rol) => {
-    if (!documento || !rol) {
-      setMessage("Se requiere documento y rol para eliminar un rol");
-      setSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
-
-    try {
-      if (!token) {
-        setMessage("No hay token de autenticación. Por favor, inicie sesión nuevamente.");
-        setSeverity("error");
-        setOpenSnackbar(true);
-        return;
-      }
-
-      const response = await fetch(`http://localhost:8080/roles/${documento}/${rol}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json"
-        }
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Sesión expirada. Por favor, inicie sesión nuevamente.");
-        } else if (response.status === 403) {
-          throw new Error("No tienes permisos para eliminar roles.");
-        } else {
-          throw new Error(`Error al eliminar el rol: ${response.status}`);
-        }
-      }
-
-      // Actualizar el estado local
-      setRoles(prevRoles => prevRoles.filter(r => r !== rol));
-      
-      // Si estamos en modo edición, actualizar también formValues.roles
-      if (formValues.numeroDocumento === documento) {
-        setFormValues(prev => ({
-          ...prev,
-          roles: prev.roles.filter(r => r !== rol)
-        }));
-      }
-
-      setMessage("Rol eliminado exitosamente");
-      setSeverity("success");
-      setOpenSnackbar(true);
-
-      // Recargar la lista de usuarios y roles asignados
-      await fetchUsuarios();
-      await fetchRolesAsignados(documento);
-
-    } catch (error) {
-      console.error("Error en handleRemoveRole:", error);
-      setMessage(error.message);
-      setSeverity("error");
-      setOpenSnackbar(true);
-    }
-  };
-
-  const handleCreateOrUpdateUser = async () => {
-    // Validación de campos
-    if (!formValues.numeroDocumento || !formValues.correo) {
-      setMessage("Por favor complete los campos obligatorios");
-      setSeverity("warning");
-      setOpenSnackbar(true);
-      return;
-    }
-
-    // Validar formato de correo
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formValues.correo)) {
-      setMessage("Por favor ingrese un correo electrónico válido");
-      setSeverity("warning");
-      setOpenSnackbar(true);
-      return;
-    }
-
-    try {
-      const method = selectedUser ? "PUT" : "POST";
-      const url = selectedUser
-        ? `http://localhost:8080/usuarios/${formValues.numeroDocumento}`
-        : "http://localhost:8080/usuarios";
-        
-      // Preparar el cuerpo de la petición según sea creación o actualización
-      const requestBody = selectedUser ? {
-        nombre: formValues.nombre ? formValues.nombre.trim() : null,
-        apellido: formValues.apellido ? formValues.apellido.trim() : null,
-        correo: formValues.correo ? formValues.correo.trim().toLowerCase() : null,
-        password: formValues.password || null,
-        estado: formValues.estado
-      } : {
-        ...formValues,
-        nombre: formValues.nombre ? formValues.nombre.trim() : "",
-        apellido: formValues.apellido ? formValues.apellido.trim() : "",
-        correo: formValues.correo.trim().toLowerCase()
-      };
-
-      // Eliminar campos nulos o vacíos en caso de actualización
-      if (selectedUser) {
-        Object.keys(requestBody).forEach(key => {
-          if (requestBody[key] === null || requestBody[key] === "") {
-            delete requestBody[key];
-          }
-        });
-      }
-
-      const response = await fetch(url, {
-        method,
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          numeroDocumento: formValues.numeroDocumento,
+          nombre: formValues.nombre || "",
+          apellido: formValues.apellido || "",
+          correo: formValues.correo,
+          password: formValues.password,
+          rolesIds: formValues.roles
+            .map(rolNombre => rolesDisponibles.find(r => r.nombre === rolNombre)?.id)
+            .filter(id => id !== undefined)
+        })
       });
 
       if (!response.ok) {
-        if (response.status === 403) {
-          setMessage("No tienes permisos para realizar esta acción");
-          setSeverity("warning");
-          setOpenSnackbar(true);
-          return;
-        }
-        const errorData = await response.text();
-        throw new Error(errorData || "Error al guardar el usuario");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al crear el usuario");
       }
 
-      setMessage(selectedUser ? "Usuario actualizado correctamente" : "Usuario creado correctamente");
+      setMessage("Usuario creado correctamente con sus roles");
       setSeverity("success");
       setOpenSnackbar(true);
-      
-      setFormValues({
-        numeroDocumento: "",
-        nombre: "",
-        apellido: "",
-        correo: "",
-        password: "",
-        estado: true,
-        roles: [],
-      });
-      setSelectedUser(null);
-      
+      resetForm();
       await fetchUsuarios();
     } catch (error) {
-      console.error(error);
-      setMessage(error.message);
+      console.error("Error al crear usuario:", error);
+      setMessage(error.message || "Error al crear usuario");
+      setSeverity("error");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleUpdateUser = async () => {
+    // Validaciones
+    if (!formValues.numeroDocumento || !formValues.correo) {
+      setMessage("Documento y correo son obligatorios");
+      setSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    try {
+      const updateData = {
+        usuarioUpdate: {
+          nombre: formValues.nombre || null,
+          apellido: formValues.apellido || null,
+          correo: formValues.correo,
+          password: formValues.password || null,
+          estado: formValues.estado
+        },
+        rolesIds: formValues.roles
+          .map(rolNombre => rolesDisponibles.find(r => r.nombre === rolNombre)?.id)
+          .filter(id => id !== undefined)
+      };
+
+      const response = await fetch(
+        `http://localhost:8080/usuarios-management/${formValues.numeroDocumento}/con-roles`,
+        {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(updateData)
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al actualizar el usuario");
+      }
+
+      setMessage("Usuario actualizado correctamente");
+      setSeverity("success");
+      setOpenSnackbar(true);
+      resetForm();
+      await fetchUsuarios();
+    } catch (error) {
+      console.error("Error al actualizar usuario:", error);
+      setMessage(error.message || "Error al actualizar usuario");
       setSeverity("error");
       setOpenSnackbar(true);
     }
   };
 
   const handleDeleteUser = async (numeroDocumento) => {
-    if (!numeroDocumento) {
-      console.error("Número de documento no proporcionado");
-      return;
-    }
+    if (!numeroDocumento) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/usuarios/${numeroDocumento}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/usuarios/${numeroDocumento}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error("No tienes permisos para eliminar este usuario");
-        }
         throw new Error("Error al eliminar el usuario");
       }
 
       setMessage("Usuario eliminado correctamente");
       setSeverity("success");
       setOpenSnackbar(true);
-      
-      // Actualizar la lista de usuarios
       await fetchUsuarios();
     } catch (error) {
       console.error(error);
@@ -487,9 +331,22 @@ const Usuarios = () => {
     setFormValues({ 
       ...usuario, 
       password: "", 
-      roles: [] // Inicializar con array vacío, se cargarán los roles reales en sincronizarRoles
+      roles: []
     });
-    sincronizarRoles(usuario.numeroDocumento);
+    fetchRolesAsignados(usuario.numeroDocumento);
+  };
+
+  const resetForm = () => {
+    setFormValues({
+      numeroDocumento: "",
+      nombre: "",
+      apellido: "",
+      correo: "",
+      password: "",
+      estado: true,
+      roles: [],
+    });
+    setSelectedUser(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -498,7 +355,7 @@ const Usuarios = () => {
 
   return (
     <Container>
-      <h1>Gestión de Usuarios y Roles</h1>
+      <h1>Gestión de Usuarios</h1>
       <form>
         <TextField
           label="Número de Documento *"
@@ -548,44 +405,51 @@ const Usuarios = () => {
           margin="dense"
           helperText={selectedUser ? "Dejar en blanco para mantener la contraseña actual" : "Mínimo 6 caracteres"}
         />
+        
         <FormControl fullWidth margin="dense">
           <InputLabel id="roles-label">Roles</InputLabel>
           <Select
             labelId="roles-label"
             multiple
-            value={formValues.roles || []}
+            value={formValues.roles.map(r => rolesDisponibles.find(rd => rd.nombre === r)?.id || [])}
             onChange={handleRoleChange}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value, index) => (
-                  <Chip 
-                    key={`selected-${value}-${index}`} 
-                    label={value}
-                    onDelete={() => handleRemoveRole(formValues.numeroDocumento, value)}
-                    onMouseDown={(event) => {
-                      event.stopPropagation();
-                    }}
-                    sx={{
-                      backgroundColor: value === 'Root' ? '#ff9800' :
-                                     value === 'Administrativo' ? '#2196f3' :
-                                     value === 'Instructor' ? '#4caf50' :
-                                     value === 'Secretario' ? '#9c27b0' : '#757575',
-                      color: 'white',
-                      '& .MuiChip-deleteIcon': {
+                {selected.map(rolId => {
+                  const rol = rolesDisponibles.find(r => r.id === rolId);
+                  if (!rol) return null;
+                  return (
+                    <Chip 
+                      key={`selected-${rol.id}`}
+                      label={rol.nombre}
+                      onDelete={() => {
+                        setFormValues(prev => ({
+                          ...prev,
+                          roles: prev.roles.filter(name => name !== rol.nombre)
+                        }));
+                      }}
+                      onMouseDown={(event) => event.stopPropagation()}
+                      sx={{
+                        backgroundColor: rol.nombre === 'Administrativo' ? '#2196f3' :
+                                       rol.nombre === 'Instructor' ? '#4caf50' :
+                                       rol.nombre === 'Secretario' ? '#9c27b0' : '#757575',
                         color: 'white',
-                        '&:hover': { color: '#ffebee' }
-                      }
-                    }}
-                  />
-                ))}
+                        '& .MuiChip-deleteIcon': {
+                          color: 'white',
+                          '&:hover': { color: '#ffebee' }
+                        }
+                      }}
+                    />
+                  );
+                })}
               </Box>
             )}
             disabled={!formValues.numeroDocumento}
           >
-            {rolesDisponibles.map((rol, index) => (
-              <MenuItem key={`rol-${rol}-${index}`} value={rol}>
-                <Checkbox checked={(formValues.roles || []).includes(rol)} />
-                <ListItemText primary={rol} />
+            {rolesDisponibles.map((rol) => (
+              <MenuItem key={`rol-${rol.id}`} value={rol.id}>
+                <Checkbox checked={formValues.roles.includes(rol.nombre)} />
+                <ListItemText primary={rol.nombre} />
               </MenuItem>
             ))}
           </Select>
@@ -595,21 +459,33 @@ const Usuarios = () => {
               "Seleccione los roles para el usuario"}
           </FormHelperText>
         </FormControl>
+        
         <Button
           variant="contained"
           color="primary"
-          onClick={handleCreateOrUpdateUser}
-          sx={{ marginTop: "20px" }}
+          onClick={selectedUser ? handleUpdateUser : handleCreateUser}
+          sx={{ marginTop: "20px", marginRight: "10px" }}
         >
           {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
         </Button>
+        
+        {selectedUser && (
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={resetForm}
+            sx={{ marginTop: "20px" }}
+          >
+            Cancelar
+          </Button>
+        )}
       </form>
 
       <TableContainer component={Paper} sx={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Número de Documento</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Documento</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Apellido</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Correo</TableCell>
@@ -642,25 +518,23 @@ const Usuarios = () => {
                 <TableCell>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                     {usuario.roles && usuario.roles.length > 0 ? (
-                      usuario.roles.map((rol, index) => (
-                        <Chip
-                          key={`${usuario.numeroDocumento}-${rol}-${index}`}
-                          label={rol}
-                          onDelete={() => handleRemoveRole(usuario.numeroDocumento, rol)}
-                          size="small"
-                          sx={{
-                            backgroundColor: rol === 'Root' ? '#ff9800' :
-                                           rol === 'Administrativo' ? '#2196f3' :
-                                           rol === 'Instructor' ? '#4caf50' :
-                                           rol === 'Secretario' ? '#9c27b0' : '#757575',
-                            color: 'white',
-                            '& .MuiChip-deleteIcon': {
-                              color: 'white',
-                              '&:hover': { color: '#ffebee' }
-                            }
-                          }}
-                        />
-                      ))
+                      usuario.roles.map((rol, index) => {
+                        const rolInfo = rolesDisponibles.find(r => r.nombre === rol);
+                        if (!rolInfo) return null;
+                        return (
+                          <Chip
+                            key={`${usuario.numeroDocumento}-${rol}-${index}`}
+                            label={rol}
+                            size="small"
+                            sx={{
+                              backgroundColor: rol === 'Administrativo' ? '#2196f3' :
+                                             rol === 'Instructor' ? '#4caf50' :
+                                             rol === 'Secretario' ? '#9c27b0' : '#757575',
+                              color: 'white'
+                            }}
+                          />
+                        );
+                      })
                     ) : (
                       <Chip label="Sin roles" size="small" sx={{ backgroundColor: '#e0e0e0' }} />
                     )}
