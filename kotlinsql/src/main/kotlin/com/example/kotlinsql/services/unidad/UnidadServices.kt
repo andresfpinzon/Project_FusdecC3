@@ -18,5 +18,10 @@ class UnidadServices (
         return unidadRepository.save(unidad)
     }
 
+    fun obtenerUnidades(): List<Unidad> {
+        val unidades =  unidadRepository.findAll()
+        return  unidades
+    }
 
+    }
 }
