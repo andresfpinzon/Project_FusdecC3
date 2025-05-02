@@ -29,7 +29,11 @@ class WebConfig(val jwtFilter: JwtFilter) {
             "/usuarios-management/*",
             "/certificados/*",
             "/auditorias/*",
-            "/fundaciones/*"
+            "/fundaciones/*",
+            "/colegios/*",
+            "/cursos/*"
+
+
         )
         return registrationBean
     }
