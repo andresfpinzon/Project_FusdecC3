@@ -45,7 +45,7 @@ class ColegioService (private val jdbcTemplate: JdbcTemplate){
         valores.add(id)
         jdbcTemplate.update(sqlUpdate, *valores.toTypedArray())
 
-        // Devolver el colegio actualizada
+        // Devolver el colegio actualizado
         val sqlSelect = "SELECT * FROM colegio WHERE id = ?"
         return jdbcTemplate.queryForObject(sqlSelect, rowMapper, id)
     }

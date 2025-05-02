@@ -8,6 +8,3 @@ class Colegio(
     val estado: Boolean = true
 
 )
-
-
-
