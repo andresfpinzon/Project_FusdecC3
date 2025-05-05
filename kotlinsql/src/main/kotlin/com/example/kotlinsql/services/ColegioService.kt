@@ -53,4 +53,10 @@ class ColegioService (private val jdbcTemplate: JdbcTemplate){
     fun eliminar(id: Int): Int {
         return jdbcTemplate.update("DELETE FROM colegio WHERE id = ?", id)
     }
+
+    fun obtenerPorId(id: Int): Colegio? {
+        val sql = "SELECT * FROM colegio WHERE id = ?"
+        return jdbcTemplate.queryForObject(sql, rowMapper, id)
+    }
+
 }

@@ -93,4 +93,25 @@ class ColegioController (){
         val resultado = colegioService.eliminar(id)
         return if (resultado > 0) "Colegio eliminada" else "Colegio no encontrado"
     }
+
+    @Operation(summary = "Obtener colegio por ID", description = "Devuelve un colegio dado su ID.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Colegio encontrado",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Colegio::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Colegio no encontrado",
+                content = [Content(mediaType = "text/plain", examples = [ExampleObject(value = "Colegio no encontrado")])]
+            )
+        ]
+    )
+    @GetMapping("/{id}")
+    fun obtenerPorId(@PathVariable id: Int): Any {
+        return colegioService.obtenerPorId(id) ?: "Colegio no encontrado"
+    }
+
 }
