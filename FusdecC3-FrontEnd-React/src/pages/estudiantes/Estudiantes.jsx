@@ -45,9 +45,9 @@ const Estudiantes = () => {
     apellido: "",
     tipoDocumento: "",
     genero: "",
-    unidad: "",
-    colegio: "",
-    edicion: "",
+    unidadId: null,
+    colegioId: null,
+    edicionId: null,
     grado: "",
     estado: true
   });
@@ -84,13 +84,26 @@ const Estudiantes = () => {
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
       
-      // Condicion que verifica si el arreglo de estudiantes está vacío
-      if (data.length === 0) {
+      // Obtener nombres de relaciones
+      const estudiantesConNombres = await Promise.all(data.map(async (est) => {
+        const unidadNombre = est.unidadId ? await getUnidadNombre(est.unidadId) : "Sin unidad";
+        const colegioNombre = est.colegioId ? await getColegioNombre(est.colegioId) : "Sin colegio";
+        const edicionNombre = est.edicionId ? await getEdicionNombre(est.edicionId) : "Sin edición";
+        
+        return {
+          ...est,
+          unidadNombre,
+          colegioNombre,
+          edicionNombre
+        };
+      }));
+      
+      if (estudiantesConNombres.length === 0) {
         setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
         setEstudiantes([]); 
       } else {
-        setEstudiantes(data);
+        setEstudiantes(estudiantesConNombres);
       }
     } catch (error) {
       console.error("Error al obtener estudiantes:", error);
@@ -99,9 +112,55 @@ const Estudiantes = () => {
     }
   };
 
+  // Funciones auxiliares para obtener nombres
+  const getUnidadNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/unidades/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin unidad";
+      const data = await response.json();
+      return data.nombreUnidad || "Sin unidad";
+    } catch (error) {
+      return "Sin unidad";
+    }
+  };
+
+  const getColegioNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/colegios/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin colegio";
+      const data = await response.json();
+      return data.nombre || "Sin colegio";
+    } catch (error) {
+      return "Sin colegio";
+    }
+  };
+
+  const getEdicionNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/ediciones/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin edición";
+      const data = await response.json();
+      return data.titulo || "Sin edición";
+    } catch (error) {
+      return "Sin edición";
+    }
+  };
+
   const fetchUnidades = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/unidades", {
+      const response = await fetch("http://localhost:8080/unidades", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -128,7 +187,7 @@ const Estudiantes = () => {
 
   const fetchColegios = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/colegios", {
+      const response = await fetch("http://localhost:8080/colegios", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +195,6 @@ const Estudiantes = () => {
         },
       });
   
-      // Manejo de errores detallado
       if (response.status === 401) {
         const errorData = await response.json();
         console.error("Detalles error 401:", errorData);
@@ -153,18 +211,12 @@ const Estudiantes = () => {
       console.error("Error en fetchColegios:", error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
-      
-      // Redirigir a login si es error de autenticación
-      if (error.message.includes("No autorizado") || error.message.includes("401")) {
-        localStorage.removeItem("token");
-        // window.location.href = "/login"; // Descomenta si necesitas redirección
-      }
     }
   };
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones", {
+      const response = await fetch("http://localhost:8080/ediciones", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -189,16 +241,16 @@ const Estudiantes = () => {
     }
   };
 
-  // Filtrar usuarios según el término de búsqueda
+  // Filtrar estudiantes según el término de búsqueda
   const filteredEstudiantes = estudiantes.filter((estudiante) =>
     estudiante.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     estudiante.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
     estudiante.tipoDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
     estudiante.numeroDocumento.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    estudiante.unidad?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    estudiante.colegio?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    estudiante.edicion?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    estudiante.grado?.toLowerCase().includes(searchTerm.toLowerCase())
+    (estudiante.unidadNombre && estudiante.unidadNombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (estudiante.colegioNombre && estudiante.colegioNombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (estudiante.edicionNombre && estudiante.edicionNombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    estudiante.grado.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Cambiar página
@@ -228,6 +280,11 @@ const Estudiantes = () => {
 
   const handleCreateEstudiante = async () => {
     try {
+      // Validar que los IDs existen
+      if (!formValues.unidadId || !formValues.colegioId || !formValues.edicionId) {
+        throw new Error("Debe seleccionar unidad, colegio y edición");
+      }
+
       const response = await fetch("http://localhost:8080/estudiantes", {
         method: "POST",
         headers: {
@@ -250,9 +307,9 @@ const Estudiantes = () => {
           apellido: "",
           tipoDocumento: "",
           genero: "",
-          unidad: "",
-          colegio: "",
-          edicion: "",
+          unidadId: null,
+          colegioId: null,
+          edicionId: null,
           grado: "",
           estado: true
         });
@@ -282,7 +339,7 @@ const Estudiantes = () => {
       );
 
       if (response.ok) {
-        await fetchEstudiantes()
+        await fetchEstudiantes();
         setSelectedEstudiante(null);
         setFormValues({
           numeroDocumento: "",
@@ -290,9 +347,9 @@ const Estudiantes = () => {
           apellido: "",
           tipoDocumento: "",
           genero: "",
-          unidad: "",
-          colegio: "",
-          edicion: "",
+          unidadId: null,
+          colegioId: null,
+          edicionId: null,
           grado: "",
           estado: true
         });
@@ -351,9 +408,9 @@ const Estudiantes = () => {
       apellido: estudiante.apellido,
       tipoDocumento: estudiante.tipoDocumento,
       genero: estudiante.genero,
-      unidad: estudiante.unidad,
-      colegio: estudiante.colegio,
-      edicion: estudiante.edicion,
+      unidadId: estudiante.unidadId,
+      colegioId: estudiante.colegioId,
+      edicionId: estudiante.edicionId,
       grado: estudiante.grado,
       estado: estudiante.estado
     });
@@ -371,7 +428,6 @@ const Estudiantes = () => {
 
   const handleInfoClick = async (estudiante) => {
     try {
-      // Obtener todas las relaciones asistencia-estudiante
       const relacionesResponse = await fetch("http://localhost:8080/asistencia-estudiantes", {
         method: "GET",
         headers: {
@@ -384,12 +440,10 @@ const Estudiantes = () => {
       
       const relaciones = await relacionesResponse.json();
       
-      // Filtrar las relaciones de este estudiante
       const relacionesDelEstudiante = relaciones.filter(
         rel => rel.estudianteId === estudiante.numeroDocumento
       );
       
-      // Obtener los detalles de cada asistencia
       const asistenciasResponse = await fetch("http://localhost:8080/asistencias", {
         method: "GET",
         headers: {
@@ -402,12 +456,10 @@ const Estudiantes = () => {
       
       const todasAsistencias = await asistenciasResponse.json();
       
-      // Filtrar las asistencias de este estudiante
       const asistenciasDelEstudiante = todasAsistencias.filter(asistencia => 
         relacionesDelEstudiante.some(rel => rel.asistenciaId === asistencia.id)
       );
       
-      // Actualizar el estado con la información
       setInfoEstudiante({
         ...estudiante,
         asistencias: asistenciasDelEstudiante
@@ -439,6 +491,7 @@ const Estudiantes = () => {
           fullWidth
           margin="normal"
           required
+          disabled={!!selectedEstudiante} // Deshabilitar cuando se está editando
         />
 
         {/* Nombre */}
@@ -497,18 +550,13 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Unidad</InputLabel>
           <Select
-            value={unidades.find(u => u.nombreUnidad === formValues.unidad)?._id || ""}
-            onChange={(e) => {
-              const unidadSeleccionada = unidades.find(u => u._id === e.target.value);
-              setFormValues({
-                ...formValues,
-                unidad: unidadSeleccionada?.nombreUnidad || ""
-              });
-            }}
+            name="unidadId"
+            value={formValues.unidadId || ""}
+            onChange={handleInputChange}
             input={<OutlinedInput label="Unidad" />}
           >
             {unidades.map((unidad) => (
-              <MenuItem key={unidad._id} value={unidad._id}>
+              <MenuItem key={unidad.idUnidad} value={unidad.idUnidad}>
                 {unidad.nombreUnidad}
               </MenuItem>
             ))}
@@ -519,59 +567,31 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Colegio</InputLabel>
           <Select
-            value={colegios.find(c => c.nombreColegio === formValues.colegio)?._id || ""}
-            onChange={(e) => {
-              const colegioSeleccionado = colegios.find(c => c._id === e.target.value);
-              setFormValues({
-                ...formValues,
-                colegio: colegioSeleccionado?.nombreColegio || ""
-              });
-            }}
+            name="colegioId"
+            value={formValues.colegioId || ""}
+            onChange={handleInputChange}
             input={<OutlinedInput label="Colegio" />}
           >
             {colegios.map((colegio) => (
-              <MenuItem key={colegio._id} value={colegio._id}>
-                {colegio.nombreColegio}
+              <MenuItem key={colegio.id} value={colegio.id}>
+                {colegio.nombre}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        {/* Edición - Versión más robusta */}
+        {/* Edición */}
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Edición</InputLabel>
           <Select
-            value={
-              ediciones.find(e => 
-                e.tituloEdicion === formValues.edicion || 
-                e._id === formValues.edicion
-              )?._id || ""
-            }
-            onChange={(e) => {
-              const selectedId = e.target.value;
-              const edicionSeleccionada = ediciones.find(e => e._id === selectedId);
-              
-              if (edicionSeleccionada) {
-                setFormValues({
-                  ...formValues,
-                  edicion: edicionSeleccionada.tituloEdicion
-                });
-              } else {
-                // Opcional: resetear si no se encuentra
-                setFormValues({
-                  ...formValues,
-                  edicion: ""
-                });
-              }
-            }}
+            name="edicionId"
+            value={formValues.edicionId || ""}
+            onChange={handleInputChange}
             input={<OutlinedInput label="Edición" />}
           >
-            <MenuItem value="" disabled>
-              Seleccione una edición
-            </MenuItem>
             {ediciones.map((edicion) => (
-              <MenuItem key={edicion._id} value={edicion._id}>
-                {edicion.tituloEdicion}
+              <MenuItem key={edicion.id} value={edicion.id}>
+                {edicion.titulo}
               </MenuItem>
             ))}
           </Select>
@@ -586,7 +606,7 @@ const Estudiantes = () => {
             onChange={handleInputChange}
             input={<OutlinedInput label="Grado" />}
           >
-            {[ 8, 9, 10, 11].map((grado) => (
+            {[8, 9, 10, 11].map((grado) => (
               <MenuItem key={grado} value={`${grado}°`}>
                 {grado}° Grado
               </MenuItem>
@@ -617,9 +637,9 @@ const Estudiantes = () => {
               !formValues.apellido ||
               !formValues.tipoDocumento ||
               !formValues.genero ||
-              !formValues.unidad ||
-              !formValues.colegio ||
-              !formValues.edicion ||
+              !formValues.unidadId ||
+              !formValues.colegioId ||
+              !formValues.edicionId ||
               !formValues.grado
             }
           >
@@ -637,9 +657,9 @@ const Estudiantes = () => {
                   apellido: "",
                   tipoDocumento: "",
                   genero: "",
-                  unidad: "",
-                  colegio: "",
-                  edicion: "",
+                  unidadId: null,
+                  colegioId: null,
+                  edicionId: null,
                   grado: "",
                   estado: true
                 });
@@ -655,13 +675,14 @@ const Estudiantes = () => {
 
       {/* Busqueda */}
       <TextField
-        label="Buscar usuarios"
+        label="Buscar estudiantes"
         variant="outlined"
         fullWidth
         margin="normal"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
+      
       {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
@@ -688,10 +709,10 @@ const Estudiantes = () => {
                   <TableCell>{estudiante.nombre}</TableCell>
                   <TableCell>{estudiante.apellido}</TableCell>
                   <TableCell>{estudiante.tipoDocumento}</TableCell>
-                  <TableCell>{estudiante.unidad || "Sin unidad"}</TableCell>
-                  <TableCell>{estudiante.colegio || "Sin colegio"}</TableCell>
-                  <TableCell>{estudiante.edicion || "Sin edición"}</TableCell>
-                  <TableCell>{estudiante.grado || "Sin grado"}</TableCell>
+                  <TableCell>{estudiante.unidadNombre}</TableCell>
+                  <TableCell>{estudiante.colegioNombre}</TableCell>
+                  <TableCell>{estudiante.edicionNombre}</TableCell>
+                  <TableCell>{estudiante.grado}</TableCell>
                   <TableCell>
                     {estudiante.estado ? (
                       <Chip label="Activo" color="success" size="small" />
@@ -749,7 +770,6 @@ const Estudiantes = () => {
         </DialogActions>
       </Dialog>
 
-      
       <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="md" fullWidth>
         <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
           Asistencias de {infoEstudiante?.nombre} {infoEstudiante?.apellido}
@@ -779,7 +799,7 @@ const Estudiantes = () => {
                     </TableHead>
                     <TableBody>
                       {infoEstudiante.asistencias
-                        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)) // Ordenar por fecha descendente
+                        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                         .map((asistencia) => (
                           <TableRow key={asistencia.id}>
                             <TableCell>{asistencia.id}</TableCell>
@@ -814,7 +834,6 @@ const Estudiantes = () => {
         </DialogActions>
       </Dialog>
 
-
       <Snackbar 
         open={openSnackbar} 
         autoHideDuration={6000} 
@@ -827,7 +846,6 @@ const Estudiantes = () => {
           {errorMessage || successMessage}
         </Alert>
       </Snackbar>
-      
     </Container>
   );
 };
