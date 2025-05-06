@@ -693,6 +693,13 @@ const Unidades = () => {
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
+                <Group color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Usario:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {selectedUnidad.usuarioNombre || 'Sin brigada asignada'}
+                </Typography>
+              </Box>
+              <Box display="flex" alignItems="center" mb={2}>
                 {selectedUnidad.estadoUnidad ? <CheckCircle color="success" sx={{ mr: 1 }} /> : <Cancel color="error" sx={{ mr: 1 }} />}
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
