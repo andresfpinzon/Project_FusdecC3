@@ -33,4 +33,25 @@ class FundacionController {
     @GetMapping
     fun obtenerTodas(): List<Fundacion> = fundacionService.obtenerTodas()
 
+    @Operation(summary = "Obtener fundación por ID", description = "Devuelve una fundación dado su ID.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Fundación encontrada",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Fundacion::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Fundación no encontrada",
+                content = [Content(mediaType = "text/plain", examples = [io.swagger.v3.oas.annotations.media.ExampleObject(value = "Fundación no encontrada")])]
+            )
+        ]
+    )
+    @GetMapping("/{id}")
+    fun obtenerPorId(@PathVariable id: Int): Any {
+        return fundacionService.obtenerPorId(id) ?: "Fundación no encontrada"
+    }
+
+
 }

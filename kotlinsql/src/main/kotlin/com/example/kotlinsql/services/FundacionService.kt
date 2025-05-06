@@ -19,4 +19,10 @@ class FundacionService(private val jdbcTemplate: JdbcTemplate) {
     fun obtenerTodas(): List<Fundacion> {
         return jdbcTemplate.query("SELECT * FROM  fundacion", rowMapper)
     }
+
+    fun obtenerPorId(id: Int): Fundacion? {
+        val sql = "SELECT * FROM fundacion WHERE id = ?"
+        return jdbcTemplate.queryForObject(sql, rowMapper, id)
+    }
+
 }

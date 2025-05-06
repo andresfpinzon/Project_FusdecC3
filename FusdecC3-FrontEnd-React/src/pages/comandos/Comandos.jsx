@@ -60,7 +60,7 @@ const Comandos = () => {
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/comandos",{
+      const response = await fetch("http://localhost:8080/comandos",{
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const Comandos = () => {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/fundaciones", {
+      const response = await fetch("http://localhost:8080/fundaciones", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +138,7 @@ const Comandos = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/comandos", {
+      const response = await fetch("http://localhost:8080/comandos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -169,7 +169,7 @@ const Comandos = () => {
   const handleUpdateComando = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/comandos/${selectedComando._id}`,
+        `http://localhost:8080/comandos/${selectedComando._id}`,
         {
           method: "PUT",
           headers: {
@@ -208,7 +208,7 @@ const Comandos = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/comandos/${selectedComando._id}`,
+        `http://localhost:8080/comandos/${selectedComando._id}`,
         {
           method: "DELETE",
           headers: {
