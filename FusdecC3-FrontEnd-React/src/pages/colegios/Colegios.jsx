@@ -1,4 +1,4 @@
-  import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
   import {
     Container,
     TextField,
@@ -33,9 +33,9 @@
     const [estudiantes, setEstudiantes] = useState([]);
     const [selectedColegio, setSelectedColegio] = useState(null);
     const [formValues, setFormValues] = useState({
-      nombreColegio: "",
-      emailColegio: "",
-      estadoColegio: true,
+      nombre: "",
+      email: "",
+      estado: true,
     });
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -53,7 +53,7 @@
 
     const fetchColegios = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/colegios",{
+        const response = await fetch("http://localhost:8080/colegios",{
           method: "GET",
           headers: {
               "Content-Type": "application/json",
@@ -112,8 +112,8 @@
 
     // Filtrar usuarios según el término de búsqueda
     const filteredColegios = colegios.filter((colegio) =>
-      colegio.nombreColegio.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      colegio.emailColegio.toLowerCase().includes(searchTerm.toLowerCase())
+      colegio.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      colegio.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Cambiar página
@@ -148,7 +148,7 @@
 
     const handleCreateColegio = async () => {
       try {
-          const response = await fetch("http://localhost:3000/api/colegios", {
+          const response = await fetch("http://localhost:8080/colegios", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
@@ -162,9 +162,9 @@
               const nuevoColegio = await response.json();
               setColegios([...colegios, nuevoColegio]);
               setFormValues({
-                nombreColegio: "",
-                emailColegio: "",
-                estadoColegio: true,
+                nombre: "",
+                email: "",
+                estado: true,
               });
               // Muestra un mensaje de éxito
               setSuccessMessage("Colegio creado exitosamente");
@@ -183,7 +183,7 @@
   
     try {
       const response = await fetch(
-        `http://localhost:3000/api/colegios/${selectedColegio._id}`,
+        `http://localhost:8080/colegios/${selectedColegio.id}`,
         {
           method: "PUT",
           headers: {
@@ -203,15 +203,15 @@
       // Actualización optimizada del estado
       setColegios(prevColegios => 
         prevColegios.map(colegio => 
-          colegio._id === selectedColegio._id ? { ...colegio, ...data } : colegio
+          colegio.id === selectedColegio.id ? { ...colegio, ...data } : colegio
         )
       );
       
       setSelectedColegio(null);
       setFormValues({
-        nombreColegio: "",
-        emailColegio: "",
-        estadoColegio: true,
+        nombre: "",
+        email: "",
+        estado: true,
       });
       
       setSuccessMessage("Colegio actualizado exitosamente");
@@ -229,7 +229,7 @@
 
       try {
         const response = await fetch(
-          `http://localhost:3000/api/colegios/${colegioToDelete._id}`,
+          `http://localhost:8080/colegios/${colegioToDelete.id}`,
           {
             method: "DELETE",
             headers: {
@@ -240,7 +240,7 @@
         );
 
         if (response.ok) {
-          setColegios(colegios.filter((colegio) => colegio._id !== colegioToDelete._id));
+          setColegios(colegios.filter((colegio) => colegio.id !== colegioToDelete.id));
           // Muestra un mensaje de éxito
           setSuccessMessage("Colegio eliminado exitosamente");
           setOpenSnackbar(true);
@@ -257,9 +257,9 @@
     const handleEditClick = (colegio) => {
       setSelectedColegio(colegio);
       setFormValues({
-        nombreColegio: colegio.nombreColegio,
-        emailColegio: colegio.emailColegio,
-        estadoColegio: colegio.estadoColegio,
+        nombre: colegio.nombre,
+        email: colegio.email,
+        estado: colegio.estado,
       });
     };
 
@@ -276,11 +276,11 @@
     const handleInfoClick = (colegio) => {
       try {
         const estudiantesFiltrados = estudiantes
-          .filter(est => est.colegio?.toLowerCase() === colegio.nombreColegio?.toLowerCase())
+          .filter(est => est.colegioId === colegio.id)
           .map(est => `${est.nombre} ${est.apellido}`);
         
         setInfoColegio({
-          nombreColegio: colegio.nombreColegio,
+          nombre: colegio.nombre,
           estudiantes: estudiantesFiltrados
         });
         setOpenInfoDialog(true);
@@ -302,16 +302,16 @@
         <form noValidate autoComplete="off">
           <TextField
             label="Nombre del colegio"
-            name="nombreColegio"
-            value={formValues.nombreColegio}
+            name="nombre" 
+            value={formValues.nombre}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
           />
           <TextField
             label="Email del colegio"
-            name="emailColegio"
-            value={formValues.emailColegio}
+            name="email" 
+            value={formValues.email}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -319,9 +319,9 @@
 
           <Box marginTop={2} marginBottom={2}>
             <Switch
-              checked={formValues.estadoColegio}
+              checked={formValues.estado}
               onChange={handleSwitchChange}
-              name="estadoColegio"
+              name="estado"
               color="primary"
             />
             Estado Activo
@@ -362,11 +362,11 @@
             {filteredColegios
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((colegio) => (
-                <TableRow key={colegio._id}>
-                  <TableCell>{colegio.nombreColegio}</TableCell>
-                  <TableCell>{colegio.emailColegio}</TableCell>
+                <TableRow key={colegio.id}>
+                  <TableCell>{colegio.nombre}</TableCell>
+                  <TableCell>{colegio.email}</TableCell>
                   <TableCell>
-                      {colegio.estadoColegio ? (
+                      {colegio.estado ? (
                         <Chip label="Activo" color="success" size="small" />
                       ) : (
                         <Chip label="Inactivo" color="error" size="small" />
@@ -407,7 +407,7 @@
         <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
           <DialogTitle>Eliminar colegio</DialogTitle>
           <DialogContent>
-            <Typography>¿Estás seguro de que deseas eliminar a {colegioToDelete?.nombreColegio}?</Typography>
+            <Typography>¿Estás seguro de que deseas eliminar a {colegioToDelete?.nombre}?</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
@@ -417,7 +417,7 @@
 
         <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
           <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
-            Estudiantes de {infoColegio?.nombreColegio}
+            Estudiantes de {infoColegio?.nombre}
           </DialogTitle>
           
           <DialogContent sx={{ padding: '20px' }}>
