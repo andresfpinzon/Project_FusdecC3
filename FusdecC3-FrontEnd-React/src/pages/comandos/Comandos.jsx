@@ -140,7 +140,7 @@ const Comandos = () => {
 
   const fetchBrigadasActivas = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/comandos/activas/comando/${id}`, {
+      const response = await fetch(`http://localhost:8080/comandos/${id}/brigadas-asignadas`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

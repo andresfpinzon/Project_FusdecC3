@@ -113,8 +113,7 @@ const Estudiantes = () => {
   };
 
   // Funciones auxiliares para obtener nombres
-  const 
-  getUnidadNombre = async (id) => {
+  const getUnidadNombre = async (id) => {
     try {
       const response = await fetch(`http://localhost:8080/unidades/${id}`, {
         headers: {

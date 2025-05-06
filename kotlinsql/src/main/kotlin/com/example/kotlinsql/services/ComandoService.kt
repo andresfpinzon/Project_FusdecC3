@@ -66,7 +66,7 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.update("DELETE FROM comando WHERE id = ?", id)
     }
 
-    fun obtenerNombresBrigadas(comandoId: Int): List<String> {
+    fun obtenerBrigadasAsignadas(comandoId: Int): List<String> {
         val sql = """
             SELECT nombre_brigada
             FROM brigada
