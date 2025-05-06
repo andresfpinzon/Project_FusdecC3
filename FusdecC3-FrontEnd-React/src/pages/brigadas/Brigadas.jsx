@@ -226,10 +226,11 @@ const Brigadas = () => {
   const handleEdit = (brigade) => {
     setSelectedBrigade(brigade);
     setFormData({
-        nombreBrigada: brigade.nombreBrigada,
-        comandoId: brigade.comandoId.id,
-        estadoBrigada: brigade.estadoBrigada,
-        horario: brigade.horario || 'mañana'
+      nombreBrigada: brigade.nombreBrigada,
+      ubicacionBrigada: brigade.ubicacionBrigada, 
+      comandoId: brigade.comandoId || '', 
+      estadoBrigada: brigade.estadoBrigada,
+      horario: brigade.horario || 'mañana'
     });
     setShowForm(true);
   };
