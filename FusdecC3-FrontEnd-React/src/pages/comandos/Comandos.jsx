@@ -36,12 +36,13 @@ const token = localStorage.getItem("token");
 const Comandos = () => {
   const [comandos, setComandos] = useState([]);
   const [fundaciones, setFundaciones] = useState([]);
+  const [brigadasActivas, setBrigadasActivas] = useState([]);
   const [selectedComando, setSelectedComando] = useState(null);
   const [formValues, setFormValues] = useState({
     nombreComando: "",
     ubicacionComando: "",
     estadoComando: true,
-    fundacionId: null,
+    fundacionId: "",
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
@@ -137,6 +138,25 @@ const Comandos = () => {
     }
   };
 
+  const fetchBrigadasActivas = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/comandos/activas/comando/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error("Error al obtener brigadas activas");
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  };
+
   const handleInputChange = (e) => {
     setFormValues({
       ...formValues,
@@ -173,8 +193,7 @@ const Comandos = () => {
       });
 
       if (response.ok) {
-        const nuevoComando = await response.json();
-        setComandos([...comandos, nuevoComando]);
+        await fetchComandos(); // Actualiza la lista de comandos después de crear uno nuevo
         clearForm();
 
         // Muestra un mensaje de éxito
@@ -194,7 +213,7 @@ const Comandos = () => {
   const handleUpdateComando = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/comandos/${selectedComando._id}`,
+        `http://localhost:8080/comandos/${selectedComando.id}`,
         {
           method: "PUT",
           headers: {
@@ -209,13 +228,7 @@ const Comandos = () => {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar comando");
       }
-
-      const comandoActualizado = await response.json();
-      setComandos(
-        comandos.map((comando) =>
-          comando._id === selectedComando._id ? comandoActualizado : comando
-        )
-      );
+      await fetchComandos(); // Actualiza la lista de comandos después de actualizar uno existente
       clearForm();
 
       // Muestra un mensaje de éxito
@@ -233,7 +246,7 @@ const Comandos = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/comandos/${selectedComando._id}`,
+        `http://localhost:8080/comandos/${selectedComando.id}`,
         {
           method: "DELETE",
           headers: {
@@ -244,7 +257,7 @@ const Comandos = () => {
       );
 
       if (response.ok) {
-        setComandos(comandos.filter((comando) => comando._id !== selectedComando._id));
+        setComandos(comandos.filter((comando) => comando.id !== selectedComando.id));
         handleCloseDeleteDialog();
 
         // Muestra un mensaje de éxito
@@ -271,10 +284,15 @@ const Comandos = () => {
     });
   };
 
-  const handleInfoClick = (comando) => {
-    setInfoComando(comando);
-    setOpenInfoDialog(true);
-  };
+  // Modifica el handler para abrir el diálogo de información
+const handleInfoClick = async (comando) => {
+  setInfoComando(comando);
+  setOpenInfoDialog(true);
+  
+  // Cargar brigadas activas cuando se abre el diálogo
+  const brigadas = await fetchBrigadasActivas(comando.id);
+  setBrigadasActivas(brigadas);
+};
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
@@ -306,19 +324,6 @@ const Comandos = () => {
     const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)/;
     return regex.test(link);
   };
-
-  const obtenerFundacionesAsignadas = () => {
-    const fundacionesAsignadas = comandos.map(comando => {
-      const fundacion = fundaciones.find(fundacion => fundacion.id === comando.fundacionId);
-      return fundacion ? fundacion.nombre : null;
-    }).filter((nombre) => nombre !== null);
-
-    return [...new Set(fundacionesAsignadas)]; // Elimina duplicados
-  };
-
-  // Uso de la función
-  const fundacionesUnicas = obtenerFundacionesAsignadas();
-  console.log(fundacionesUnicas);
 
   const filteredComandos = comandos.filter((comando) =>
     comando.nombreComando.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -404,13 +409,11 @@ const Comandos = () => {
               </TableHead>
               <TableBody>
                 {filteredComandos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comando) => (
-                  <TableRow key={comando._id}>
+                  <TableRow key={comando.id}>
                     <TableCell>{comando.nombreComando}</TableCell>
                     <TableCell>{comando.ubicacionComando}</TableCell>
                     <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
-                    <TableCell>
-                      <TableCell>{comando.fundacionNombre || "No asignada"}</TableCell>
-                    </TableCell>
+                    <TableCell>{comando.fundacionNombre || "No asignada"}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(comando)} color="primary">
                         <Edit />
@@ -520,14 +523,14 @@ const Comandos = () => {
 
               {/* Brigadas Asignadas */}
               <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
-                Brigadas Asignadas
+                Brigadas Activas Asignadas
               </Typography>
-              {infoComando.brigadas && infoComando.brigadas.length > 0 ? (
+              {brigadasActivas.length > 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {infoComando.brigadas?.map((brigada) => (
+                  {brigadasActivas.map((nombreBrigada, index) => (
                     <Chip
-                      key={brigada._id}
-                      label={brigada.nombreBrigada || "Brigada no encontrada"}
+                      key={index}
+                      label={nombreBrigada || "Brigada no encontrada"}
                       color="primary"
                       variant="outlined"
                       size="small"
@@ -546,7 +549,7 @@ const Comandos = () => {
                 </Box>
               ) : (
                 <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                  Sin brigadas asignadas
+                  No hay brigadas activas asignadas
                 </Typography>
               )}
             </div>

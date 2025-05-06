@@ -51,6 +51,7 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
         request.nombreComando?.let { campos.add("nombre_comando = ?"); valores.add(it) }
         request.ubicacionComando?.let { campos.add("ubicacion_comando = ?"); valores.add(it) }
         request.estadoComando?.let { campos.add("estado_comando = ?"); valores.add(it) }
+        request.fundacionId?.let { campos.add("fundacion_id = ?"); valores.add(it) } // Añade esta línea
 
         if (campos.isEmpty()) return null
 
