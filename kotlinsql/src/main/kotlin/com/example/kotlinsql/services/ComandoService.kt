@@ -16,7 +16,7 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
             nombreComando = rs.getString("nombre_comando"),
             ubicacionComando = rs.getString("ubicacion_comando"),
             estadoComando = rs.getBoolean("estado_comando"),
-            fundacionId = rs.getString("fundacion_id")
+            fundacionId = rs.getInt("fundacion_id")
         )
     }
 

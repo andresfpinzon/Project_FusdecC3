@@ -41,7 +41,7 @@ const Comandos = () => {
     nombreComando: "",
     ubicacionComando: "",
     estadoComando: true,
-    fundacionId: "",
+    fundacionId: null,
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
@@ -64,19 +64,29 @@ const Comandos = () => {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
         }
     });
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
 
+      // Obtener nombres de relaciones
+      const comandosConNombres = await Promise.all(data.map(async (est) => {
+        const fundacionNombre = est.fundacionId ? await getFundacionNombre(est.fundacionId) : "Sin fundacion";
+
+        return {
+          ...est,
+          fundacionNombre
+        };
+      }));
+
       // Condicion que verifica si el arreglo de comandos está vacío
-      if (data.length === 0) {
+      if (comandosConNombres.length === 0) {
         setErrorMessage("No hay comandos registrados.");
         setOpenSnackbar(true);
         setComandos([]); // esto mantiene el estado vacío para evitar errores
       } else {
-        setComandos(data);
+        setComandos(comandosConNombres);
       }
     } catch (error) {
       console.error("Error al obtener comandos:", error);
@@ -91,7 +101,7 @@ const Comandos = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token
+          "Authorization": `Bearer ${token}`
         }
       });
       if (!response.ok) throw new Error("Error al obtener fundaciones");
@@ -109,6 +119,21 @@ const Comandos = () => {
       console.error("Error al obtener fundaciones:", error);
       setErrorMessage("Error al obtener fundaciones");
       setOpenSnackbar(true);
+    }
+  };
+
+  const getFundacionNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/fundaciones/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin fundación";
+      const data = await response.json();
+      return data.nombre || "Sin fundación";
+    } catch (error) {
+      return "Sin fundación";
     }
   };
 
@@ -142,7 +167,7 @@ const Comandos = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(comandoData),
       });
@@ -174,7 +199,7 @@ const Comandos = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}` 
           },
           body: JSON.stringify(formValues),
         }
@@ -213,7 +238,7 @@ const Comandos = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
         }
         }
       );
@@ -242,7 +267,7 @@ const Comandos = () => {
       nombreComando: comando.nombreComando || "",
       ubicacionComando: comando.ubicacionComando || "",
       estadoComando: comando.estadoComando !== undefined ? comando.estadoComando : true,
-      fundacionId: comando.fundacionId?._id || "",
+      fundacionId: comando.fundacionId || "",
     });
   };
 
@@ -284,8 +309,8 @@ const Comandos = () => {
 
   const obtenerFundacionesAsignadas = () => {
     const fundacionesAsignadas = comandos.map(comando => {
-      const fundacion = fundaciones.find(fundacion => fundacion._id === comando.fundacionId);
-      return fundacion ? fundacion.nombreFundacion : null;
+      const fundacion = fundaciones.find(fundacion => fundacion.id === comando.fundacionId);
+      return fundacion ? fundacion.nombre : null;
     }).filter((nombre) => nombre !== null);
 
     return [...new Set(fundacionesAsignadas)]; // Elimina duplicados
@@ -342,8 +367,8 @@ const Comandos = () => {
                 required
               >
                 {fundaciones.map((fundacion) => (
-                  <MenuItem key={fundacion._id} value={fundacion._id}>
-                    {fundacion.nombreFundacion}
+                  <MenuItem key={fundacion.id} value={fundacion.id}>
+                    {fundacion.nombre}
                   </MenuItem>
                 ))}
               </Select>
@@ -384,7 +409,7 @@ const Comandos = () => {
                     <TableCell>{comando.ubicacionComando}</TableCell>
                     <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>
-                      {fundaciones.find(fundacion => fundacion._id === comando.fundacionId)?.nombreFundacion || "No asignada"}
+                      <TableCell>{comando.fundacionNombre || "No asignada"}</TableCell>
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(comando)} color="primary">
@@ -489,7 +514,7 @@ const Comandos = () => {
                 <History color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fundación:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {fundaciones.find(fundacion => fundacion._id === infoComando.fundacionId)?.nombreFundacion || "No asignada"}
+                  {infoComando.fundacionNombre || "No asignada"}
                 </Typography>
               </Box>
 
