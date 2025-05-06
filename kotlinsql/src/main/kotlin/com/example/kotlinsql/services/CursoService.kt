@@ -70,4 +70,13 @@ class CursoService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.query(sql, rowMapperResponse, id)
     }
 
+    fun obtenerPorId(id: Int): Curso? {
+        val sql = "SELECT * FROM curso WHERE id = ?"
+        return try {
+            jdbcTemplate.queryForObject(sql, rowMapper, id)
+        } catch (e: Exception) {
+            null // Retorna null si no encuentra el curso
+        }
+    }
+
 }

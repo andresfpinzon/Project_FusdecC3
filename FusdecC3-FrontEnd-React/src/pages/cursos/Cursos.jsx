@@ -37,10 +37,10 @@ const Cursos = () => {
   const [cursos, setCursos] = useState([]);
   const [selectedCurso, setSelectedCurso] = useState(null);
   const [formValues, setFormValues] = useState({
-    nombreCurso: "",
-    descripcionCurso: "",
-    intensidadHorariaCurso: "",
-    estadoCurso: true,
+    nombre: "",
+    descripcion: "",
+    intensidadHoraria: "",
+    estado: true,
     fundacionId: "",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -59,23 +59,33 @@ const Cursos = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/cursos",{
+      const response = await fetch("http://localhost:8080/cursos",{
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
         }
     });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
 
+      // Obtener nombres de relaciones
+      const cursosConNombres = await Promise.all(data.map(async (est) => {
+        const fundacionNombre = est.fundacionId ? await getFundacionNombre(est.fundacionId) : "Sin fundacion";
+
+        return {
+          ...est,
+          fundacionNombre
+        };
+      }));
+
       // Condicion que verifica si el arreglo de cursos está vacío
-      if (data.length === 0) {
+      if (cursosConNombres.length === 0) {
         setErrorMessage("No hay cursos registrados.");
         setOpenSnackbar(true);
         setCursos([]); // esto mantiene el estado vacío para evitar errores
       } else {
-        setCursos(data);
+        setCursos(cursosConNombres);
       }
     } catch (error) {
       console.error("Error al obtener cursos:", error);
@@ -86,11 +96,11 @@ const Cursos = () => {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/fundaciones",{
+      const response = await fetch("http://localhost:8080/fundaciones",{
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
         }
     });
       if (!response.ok) throw new Error("Error al obtener fundaciones");
@@ -111,6 +121,21 @@ const Cursos = () => {
     }
   };
 
+  const getFundacionNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/fundaciones/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin fundación";
+      const data = await response.json();
+      return data.nombre || "Sin fundación";
+    } catch (error) {
+      return "Sin fundación";
+    }
+  };
+
   useEffect(() => {
     fetchFundaciones();
     fetchCursos();
@@ -118,8 +143,8 @@ const Cursos = () => {
 
   // Filtrar usuarios según el término de búsqueda
   const filteredCursos = cursos.filter((curso) =>
-    curso.nombreCurso.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    curso.descripcionCurso.toLowerCase().includes(searchTerm.toLowerCase())
+    curso.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    curso.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Cambiar página
@@ -153,17 +178,17 @@ const Cursos = () => {
   };
 
   const handleCreateCurso = async () => {
-    if (!formValues.nombreCurso || !formValues.descripcionCurso || !formValues.intensidadHorariaCurso) {
+    if (!formValues.nombre || !formValues.descripcion || !formValues.intensidadHoraria) {
       setErrorMessage("Todos los campos son obligatorios");
       setOpenSnackbar(true);
       return;
     }
     try {
-      const response = await fetch("http://localhost:3000/api/cursos", {
+      const response = await fetch("http://localhost:8080/cursos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(formValues),
       });
@@ -176,10 +201,10 @@ const Cursos = () => {
   
       setCursos([...cursos, data]);
       setFormValues({
-        nombreCurso: "",
-        descripcionCurso: "",
-        intensidadHorariaCurso: "",
-        estadoCurso: true,
+        nombre: "",
+        descripcion: "",
+        intensidadHoraria: "",
+        estado: true,
         fundacionId: "",
       });
       
@@ -198,12 +223,12 @@ const Cursos = () => {
   
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cursos/${selectedCurso._id}`,
+        `http://localhost:8080/cursos/${selectedCurso.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify(formValues),
         }
@@ -218,10 +243,10 @@ const Cursos = () => {
       await fetchCursos();
       setSelectedCurso(null);
       setFormValues({
-        nombreCurso: "",
-        descripcionCurso: "",
-        intensidadHorariaCurso: "",
-        estadoCurso: true,
+        nombre: "",
+        descripcion: "",
+        intensidadHoraria: "",
+        estado: true,
         fundacionId: "",
       });
   
@@ -240,18 +265,18 @@ const Cursos = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cursos/${cursoToDelete._id}`,
+        `http://localhost:8080/cursos/${cursoToDelete.id}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}`
         }
         }
       );
 
       if (response.ok) {
-        setCursos(cursos.filter((curso) => curso._id !== cursoToDelete._id));
+        setCursos(cursos.filter((curso) => curso.id !== cursoToDelete.id));
         handleCloseDeleteDialog(); // Cierra el modal de confirmación después de eliminar
 
         // Mostrar mensaje de éxito
@@ -269,11 +294,11 @@ const Cursos = () => {
   const handleEditClick = (curso) => {
     setSelectedCurso(curso);
     setFormValues({
-      nombreCurso: curso.nombreCurso,
-      descripcionCurso: curso.descripcionCurso,
-      intensidadHorariaCurso: curso.intensidadHorariaCurso,
-      estadoCurso: curso.estadoCurso !== undefined ? curso.estadoCurso : true,
-      fundacionId: curso.fundacionId?._id || "",
+      nombre: curso.nombre,
+      descripcion: curso.descripcion,
+      intensidadHoraria: curso.intensidadHoraria,
+      estado: curso.estado !== undefined ? curso.estado : true,
+      fundacionId: curso.fundacionId || "",
     });
   };  
 
@@ -283,15 +308,14 @@ const Cursos = () => {
   };
 
   const handleInfoClick = async (curso) => {
-    const response = await fetch(`http://localhost:3000/api/cursos/${curso._id}`,{
-      method: "GET",
-      headers: {
-          "Content-Type": "application/json",
-          "Authorization": token 
-      }
-  });
-    const data = await response.json();
-    setInfoCurso(data);
+    const fundacion = fundaciones.find(f => f.id === curso.fundacionId);
+    const cursoInfo = {
+      ...curso,
+      fundacionNombre: fundacion?.nombre || "Sin fundación",
+      edicionesInfo: "No hay ediciones registradas" // Texto por defecto
+    };
+    
+    setInfoCurso(cursoInfo);
     setOpenInfoDialog(true);
   };
 
@@ -310,24 +334,24 @@ const Cursos = () => {
       <form noValidate autoComplete="off">
         <TextField
           label="Nombre del Curso"
-          name="nombreCurso"
-          value={formValues.nombreCurso}
+          name="nombre"
+          value={formValues.nombre}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
         />
         <TextField
           label="Descripción"
-          name="descripcionCurso"
-          value={formValues.descripcionCurso}
+          name="descripcion"
+          value={formValues.descripcion}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
         />
         <TextField
           label="Intensidad Horaria"
-          name="intensidadHorariaCurso"
-          value={formValues.intensidadHorariaCurso}
+          name="intensidadHoraria"
+          value={formValues.intensidadHoraria}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
@@ -342,8 +366,8 @@ const Cursos = () => {
             input={<OutlinedInput label="Fundacion" />}
           >
             {fundaciones.map((fundacion) => (
-              <MenuItem key={fundacion._id} value={fundacion._id}>
-                {fundacion.nombreFundacion}
+              <MenuItem key={fundacion.id} value={fundacion.id}>
+                {fundacion.nombre}
               </MenuItem>
             ))}
           </Select>
@@ -352,9 +376,9 @@ const Cursos = () => {
         
         <Box marginTop={2} marginBottom={2}>
           <Switch
-            checked={formValues.estadoCurso}
+            checked={formValues.estado}
             onChange={handleSwitchChange}
-            name="estadoCurso"
+            name="estado"
             color="primary"
           />
           Estado Activo
@@ -396,11 +420,11 @@ const Cursos = () => {
           {filteredCursos
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((curso) => (
-              <TableRow key={curso._id}>
-                <TableCell>{curso.nombreCurso}</TableCell>
-                <TableCell>{curso.descripcionCurso}</TableCell>
-                <TableCell>{curso.intensidadHorariaCurso}</TableCell>
-                <TableCell>{curso.estadoCurso ? "Activo" : "Inactivo"}</TableCell>
+              <TableRow key={curso.id}>
+                <TableCell>{curso.nombre}</TableCell>
+                <TableCell>{curso.descripcion}</TableCell>
+                <TableCell>{curso.intensidadHoraria}</TableCell>
+                <TableCell>{curso.estado ? "Activo" : "Inactivo"}</TableCell>
                 <TableCell>
                   <IconButton
                     onClick={() => handleEditClick(curso)}color="primary">
@@ -435,7 +459,7 @@ const Cursos = () => {
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Eliminar Curso</DialogTitle>
         <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {cursoToDelete?.nombreCurso}?</Typography>
+          <Typography>¿Estás seguro de que deseas eliminar a {cursoToDelete?.nombr}?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
@@ -450,48 +474,19 @@ const Cursos = () => {
         <DialogContent dividers sx={{ padding: '20px' }}>
           {infoCurso && (
             <div>
-              {/* Nombre del Curso */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <School color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.nombreCurso || "No disponible"}</Typography>
-              </Box>
-              
-              {/* Descripción */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <Description color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Descripción:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.descripcionCurso || "No disponible"}</Typography>
-              </Box>
-              
-              {/* Intensidad Horaria */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <AccessTime color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Intensidad horaria:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.intensidadHorariaCurso || "No disponible"}</Typography>
-              </Box>
-              
-              {/* Estado */}
-              <Box display="flex" alignItems="center" mb={2}>
-                <ToggleOn color="primary" sx={{ mr: 1 }} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Estado:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.estadoCurso ? "Activo" : "Inactivo"}</Typography>
-              </Box>
-              
-              {/* Fundación */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Foundation color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Fundación:</Typography>
-                <Typography variant="body1" sx={{ ml: 1 }}>{infoCurso.fundacionId?.nombreFundacion || "Fundación no encontrada"}
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {infoCurso.fundacionNombre || "Fundación no asignada"}
                 </Typography>
               </Box>
               
-              {/* Ediciones */}
               <Box display="flex" alignItems="center" mb={2}>
                 <EventNote color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ediciones:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {infoCurso.ediciones?.length > 0 ? infoCurso.ediciones.map((edicion) => edicion.tituloEdicion).join(", ") : "Ediciones no encontradas"}
+                  {infoCurso.edicionesInfo || "No hay ediciones registradas"}
                 </Typography>
               </Box>
             </div>

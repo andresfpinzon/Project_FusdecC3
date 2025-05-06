@@ -109,9 +109,26 @@ class CursoController {
             )
         ]
     )
+
+    @GetMapping("/{id}")
+    fun obtenerPorId(@PathVariable id: Int): Curso? = cursoService.obtenerPorId(id)
+
+    @Operation(summary = "Crear nuevo comando", description = "Crea un nuevo comando con los datos proporcionados.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Comando creado exitosamente",
+                content = [Content(mediaType = "application/json", schema = Schema(implementation = Curso::class))]
+            )
+        ]
+    )
+
     @GetMapping("/{id}/ediciones")
     fun obtenerEdiciones(@PathVariable id: Int): List<CursoEdicionesRequest> {
         return cursoService.obtenerEdiciones(id)
     }
+
+
 
 }

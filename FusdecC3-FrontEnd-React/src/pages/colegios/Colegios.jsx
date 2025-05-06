@@ -88,7 +88,7 @@ import React, { useState, useEffect } from "react";
           }
         });
         if (!response.ok) throw new Error("Error al obtener estudiantes");
-        const data = await response.json();
+        const data = await response.json();zz
         
         // Condicion que verifica si el arreglo de estudiantes está vacío
         if (data.length === 0) {
