@@ -1,4 +1,0 @@
-package com.example.kotlinsql.dto
-
-class EdicionEstudiantesResponse {
-}
