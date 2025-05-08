@@ -119,8 +119,8 @@ class ComandoController {
             )
         ]
     )
-    @GetMapping("/activas/comando/{comandoId}")
-    fun obtenerNombresBrigadasActivasPorComando(@PathVariable comandoId: Int): List<String> {
-        return comandoService.obtenerNombresBrigadas(comandoId)
+    @GetMapping("/{comandoId}/brigadas-asignadas")
+    fun obtenerBrigadasAsignadasAComando(@PathVariable comandoId: Int): List<String> {
+        return comandoService.obtenerBrigadasAsignadas(comandoId)
     }
 }

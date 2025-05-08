@@ -16,7 +16,7 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
             nombreComando = rs.getString("nombre_comando"),
             ubicacionComando = rs.getString("ubicacion_comando"),
             estadoComando = rs.getBoolean("estado_comando"),
-            fundacionId = rs.getString("fundacion_id")
+            fundacionId = rs.getInt("fundacion_id")
         )
     }
 
@@ -51,6 +51,7 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
         request.nombreComando?.let { campos.add("nombre_comando = ?"); valores.add(it) }
         request.ubicacionComando?.let { campos.add("ubicacion_comando = ?"); valores.add(it) }
         request.estadoComando?.let { campos.add("estado_comando = ?"); valores.add(it) }
+        request.fundacionId?.let { campos.add("fundacion_id = ?"); valores.add(it) } // Añade esta línea
 
         if (campos.isEmpty()) return null
 
@@ -65,7 +66,7 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.update("DELETE FROM comando WHERE id = ?", id)
     }
 
-    fun obtenerNombresBrigadas(comandoId: Int): List<String> {
+    fun obtenerBrigadasAsignadas(comandoId: Int): List<String> {
         val sql = """
             SELECT nombre_brigada
             FROM brigada

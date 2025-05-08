@@ -10,6 +10,8 @@ import { Snackbar, Alert, CircularProgress } from '@mui/material';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const token = localStorage.getItem("token");
+
 const Unidades = () => {
   const [unidades, setUnidades] = useState([]);
   const [brigadas, setBrigadas] = useState([]);
@@ -61,79 +63,49 @@ const Unidades = () => {
       }
     };
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setSnackbar({
-        open: true,
-        message: 'No hay token de autenticación. Por favor, inicie sesión nuevamente.',
-        severity: 'error'
-      });
-      return;
-    }
-
     loadData();
   }, []);
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/unidades', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Accept': 'application/json'
-        },
+      const response = await fetch('http://localhost:8080/unidades', {
+        headers: { "Authorization": `Bearer ${token}` },
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error ${response.status} al obtener unidades`);
-      }
+  
+      if (!response.ok) throw new Error(`Error ${response.status} al obtener unidades`);
       
       const data = await response.json();
-
-      // Para cada unidad, obtener el nombre de su brigada
-      const unidadesConBrigadas = await Promise.all(data.map(async (unidad) => {
-        if (unidad.brigadaId) {
-          try {
-            const brigadaResponse = await fetch(`http://localhost:3000/api/brigadas/${unidad.brigadaId}`, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Accept': 'application/json'
-              },
-            });
-            
-            if (brigadaResponse.ok) {
-              const brigada = await brigadaResponse.json();
-              return {
-                ...unidad,
-                brigada: {
-                  nombreBrigada: brigada.nombreBrigada
-                }
-              };
-            }
-          } catch (error) {
-            // Manejar error silenciosamente
-          }
-        }
-        return unidad;
+      console.log("Unidades recibidas:", data);
+  
+      // Obtener nombres de relaciones
+      const unidadesConNombres = await Promise.all(data.map(async (unidad) => {
+        const brigadaNombre = unidad.brigadaId ? await getBrigadaNombre(unidad.brigadaId) : "Sin brigada";
+        const usuarioNombre = unidad.usuarioId ? await getUsuarioNombre(unidad.usuarioId) : "Sin instructor";
+  
+        return {
+          ...unidad,
+          brigadaNombre,
+          usuarioNombre
+        };
       }));
-
-      setUnidades(unidadesConBrigadas);
+  
+      setUnidades(unidadesConNombres);
     } catch (error) {
       setSnackbar({
         open: true,
         message: `Error al cargar las unidades: ${error.message}`,
         severity: 'error'
       });
-      throw error;
     }
   };
+  
 
   const fetchBrigadas = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/brigadas', {
+      const response = await fetch('http://localhost:8080/brigadas', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Accept': 'application/json'
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
       });
       
@@ -160,12 +132,42 @@ const Unidades = () => {
     }
   };
 
+  const getUsuarioNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/usuarios/numero-documento/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin usuario";
+      const data = await response.json();
+      return data.nombre || "Sin usuario";
+    } catch (error) {
+      return "Sin usuario";
+    }
+  };
+
+  const getBrigadaNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/brigadas/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin brigada";
+      const data = await response.json();
+      return data.nombreBrigada || "Sin brigada";
+    } catch (error) {
+      return "Sin brigada";
+    }
+  };
+
   const fetchUsuarios = async () => {
     try {
       const response = await fetch('http://localhost:8080/usuarios', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Accept': 'application/json'
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
       
@@ -175,42 +177,47 @@ const Unidades = () => {
       
       const data = await response.json();
       
-      // Obtener roles para cada usuario y filtrar solo instructores
+      // Obtener roles para cada usuario usando el nuevo endpoint
       const usuariosConRoles = await Promise.all(
         data.map(async (usuario) => {
           try {
-            const rolesResponse = await fetch(`http://localhost:8080/roles/${usuario.numeroDocumento}`, {
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Accept': 'application/json'
+            const rolesResponse = await fetch(
+              `http://localhost:8080/rolesAsignados/${usuario.numeroDocumento}/detallado`, 
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
+                }
               }
-            });
-
+            );
+  
             if (rolesResponse.ok) {
               const rolesData = await rolesResponse.json();
-              const roles = rolesData.map(rolObj => rolObj.rol);
-              // Solo retornar si tiene rol de Instructor
-              if (roles.includes('Instructor')) {
+              // Verificar si tiene rol de Instructor (ahora viene en rolNombre)
+              const esInstructor = rolesData.some(rol => rol.rolNombre === 'Instructor');
+              
+              if (esInstructor) {
                 return {
                   id: usuario.numeroDocumento,
                   nombre: `${usuario.nombre} ${usuario.apellido}`,
-                  roles: roles
+                  roles: rolesData.map(rol => rol.rolNombre)
                 };
               }
               return null;
             }
             return null;
           } catch (error) {
+            console.error('Error al obtener roles:', error);
             return null;
           }
         })
       );
-
+  
       // Filtrar usuarios nulos y ordenar por nombre
       const instructores = usuariosConRoles
         .filter(usuario => usuario !== null)
         .sort((a, b) => a.nombre.localeCompare(b.nombre));
-
+  
       setUsuarios(instructores);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
@@ -222,37 +229,28 @@ const Unidades = () => {
     }
   };
 
-  const fetchEstudiantes = async (nombreUnidad) => {
+  const fetchEstudiantes = async (unidadId) => {
     try {
       const response = await fetch("http://localhost:8080/estudiantes", {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Accept': 'application/json'
-        },
+        headers: { "Authorization": `Bearer ${token}` },
       });
-      
-      if (!response.ok) {
-        throw new Error("Error al obtener estudiantes");
-      }
+  
+      if (!response.ok) throw new Error("Error al obtener estudiantes");
       
       const data = await response.json();
-      console.log('Estudiantes obtenidos:', data); // Debug
-
-      // Filtrar estudiantes que coincidan con el nombre de la unidad
+  
+      // Filtrar estudiantes por unidadId
       const estudiantesFiltrados = data.filter(estudiante => 
-        estudiante.unidad?.toLowerCase() === nombreUnidad?.toLowerCase()
+        estudiante.unidadId === unidadId
       );
-
-      console.log('Estudiantes filtrados por unidad:', estudiantesFiltrados); // Debug
+  
       return estudiantesFiltrados.map(estudiante => ({
-        id: estudiante.id || estudiante._id,
+        id: estudiante.id,
         nombre: `${estudiante.nombre} ${estudiante.apellido}`,
         documento: estudiante.numeroDocumento
       }));
     } catch (error) {
       console.error("Error al obtener estudiantes:", error);
-      setErrorMessage(error.message);
-      setOpenSnackbar(true);
       return [];
     }
   };
@@ -279,8 +277,8 @@ const Unidades = () => {
       }
 
       const url = selectedUnidad
-        ? `http://localhost:3000/api/unidades/${selectedUnidad._id}`
-        : 'http://localhost:3000/api/unidades';
+        ? `http://localhost:8080/unidades/${selectedUnidad.id}`
+        : 'http://localhost:8080/unidades';
       
       const method = selectedUnidad ? 'PUT' : 'POST';
       
@@ -295,9 +293,8 @@ const Unidades = () => {
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Accept': 'application/json'
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(dataToSend),
       });
@@ -343,10 +340,11 @@ const Unidades = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de que quieres eliminar esta unidad?')) return;
     try {
-      const response = await fetch(`http://localhost:3000/api/unidades/${id}`, {
+      const response = await fetch(`http://localhost:8080/unidades/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': localStorage.getItem('token') || '',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
       if (!response.ok) throw new Error('Error al eliminar unidad');
@@ -369,19 +367,17 @@ const Unidades = () => {
     setSelectedUnidad(unidad);
     setFormValues({
       nombreUnidad: unidad.nombreUnidad || '',
-      brigadaId: unidad.brigadaId?._id || unidad.brigadaId || '',
+      brigadaId: unidad.brigadaId?.id || unidad.brigadaId || '',
       estadoUnidad: unidad.estadoUnidad || true,
-      usuarioId: unidad.usuarioId?._id || unidad.usuarioId || ''
+      usuarioId: unidad.usuarioId?.id || unidad.usuarioId || ''
     });
     setShowForm(true);
   };
 
   const handleInfoClick = async (unidad) => {
     try {
-      // Obtener estudiantes que coincidan con el nombre de la unidad
-      const estudiantesUnidad = await fetchEstudiantes(unidad.nombreUnidad);
+      const estudiantesUnidad = await fetchEstudiantes(unidad.id);
       
-      // Actualizar la unidad seleccionada con los estudiantes filtrados
       setSelectedUnidad({
         ...unidad,
         estudiantes: estudiantesUnidad
@@ -525,8 +521,8 @@ const Unidades = () => {
                     </MenuItem>
                     {brigadas.map((brigada) => (
                       <MenuItem 
-                        key={brigada._id} 
-                        value={brigada._id}
+                        key={brigada.id} 
+                        value={brigada.id}
                         sx={{
                           padding: '10px 15px'
                         }}
@@ -545,7 +541,7 @@ const Unidades = () => {
                   </Select>
                   <FormHelperText>
                     {formValues.brigadaId ? 
-                      `Brigada seleccionada: ${brigadas.find(b => b._id === formValues.brigadaId)?.nombreBrigada}` : 
+                      `Brigada seleccionada: ${brigadas.find(b => b.id === formValues.brigadaId)?.nombreBrigada}` : 
                       'Debe seleccionar una brigada para la unidad'}
                   </FormHelperText>
                 </FormControl>
@@ -638,8 +634,8 @@ const Unidades = () => {
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef} className="unit-list">
               {filteredUnidades.map((unidad, index) => (
-                unidad && unidad._id ? (
-                  <Draggable key={unidad._id} draggableId={unidad._id} index={index}>
+                unidad && unidad.id ? (
+                  <Draggable key={unidad.id} draggableId={unidad.id} index={index}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
@@ -656,13 +652,13 @@ const Unidades = () => {
                         </div>
                         <p className="unit-brigada">
                           <i className="fas fa-flag"></i> 
-                          {unidad.brigada?.nombreBrigada || 'Sin brigada asignada'}
+                          {unidad.brigadaNombre|| 'Sin brigada asignada'}
                         </p>
                         <div className="unit-actions">
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
                           </button>
-                          <button onClick={(e) => { e.stopPropagation(); handleDelete(unidad._id); }} className="delete-button">
+                          <button onClick={(e) => { e.stopPropagation(); handleDelete(unidad.id); }} className="delete-button">
                             <i className="fas fa-trash-alt"></i> Eliminar
                           </button>
                         </div>
@@ -693,7 +689,14 @@ const Unidades = () => {
                 <Group color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Brigada:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedUnidad.brigada?.nombreBrigada || 'Sin brigada asignada'}
+                  {selectedUnidad.brigadaNombre || 'Sin brigada asignada'}
+                </Typography>
+              </Box>
+              <Box display="flex" alignItems="center" mb={2}>
+                <Group color="primary" sx={{ mr: 1 }} />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Usario:</Typography>
+                <Typography variant="body1" sx={{ ml: 1 }}>
+                  {selectedUnidad.usuarioNombre || 'Sin brigada asignada'}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>

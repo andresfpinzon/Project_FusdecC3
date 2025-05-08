@@ -9,6 +9,8 @@ import { Assignment, LocationOn, Group, CheckCircle, Cancel, Shield } from '@mui
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const token = localStorage.getItem("token");
+
 const Brigadas = () => {
   const [brigades, setBrigades] = useState([]);
   const [commands, setCommands] = useState([]);
@@ -35,45 +37,36 @@ const Brigadas = () => {
   useEffect(() => {
     fetchBrigades();
     fetchCommands();
-    fetchUnidades();
   }, []);
 
   const fetchBrigades = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/brigadas', {
+      const response = await fetch('http://localhost:8080/brigadas', {
         headers: {
-          'Authorization': localStorage.getItem('token') || '',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
       if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
-      
-      // Obtener las unidades para cada brigada
-      const unidadesResponse = await fetch('http://localhost:3000/api/unidades', {
-        headers: {
-          'Authorization': localStorage.getItem('token') || '',
-        },
-      });
-      const unidadesData = await unidadesResponse.json();
-
-      // Mapear las unidades a sus brigadas correspondientes
-      const brigadasConUnidades = data.map(brigada => {
-        const unidadesDeBrigada = unidadesData.filter(unidad => 
-          unidad.brigadaId === brigada._id
-        );
+  
+      // Obtener nombres de comandos y unidades asignadas
+      const brigadasConNombres = await Promise.all(data.map(async (brigada) => {
+        const comandoNombre = brigada.comandoId ? await getComandoNombre(brigada.comandoId) : "Sin comando asignado";
+        
         return {
           ...brigada,
-          comandoId: brigada.comandoId || { nombreComando: 'Sin comando asignado' },
-          unidades: unidadesDeBrigada.map(unidad => unidad.nombreUnidad)
+          comandoNombre,
+          unidades: [] // Inicializamos como array vacío, se cargará al abrir el diálogo
         };
-      });
-
+      }));
+  
       if (data.length === 0) {
         setErrorMessage("No hay brigadas registradas.");
         setOpenSnackbar(true);
         setBrigades([]);
       } else {
-        setBrigades(brigadasConUnidades);
+        setBrigades(brigadasConNombres);
       }
     } catch (error) {
       console.error('Error detallado:', error);
@@ -85,9 +78,10 @@ const Brigadas = () => {
 
   const fetchCommands = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/comandos', {
+      const response = await fetch('http://localhost:8080/comandos', {
         headers: {
-          'Authorization': localStorage.getItem('token') || '',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
       if (!response.ok) throw new Error('Error al obtener comandos');
@@ -107,18 +101,34 @@ const Brigadas = () => {
     }
   };
 
-  const fetchUnidades = async () => {
+  const fetchUnidadesAsignadas = async (brigadaId) => {
     try {
-      const response = await fetch('http://localhost:3000/api/unidades', {
+      const response = await fetch(`http://localhost:8080/brigadas/${brigadaId}/unidades-asignadas`, {
         headers: {
-          'Authorization': localStorage.getItem('token') || '',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
-      if (!response.ok) throw new Error('Error al obtener unidades');
-      const data = await response.json();
-      
+      if (!response.ok) return [];
+      return await response.json();
     } catch (error) {
-      console.error('Error al obtener unidades:', error);
+      console.error('Error al obtener unidades asignadas:', error);
+      return [];
+    }
+  };
+
+  const getComandoNombre = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/comandos/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) return "Sin Comando";
+      const data = await response.json();
+      return data.nombreComando || "Sin Comando";
+    } catch (error) {
+      return "Sin Comando";
     }
   };
 
@@ -148,13 +158,13 @@ const Brigadas = () => {
     try {
         const response = await fetch(
             selectedBrigade 
-                ? `http://localhost:3000/api/brigadas/${selectedBrigade._id}` 
-                : 'http://localhost:3000/api/brigadas', 
+                ? `http://localhost:8080/brigadas/${selectedBrigade.id}` 
+                : 'http://localhost:8080/brigadas', 
             {
                 method: selectedBrigade ? 'PUT' : 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': localStorage.getItem('token') || '',
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
             }
@@ -194,10 +204,11 @@ const Brigadas = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de que quieres eliminar esta brigada?')) return;
     try {
-      const response = await fetch(`http://localhost:3000/api/brigadas/${id}`, {
+      const response = await fetch(`http://localhost:8080/brigadas/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': localStorage.getItem('token') || '',
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
       if (!response.ok) throw new Error('Error al eliminar brigada');
@@ -215,16 +226,21 @@ const Brigadas = () => {
   const handleEdit = (brigade) => {
     setSelectedBrigade(brigade);
     setFormData({
-        nombreBrigada: brigade.nombreBrigada,
-        comandoId: brigade.comandoId._id,
-        estadoBrigada: brigade.estadoBrigada,
-        horario: brigade.horario || 'mañana'
+      nombreBrigada: brigade.nombreBrigada,
+      ubicacionBrigada: brigade.ubicacionBrigada, 
+      comandoId: brigade.comandoId || '', 
+      estadoBrigada: brigade.estadoBrigada,
+      horario: brigade.horario || 'mañana'
     });
     setShowForm(true);
   };
 
-  const handleInfoClick = (brigade) => {
-    setSelectedBrigade(brigade);
+  const handleInfoClick = async (brigade) => {
+    const unidades = await fetchUnidadesAsignadas(brigade.id);
+    setSelectedBrigade({
+      ...brigade,
+      unidades
+    });
     setOpenInfoDialog(true);
   };
 
@@ -297,7 +313,7 @@ const Brigadas = () => {
             >
                 <option value="">Seleccionar Comando</option>
                 {commands.map(command => (
-                    <option key={command._id} value={command._id}>
+                    <option key={command.id} value={command.id}>
                         {command.nombreComando}
                     </option>
                 ))}
@@ -395,8 +411,8 @@ const Brigadas = () => {
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef} className="brigade-list">
               {filteredBrigades.map((brigade, index) => (
-                brigade && brigade._id ? (
-                  <Draggable key={brigade._id} draggableId={brigade._id} index={index}>
+                brigade && brigade.id ? (
+                  <Draggable key={brigade.id} draggableId={brigade.id} index={index}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
@@ -412,12 +428,12 @@ const Brigadas = () => {
                           </span>
                         </div>
                         <p><i className="fas fa-map-marker-alt"></i> {brigade.ubicacionBrigada}</p>
-                        <p><i className="fas fa-flag"></i> {brigade.comandoId?.nombreComando || 'Sin comando asignado'}</p>
+                        <p><i className="fas fa-flag"></i> {brigade.comandoNombre  || 'Sin comando asignado'}</p>
                         <div className="brigade-actions">
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(brigade); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
                           </button>
-                          <button onClick={() => handleDelete(brigade._id)} className="delete-button">
+                          <button onClick={() => handleDelete(brigade.id)} className="delete-button">
                             <i className="fas fa-trash-alt"></i> Eliminar
                           </button>
                         </div>
@@ -451,7 +467,7 @@ const Brigadas = () => {
                 <Shield color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedBrigade.comandoId?.nombreComando || 'Sin comando asignado'}
+                  {selectedBrigade.comandoNombre  || 'Sin comando asignado'}
                 </Typography>
               </Box>
               
