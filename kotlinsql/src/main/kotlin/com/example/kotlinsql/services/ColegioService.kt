@@ -2,6 +2,7 @@ package com.example.kotlinsql.services
 
 import com.example.kotlinsql.dto.ColegioCreateRequest
 import com.example.kotlinsql.dto.ColegioUpdateRequest
+import com.example.kotlinsql.dto.EstudianteResumenResponse
 import com.example.kotlinsql.model.Colegio
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
@@ -57,6 +58,24 @@ class ColegioService (private val jdbcTemplate: JdbcTemplate){
     fun obtenerPorId(id: Int): Colegio? {
         val sql = "SELECT * FROM colegio WHERE id = ?"
         return jdbcTemplate.queryForObject(sql, rowMapper, id)
+    }
+
+    fun obtenerEstudiantesPorColegio(colegioId: Int): List<EstudianteResumenResponse> {
+        val sql = """
+            SELECT numero_documento, nombre, apellido 
+            FROM estudiante 
+            WHERE colegio_id = ? 
+            AND estado = true
+            ORDER BY nombre ASC
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, { rs, _ ->
+            EstudianteResumenResponse(
+                numeroDocumento = rs.getString("numero_documento"),
+                nombre = rs.getString("nombre"),
+                apellido = rs.getString("apellido")
+            )
+        }, colegioId)
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.kotlinsql.controllers
 
 import com.example.kotlinsql.dto.ColegioCreateRequest
 import com.example.kotlinsql.dto.ColegioUpdateRequest
+import com.example.kotlinsql.dto.EstudianteResumenResponse
 import com.example.kotlinsql.model.Colegio
 import com.example.kotlinsql.services.ColegioService
 import io.swagger.v3.oas.annotations.Operation
@@ -112,6 +113,22 @@ class ColegioController (){
     @GetMapping("/{id}")
     fun obtenerPorId(@PathVariable id: Int): Any {
         return colegioService.obtenerPorId(id) ?: "Colegio no encontrado"
+    }
+
+    @Operation(summary = "Obtener estudiantes del colegio",
+        description = "Devuelve una lista de estudiantes pertenecientes a este colegio")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Lista de estudiantes",
+                content = [Content(mediaType = "application/json",
+                    schema = Schema(implementation = EstudianteResumenResponse::class))])
+        ]
+    )
+    @GetMapping("/{id}/estudiantes")
+    fun obtenerEstudiantesDelColegio(@PathVariable id: Int): List<EstudianteResumenResponse> {
+        return colegioService.obtenerEstudiantesPorColegio(id)
     }
 
 }

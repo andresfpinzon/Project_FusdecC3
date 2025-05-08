@@ -44,7 +44,7 @@ class EdicionServices (
         val sql = """
         SELECT nombre, apellido 
         FROM estudiante 
-        WHERE edicion_id = ?  -- Filtra estudiantes por edicion_id
+        WHERE edicion_id = ? 
     """.trimIndent()
 
         return jdbcTemplate.query(sql, { rs, _ ->
