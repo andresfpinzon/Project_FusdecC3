@@ -27,8 +27,6 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
-  Checkbox,
-  ListItemText,
   TablePagination
 } from "@mui/material";
 
@@ -55,12 +53,11 @@ const Ediciones = () => {
   const [selectedEdicion, setSelectedEdicion] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null); // Agrégalo junto a los otros estados
   const [formValues, setFormValues] = useState({
-    tituloEdicion: "",
-    fechaInicioEdicion: "",
-    fechaFinEdicion: "",
-    estadoEdicion: true,
+    titulo: "",
+    fechaInicio: "",
+    fechaFin: "",
+    estado: true,
     cursoId: "",
-    horarios: [],
     estudiantes: [],
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -78,11 +75,11 @@ const Ediciones = () => {
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones",{
+      const response = await fetch("http://localhost:8080/ediciones",{
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}` 
         }
     });
       if (!response.ok) throw new Error("Error al obtener ediciones");
@@ -105,11 +102,11 @@ const Ediciones = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/cursos",{
+      const response = await fetch("http://localhost:8080/cursos",{
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}` 
         }
     });
       if (!response.ok) throw new Error("Error al obtener cursos");
@@ -137,9 +134,9 @@ const Ediciones = () => {
 
   // Filtrar usuarios según el término de búsqueda
   const filteredEdiciones = ediciones.filter((edicion) =>
-    edicion.tituloEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    edicion.fechaFinEdicion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    edicion.fechaInicioEdicion.toLowerCase().includes(searchTerm.toLowerCase())
+    edicion.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    edicion.fechaFin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    edicion.fechaInicio.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Cambiar página
@@ -175,11 +172,11 @@ const Ediciones = () => {
 
   const handleCreateEdicion = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/ediciones", {
+      const response = await fetch("http://localhost:8080/ediciones", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token 
+          "Authorization": `Bearer ${token}` 
         },
         body: JSON.stringify(formValues),
       });
@@ -192,10 +189,10 @@ const Ediciones = () => {
   
       setEdiciones([...ediciones, data]);
       setFormValues({
-        tituloEdicion: "",
-        fechaInicioEdicion: "",
-        fechaFinEdicion: "",
-        estadoEdicion: true,
+        titulo: "",
+        fechaInicio: "",
+        fechaFin: "",
+        estado: true,
         cursoId: "",
         estudiantes: [],
       });
@@ -213,12 +210,12 @@ const Ediciones = () => {
   const handleUpdateEdicion = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/ediciones/${selectedEdicion._id}`,
+        `http://localhost:8080/ediciones/${selectedEdicion.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}` 
           },
           body: JSON.stringify(formValues),
         }
@@ -231,14 +228,14 @@ const Ediciones = () => {
       }
   
       setEdiciones(ediciones.map(edicion => 
-        edicion._id === data._id ? data : edicion
+        edicion.id === data.id ? data : edicion
       ));
       setSelectedEdicion(null);
       setFormValues({
-        tituloEdicion: "",
-        fechaInicioEdicion: "",
-        fechaFinEdicion: "",
-        estadoEdicion: true,
+        titulo: "",
+        fechaInicio: "",
+        fechaFin: "",
+        estado: true,
         cursoId: "",
         estudiantes: [],
       });
@@ -259,12 +256,12 @@ const Ediciones = () => {
   
     try {
       const response = await fetch(
-        `http://localhost:3000/api/ediciones/${edicionToDelete._id}`,
+        `http://localhost:8080/ediciones/${edicionToDelete.id}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": token 
+            "Authorization": `Bearer ${token}` 
           }
         }
       );
@@ -274,7 +271,7 @@ const Ediciones = () => {
         throw new Error(errorData.error || "Error al eliminar edición");
       }
   
-      setEdiciones(ediciones.filter(edicion => edicion._id !== edicionToDelete._id));
+      setEdiciones(ediciones.filter(edicion => edicion.id !== edicionToDelete.id));
       handleCloseDeleteDialog();
   
       setSuccessMessage("Edición eliminada exitosamente.");
@@ -290,11 +287,11 @@ const Ediciones = () => {
   const handleEditClick = (edicion) => {
     setSelectedEdicion(edicion);
     setFormValues({
-      tituloEdicion: edicion.tituloEdicion,
-      fechaInicioEdicion: edicion.fechaInicioEdicion,
-      fechaFinEdicion: edicion.fechaFinEdicion,
-      estadoEdicion: edicion.estadoEdicion,
-      cursoId: edicion.cursoId?._id || "",
+      titulo: edicion.titulo,
+      fechaInicio: edicion.fechaInicio,
+      fechaFin: edicion.fechaFin,
+      estado: edicion.estado,
+      cursoId: edicion.cursoId?.id || "",
     });
   };
 
@@ -305,39 +302,35 @@ const Ediciones = () => {
 
   const handleInfoClick = async (edicion) => {
     try {
-      // 1. Obtener los estudiantes que pertenecen a esta edición
-      const responseEstudiantes = await fetch("http://localhost:8080/estudiantes", {
-        method: "GET",
+      const response = await fetch(`http://localhost:8080/ediciones/${edicion.id}/estudiantes`, {
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         }
       });
-      
-      const todosEstudiantes = await responseEstudiantes.json();
-      
-      // Filtrar estudiantes por edición (comparando el título de la edición)
-      const estudiantesFiltrados = todosEstudiantes
-        .filter(est => est.edicion?.toLowerCase() === edicion.tituloEdicion?.toLowerCase())
-        .map(est => `${est.nombre} ${est.apellido}`);// se puede adicionar el numero de documento(${est.numeroDocumento})
   
-      // 2. Obtener el curso relacionado
-      let cursoInfo = "No asignado";
-      if (edicion.cursoId) {
-        const curso = cursos.find(c => c._id === edicion.cursoId);
-        cursoInfo = curso ? curso.nombreCurso : "Curso no encontrado";
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
       }
+  
+      const estudiantesData = await response.json();
+      
+      // Mapea solo nombre y apellido
+      const estudiantesList = estudiantesData.map(est => 
+        `${est.nombre} ${est.apellido}`
+      );
   
       setInfoEdicion({
         ...edicion,
-        estudiantes: estudiantesFiltrados,
-        curso: cursoInfo
+        estudiantes: estudiantesList,
+        curso: edicion.cursoId ? 
+          (cursos.find(c => c.id === edicion.cursoId)?.nombre || "Curso no encontrado") 
+          : "No asignado"
       });
       setOpenInfoDialog(true);
   
     } catch (error) {
-      console.error("Error al obtener información:", error);
-      setErrorMessage("Error al cargar información detallada");
+      console.error("Error al cargar estudiantes:", error);
+      setErrorMessage("Error al cargar estudiantes. Por favor, revisa la consola para más detalles.");
       setOpenSnackbar(true);
     }
   };
@@ -357,8 +350,8 @@ const Ediciones = () => {
       <form noValidate autoComplete="off">
         <TextField
           label="Título de la Edición"
-          name="tituloEdicion"
-          value={formValues.tituloEdicion}
+          name="titulo"
+          value={formValues.titulo}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
@@ -366,8 +359,8 @@ const Ediciones = () => {
         <TextField
           label="Fecha de inicio"
           type="date"
-          name="fechaInicioEdicion"
-          value={formValues.fechaInicioEdicion}
+          name="fechaInicio"
+          value={formValues.fechaInicio}
           onChange={handleInputChange}
           sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
         />
@@ -375,8 +368,8 @@ const Ediciones = () => {
         <TextField
           label="Fecha de Fin"
           type="date"
-          name="fechaFinEdicion"
-          value={formValues.fechaFinEdicion}
+          name="fechaFin"
+          value={formValues.fechaFin}
           onChange={handleInputChange}
           sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
         />
@@ -390,8 +383,8 @@ const Ediciones = () => {
             input={<OutlinedInput label="Curso" />}
           >
             {cursos.map((curso) => (
-              <MenuItem key={curso._id} value={curso._id}>
-                {curso.nombreCurso}
+              <MenuItem key={curso.id} value={curso.id}>
+                {curso.nombre}
               </MenuItem>
             ))}
           </Select>
@@ -399,9 +392,9 @@ const Ediciones = () => {
 
         <Box marginTop={2} marginBottom={2}>
           <Switch
-            checked={formValues.estadoEdicion}
+            checked={formValues.estado}
             onChange={handleSwitchChange}
-            name="estadoEdicion"
+            name="estado"
             color="primary"
           />
           Estado Activo
@@ -443,12 +436,12 @@ const Ediciones = () => {
           {filteredEdiciones
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((edicion) => (
-              <TableRow key={edicion._id}>
-                <TableCell>{edicion.tituloEdicion}</TableCell>
-                <TableCell>{formatDate(edicion.fechaInicioEdicion)}</TableCell>
-                <TableCell>{formatDate(edicion.fechaFinEdicion)}</TableCell>
+              <TableRow key={edicion.id}>
+                <TableCell>{edicion.titulo}</TableCell>
+                <TableCell>{formatDate(edicion.fechaInicio)}</TableCell>
+                <TableCell>{formatDate(edicion.fechaFin)}</TableCell>
                 <TableCell>
-                  {edicion.estadoEdicion ? (
+                  {edicion.estado ? (
                                           <Chip label="Activo" color="success" size="small" />
                                         ) : (
                                           <Chip label="Inactivo" color="error" size="small" />
@@ -489,7 +482,7 @@ const Ediciones = () => {
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Eliminar Edición</DialogTitle>
         <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {edicionToDelete?.tituloEdicion}?</Typography>
+          <Typography>¿Estás seguro de que deseas eliminar a {edicionToDelete?.titulo}?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
@@ -507,25 +500,38 @@ const Ediciones = () => {
           justifyContent: 'center'
         }}>
           <School sx={{ mr: 1 }} />
-          Detalles de la Edición
+          Detalles de la Edición: {infoEdicion?.titulo}
         </DialogTitle>
         
         <DialogContent dividers sx={{ padding: '20px' }}>
           {infoEdicion && (
             <Box>
+              {/* Información básica */}
+              <Box mb={3}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Fechas:</Typography>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">Inicio:</Typography>
+                    <Typography>{formatDate(infoEdicion.fechaInicio)}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">Fin:</Typography>
+                    <Typography>{formatDate(infoEdicion.fechaFin)}</Typography>
+                  </Box>
+                </Box>
+              </Box>
+
               {/* Información del Curso */}
               <Box mb={3} sx={{ p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Curso Asociado:
                 </Typography>
-                <Typography variant="body1">
-                  {infoEdicion.curso}
-                </Typography>
+                <Typography>{infoEdicion.curso}</Typography>
               </Box>
 
               {/* Lista de Estudiantes */}
               <Box sx={{ p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Estudiantes Inscritos ({infoEdicion.estudiantes?.length || 0}):
                 </Typography>
                 
@@ -545,9 +551,12 @@ const Ediciones = () => {
                         key={index}
                         sx={{ 
                           py: 1,
-                          borderBottom: index < infoEdicion.estudiantes.length - 1 ? '1px solid #eeeeee' : 'none'
+                          borderBottom: index < infoEdicion.estudiantes.length - 1 ? '1px solid #eeeeee' : 'none',
+                          display: 'flex',
+                          alignItems: 'center'
                         }}
                       >
+                        <Person sx={{ color: 'action.active', mr: 1, fontSize: 20 }} />
                         <Typography variant="body2">
                           {estudiante}
                         </Typography>
