@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -134,5 +135,11 @@ class EdicionController(
     @GetMapping("/{id}")
     fun getEdicionById(@PathVariable id: Long): Edicion? {
         return edicionServices.getEdicionById(id)
+    }
+
+    @GetMapping("/{id}/estudiantes")
+    fun obtenerEstudiantesDeEdicion(@PathVariable id: Long): ResponseEntity<List<Map<String, String>>> {
+        val estudiantes = edicionServices.obtenerEstudiantesPorEdicion(id)
+        return ResponseEntity.ok(estudiantes)
     }
 }

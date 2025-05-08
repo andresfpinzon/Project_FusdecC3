@@ -2,12 +2,15 @@ package com.example.kotlinsql.services.edicion
 
 import com.example.kotlinsql.model.edicion.Edicion
 import com.example.kotlinsql.repositories.edicion.EdicionRepository
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 
 @Service
 class EdicionServices (
-    private val edicionRepository: EdicionRepository
+    private val edicionRepository: EdicionRepository,
+    private val jdbcTemplate: JdbcTemplate
 ) {
+
     fun getAllEdiciones(): List<Edicion> {
         return edicionRepository.findAll()
     }
@@ -35,5 +38,20 @@ class EdicionServices (
 
     fun deleteEdicion(id: Long) {
         edicionRepository.deleteById(id)
+    }
+
+    fun obtenerEstudiantesPorEdicion(edicionId: Long): List<Map<String, String>> {
+        val sql = """
+        SELECT nombre, apellido 
+        FROM estudiante 
+        WHERE edicion_id = ?  -- Filtra estudiantes por edicion_id
+    """.trimIndent()
+
+        return jdbcTemplate.query(sql, { rs, _ ->
+            mapOf(
+                "nombre" to rs.getString("nombre"),
+                "apellido" to rs.getString("apellido")
+            )
+        }, edicionId)
     }
 }
