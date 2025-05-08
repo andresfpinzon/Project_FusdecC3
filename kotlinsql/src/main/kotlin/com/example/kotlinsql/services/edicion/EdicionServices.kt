@@ -1,5 +1,6 @@
 package com.example.kotlinsql.services.edicion
 
+import com.example.kotlinsql.dto.EstudianteResumenResponse
 import com.example.kotlinsql.model.edicion.Edicion
 import com.example.kotlinsql.repositories.edicion.EdicionRepository
 import org.springframework.jdbc.core.JdbcTemplate
@@ -40,17 +41,20 @@ class EdicionServices (
         edicionRepository.deleteById(id)
     }
 
-    fun obtenerEstudiantesPorEdicion(edicionId: Long): List<Map<String, String>> {
+    fun obtenerEstudiantesPorEdicion(edicionId: Int): List<EstudianteResumenResponse> {
         val sql = """
-        SELECT nombre, apellido 
-        FROM estudiante 
-        WHERE edicion_id = ? 
-    """.trimIndent()
+            SELECT numero_documento, nombre, apellido 
+            FROM estudiante 
+            WHERE edicion_id = ? 
+            AND estado = true
+            ORDER BY nombre ASC
+        """.trimIndent()
 
         return jdbcTemplate.query(sql, { rs, _ ->
-            mapOf(
-                "nombre" to rs.getString("nombre"),
-                "apellido" to rs.getString("apellido")
+            EstudianteResumenResponse(
+                numeroDocumento = rs.getString("numero_documento"),
+                nombre = rs.getString("nombre"),
+                apellido = rs.getString("apellido")
             )
         }, edicionId)
     }

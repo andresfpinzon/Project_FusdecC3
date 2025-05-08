@@ -1,5 +1,6 @@
 package com.example.kotlinsql.controllers.edicion
 
+import com.example.kotlinsql.dto.EstudianteResumenResponse
 import com.example.kotlinsql.model.edicion.Edicion
 import com.example.kotlinsql.services.edicion.EdicionServices
 import io.swagger.v3.oas.annotations.Operation
@@ -137,9 +138,21 @@ class EdicionController(
         return edicionServices.getEdicionById(id)
     }
 
+    @Operation(summary = "Obtener estudiantes por edición",
+        description = "Devuelve una lista de estudiantes (documento, nombre, apellido) para una edición específica")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Lista de estudiantes",
+                content = [Content(mediaType = "application/json",
+                    schema = Schema(implementation = EstudianteResumenResponse::class))])
+        ]
+    )
     @GetMapping("/{id}/estudiantes")
-    fun obtenerEstudiantesDeEdicion(@PathVariable id: Long): ResponseEntity<List<Map<String, String>>> {
-        val estudiantes = edicionServices.obtenerEstudiantesPorEdicion(id)
-        return ResponseEntity.ok(estudiantes)
+    fun obtenerEstudiantesPorEdicion(@PathVariable id: Int): List<EstudianteResumenResponse> {
+        return edicionServices.obtenerEstudiantesPorEdicion(id)
     }
+
+
 }
