@@ -4,6 +4,7 @@ import com.example.kotlinsql.dto.unidad.CreateUnidadDto
 import com.example.kotlinsql.dto.unidad.UpdateUnidadDto
 import com.example.kotlinsql.model.unidad.Unidad
 import com.example.kotlinsql.repositories.unidad.UnidadRespository
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,14 +12,27 @@ class UnidadServices (
     private val unidadRepository: UnidadRespository,
 ){
     fun crearUnidadService(data: CreateUnidadDto): Unidad {
+        val unidadNormalizada = data.normalizar()
+
+        // Verificar si ya existe una unidad con el mismo nombre
+        val existeNombre = unidadRepository.existsByNombreUnidad(unidadNormalizada.nombreUnidad)
+        if (existeNombre) {
+            throw IllegalArgumentException("Ya existe una unidad con el nombre '${unidadNormalizada.nombreUnidad}'")
+        }
+
+
 
         val unidad = Unidad(
-            nombreUnidad = data.nombreUnidad,
-            brigadaId = data.brigadaId,
-            usuarioId = data.usuarioId,
+            nombreUnidad = unidadNormalizada.nombreUnidad,
+            brigadaId = unidadNormalizada.brigadaId,
+            usuarioId = unidadNormalizada.usuarioId,
         )
 
-        return unidadRepository.save(unidad)
+        return try {
+            unidadRepository.save(unidad)
+        } catch (e: DataIntegrityViolationException) {
+            throw IllegalArgumentException("Error al crear la unidad: ${e.message}")
+        }
     }
 
     fun obtenerUnidades(): List<Unidad> {
@@ -39,15 +53,31 @@ class UnidadServices (
         }
     }
     fun actualizarUnidad(id: Long, data: UpdateUnidadDto): Unidad? {
-        val unidad = unidadRepository.findById(id).orElse(null)
-        return if (unidad != null) {
-            val updatedUnidad = unidad.copy(
-                nombreUnidad = data.nombreUnidad ?: unidad.nombreUnidad,
-                brigadaId = data.brigadaId ?: unidad.brigadaId,
-                usuarioId = data.usuarioId ?: unidad.usuarioId,
+        if (data.isEmpty()) {
+            throw IllegalArgumentException("No se proporcionaron datos para actualizar")
+        }
 
-                )
+        val unidadNormalizada = data.normalizar()
+        val unidad = unidadRepository.findById(id).orElse(null)
+            ?: throw NoSuchElementException("No se encontró la unidad con ID $id")
+
+        // Verificar si el nuevo nombre ya existe en otra unidad
+        unidadNormalizada.nombreUnidad?.let { nuevoNombre ->
+            if (unidadRepository.existsByNombreUnidadAndIdNot(nuevoNombre, id)) {
+                throw IllegalArgumentException("Ya existe otra unidad con el nombre '$nuevoNombre'")
+            }
+        }
+
+        val updatedUnidad = unidad.copy(
+            nombreUnidad = unidadNormalizada.nombreUnidad ?: unidad.nombreUnidad,
+            brigadaId = unidadNormalizada.brigadaId ?: unidad.brigadaId,
+            usuarioId = unidadNormalizada.usuarioId ?: unidad.usuarioId,
+        )
+
+        return try {
             unidadRepository.save(updatedUnidad)
-        } else null
+        } catch (e: DataIntegrityViolationException) {
+            throw IllegalArgumentException("Error al actualizar la unidad: ${e.message}")
+        }
     }
 }

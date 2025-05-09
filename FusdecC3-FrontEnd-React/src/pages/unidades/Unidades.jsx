@@ -32,7 +32,7 @@ const Unidades = () => {
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
-    severity: 'info' // 'error', 'warning', 'info', 'success'
+    severity: 'info' 
   });
   const [estudiantes, setEstudiantes] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -265,74 +265,71 @@ const Unidades = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Validación de campos
-      if (!formValues.nombreUnidad || !formValues.brigadaId || !formValues.usuarioId) {
-        setSnackbar({
-          open: true,
-          message: 'Todos los campos son obligatorios',
-          severity: 'error'
-        });
-        return;
-      }
 
-      const url = selectedUnidad
+    // Validación básica del formulario
+    if (!formValues.nombreUnidad || !formValues.brigadaId || !formValues.usuarioId) {
+      setSnackbar({
+        open: true,
+        message: "Por favor complete todos los campos obligatorios",
+        severity: "error"
+      });
+      return;
+    }
+
+    try {
+      const isUpdate = !!selectedUnidad;
+      const url = isUpdate
         ? `http://localhost:8080/unidades/${selectedUnidad.id}`
         : 'http://localhost:8080/unidades';
 
-      const method = selectedUnidad ? 'PUT' : 'POST';
-
-      // Preparar datos para enviar
-      const dataToSend = {
-        nombreUnidad: formValues.nombreUnidad.trim(),
+      // Normalizar datos antes de enviar
+      const requestData = {
+        nombreUnidad: formValues.nombreUnidad.trim().toLowerCase(),
         brigadaId: formValues.brigadaId,
-        usuarioId: formValues.usuarioId,
-        estadoUnidad: formValues.estadoUnidad
+        usuarioId: formValues.usuarioId.trim()
       };
 
       const response = await fetch(url, {
-        method,
+        method: isUpdate ? 'PUT' : 'POST',
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(dataToSend),
+        body: JSON.stringify(isUpdate ? requestData : {
+          ...requestData,
+          // Incluir solo campos necesarios para creación
+        })
       });
 
-      const responseText = await response.text();
-      let errorData;
-      try {
-        errorData = JSON.parse(responseText);
-      } catch (e) {
-        errorData = { message: responseText };
-      }
+      const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(errorData.message || `Error ${response.status} al guardar la unidad`);
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || `Error al ${isUpdate ? 'actualizar' : 'crear'} la unidad`);
       }
 
-      setSnackbar({
-        open: true,
-        message: selectedUnidad ? "Unidad actualizada correctamente" : "Unidad creada correctamente",
-        severity: 'success'
-      });
-
-      setFormValues({
-        nombreUnidad: '',
-        brigadaId: '',
-        usuarioId: '',
-        estadoUnidad: true
-      });
-      setSelectedUnidad(null);
+      // Éxito - Actualizar estado
+      await fetchUnidades();
       setShowForm(false);
 
-      await fetchUnidades();
-
-    } catch (error) {
       setSnackbar({
         open: true,
-        message: error.message || 'Error al guardar la unidad. Por favor, intente nuevamente.',
-        severity: 'error'
+        message: isUpdate ? "Unidad actualizada correctamente" : "Unidad creada correctamente",
+        severity: "success"
+      });
+
+    } catch (error) {
+      console.error('Error en handleSubmit:', error);
+
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: "error"
       });
     }
   };
