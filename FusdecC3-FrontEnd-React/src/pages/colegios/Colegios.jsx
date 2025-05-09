@@ -188,7 +188,7 @@ import React, { useState, useEffect } from "react";
         }
       );
   
-      const data = await response.json(); // Mover esto fuera del if
+      const data = await response.json(); 
   
       if (!response.ok) {
         throw new Error(data.error || "Error al actualizar el colegio");

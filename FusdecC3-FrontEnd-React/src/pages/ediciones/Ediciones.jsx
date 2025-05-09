@@ -200,13 +200,15 @@ const Ediciones = () => {
         body: JSON.stringify(formValues),
       });
   
-      const data = await response.json();
-  
       if (!response.ok) {
-        throw new Error(data.error || "Error al crear edición");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al crear edición");
       }
   
+      const data = await response.json();
       setEdiciones([...ediciones, data]);
+      
+      // Resetear el formulario y asegurarse de que no hay edición seleccionada
       setFormValues({
         titulo: "",
         fechaInicio: "",
@@ -215,11 +217,10 @@ const Ediciones = () => {
         cursoId: "",
         estudiantes: [],
       });
+      setSelectedEdicion(null); // Añade esta línea
   
       setSuccessMessage("Edición creada exitosamente.");
-      setErrorMessage(null);
       setOpenSnackbar(true);
-  
     } catch (error) {
       setErrorMessage(error.message);
       setOpenSnackbar(true);
@@ -227,6 +228,8 @@ const Ediciones = () => {
   };
 
   const handleUpdateEdicion = async () => {
+    if (!selectedEdicion) return;
+    
     try {
       const response = await fetch(
         `http://localhost:8080/ediciones/${selectedEdicion.id}`,
@@ -240,16 +243,16 @@ const Ediciones = () => {
         }
       );
   
-      const data = await response.json();
-  
       if (!response.ok) {
-        throw new Error(data.error || "Error al actualizar edición");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al actualizar edición");
       }
   
+      const data = await response.json();
+      
       setEdiciones(ediciones.map(edicion => 
-        edicion.id === data.id ? data : edicion
+        edicion.id === selectedEdicion.id ? data : edicion
       ));
-      setSelectedEdicion(null);
       setFormValues({
         titulo: "",
         fechaInicio: "",
@@ -258,11 +261,10 @@ const Ediciones = () => {
         cursoId: "",
         estudiantes: [],
       });
+      setSelectedEdicion(null);
   
       setSuccessMessage("Edición actualizada exitosamente.");
-      setErrorMessage(null);
       setOpenSnackbar(true);
-  
     } catch (error) {
       setErrorMessage(error.message);
       setOpenSnackbar(true);
