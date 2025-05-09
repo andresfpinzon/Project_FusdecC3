@@ -65,11 +65,11 @@ const Usuarios = () => {
           "Content-Type": "application/json"
         },
       });
-      
+
       if (!response.ok) {
         throw new Error("Error al obtener roles disponibles");
       }
-      
+
       const data = await response.json();
       const rolesFiltrados = data.filter(rol => rol.nombre !== "Root");
       setRolesDisponibles(rolesFiltrados);
@@ -90,13 +90,13 @@ const Usuarios = () => {
           "Content-Type": "application/json"
         },
       });
-      
+
       if (!response.ok) {
         throw new Error("Error al obtener usuarios");
       }
-      
+
       const data = await response.json();
-      
+
       const usuariosConRoles = await Promise.all(
         data.map(async (usuario) => {
           try {
@@ -114,7 +114,7 @@ const Usuarios = () => {
             if (rolesResponse.ok) {
               rolesData = await rolesResponse.json();
             }
-            
+
             return {
               ...usuario,
               roles: rolesData.map(rolObj => rolObj.rolNombre)
@@ -128,7 +128,7 @@ const Usuarios = () => {
         })
       );
 
-      const usuariosFiltrados = usuariosConRoles.filter(usuario => 
+      const usuariosFiltrados = usuariosConRoles.filter(usuario =>
         !usuario.roles.includes("Root")
       );
 
@@ -161,7 +161,7 @@ const Usuarios = () => {
 
       const rolesData = await response.json();
       const rolesAsignados = rolesData.map(rolObj => rolObj.rolNombre);
-      
+
       setFormValues(prev => ({
         ...prev,
         roles: rolesAsignados
@@ -186,7 +186,7 @@ const Usuarios = () => {
     const selectedRoles = rolesDisponibles
       .filter(rol => value.includes(rol.id))
       .map(rol => rol.nombre);
-    
+
     setFormValues({ ...formValues, roles: selectedRoles });
   };
 
@@ -328,9 +328,9 @@ const Usuarios = () => {
 
   const handleEdit = (usuario) => {
     setSelectedUser(usuario);
-    setFormValues({ 
-      ...usuario, 
-      password: "", 
+    setFormValues({
+      ...usuario,
+      password: "",
       roles: []
     });
     fetchRolesAsignados(usuario.numeroDocumento);
@@ -405,7 +405,7 @@ const Usuarios = () => {
           margin="dense"
           helperText={selectedUser ? "Dejar en blanco para mantener la contraseña actual" : "Mínimo 6 caracteres"}
         />
-        
+
         <FormControl fullWidth margin="dense">
           <InputLabel id="roles-label">Roles</InputLabel>
           <Select
@@ -419,7 +419,7 @@ const Usuarios = () => {
                   const rol = rolesDisponibles.find(r => r.id === rolId);
                   if (!rol) return null;
                   return (
-                    <Chip 
+                    <Chip
                       key={`selected-${rol.id}`}
                       label={rol.nombre}
                       onDelete={() => {
@@ -431,8 +431,8 @@ const Usuarios = () => {
                       onMouseDown={(event) => event.stopPropagation()}
                       sx={{
                         backgroundColor: rol.nombre === 'Administrativo' ? '#2196f3' :
-                                       rol.nombre === 'Instructor' ? '#4caf50' :
-                                       rol.nombre === 'Secretario' ? '#9c27b0' : '#757575',
+                          rol.nombre === 'Instructor' ? '#4caf50' :
+                            rol.nombre === 'Secretario' ? '#9c27b0' : '#757575',
                         color: 'white',
                         '& .MuiChip-deleteIcon': {
                           color: 'white',
@@ -454,27 +454,27 @@ const Usuarios = () => {
             ))}
           </Select>
           <FormHelperText>
-            {!formValues.numeroDocumento ? 
-              "Debe crear o seleccionar un usuario antes de asignar roles" : 
+            {!formValues.numeroDocumento ?
+              "Debe crear o seleccionar un usuario antes de asignar roles" :
               "Seleccione los roles para el usuario"}
           </FormHelperText>
         </FormControl>
-        
+
         <Box sx={{ display: 'flex', gap: 2, marginTop: "20px" }}>
           <Button
             variant="contained"
             color="primary"
             onClick={selectedUser ? handleUpdateUser : handleCreateUser}
             disabled={
-              !formValues.numeroDocumento || 
-              !formValues.correo || 
-              (!selectedUser && !formValues.password) || 
+              !formValues.numeroDocumento ||
+              !formValues.correo ||
+              (!selectedUser && !formValues.password) ||
               (formValues.password && formValues.password.length < 6)
             }
           >
             {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
           </Button>
-          
+
           {selectedUser && (
             <Button
               variant="outlined"
@@ -502,9 +502,9 @@ const Usuarios = () => {
           </TableHead>
           <TableBody>
             {usuarios.map((usuario) => (
-              <TableRow 
+              <TableRow
                 key={usuario.numeroDocumento}
-                sx={{ 
+                sx={{
                   '&:hover': { backgroundColor: '#f8f8f8' },
                   backgroundColor: usuario.estado ? 'inherit' : '#fafafa'
                 }}
@@ -534,8 +534,8 @@ const Usuarios = () => {
                             size="small"
                             sx={{
                               backgroundColor: rol === 'Administrativo' ? '#2196f3' :
-                                             rol === 'Instructor' ? '#4caf50' :
-                                             rol === 'Secretario' ? '#9c27b0' : '#757575',
+                                rol === 'Instructor' ? '#4caf50' :
+                                  rol === 'Secretario' ? '#9c27b0' : '#757575',
                               color: 'white'
                             }}
                           />
@@ -573,7 +573,7 @@ const Usuarios = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      
+
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

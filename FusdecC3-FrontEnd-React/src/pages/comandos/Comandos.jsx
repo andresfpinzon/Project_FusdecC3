@@ -61,13 +61,13 @@ const Comandos = () => {
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/comandos",{
+      const response = await fetch("http://localhost:8080/comandos", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener comandos");
       const data = await response.json();
 
@@ -145,11 +145,11 @@ const Comandos = () => {
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       if (!response.ok) {
         throw new Error("Error al obtener brigadas activas");
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error("Error:", error);
@@ -218,7 +218,7 @@ const Comandos = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` 
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify(formValues),
         }
@@ -252,7 +252,7 @@ const Comandos = () => {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
-        }
+          }
         }
       );
 
@@ -285,14 +285,14 @@ const Comandos = () => {
   };
 
   // Modifica el handler para abrir el diálogo de información
-const handleInfoClick = async (comando) => {
-  setInfoComando(comando);
-  setOpenInfoDialog(true);
-  
-  // Cargar brigadas activas cuando se abre el diálogo
-  const brigadas = await fetchBrigadasActivas(comando.id);
-  setBrigadasActivas(brigadas);
-};
+  const handleInfoClick = async (comando) => {
+    setInfoComando(comando);
+    setOpenInfoDialog(true);
+
+    // Cargar brigadas activas cuando se abre el diálogo
+    const brigadas = await fetchBrigadasActivas(comando.id);
+    setBrigadasActivas(brigadas);
+  };
 
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
@@ -379,38 +379,38 @@ const handleInfoClick = async (comando) => {
               </Select>
             </FormControl>
             <Box marginTop={3}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={selectedComando ? handleUpdateComando : handleCreateComando}
-              disabled={
-                !formValues.nombreComando.trim() || 
-                !isValidGoogleMapsLink(formValues.ubicacionComando) || 
-                !formValues.fundacionId
-              }
-            >
-              {selectedComando ? "Actualizar Comando" : "Crear Comando"}
-            </Button>
-            
-            {selectedComando && (
               <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => {
-                  setSelectedComando(null);
-                  setFormValues({
-                    nombreComando: "",
-                    ubicacionComando: "",
-                    estadoComando: true,
-                    fundacionId: ""
-                  });
-                }}
-                style={{ marginLeft: '10px' }}
+                variant="contained"
+                color="primary"
+                onClick={selectedComando ? handleUpdateComando : handleCreateComando}
+                disabled={
+                  !formValues.nombreComando.trim() ||
+                  !isValidGoogleMapsLink(formValues.ubicacionComando) ||
+                  !formValues.fundacionId
+                }
               >
-                Cancelar Edición
+                {selectedComando ? "Actualizar Comando" : "Crear Comando"}
               </Button>
-            )}
-          </Box>
+
+              {selectedComando && (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    setSelectedComando(null);
+                    setFormValues({
+                      nombreComando: "",
+                      ubicacionComando: "",
+                      estadoComando: true,
+                      fundacionId: ""
+                    });
+                  }}
+                  style={{ marginLeft: '10px' }}
+                >
+                  Cancelar Edición
+                </Button>
+              )}
+            </Box>
           </form>
         </Grid>
         <Grid item xs={12} md={12}>
@@ -512,7 +512,7 @@ const handleInfoClick = async (comando) => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>{infoComando.nombreComando || "Nombre no disponible"}</Typography>
               </Box>
-              
+
               {/* Ubicación del Comando */}
               <Box display="flex" alignItems="center" mb={2}>
                 <LocationOn color="primary" sx={{ mr: 1 }} />
@@ -528,7 +528,7 @@ const handleInfoClick = async (comando) => {
                   </a>
                 </Typography>
               </Box>
-              
+
               {/* Estado del Comando */}
               <Box display="flex" alignItems="center" mb={2}>
                 <VerifiedUser color="primary" sx={{ mr: 1 }} />
@@ -537,7 +537,7 @@ const handleInfoClick = async (comando) => {
                   {infoComando.estadoComando ? "Activo" : "Inactivo"}
                 </Typography>
               </Box>
-              
+
               {/* Fundación del Comando */}
               <Box display="flex" alignItems="center" mb={2}>
                 <History color="primary" sx={{ mr: 1 }} />
@@ -560,7 +560,7 @@ const handleInfoClick = async (comando) => {
                       color="primary"
                       variant="outlined"
                       size="small"
-                      sx={{ 
+                      sx={{
                         borderRadius: '16px',
                         fontSize: '1rem',
                         maxWidth: '200px',

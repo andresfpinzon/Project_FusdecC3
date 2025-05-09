@@ -59,13 +59,13 @@ const Cursos = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/cursos",{
+      const response = await fetch("http://localhost:8080/cursos", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener cursos");
       const data = await response.json();
 
@@ -96,13 +96,13 @@ const Cursos = () => {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:8080/fundaciones",{
+      const response = await fetch("http://localhost:8080/fundaciones", {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         }
-    });
+      });
       if (!response.ok) throw new Error("Error al obtener fundaciones");
       const data = await response.json();
 
@@ -157,7 +157,7 @@ const Cursos = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  
+
   const handleError = (message) => {
     setErrorMessage(message);
     setOpenSnackbar(true);
@@ -192,13 +192,13 @@ const Cursos = () => {
         },
         body: JSON.stringify(formValues),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.error || "Error al crear curso");
       }
-  
+
       setCursos([...cursos, data]);
       setFormValues({
         nombre: "",
@@ -207,11 +207,11 @@ const Cursos = () => {
         estado: true,
         fundacionId: "",
       });
-      
+
       setSuccessMessage("Curso creado exitosamente.");
       setErrorMessage(null);
       setOpenSnackbar(true);
-  
+
     } catch (error) {
       setErrorMessage(error.message || "Error al crear curso");
       setOpenSnackbar(true);
@@ -220,7 +220,7 @@ const Cursos = () => {
 
   const handleUpdateCurso = async () => {
     if (!selectedCurso) return;
-  
+
     try {
       const response = await fetch(
         `http://localhost:8080/cursos/${selectedCurso.id}`,
@@ -233,13 +233,13 @@ const Cursos = () => {
           body: JSON.stringify(formValues),
         }
       );
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.error || "Error al actualizar curso");
       }
-  
+
       await fetchCursos();
       setSelectedCurso(null);
       setFormValues({
@@ -249,11 +249,11 @@ const Cursos = () => {
         estado: true,
         fundacionId: "",
       });
-  
+
       setSuccessMessage("El curso se actualizó correctamente");
       setErrorMessage(null);
       setOpenSnackbar(true);
-  
+
     } catch (error) {
       setErrorMessage(error.message || "Error al actualizar curso");
       setOpenSnackbar(true);
@@ -271,7 +271,7 @@ const Cursos = () => {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
-        }
+          }
         }
       );
 
@@ -300,7 +300,7 @@ const Cursos = () => {
       estado: curso.estado !== undefined ? curso.estado : true,
       fundacionId: curso.fundacionId || "",
     });
-  };  
+  };
 
   const handleDeleteClick = (curso) => {
     setCursoToDelete(curso);
@@ -314,7 +314,7 @@ const Cursos = () => {
       fundacionNombre: fundacion?.nombre || "Sin fundación",
       edicionesInfo: "No hay ediciones registradas" // Texto por defecto
     };
-    
+
     setInfoCurso(cursoInfo);
     setOpenInfoDialog(true);
   };
@@ -356,7 +356,7 @@ const Cursos = () => {
           fullWidth
           margin="normal"
         />
-       
+
         <FormControl fullWidth margin="normal">
           <InputLabel>Fundacion</InputLabel>
           <Select
@@ -372,8 +372,8 @@ const Cursos = () => {
             ))}
           </Select>
         </FormControl>
-        
-        
+
+
         <Box marginTop={2} marginBottom={2}>
           <Switch
             checked={formValues.estado}
@@ -383,21 +383,21 @@ const Cursos = () => {
           />
           Estado Activo
         </Box>
-        
+
         <Box marginTop={3} sx={{ display: 'flex', gap: 2 }}>
           <Button
             variant="contained"
             color="primary"
             onClick={selectedCurso ? handleUpdateCurso : handleCreateCurso}
             disabled={
-              !formValues.nombre.trim() || 
-              !formValues.descripcion.trim() || 
+              !formValues.nombre.trim() ||
+              !formValues.descripcion.trim() ||
               !formValues.intensidadHoraria.trim()
             }
           >
             {selectedCurso ? "Actualizar Curso" : "Crear Curso"}
           </Button>
-          
+
           {selectedCurso && (
             <Button
               variant="outlined"
@@ -441,29 +441,29 @@ const Cursos = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {filteredCursos
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((curso) => (
-              <TableRow key={curso.id}>
-                <TableCell>{curso.nombre}</TableCell>
-                <TableCell>{curso.descripcion}</TableCell>
-                <TableCell>{curso.intensidadHoraria}</TableCell>
-                <TableCell>{curso.estado ? "Activo" : "Inactivo"}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => handleEditClick(curso)}color="primary">
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleInfoClick(curso)} color="primary">
-                    <Info />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(curso)}color="error">
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredCursos
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((curso) => (
+                <TableRow key={curso.id}>
+                  <TableCell>{curso.nombre}</TableCell>
+                  <TableCell>{curso.descripcion}</TableCell>
+                  <TableCell>{curso.intensidadHoraria}</TableCell>
+                  <TableCell>{curso.estado ? "Activo" : "Inactivo"}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => handleEditClick(curso)} color="primary">
+                      <Edit />
+                    </IconButton>
+                    <IconButton onClick={() => handleInfoClick(curso)} color="primary">
+                      <Info />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeleteClick(curso)} color="error">
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
 
@@ -505,7 +505,7 @@ const Cursos = () => {
                   {infoCurso.fundacionNombre || "Fundación no asignada"}
                 </Typography>
               </Box>
-              
+
               <Box display="flex" alignItems="center" mb={2}>
                 <EventNote color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Ediciones:</Typography>
@@ -524,8 +524,8 @@ const Cursos = () => {
       </Dialog>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert 
-          onClose={() => setOpenSnackbar(false)} 
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
           severity={errorMessage ? "error" : "success"}
         >
           {errorMessage || successMessage}

@@ -49,18 +49,18 @@ const Brigadas = () => {
       });
       if (!response.ok) throw new Error('Error al obtener brigadas');
       const data = await response.json();
-  
+
       // Obtener nombres de comandos y unidades asignadas
       const brigadasConNombres = await Promise.all(data.map(async (brigada) => {
         const comandoNombre = brigada.comandoId ? await getComandoNombre(brigada.comandoId) : "Sin comando asignado";
-        
+
         return {
           ...brigada,
           comandoNombre,
           unidades: [] // Inicializamos como array vacío, se cargará al abrir el diálogo
         };
       }));
-  
+
       if (data.length === 0) {
         setErrorMessage("No hay brigadas registradas.");
         setOpenSnackbar(true);
@@ -95,7 +95,7 @@ const Brigadas = () => {
       } else {
         setCommands(data);
       }
-      
+
     } catch (error) {
       setError('Error al obtener comandos');
     }
@@ -135,26 +135,26 @@ const Brigadas = () => {
   const handleInputChange = (field, value) => {
     // Handle nested input changes
     if (field.includes('.')) {
-        const [parent, child] = field.split('.');
-        setFormData(prev => ({
-            ...prev,
-            [parent]: {
-                ...prev[parent],
-                [child]: value
-            }
-        }));
+      const [parent, child] = field.split('.');
+      setFormData(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
     } else {
-        // Handle regular input changes
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
+      // Handle regular input changes
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validar el enlace de Google Maps
     if (!isValidGoogleMapsLink(formData.ubicacionBrigada)) {
       setSnackbar({
@@ -164,12 +164,12 @@ const Brigadas = () => {
       });
       return;
     }
-  
+
     try {
       const response = await fetch(
-        selectedBrigade 
-          ? `http://localhost:8080/brigadas/${selectedBrigade.id}` 
-          : 'http://localhost:8080/brigadas', 
+        selectedBrigade
+          ? `http://localhost:8080/brigadas/${selectedBrigade.id}`
+          : 'http://localhost:8080/brigadas',
         {
           method: selectedBrigade ? 'PUT' : 'POST',
           headers: {
@@ -179,7 +179,7 @@ const Brigadas = () => {
           body: JSON.stringify(formData)
         }
       );
-  
+
       const responseText = await response.text();
       let errorData;
       try {
@@ -187,15 +187,15 @@ const Brigadas = () => {
       } catch (e) {
         errorData = { error: responseText };
       }
-  
+
       if (!response.ok) {
         throw new Error(errorData.error || `Error al ${selectedBrigade ? 'actualizar' : 'crear'} la brigada`);
       }
-  
+
       await fetchBrigades();
-      
+
       resetForm();
-      
+
       setSnackbar({
         open: true,
         message: selectedBrigade ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
@@ -243,8 +243,8 @@ const Brigadas = () => {
     setSelectedBrigade(brigade);
     setFormData({
       nombreBrigada: brigade.nombreBrigada,
-      ubicacionBrigada: brigade.ubicacionBrigada, 
-      comandoId: brigade.comandoId || '', 
+      ubicacionBrigada: brigade.ubicacionBrigada,
+      comandoId: brigade.comandoId || '',
       estadoBrigada: brigade.estadoBrigada,
       horario: brigade.horario || 'mañana'
     });
@@ -268,10 +268,10 @@ const Brigadas = () => {
   const handleAddBrigade = () => {
     setSelectedBrigade(null);
     setFormData({
-        nombreBrigada: '',
-        comandoId: '',
-        estadoBrigada: true,
-        horario: 'mañana'
+      nombreBrigada: '',
+      comandoId: '',
+      estadoBrigada: true,
+      horario: 'mañana'
     });
     setShowForm(true);
   };
@@ -304,74 +304,74 @@ const Brigadas = () => {
 
   const renderBrigadaForm = () => {
     return (
-        <form onSubmit={handleSubmit} className="brigade-form">
-            <input
-                type="text"
-                name="nombreBrigada"
-                value={formData.nombreBrigada}
-                onChange={(e) => handleInputChange('nombreBrigada', e.target.value)}
-                placeholder="Nombre de la Brigada"
-                required
-            />
-            <input
-                type="text"
-                name="ubicacionBrigada"
-                value={formData.ubicacionBrigada}
-                onChange={(e) => handleInputChange('ubicacionBrigada', e.target.value)}
-                placeholder="URL de Google Maps de la ubicación"
-                required
-            />
-            <select
-                name="comandoId"
-                value={formData.comandoId}
-                onChange={(e) => handleInputChange('comandoId', e.target.value)}
-                required
-            >
-                <option value="">Seleccionar Comando</option>
-                {commands.map(command => (
-                    <option key={command.id} value={command.id}>
-                        {command.nombreComando}
-                    </option>
-                ))}
-            </select>
-            <select
-                name="horario"
-                value={formData.horario}
-                onChange={(e) => handleInputChange('horario', e.target.value)}
-                required
-            >
-                <option value="mañana">Horario de Mañana (9 AM - 12 PM)</option>
-                <option value="tarde">Horario de Tarde (2 PM - 5 PM)</option>
-            </select>
-            <label className="switch">
-                <input
-                    type="checkbox"
-                    name="estadoBrigada"
-                    checked={formData.estadoBrigada}
-                    onChange={(e) => handleInputChange('estadoBrigada', e.target.checked)}
-                />
-                <span className="slider round"></span>
-                <span className="switch-label">Activo</span>
-            </label>
-            <div className="form-actions">
-                <button type="submit" className="submit-button">
-                    {selectedBrigade ? 'Actualizar' : 'Crear'} Brigada
-                </button>
-                <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
-                    Cancelar
-                </button>
-            </div>
-        </form>
+      <form onSubmit={handleSubmit} className="brigade-form">
+        <input
+          type="text"
+          name="nombreBrigada"
+          value={formData.nombreBrigada}
+          onChange={(e) => handleInputChange('nombreBrigada', e.target.value)}
+          placeholder="Nombre de la Brigada"
+          required
+        />
+        <input
+          type="text"
+          name="ubicacionBrigada"
+          value={formData.ubicacionBrigada}
+          onChange={(e) => handleInputChange('ubicacionBrigada', e.target.value)}
+          placeholder="URL de Google Maps de la ubicación"
+          required
+        />
+        <select
+          name="comandoId"
+          value={formData.comandoId}
+          onChange={(e) => handleInputChange('comandoId', e.target.value)}
+          required
+        >
+          <option value="">Seleccionar Comando</option>
+          {commands.map(command => (
+            <option key={command.id} value={command.id}>
+              {command.nombreComando}
+            </option>
+          ))}
+        </select>
+        <select
+          name="horario"
+          value={formData.horario}
+          onChange={(e) => handleInputChange('horario', e.target.value)}
+          required
+        >
+          <option value="mañana">Horario de Mañana (9 AM - 12 PM)</option>
+          <option value="tarde">Horario de Tarde (2 PM - 5 PM)</option>
+        </select>
+        <label className="switch">
+          <input
+            type="checkbox"
+            name="estadoBrigada"
+            checked={formData.estadoBrigada}
+            onChange={(e) => handleInputChange('estadoBrigada', e.target.checked)}
+          />
+          <span className="slider round"></span>
+          <span className="switch-label">Activo</span>
+        </label>
+        <div className="form-actions">
+          <button type="submit" className="submit-button">
+            {selectedBrigade ? 'Actualizar' : 'Crear'} Brigada
+          </button>
+          <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
+            Cancelar
+          </button>
+        </div>
+      </form>
     );
   };
 
   const resetForm = () => {
     setFormData({
-        nombreBrigada: '',
-        ubicacionBrigada: '',
-        comandoId: '',
-        horario: 'mañana',
-        estadoBrigada: true
+      nombreBrigada: '',
+      ubicacionBrigada: '',
+      comandoId: '',
+      horario: 'mañana',
+      estadoBrigada: true
     });
     setSelectedBrigade(null);
     setShowForm(false);
@@ -444,7 +444,7 @@ const Brigadas = () => {
                           </span>
                         </div>
                         <p><i className="fas fa-map-marker-alt"></i> {brigade.ubicacionBrigada}</p>
-                        <p><i className="fas fa-flag"></i> {brigade.comandoNombre  || 'Sin comando asignado'}</p>
+                        <p><i className="fas fa-flag"></i> {brigade.comandoNombre || 'Sin comando asignado'}</p>
                         <div className="brigade-actions">
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(brigade); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
@@ -477,16 +477,16 @@ const Brigadas = () => {
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nombre:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>{selectedBrigade.nombreBrigada}</Typography>
               </Box>
-              
+
               {/* Comando */}
               <Box display="flex" alignItems="center" mb={2}>
                 <Shield color="primary" sx={{ mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Comando:</Typography>
                 <Typography variant="body1" sx={{ ml: 1 }}>
-                  {selectedBrigade.comandoNombre  || 'Sin comando asignado'}
+                  {selectedBrigade.comandoNombre || 'Sin comando asignado'}
                 </Typography>
               </Box>
-              
+
               {/* Estado */}
               <Box display="flex" alignItems="center" mb={2}>
                 {selectedBrigade.estadoBrigada ? (
@@ -517,7 +517,7 @@ const Brigadas = () => {
                   {selectedBrigade.horario === 'mañana' ? '9:00 AM - 12:00 PM' : '2:00 PM - 5:00 PM'}
                 </Typography>
               </Box>
-              
+
               {/* Unidades Asignadas */}
               <Box mb={2}>
                 <Box display="flex" alignItems="center" mb={2}>
@@ -526,7 +526,7 @@ const Brigadas = () => {
                     Unidades Asignadas: ({selectedBrigade.unidades?.length || 0})
                   </Typography>
                 </Box>
-                <Box sx={{ 
+                <Box sx={{
                   pl: 4,
                   display: 'flex',
                   flexDirection: 'column',
@@ -534,7 +534,7 @@ const Brigadas = () => {
                 }}>
                   {selectedBrigade.unidades && selectedBrigade.unidades.length > 0 ? (
                     selectedBrigade.unidades.map((nombreUnidad, index) => (
-                      <Box 
+                      <Box
                         key={index}
                         sx={{
                           display: 'flex',
@@ -549,9 +549,9 @@ const Brigadas = () => {
                           }
                         }}
                       >
-                        <Typography 
-                          variant="body1" 
-                          sx={{ 
+                        <Typography
+                          variant="body1"
+                          sx={{
                             fontWeight: 500,
                             color: '#1d526eff',
                             flex: 1,
@@ -564,10 +564,10 @@ const Brigadas = () => {
                       </Box>
                     ))
                   ) : (
-                    <Typography 
-                      variant="body2" 
+                    <Typography
+                      variant="body2"
                       color="text.secondary"
-                      sx={{ 
+                      sx={{
                         pl: 2,
                         fontStyle: 'italic',
                         display: 'flex',
@@ -589,14 +589,14 @@ const Brigadas = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert 
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >

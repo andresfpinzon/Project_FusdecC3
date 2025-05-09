@@ -71,24 +71,24 @@ const Unidades = () => {
       const response = await fetch('http://localhost:8080/unidades', {
         headers: { "Authorization": `Bearer ${token}` },
       });
-  
+
       if (!response.ok) throw new Error(`Error ${response.status} al obtener unidades`);
-      
+
       const data = await response.json();
       console.log("Unidades recibidas:", data);
-  
+
       // Obtener nombres de relaciones
       const unidadesConNombres = await Promise.all(data.map(async (unidad) => {
         const brigadaNombre = unidad.brigadaId ? await getBrigadaNombre(unidad.brigadaId) : "Sin brigada";
         const usuarioNombre = unidad.usuarioId ? await getUsuarioNombre(unidad.usuarioId) : "Sin instructor";
-  
+
         return {
           ...unidad,
           brigadaNombre,
           usuarioNombre
         };
       }));
-  
+
       setUnidades(unidadesConNombres);
     } catch (error) {
       setSnackbar({
@@ -98,22 +98,22 @@ const Unidades = () => {
       });
     }
   };
-  
+
 
   const fetchBrigadas = async () => {
     try {
       const response = await fetch('http://localhost:8080/brigadas', {
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || `Error ${response.status} al obtener brigadas`);
       }
-      
+
       const data = await response.json();
 
       // Filtrar solo brigadas activas y ordenar por nombre
@@ -170,19 +170,19 @@ const Unidades = () => {
           "Authorization": `Bearer ${token}`
         },
       });
-      
+
       if (!response.ok) {
         throw new Error('Error al obtener usuarios');
       }
-      
+
       const data = await response.json();
-      
+
       // Obtener roles para cada usuario usando el nuevo endpoint
       const usuariosConRoles = await Promise.all(
         data.map(async (usuario) => {
           try {
             const rolesResponse = await fetch(
-              `http://localhost:8080/rolesAsignados/${usuario.numeroDocumento}/detallado`, 
+              `http://localhost:8080/rolesAsignados/${usuario.numeroDocumento}/detallado`,
               {
                 headers: {
                   "Content-Type": "application/json",
@@ -190,12 +190,12 @@ const Unidades = () => {
                 }
               }
             );
-  
+
             if (rolesResponse.ok) {
               const rolesData = await rolesResponse.json();
               // Verificar si tiene rol de Instructor (ahora viene en rolNombre)
               const esInstructor = rolesData.some(rol => rol.rolNombre === 'Instructor');
-              
+
               if (esInstructor) {
                 return {
                   id: usuario.numeroDocumento,
@@ -212,12 +212,12 @@ const Unidades = () => {
           }
         })
       );
-  
+
       // Filtrar usuarios nulos y ordenar por nombre
       const instructores = usuariosConRoles
         .filter(usuario => usuario !== null)
         .sort((a, b) => a.nombre.localeCompare(b.nombre));
-  
+
       setUsuarios(instructores);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
@@ -234,16 +234,16 @@ const Unidades = () => {
       const response = await fetch("http://localhost:8080/estudiantes", {
         headers: { "Authorization": `Bearer ${token}` },
       });
-  
+
       if (!response.ok) throw new Error("Error al obtener estudiantes");
-      
+
       const data = await response.json();
-  
+
       // Filtrar estudiantes por unidadId
-      const estudiantesFiltrados = data.filter(estudiante => 
+      const estudiantesFiltrados = data.filter(estudiante =>
         estudiante.unidadId === unidadId
       );
-  
+
       return estudiantesFiltrados.map(estudiante => ({
         id: estudiante.id,
         nombre: `${estudiante.nombre} ${estudiante.apellido}`,
@@ -279,9 +279,9 @@ const Unidades = () => {
       const url = selectedUnidad
         ? `http://localhost:8080/unidades/${selectedUnidad.id}`
         : 'http://localhost:8080/unidades';
-      
+
       const method = selectedUnidad ? 'PUT' : 'POST';
-      
+
       // Preparar datos para enviar
       const dataToSend = {
         nombreUnidad: formValues.nombreUnidad.trim(),
@@ -316,7 +316,7 @@ const Unidades = () => {
         message: selectedUnidad ? "Unidad actualizada correctamente" : "Unidad creada correctamente",
         severity: 'success'
       });
-      
+
       setFormValues({
         nombreUnidad: '',
         brigadaId: '',
@@ -325,7 +325,7 @@ const Unidades = () => {
       });
       setSelectedUnidad(null);
       setShowForm(false);
-      
+
       await fetchUnidades();
 
     } catch (error) {
@@ -377,12 +377,12 @@ const Unidades = () => {
   const handleInfoClick = async (unidad) => {
     try {
       const estudiantesUnidad = await fetchEstudiantes(unidad.id);
-      
+
       setSelectedUnidad({
         ...unidad,
         estudiantes: estudiantesUnidad
       });
-      
+
       setOpenInfoDialog(true);
     } catch (error) {
       setSnackbar({
@@ -400,10 +400,10 @@ const Unidades = () => {
 
   const handleAddUnidad = () => {
     setSelectedUnidad(null);
-    setFormValues({ 
-      nombreUnidad: '', 
-      brigadaId: '', 
-      estadoUnidad: true 
+    setFormValues({
+      nombreUnidad: '',
+      brigadaId: '',
+      estadoUnidad: true
     });
     setShowForm(true);
   };
@@ -480,8 +480,8 @@ const Unidades = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>{selectedUnidad ? 'Editar Unidad' : 'Nueva Unidad'}</h2>
-              <button 
-                className="close-button" 
+              <button
+                className="close-button"
                 onClick={() => setShowForm(false)}
               >
                 ×
@@ -494,7 +494,7 @@ const Unidades = () => {
                 <input
                   type="text"
                   value={formValues.nombreUnidad}
-                  onChange={(e) => setFormValues({...formValues, nombreUnidad: e.target.value})}
+                  onChange={(e) => setFormValues({ ...formValues, nombreUnidad: e.target.value })}
                   className="form-input"
                   placeholder="Ingrese el nombre de la unidad"
                 />
@@ -520,15 +520,15 @@ const Unidades = () => {
                       <em>Seleccione una brigada</em>
                     </MenuItem>
                     {brigadas.map((brigada) => (
-                      <MenuItem 
-                        key={brigada.id} 
+                      <MenuItem
+                        key={brigada.id}
                         value={brigada.id}
                         sx={{
                           padding: '10px 15px'
                         }}
                       >
-                        <Box sx={{ 
-                          display: 'flex', 
+                        <Box sx={{
+                          display: 'flex',
                           flexDirection: 'column',
                           width: '100%'
                         }}>
@@ -540,8 +540,8 @@ const Unidades = () => {
                     ))}
                   </Select>
                   <FormHelperText>
-                    {formValues.brigadaId ? 
-                      `Brigada seleccionada: ${brigadas.find(b => b.id === formValues.brigadaId)?.nombreBrigada}` : 
+                    {formValues.brigadaId ?
+                      `Brigada seleccionada: ${brigadas.find(b => b.id === formValues.brigadaId)?.nombreBrigada}` :
                       'Debe seleccionar una brigada para la unidad'}
                   </FormHelperText>
                 </FormControl>
@@ -567,15 +567,15 @@ const Unidades = () => {
                       <em>Seleccione un instructor</em>
                     </MenuItem>
                     {usuarios.map((usuario) => (
-                      <MenuItem 
-                        key={usuario.id} 
+                      <MenuItem
+                        key={usuario.id}
                         value={usuario.id}
                         sx={{
                           padding: '10px 15px'
                         }}
                       >
-                        <Box sx={{ 
-                          display: 'flex', 
+                        <Box sx={{
+                          display: 'flex',
                           flexDirection: 'column',
                           width: '100%'
                         }}>
@@ -590,8 +590,8 @@ const Unidades = () => {
                     ))}
                   </Select>
                   <FormHelperText>
-                    {formValues.usuarioId ? 
-                      `Instructor seleccionado: ${usuarios.find(u => u.id === formValues.usuarioId)?.nombre}` : 
+                    {formValues.usuarioId ?
+                      `Instructor seleccionado: ${usuarios.find(u => u.id === formValues.usuarioId)?.nombre}` :
                       'Debe seleccionar un instructor para la unidad'}
                   </FormHelperText>
                 </FormControl>
@@ -603,7 +603,7 @@ const Unidades = () => {
                   <input
                     type="checkbox"
                     checked={formValues.estadoUnidad}
-                    onChange={(e) => setFormValues({...formValues, estadoUnidad: e.target.checked})}
+                    onChange={(e) => setFormValues({ ...formValues, estadoUnidad: e.target.checked })}
                   />
                   <span className="slider round"></span>
                 </label>
@@ -651,8 +651,8 @@ const Unidades = () => {
                           </span>
                         </div>
                         <p className="unit-brigada">
-                          <i className="fas fa-flag"></i> 
-                          {unidad.brigadaNombre|| 'Sin brigada asignada'}
+                          <i className="fas fa-flag"></i>
+                          {unidad.brigadaNombre || 'Sin brigada asignada'}
                         </p>
                         <div className="unit-actions">
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} className="edit-button">
@@ -706,22 +706,22 @@ const Unidades = () => {
                   {selectedUnidad.estadoUnidad ? "Activo" : "Inactivo"}
                 </Typography>
               </Box>
-              
-              <Typography variant="h6" sx={{ 
-                fontWeight: 'bold', 
-                display: 'flex', 
-                alignItems: 'center', 
-                mt: 2, 
-                mb: 1 
+
+              <Typography variant="h6" sx={{
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                mt: 2,
+                mb: 1
               }}>
                 <Person sx={{ mr: 1 }} color="primary" />
                 Estudiantes Asignados ({selectedUnidad.estudiantes?.length || 0})
               </Typography>
               {selectedUnidad.estudiantes && selectedUnidad.estudiantes.length > 0 ? (
-                <Box sx={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  gap: 1, 
+                <Box sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
                   maxHeight: '200px',
                   overflowY: 'auto',
                   padding: '10px',
@@ -729,11 +729,11 @@ const Unidades = () => {
                   borderRadius: '8px'
                 }}>
                   {selectedUnidad.estudiantes?.map((estudiante) => (
-                    <Box 
-                      key={estudiante.id} 
+                    <Box
+                      key={estudiante.id}
                       className="estudiante-card"
-                      sx={{ 
-                        display: 'flex', 
+                      sx={{
+                        display: 'flex',
                         alignItems: 'center',
                         padding: '12px',
                         backgroundColor: 'white',
@@ -754,7 +754,7 @@ const Unidades = () => {
                   ))}
                 </Box>
               ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ 
+                <Typography variant="body2" color="text.secondary" sx={{
                   fontStyle: 'italic',
                   backgroundColor: '#f5f5f5',
                   padding: '10px',
@@ -774,14 +774,14 @@ const Unidades = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={4000} 
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert 
-          onClose={() => setSnackbar({ ...snackbar, open: false })} 
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >

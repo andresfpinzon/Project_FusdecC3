@@ -85,16 +85,16 @@ export default function Home() {
             gap: '15px',
           }}>
             {[{
-              icon: <LocalHospital style={{ color: '#e31837', fontSize: '2rem' }} />, 
-              title: 'Primeros Auxilios', 
+              icon: <LocalHospital style={{ color: '#e31837', fontSize: '2rem' }} />,
+              title: 'Primeros Auxilios',
               description: 'Atención inmediata y profesional en situaciones de emergencia'
             }, {
-              icon: <School style={{ color: '#e31837', fontSize: '2rem' }} />, 
-              title: 'Capacitación', 
+              icon: <School style={{ color: '#e31837', fontSize: '2rem' }} />,
+              title: 'Capacitación',
               description: 'Formación especializada en técnicas de rescate y primeros auxilios'
             }, {
-              icon: <MedicalServices style={{ color: '#e31837', fontSize: '2rem' }} />, 
-              title: 'Servicios Médicos', 
+              icon: <MedicalServices style={{ color: '#e31837', fontSize: '2rem' }} />,
+              title: 'Servicios Médicos',
               description: 'Asistencia médica preventiva y de emergencia'
             }].map((service, index) => (
               <div key={index} style={{

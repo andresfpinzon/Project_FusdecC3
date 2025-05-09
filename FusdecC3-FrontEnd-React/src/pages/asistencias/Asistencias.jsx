@@ -41,7 +41,7 @@ const Asistencias = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [attendanceToDelete, setAttendanceToDelete] = useState(null);
   const token = localStorage.getItem("token");
-  
+
   // Nuevos estados para el diálogo de estudiantes
   const [openStudentsDialog, setOpenStudentsDialog] = useState(false);
   const [currentAttendanceStudents, setCurrentAttendanceStudents] = useState([]);
@@ -72,15 +72,15 @@ const Asistencias = () => {
       const response = await fetch("http://localhost:8080/estudiantes", {
         headers: { "Authorization": `Bearer ${token}` }
       });
-      
+
       if (!response.ok) throw new Error(await response.text());
-      
+
       const data = await response.json();
       const initialAttendance = {};
       data.forEach(student => {
         initialAttendance[student.numeroDocumento] = false;
       });
-      
+
       setStudents(data);
       setAttendance(initialAttendance);
     } catch (error) {
@@ -92,13 +92,13 @@ const Asistencias = () => {
   const fetchAttendanceHistory = async () => {
     try {
       const response = await fetch("http://localhost:8080/asistencias", {
-        headers: { 
-          "Authorization": `Bearer ${token}` 
+        headers: {
+          "Authorization": `Bearer ${token}`
         },
       })
-      
+
       if (!response.ok) throw new Error("Error al obtener historial")
-      
+
       const data = await response.json()
       setAttendanceHistory(data)
     } catch (error) {
@@ -116,14 +116,14 @@ const Asistencias = () => {
           headers: { "Authorization": `Bearer ${token}` }
         }
       );
-      
+
       if (!relationsRes.ok) throw new Error("Error al obtener relaciones");
-      
+
       const relations = await relationsRes.json();
-      
+
       // Obtener los IDs de los estudiantes
       const studentIds = relations.map(rel => rel.estudianteId);
-      
+
       // Obtener los datos completos de los estudiantes
       const studentsRes = await fetch(
         `http://localhost:8080/estudiantes?ids=${studentIds.join(",")}`,
@@ -131,11 +131,11 @@ const Asistencias = () => {
           headers: { "Authorization": `Bearer ${token}` }
         }
       );
-      
+
       if (!studentsRes.ok) throw new Error("Error al obtener estudiantes");
-      
+
       const studentsData = await studentsRes.json();
-      
+
       setCurrentAttendanceStudents(studentsData);
     } catch (error) {
       showSnackbar("Error al cargar estudiantes: " + error.message, "error");
@@ -172,9 +172,9 @@ const Asistencias = () => {
           usuarioId: userId,
         }),
       });
-      
+
       if (!asistenciaRes.ok) throw new Error(await asistenciaRes.text());
-      
+
       const asistencia = await asistenciaRes.json();
 
       // Registrar estudiantes presentes
@@ -209,7 +209,7 @@ const Asistencias = () => {
   // Función para eliminar asistencia
   const handleDeleteAttendance = async () => {
     if (!attendanceToDelete) return;
-    
+
     try {
       const response = await fetch(`http://localhost:8080/asistencias/${attendanceToDelete.id}`, {
         method: "DELETE",
@@ -247,7 +247,7 @@ const Asistencias = () => {
     student.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.apellido?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.numeroDocumento?.includes(searchTerm))
-  
+
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -266,17 +266,17 @@ const Asistencias = () => {
               shrink: true,
             }}
           />
-          <Button 
-            variant="contained" 
-            startIcon={<SaveIcon />} 
-            onClick={handleSaveAttendance} 
+          <Button
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={handleSaveAttendance}
             color="primary"
           >
             Guardar Asistencia
           </Button>
-          <Button 
-            variant="outlined" 
-            startIcon={<HistoryIcon />} 
+          <Button
+            variant="outlined"
+            startIcon={<HistoryIcon />}
             onClick={() => setOpenHistory(true)}
           >
             Ver Historial
@@ -341,7 +341,7 @@ const Asistencias = () => {
                 {attendanceHistory.map((record) => (
                   <TableRow key={record.id}>
                     <TableCell>{record.id}</TableCell>
-                    <TableCell>{new Date(record.fecha+ 'T00:00:00').toLocaleDateString('es-ES')}</TableCell>
+                    <TableCell>{new Date(record.fecha + 'T00:00:00').toLocaleDateString('es-ES')}</TableCell>
                     <TableCell>{record.titulo}</TableCell>
                     <TableCell align="center">
                       {record.estado ? "Activa" : "Inactiva"}
@@ -380,10 +380,10 @@ const Asistencias = () => {
       </Dialog>
 
       {/* Diálogo de estudiantes de la asistencia */}
-      <Dialog 
-        open={openStudentsDialog} 
-        onClose={() => setOpenStudentsDialog(false)} 
-        maxWidth="md" 
+      <Dialog
+        open={openStudentsDialog}
+        onClose={() => setOpenStudentsDialog(false)}
+        maxWidth="md"
         fullWidth
       >
         <DialogTitle>
@@ -447,13 +447,13 @@ const Asistencias = () => {
       </Dialog>
 
       {/* Snackbar para notificaciones */}
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
       >
-        <Alert 
-          severity={snackbar.severity} 
+        <Alert
+          severity={snackbar.severity}
           onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
         >
           {snackbar.message}

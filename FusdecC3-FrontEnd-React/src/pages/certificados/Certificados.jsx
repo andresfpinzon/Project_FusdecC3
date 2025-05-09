@@ -41,7 +41,7 @@ const Certificados = () => {
       if (token) {
         try {
           const decodedToken = jwtDecode(token);
-          
+
           if (decodedToken.exp * 1000 < Date.now()) {
             handleSessionError("Su sesión ha expirado");
             return;
@@ -87,14 +87,14 @@ const Certificados = () => {
           'Accept': 'application/json'
         }
       });
-      
+
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
       const usuarios = await response.json();
       const usuario = usuarios.find(u => u.numeroDocumento === numeroDocumento);
-      
+
       if (!usuario) {
         return;
       }
@@ -123,7 +123,7 @@ const Certificados = () => {
       }
 
       const estudiantes = await response.json();
-      
+
       if (!Array.isArray(estudiantes)) {
         throw new Error('Formato de respuesta inválido');
       }
@@ -270,12 +270,12 @@ const Certificados = () => {
 
     // Configuración del PDF
     doc.addImage(encabezadoCertificado, "PNG", 30, 15, 150, 25);
-    
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.text("LA FUNDACIÓN SOCORRISTAS DE", doc.internal.pageSize.width / 2, 65, { align: "center" });
     doc.text("COLOMBIA", doc.internal.pageSize.width / 2, 72, { align: "center" });
-    
+
     doc.setFontSize(12);
     doc.text("CERTIFICA", doc.internal.pageSize.width / 2, 85, { align: "center" });
 
@@ -296,11 +296,11 @@ const Certificados = () => {
       month: 'long',
       day: 'numeric'
     });
-    
+
     doc.text(`Dada en Bogotá a los ${fechaEmisionFormateada}`, doc.internal.pageSize.width / 2, y + 8, { align: "center" });
 
     doc.addImage(firmaPresenteCertificado, "PNG", doc.internal.pageSize.width / 2 - 30, y + 15, 60, 30);
-    
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.text("BRIGADIER G.", doc.internal.pageSize.width / 2, y + 50, { align: "center" });
@@ -369,10 +369,10 @@ const Certificados = () => {
                   </MenuItem>
                 ) : (
                   estudiantes.map((estudiante) => (
-                    <MenuItem 
-                      key={estudiante.numeroDocumento} 
+                    <MenuItem
+                      key={estudiante.numeroDocumento}
                       value={estudiante.numeroDocumento}
-                      sx={{ 
+                      sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'flex-start',
@@ -397,7 +397,7 @@ const Certificados = () => {
               <InputLabel>Horas Completadas</InputLabel>
               <Select
                 value={formValues.horasCompletadas}
-                onChange={(e) => setFormValues({...formValues, horasCompletadas: e.target.value})}
+                onChange={(e) => setFormValues({ ...formValues, horasCompletadas: e.target.value })}
                 label="Horas Completadas"
                 disabled={loading}
               >
@@ -413,7 +413,7 @@ const Certificados = () => {
               type="date"
               label="Fecha de Emisión"
               value={formValues.fechaEmision}
-              onChange={(e) => setFormValues({...formValues, fechaEmision: e.target.value})}
+              onChange={(e) => setFormValues({ ...formValues, fechaEmision: e.target.value })}
               InputLabelProps={{ shrink: true }}
               disabled={loading}
             />
@@ -439,8 +439,8 @@ const Certificados = () => {
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <Alert 
-          severity={severity} 
+        <Alert
+          severity={severity}
           onClose={() => setOpenSnackbar(false)}
           sx={{ width: '100%' }}
         >

@@ -83,13 +83,13 @@ const Estudiantes = () => {
       });
       if (!response.ok) throw new Error("Error al obtener estudiantes");
       const data = await response.json();
-      
+
       // Obtener nombres de relaciones
       const estudiantesConNombres = await Promise.all(data.map(async (est) => {
         const unidadNombre = est.unidadId ? await getUnidadNombre(est.unidadId) : "Sin unidad";
         const colegioNombre = est.colegioId ? await getColegioNombre(est.colegioId) : "Sin colegio";
         const edicionNombre = est.edicionId ? await getEdicionNombre(est.edicionId) : "Sin edición";
-        
+
         return {
           ...est,
           unidadNombre,
@@ -97,11 +97,11 @@ const Estudiantes = () => {
           edicionNombre
         };
       }));
-      
+
       if (estudiantesConNombres.length === 0) {
         setErrorMessage("No hay estudiantes registrados.");
         setOpenSnackbar(true);
-        setEstudiantes([]); 
+        setEstudiantes([]);
       } else {
         setEstudiantes(estudiantesConNombres);
       }
@@ -167,10 +167,10 @@ const Estudiantes = () => {
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       if (!response.ok) throw new Error("Error al obtener unidades");
       const data = await response.json();
-      
+
       if (data.length === 0) {
         setErrorMessage("No hay unidades registradas.");
         setOpenSnackbar(true);
@@ -194,17 +194,17 @@ const Estudiantes = () => {
           "Authorization": `Bearer ${token}`
         },
       });
-  
+
       if (response.status === 401) {
         const errorData = await response.json();
         console.error("Detalles error 401:", errorData);
         throw new Error(errorData.message || "No autorizado");
       }
-  
+
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
-  
+
       const data = await response.json();
       setColegios(data);
     } catch (error) {
@@ -223,10 +223,10 @@ const Estudiantes = () => {
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       if (!response.ok) throw new Error("Error al obtener ediciones");
       const data = await response.json();
-      
+
       if (data.length === 0) {
         setErrorMessage("No hay ediciones registradas.");
         setOpenSnackbar(true);
@@ -356,7 +356,7 @@ const Estudiantes = () => {
 
         // Mostrar mensaje de éxito
         setSuccessMessage("El estudiante se actualizó correctamente");
-        setOpenSnackbar(true); 
+        setOpenSnackbar(true);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al actualizar estudiante");
@@ -435,15 +435,15 @@ const Estudiantes = () => {
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       if (!relacionesResponse.ok) throw new Error("Error al obtener relaciones");
-      
+
       const relaciones = await relacionesResponse.json();
-      
+
       const relacionesDelEstudiante = relaciones.filter(
         rel => rel.estudianteId === estudiante.numeroDocumento
       );
-      
+
       const asistenciasResponse = await fetch("http://localhost:8080/asistencias", {
         method: "GET",
         headers: {
@@ -451,21 +451,21 @@ const Estudiantes = () => {
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       if (!asistenciasResponse.ok) throw new Error("Error al obtener asistencias");
-      
+
       const todasAsistencias = await asistenciasResponse.json();
-      
-      const asistenciasDelEstudiante = todasAsistencias.filter(asistencia => 
+
+      const asistenciasDelEstudiante = todasAsistencias.filter(asistencia =>
         relacionesDelEstudiante.some(rel => rel.asistenciaId === asistencia.id)
       );
-      
+
       setInfoEstudiante({
         ...estudiante,
         asistencias: asistenciasDelEstudiante
       });
       setOpenInfoDialog(true);
-      
+
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage("Error al obtener las asistencias del estudiante");
@@ -682,7 +682,7 @@ const Estudiantes = () => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      
+
       {/* cuerpo */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
@@ -721,22 +721,22 @@ const Estudiantes = () => {
                     )}
                   </TableCell>
                   <TableCell>
-                    <IconButton 
-                      onClick={() => handleEditClick(estudiante)} 
+                    <IconButton
+                      onClick={() => handleEditClick(estudiante)}
                       color="primary"
                       aria-label="editar"
                     >
                       <Edit />
                     </IconButton>
-                    <IconButton 
-                      onClick={() => handleInfoClick(estudiante)} 
+                    <IconButton
+                      onClick={() => handleInfoClick(estudiante)}
                       color="info"
                       aria-label="información"
                     >
                       <Info />
                     </IconButton>
-                    <IconButton 
-                      onClick={() => handleDeleteClick(estudiante)} 
+                    <IconButton
+                      onClick={() => handleDeleteClick(estudiante)}
                       color="error"
                       aria-label="eliminar"
                     >
@@ -785,7 +785,7 @@ const Estudiantes = () => {
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
                 Registro de Asistencias ({infoEstudiante.asistencias?.length || 0})
               </Typography>
-              
+
               {infoEstudiante.asistencias?.length > 0 ? (
                 <TableContainer component={Paper} sx={{ maxHeight: 400, overflow: 'auto' }}>
                   <Table size="small" stickyHeader>
@@ -808,10 +808,10 @@ const Estudiantes = () => {
                             </TableCell>
                             <TableCell>{asistencia.titulo}</TableCell>
                             <TableCell>
-                              <Chip 
-                                label={asistencia.estado ? "Activa" : "Inactiva"} 
-                                color={asistencia.estado ? "success" : "error"} 
-                                size="small" 
+                              <Chip
+                                label={asistencia.estado ? "Activa" : "Inactiva"}
+                                color={asistencia.estado ? "success" : "error"}
+                                size="small"
                               />
                             </TableCell>
                           </TableRow>
@@ -834,13 +834,13 @@ const Estudiantes = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar 
-        open={openSnackbar} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
       >
-        <Alert 
-          onClose={() => setOpenSnackbar(false)} 
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
           severity={errorMessage ? "error" : "success"}
         >
           {errorMessage || successMessage}

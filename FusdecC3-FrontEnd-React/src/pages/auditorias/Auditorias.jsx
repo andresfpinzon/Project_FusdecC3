@@ -39,7 +39,7 @@ const Auditorias = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return "Fecha no disponible";
-    
+
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString('es-ES');
@@ -72,7 +72,7 @@ const Auditorias = () => {
   const handleViewDetails = async (auditoria) => {
     try {
       console.log('Datos de la auditoría:', auditoria);
-      
+
       // Obtener todos los certificados
       const certificadosResponse = await fetch(`http://localhost:8080/certificados`, {
         headers: {
@@ -87,7 +87,7 @@ const Auditorias = () => {
       const certificados = await certificadosResponse.json();
       // Encontrar el certificado específico
       const certificadoData = certificados.find(cert => cert.id === auditoria.certificadoId);
-      
+
       if (!certificadoData) {
         throw new Error('No se encontró el certificado asociado');
       }
@@ -108,7 +108,7 @@ const Auditorias = () => {
       const estudiantes = await estudiantesResponse.json();
       // Encontrar el estudiante específico por número de documento
       const estudianteData = estudiantes.find(est => est.numeroDocumento === certificadoData.estudianteId);
-      
+
       if (!estudianteData) {
         throw new Error('No se encontró el estudiante asociado');
       }

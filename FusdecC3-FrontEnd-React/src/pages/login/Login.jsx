@@ -49,18 +49,18 @@ const Login = () => {
         const data = await response.json();
         const { token } = data;
 
-       // Decodificar payload del token
-      const payload = JSON.parse(atob(token.split(".")[1]));
+        // Decodificar payload del token
+        const payload = JSON.parse(atob(token.split(".")[1]));
 
-      // Convertir roles a formato sin "ROLE_"
-      const rolesNormalizados = payload.roles.map((rol) => {
-        const sinPrefijo = rol.replace("ROLE_", "");
-        return sinPrefijo.charAt(0).toUpperCase() + sinPrefijo.slice(1).toLowerCase();
-      });
-      
+        // Convertir roles a formato sin "ROLE_"
+        const rolesNormalizados = payload.roles.map((rol) => {
+          const sinPrefijo = rol.replace("ROLE_", "");
+          return sinPrefijo.charAt(0).toUpperCase() + sinPrefijo.slice(1).toLowerCase();
+        });
 
-      // Llamar la función `login` del contexto
-      login(token, rolesNormalizados);
+
+        // Llamar la función `login` del contexto
+        login(token, rolesNormalizados);
 
         navigate("/home", { replace: true });
       } else {
