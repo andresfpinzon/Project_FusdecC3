@@ -280,9 +280,11 @@ const Estudiantes = () => {
 
   const handleCreateEstudiante = async () => {
     try {
-      // Validar que los IDs existen
-      if (!formValues.unidadId || !formValues.colegioId || !formValues.edicionId) {
-        throw new Error("Debe seleccionar unidad, colegio y edición");
+      // Validación básica del formulario
+      if (!formValues.numeroDocumento || !formValues.nombre || !formValues.apellido ||
+        !formValues.tipoDocumento || !formValues.genero || !formValues.unidadId ||
+        !formValues.colegioId || !formValues.edicionId || !formValues.grado) {
+        throw new Error("Por favor complete todos los campos obligatorios");
       }
 
       const response = await fetch("http://localhost:8080/estudiantes", {
@@ -294,38 +296,70 @@ const Estudiantes = () => {
         body: JSON.stringify(formValues)
       });
 
-      if (response.ok) {
-        await fetchEstudiantes();
+      const responseData = await response.json().catch(() => ({}));
 
-        // Muestra un mensaje de éxito
-        setSuccessMessage("Estudiante creado exitosamente.");
-        setOpenSnackbar(true);
-
-        setFormValues({
-          numeroDocumento: "",
-          nombre: "",
-          apellido: "",
-          tipoDocumento: "",
-          genero: "",
-          unidadId: null,
-          colegioId: null,
-          edicionId: null,
-          grado: "",
-          estado: true
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear estudiante");
+      if (!response.ok) {
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al crear el estudiante");
       }
+
+      await fetchEstudiantes();
+      clearForm();
+      setErrorMessage(null);
+      setSuccessMessage("Estudiante creado correctamente");
+      setOpenSnackbar(true);
+
     } catch (error) {
-      console.error("Error al crear estudiante:", error);
+      console.error('Error al crear estudiante:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
 
+  const clearForm = () => {
+    setFormValues({
+      numeroDocumento: "",
+      nombre: "",
+      apellido: "",
+      tipoDocumento: "",
+      genero: "",
+      unidadId: null,
+      colegioId: null,
+      edicionId: null,
+      grado: "",
+      estado: true
+    });
+    setSelectedEstudiante(null);
+  };
+
   const handleUpdateEstudiante = async () => {
     try {
+      if (!selectedEstudiante) {
+        throw new Error("No se ha seleccionado ningún estudiante para actualizar");
+      }
+
+      // Preparar datos para actualización
+      const updateData = {};
+      if (formValues.nombre) updateData.nombre = formValues.nombre;
+      if (formValues.apellido) updateData.apellido = formValues.apellido;
+      if (formValues.tipoDocumento) updateData.tipoDocumento = formValues.tipoDocumento;
+      if (formValues.genero) updateData.genero = formValues.genero;
+      if (formValues.grado) updateData.grado = formValues.grado;
+      if (formValues.estado !== undefined) updateData.estado = formValues.estado;
+      if (formValues.unidadId) updateData.unidadId = formValues.unidadId;
+      if (formValues.colegioId) updateData.colegioId = formValues.colegioId;
+      if (formValues.edicionId) updateData.edicionId = formValues.edicionId;
+
+      // Verificar que hay datos para actualizar
+      if (Object.keys(updateData).length === 0) {
+        throw new Error("No se proporcionaron datos para actualizar");
+      }
+
       const response = await fetch(
         `http://localhost:8080/estudiantes/${selectedEstudiante.numeroDocumento}`,
         {
@@ -334,35 +368,30 @@ const Estudiantes = () => {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify(formValues)
+          body: JSON.stringify(updateData)
         }
       );
 
-      if (response.ok) {
-        await fetchEstudiantes();
-        setSelectedEstudiante(null);
-        setFormValues({
-          numeroDocumento: "",
-          nombre: "",
-          apellido: "",
-          tipoDocumento: "",
-          genero: "",
-          unidadId: null,
-          colegioId: null,
-          edicionId: null,
-          grado: "",
-          estado: true
-        });
+      const responseData = await response.json().catch(() => ({}));
 
-        // Mostrar mensaje de éxito
-        setSuccessMessage("El estudiante se actualizó correctamente");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar estudiante");
+      if (!response.ok) {
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al actualizar el estudiante");
       }
+
+      await fetchEstudiantes();
+      clearForm();
+      setErrorMessage(null);
+      setSuccessMessage("Estudiante actualizado correctamente");
+      setOpenSnackbar(true);
+
     } catch (error) {
-      console.error("Error al actualizar estudiante:", error);
+      console.error('Error al actualizar estudiante:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }

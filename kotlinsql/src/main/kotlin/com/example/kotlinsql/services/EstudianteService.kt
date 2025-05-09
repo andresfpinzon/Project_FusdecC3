@@ -33,51 +33,81 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.query(sql, rowMapper)
     }
 
-    fun crear(request: EstudianteCreateRequest): Estudiante? {
+    fun crear(request: EstudianteCreateRequest): Estudiante {
+        val estudianteNormalizado = request.normalizar()
+
+        // Verificar si ya existe un estudiante con el mismo número de documento
+        val existeDocumento = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM estudiante WHERE numero_documento = ?",
+            Int::class.java,
+            estudianteNormalizado.numeroDocumento
+        ) ?: 0
+
+        if (existeDocumento > 0) {
+            throw IllegalArgumentException("Ya existe un estudiante con el documento '${estudianteNormalizado.numeroDocumento}'")
+        }
+
         val sql = """
             INSERT INTO estudiante (
                 numero_documento, nombre, apellido, tipo_documento,
-                genero, grado, unidad_id, colegio_id, edicion_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                genero, grado, estado, unidad_id, colegio_id, edicion_id
+            ) VALUES (?, ?, ?, ?, ?, ?, true, ?, ?, ?)
             RETURNING *
         """.trimIndent()
+
         return jdbcTemplate.queryForObject(
             sql,
             rowMapper,
-            request.numeroDocumento,
-            request.nombre,
-            request.apellido,
-            request.tipoDocumento,
-            request.genero,
-            request.grado,
-            request.unidadId,
-            request.colegioId,
-            request.edicionId
-        )
+            estudianteNormalizado.numeroDocumento,
+            estudianteNormalizado.nombre,
+            estudianteNormalizado.apellido,
+            estudianteNormalizado.tipoDocumento,
+            estudianteNormalizado.genero,
+            estudianteNormalizado.grado,
+            estudianteNormalizado.unidadId,
+            estudianteNormalizado.colegioId,
+            estudianteNormalizado.edicionId
+        ) ?: throw IllegalArgumentException("No se pudo crear el estudiante")
     }
 
-    fun actualizar(documento: String, request: EstudianteUpdateRequest): Estudiante? {
+    fun actualizar(documento: String, request: EstudianteUpdateRequest): Estudiante {
+        if (request.isEmpty()) {
+            throw IllegalArgumentException("No se proporcionaron datos para actualizar")
+        }
+
+        val estudianteNormalizado = request.normalizar()
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
-        request.nombre?.let { campos.add("nombre = ?"); valores.add(it) }
-        request.apellido?.let { campos.add("apellido = ?"); valores.add(it) }
-        request.tipoDocumento?.let { campos.add("tipo_documento = ?"); valores.add(it) }
-        request.genero?.let { campos.add("genero = ?"); valores.add(it) }
-        request.grado?.let { campos.add("grado = ?"); valores.add(it) }
-        request.estado?.let { campos.add("estado = ?"); valores.add(it) }
-        request.unidadId?.let { campos.add("unidad_id = ?"); valores.add(it) }
-        request.colegioId?.let { campos.add("colegio_id = ?"); valores.add(it) }
-        request.edicionId?.let { campos.add("edicion_id = ?"); valores.add(it) }
+        estudianteNormalizado.nombre?.let { campos.add("nombre = ?"); valores.add(it) }
+        estudianteNormalizado.apellido?.let { campos.add("apellido = ?"); valores.add(it) }
+        estudianteNormalizado.tipoDocumento?.let { campos.add("tipo_documento = ?"); valores.add(it) }
+        estudianteNormalizado.genero?.let { campos.add("genero = ?"); valores.add(it) }
+        estudianteNormalizado.grado?.let { campos.add("grado = ?"); valores.add(it) }
+        estudianteNormalizado.estado?.let { campos.add("estado = ?"); valores.add(it) }
+        estudianteNormalizado.unidadId?.let { campos.add("unidad_id = ?"); valores.add(it) }
+        estudianteNormalizado.colegioId?.let { campos.add("colegio_id = ?"); valores.add(it) }
+        estudianteNormalizado.edicionId?.let { campos.add("edicion_id = ?"); valores.add(it) }
 
-        if (campos.isEmpty()) return null
-
-        val sql = "UPDATE estudiante SET ${campos.joinToString(", ")} WHERE numero_documento = ?"
         valores.add(documento)
-        jdbcTemplate.update(sql, *valores.toTypedArray())
 
-        val sqlSelect = "SELECT * FROM estudiante WHERE numero_documento = ?"
-        return jdbcTemplate.queryForObject(sqlSelect, rowMapper, documento)
+        val sql = """
+            UPDATE estudiante 
+            SET ${campos.joinToString(", ")} 
+            WHERE numero_documento = ?
+        """.trimIndent()
+
+        val filasActualizadas = jdbcTemplate.update(sql, *valores.toTypedArray())
+
+        if (filasActualizadas == 0) {
+            throw NoSuchElementException("No se encontró el estudiante con documento $documento para actualizar")
+        }
+
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM estudiante WHERE numero_documento = ?",
+            rowMapper,
+            documento
+        ) ?: throw NoSuchElementException("No se pudo recuperar el estudiante actualizado")
     }
 
     fun eliminar(documento: String): Int {
