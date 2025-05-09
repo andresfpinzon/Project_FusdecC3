@@ -155,49 +155,59 @@ const Brigadas = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validar el enlace de Google Maps
+    if (!isValidGoogleMapsLink(formData.ubicacionBrigada)) {
+      setSnackbar({
+        open: true,
+        message: "Por favor ingrese un enlace válido de Google Maps",
+        severity: "error"
+      });
+      return;
+    }
+  
     try {
-        const response = await fetch(
-            selectedBrigade 
-                ? `http://localhost:8080/brigadas/${selectedBrigade.id}` 
-                : 'http://localhost:8080/brigadas', 
-            {
-                method: selectedBrigade ? 'PUT' : 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(formData)
-            }
-        );
-
-        const responseText = await response.text();
-        let errorData;
-        try {
-            errorData = JSON.parse(responseText);
-        } catch (e) {
-            errorData = { error: responseText };
+      const response = await fetch(
+        selectedBrigade 
+          ? `http://localhost:8080/brigadas/${selectedBrigade.id}` 
+          : 'http://localhost:8080/brigadas', 
+        {
+          method: selectedBrigade ? 'PUT' : 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(formData)
         }
-
-        if (!response.ok) {
-            throw new Error(errorData.error || `Error al ${selectedBrigade ? 'actualizar' : 'crear'} la brigada`);
-        }
-
-        await fetchBrigades();
-        
-        resetForm();
-        
-        setSnackbar({
-            open: true,
-            message: selectedBrigade ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
-            severity: "success"
-        });
+      );
+  
+      const responseText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(responseText);
+      } catch (e) {
+        errorData = { error: responseText };
+      }
+  
+      if (!response.ok) {
+        throw new Error(errorData.error || `Error al ${selectedBrigade ? 'actualizar' : 'crear'} la brigada`);
+      }
+  
+      await fetchBrigades();
+      
+      resetForm();
+      
+      setSnackbar({
+        open: true,
+        message: selectedBrigade ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
+        severity: "success"
+      });
     } catch (error) {
-        console.error('Error al guardar brigada:', error);
-        setSnackbar({
-            open: true,
-            message: error.message,
-            severity: "error"
-        });
+      console.error('Error al guardar brigada:', error);
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: "error"
+      });
     }
   };
 
@@ -221,6 +231,12 @@ const Brigadas = () => {
     } catch (error) {
       setError('Error al eliminar brigada');
     }
+  };
+
+
+  const isValidGoogleMapsLink = (link) => {
+    const regex = /^(https?:\/\/)?(www\.)?(google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl|goo\.gl\/maps)\/.+/i;
+    return regex.test(link);
   };
 
   const handleEdit = (brigade) => {
