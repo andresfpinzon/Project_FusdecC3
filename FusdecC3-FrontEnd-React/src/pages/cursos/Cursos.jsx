@@ -483,7 +483,7 @@ const Cursos = () => {
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Eliminar Curso</DialogTitle>
         <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {cursoToDelete?.nombr}?</Typography>
+          <Typography>¿Estás seguro de que deseas eliminar a {cursoToDelete?.nombre}?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
