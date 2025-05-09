@@ -378,13 +378,39 @@ const handleInfoClick = async (comando) => {
                 ))}
               </Select>
             </FormControl>
+            <Box marginTop={3}>
             <Button
               variant="contained"
               color="primary"
               onClick={selectedComando ? handleUpdateComando : handleCreateComando}
+              disabled={
+                !formValues.nombreComando.trim() || 
+                !isValidGoogleMapsLink(formValues.ubicacionComando) || 
+                !formValues.fundacionId
+              }
             >
               {selectedComando ? "Actualizar Comando" : "Crear Comando"}
             </Button>
+            
+            {selectedComando && (
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => {
+                  setSelectedComando(null);
+                  setFormValues({
+                    nombreComando: "",
+                    ubicacionComando: "",
+                    estadoComando: true,
+                    fundacionId: ""
+                  });
+                }}
+                style={{ marginLeft: '10px' }}
+              >
+                Cancelar Edición
+              </Button>
+            )}
+          </Box>
           </form>
         </Grid>
         <Grid item xs={12} md={12}>
