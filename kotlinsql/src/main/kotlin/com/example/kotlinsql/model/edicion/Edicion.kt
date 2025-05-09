@@ -17,14 +17,14 @@ data class Edicion(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    val titulo: String,
+    var titulo: String,
 
-    val fechaInicio: LocalDate,
+    var fechaInicio: LocalDate,
 
-    val fechaFin: LocalDate,
+    var fechaFin: LocalDate,
 
     @Column(name = "curso_id", nullable = true, insertable = true, updatable = true)
-    val cursoId: Int? = null,
+    var cursoId: Int? = null,
 
     val estado: Boolean = true
 )

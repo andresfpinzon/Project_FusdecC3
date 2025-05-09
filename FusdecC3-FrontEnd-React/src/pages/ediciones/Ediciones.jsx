@@ -208,7 +208,6 @@ const Ediciones = () => {
       const data = await response.json();
       setEdiciones([...ediciones, data]);
       
-      // Resetear el formulario y asegurarse de que no hay edición seleccionada
       setFormValues({
         titulo: "",
         fechaInicio: "",
@@ -217,7 +216,7 @@ const Ediciones = () => {
         cursoId: "",
         estudiantes: [],
       });
-      setSelectedEdicion(null); // Añade esta línea
+      setSelectedEdicion(null); 
   
       setSuccessMessage("Edición creada exitosamente.");
       setOpenSnackbar(true);
@@ -253,6 +252,7 @@ const Ediciones = () => {
       setEdiciones(ediciones.map(edicion => 
         edicion.id === selectedEdicion.id ? data : edicion
       ));
+      
       setFormValues({
         titulo: "",
         fechaInicio: "",

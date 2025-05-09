@@ -1,10 +1,12 @@
 package com.example.kotlinsql.services.edicion
 
 import com.example.kotlinsql.dto.EstudianteResumenResponse
+import com.example.kotlinsql.dto.edicion.UpdateEdicionDto
 import com.example.kotlinsql.model.edicion.Edicion
 import com.example.kotlinsql.repositories.edicion.EdicionRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class EdicionServices (
@@ -29,12 +31,15 @@ class EdicionServices (
         return edicionRepository.save(edicion)
     }
 
-    fun updateEdicion(id: Long, edicion: Edicion): Edicion? {
-        val existingEdicion = edicionRepository.getEdicionById(id)
-        if (existingEdicion != null) {
-            return edicionRepository.save(edicion)
-        }
-        return null
+    fun updateEdicion(id: Long, updateDto: UpdateEdicionDto): Edicion? {
+        val existingEdicion = edicionRepository.getEdicionById(id) ?: return null
+
+        return existingEdicion.copy(
+            titulo = updateDto.titulo ?: existingEdicion.titulo,
+            fechaInicio = updateDto.fechaInicio?.let { LocalDate.parse(it) } ?: existingEdicion.fechaInicio,
+            fechaFin = updateDto.fechaFin?.let { LocalDate.parse(it) } ?: existingEdicion.fechaFin,
+            cursoId = updateDto.cursoId?.toInt() ?: existingEdicion.cursoId
+        ).let { edicionRepository.save(it) }
     }
 
     fun deleteEdicion(id: Long) {

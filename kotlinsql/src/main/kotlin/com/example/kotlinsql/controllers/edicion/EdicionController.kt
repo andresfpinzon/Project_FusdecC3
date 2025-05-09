@@ -1,6 +1,7 @@
 package com.example.kotlinsql.controllers.edicion
 
 import com.example.kotlinsql.dto.EstudianteResumenResponse
+import com.example.kotlinsql.dto.edicion.UpdateEdicionDto
 import com.example.kotlinsql.model.edicion.Edicion
 import com.example.kotlinsql.services.edicion.EdicionServices
 import io.swagger.v3.oas.annotations.Operation
@@ -86,7 +87,7 @@ class EdicionController(
         ]
     )
     @PutMapping("/{id}")
-    fun updateEdicion(@PathVariable id: Long, @Valid @RequestBody edicion: Edicion): Edicion? {
+    fun updateEdicion(@PathVariable id: Long, @Valid @RequestBody edicion: UpdateEdicionDto): Edicion? {
         return edicionServices.updateEdicion(id, edicion)
     }
 
