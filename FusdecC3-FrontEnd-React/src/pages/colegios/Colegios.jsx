@@ -141,39 +141,51 @@ import React, { useState, useEffect } from "react";
     };
 
     const handleCreateColegio = async () => {
+      // Validar campos obligatorios
+      if (!formValues.nombre.trim() || !formValues.email.trim()) {
+        setErrorMessage("Todos los campos son obligatorios");
+        setOpenSnackbar(true);
+        return;
+      }
+    
       try {
-          const response = await fetch("http://localhost:8080/colegios", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": `Bearer ${token}`
-              },
-              body: JSON.stringify(formValues),
-          });
-
-          // Maneja la respuesta
-          if (response.ok) {
-              const nuevoColegio = await response.json();
-              setColegios([...colegios, nuevoColegio]);
-              setFormValues({
-                nombre: "",
-                email: "",
-                estado: true,
-              });
-              // Muestra un mensaje de éxito
-              setSuccessMessage("Colegio creado exitosamente");
-              setOpenSnackbar(true);
-          } else {
-              const errorData = await response.json();
-              throw new Error(errorData.error || "Error al crear colegio");
-          }
+        const response = await fetch("http://localhost:8080/colegios", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(formValues),
+        });
+    
+        if (response.ok) {
+            const nuevoColegio = await response.json();
+            setColegios([...colegios, nuevoColegio]);
+            setFormValues({
+              nombre: "",
+              email: "",
+              estado: true,
+            });
+            setSuccessMessage("Colegio creado exitosamente");
+            setOpenSnackbar(true);
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Error al crear colegio");
+        }
       } catch (error) {
           handleError("Error al crear el colegio", error);
       }
-  };
+    };
 
   const handleUpdateColegio = async () => {
     if (!selectedColegio) return;
+  
+    // Validar campos obligatorios
+    if (!formValues.nombre.trim() || !formValues.email.trim()) {
+      setErrorMessage("Todos los campos son obligatorios");
+      setOpenSnackbar(true);
+      return;
+    }
   
     try {
       const response = await fetch(
@@ -320,14 +332,33 @@ import React, { useState, useEffect } from "react";
           </Box>
           
           <Box marginTop={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={selectedColegio ? handleUpdateColegio : handleCreateColegio}
+            disabled={!formValues.nombre.trim() || !formValues.email.trim()}
+          >
+            {selectedColegio ? "Actualizar colegio" : "Crear colegio"}
+          </Button>
+          
+          {selectedColegio && (
             <Button
-              variant="contained"
-              color="primary"
-              onClick={selectedColegio ? handleUpdateColegio : handleCreateColegio}
+              variant="outlined"
+              color="secondary"
+              onClick={() => {
+                setSelectedColegio(null);
+                setFormValues({
+                  nombre: "",
+                  email: "",
+                  estado: true,
+                });
+              }}
+              style={{ marginLeft: '10px' }}
             >
-              {selectedColegio? "Actualizar colegio" : "Crear colegio"}
+              Cancelar Edición
             </Button>
-          </Box>
+          )}
+        </Box>
         </form>
 
         {/* Busqueda */}

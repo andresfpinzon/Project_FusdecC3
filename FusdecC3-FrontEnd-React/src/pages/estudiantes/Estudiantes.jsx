@@ -556,7 +556,7 @@ const Estudiantes = () => {
             input={<OutlinedInput label="Unidad" />}
           >
             {unidades.map((unidad) => (
-              <MenuItem key={unidad.idUnidad} value={unidad.idUnidad}>
+              <MenuItem key={unidad.id} value={unidad.id}>
                 {unidad.nombreUnidad}
               </MenuItem>
             ))}
