@@ -6,59 +6,112 @@ import com.example.kotlinsql.model.Brigada
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
+import org.springframework.dao.EmptyResultDataAccessException
 
 @Service
 class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
 
-    val rowMapper = RowMapper<Brigada> { rs, _ ->
+    private val rowMapper = RowMapper<Brigada> { rs, _ ->
         Brigada(
             id = rs.getInt("id"),
             nombreBrigada = rs.getString("nombre_brigada"),
             ubicacionBrigada = rs.getString("ubicacion_brigada"),
             estadoBrigada = rs.getBoolean("estado_brigada"),
             comandoId = rs.getInt("comando_id")
+
         )
     }
 
     fun obtenerTodas(): List<Brigada> {
-        return jdbcTemplate.query("SELECT * FROM brigada", rowMapper)
+        return jdbcTemplate.query("SELECT * FROM brigada WHERE estado_brigada = true ORDER BY nombre_brigada ASC", rowMapper)
     }
 
     fun obtenerPorId(id: Int): Brigada? {
-        val sql = "SELECT * FROM brigada WHERE id = ?"
-        return jdbcTemplate.query(sql, rowMapper, id).firstOrNull()
+        val sql = "SELECT * FROM brigada WHERE id = ? AND estado_brigada = true"
+        return try {
+            jdbcTemplate.queryForObject(sql, rowMapper, id)
+        } catch (e: EmptyResultDataAccessException) {
+            null
+        }
     }
 
-    fun crear(request: BrigadaCreateRequest): Brigada? {
+    fun crear(request: BrigadaCreateRequest): Brigada {
+        val brigadaNormalizada = request.normalizar()
+
+        // Verificar si ya existe una brigada con el mismo nombre
+        val existeNombre = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM brigada WHERE LOWER(nombre_brigada) = LOWER(?)",
+            Int::class.java,
+            brigadaNormalizada.nombreBrigada
+        ) ?: 0
+
+        if (existeNombre > 0) {
+            throw IllegalArgumentException("Ya existe una brigada con el nombre '${brigadaNormalizada.nombreBrigada}'")
+        }
+
         val sql = """
-        INSERT INTO brigada (nombre_brigada, ubicacion_brigada, comando_id)
-        VALUES (?, ?, ?)
-        RETURNING *
+            INSERT INTO brigada (nombre_brigada, ubicacion_brigada, comando_id, estado_brigada)
+            VALUES (?, ?, ?, true)
+            RETURNING *
         """.trimIndent()
+
         return jdbcTemplate.queryForObject(
             sql,
             rowMapper,
-            request.nombreBrigada,
-            request.ubicacionBrigada,
-            request.comandoId
-        )
+            brigadaNormalizada.nombreBrigada,
+            brigadaNormalizada.ubicacionBrigada,
+            brigadaNormalizada.comandoId
+        ) ?: throw IllegalArgumentException("No se pudo crear la brigada")
     }
 
     fun actualizar(id: Int, request: BrigadaUpdateRequest): Brigada? {
+        if (request.isEmpty()) {
+            throw IllegalArgumentException("No se proporcionaron datos para actualizar")
+        }
+
+        val brigadaNormalizada = request.normalizar()
+
+        // Verificar si el nuevo nombre ya existe en otra brigada
+        brigadaNormalizada.nombreBrigada?.let { nuevoNombre ->
+            val existeNombreEnOtraBrigada = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM brigada WHERE LOWER(nombre_brigada) = LOWER(?) AND id != ?",
+                Int::class.java,
+                nuevoNombre,
+                id
+            ) ?: 0
+
+            if (existeNombreEnOtraBrigada > 0) {
+                throw IllegalArgumentException("Ya existe otra brigada con el nombre '$nuevoNombre'")
+            }
+        }
+
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
-        request.nombreBrigada?.let { campos.add("nombre_brigada = ?"); valores.add(it) }
-        request.ubicacionBrigada?.let { campos.add("ubicacion_brigada = ?"); valores.add(it) }
-        request.estadoBrigada?.let { campos.add("estado_brigada = ?"); valores.add(it) }
+        brigadaNormalizada.nombreBrigada?.let { campos.add("nombre_brigada = ?"); valores.add(it) }
+        brigadaNormalizada.ubicacionBrigada?.let { campos.add("ubicacion_brigada = ?"); valores.add(it) }
+        brigadaNormalizada.estadoBrigada?.let { campos.add("estado_brigada = ?"); valores.add(it) }
+        brigadaNormalizada.comandoId?.let { campos.add("comando_id = ?"); valores.add(it) }
 
-        if (campos.isEmpty()) return null
-
-        val sqlUpdate = "UPDATE brigada SET ${campos.joinToString(", ")} WHERE id = ?"
         valores.add(id)
-        jdbcTemplate.update(sqlUpdate, *valores.toTypedArray())
 
-        return jdbcTemplate.queryForObject("SELECT * FROM brigada WHERE id = ?", rowMapper, id)
+        val sql = """
+            UPDATE brigada 
+            SET ${campos.joinToString(", ")} 
+            WHERE id = ?
+        """.trimIndent()
+
+        val filasActualizadas = jdbcTemplate.update(sql, *valores.toTypedArray())
+
+        if (filasActualizadas == 0) {
+            throw NoSuchElementException("No se encontró la brigada con ID $id para actualizar")
+        }
+
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM brigada WHERE id = ?",
+            rowMapper,
+            id
+        )
     }
 
     fun eliminar(id: Int): Int {
@@ -76,5 +129,4 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
 
         return jdbcTemplate.queryForList(sql, String::class.java, brigadaId)
     }
-
 }

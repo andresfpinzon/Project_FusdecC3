@@ -35,9 +35,11 @@ class UsuarioService(
     }
 
     fun crear(usuario: UsuarioCreateRequest): Usuario {
-        validarExistenciaCorreoYDocumento(usuario.correo, usuario.numeroDocumento)
+        val usuarioNormalizado = usuario.normalizar()
 
-        val encryptedPassword = passwordEncoder.encode(usuario.password)
+        validarExistenciaCorreoYDocumento(usuarioNormalizado.correo, usuarioNormalizado.numeroDocumento)
+
+        val encryptedPassword = passwordEncoder.encode(usuarioNormalizado.password)
         val sql = """
             INSERT INTO usuario (numero_documento, nombre, apellido, correo, password, estado) 
             VALUES (?, ?, ?, ?, ?, ?)
@@ -47,10 +49,10 @@ class UsuarioService(
         return jdbcTemplate.queryForObject(
             sql,
             rowMapper,
-            usuario.numeroDocumento,
-            usuario.nombre,
-            usuario.apellido,
-            usuario.correo,
+            usuarioNormalizado.numeroDocumento,
+            usuarioNormalizado.nombre,
+            usuarioNormalizado.apellido,
+            usuarioNormalizado.correo,
             encryptedPassword,
             true
         ) ?: throw IllegalArgumentException("No se pudo crear el usuario")
@@ -61,7 +63,10 @@ class UsuarioService(
             throw IllegalArgumentException("No se proporcionaron datos para actualizar")
         }
 
-        usuario.correo?.let { nuevoCorreo ->
+        // Normalizar los datos antes de procesarlos
+        val usuarioNormalizado = usuario.normalizar()
+
+        usuarioNormalizado.correo?.let { nuevoCorreo ->
             val existeCorreoEnOtroUsuario = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM usuario WHERE correo = ? AND numero_documento != ?",
                 Int::class.java,
@@ -77,20 +82,20 @@ class UsuarioService(
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
-        usuario.nombre?.let { campos.add("nombre = ?"); valores.add(it) }
-        usuario.apellido?.let { campos.add("apellido = ?"); valores.add(it) }
-        usuario.correo?.let { campos.add("correo = ?"); valores.add(it) }
-        usuario.password?.let { campos.add("password = ?"); valores.add(passwordEncoder.encode(it)) }
-        usuario.estado?.let { campos.add("estado = ?"); valores.add(it) }
+        usuarioNormalizado.nombre?.let { campos.add("nombre = ?"); valores.add(it) }
+        usuarioNormalizado.apellido?.let { campos.add("apellido = ?"); valores.add(it) }
+        usuarioNormalizado.correo?.let { campos.add("correo = ?"); valores.add(it) }
+        usuarioNormalizado.password?.let { campos.add("password = ?"); valores.add(passwordEncoder.encode(it)) }
+        usuarioNormalizado.estado?.let { campos.add("estado = ?"); valores.add(it) }
 
         campos.add("updated_at = CURRENT_TIMESTAMP")
         valores.add(documento)
 
         val sql = """
-        UPDATE usuario 
-        SET ${campos.joinToString(", ")} 
-        WHERE numero_documento = ?
-    """.trimIndent()
+            UPDATE usuario 
+            SET ${campos.joinToString(", ")} 
+            WHERE numero_documento = ?
+        """.trimIndent()
 
         val filasActualizadas = jdbcTemplate.update(sql, *valores.toTypedArray())
 

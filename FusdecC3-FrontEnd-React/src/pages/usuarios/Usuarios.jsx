@@ -105,7 +105,7 @@ const Usuarios = () => {
               {
                 headers: {
                   "Authorization": `Bearer ${token}`,
-                  "Accept": "application/json"
+                  "Content-Type": "application/json"
                 }
               }
             );
@@ -150,7 +150,7 @@ const Usuarios = () => {
         {
           headers: {
             "Authorization": `Bearer ${token}`,
-            "Accept": "application/json"
+            "Content-Type": "application/json"
           }
         }
       );

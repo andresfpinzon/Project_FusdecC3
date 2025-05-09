@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -32,7 +34,9 @@ class BrigadaController {
         ]
     )
     @GetMapping
-    fun obtenerTodas(): List<Brigada> = brigadaService.obtenerTodas()
+    fun obtenerTodas(): ResponseEntity<List<Brigada>> {
+        return ResponseEntity.ok(brigadaService.obtenerTodas())
+    }
 
     @Operation(summary = "Obtener brigada por ID", description = "Devuelve una brigada específica por su ID.")
     @ApiResponses(
@@ -45,26 +49,46 @@ class BrigadaController {
             ApiResponse(
                 responseCode = "404",
                 description = "Brigada no encontrada",
-                content = [Content(mediaType = "text/plain")]
+                content = [Content(mediaType = "application/json")]
             )
         ]
     )
     @GetMapping("/{id}")
-    fun obtenerPorId(@PathVariable id: Int): Brigada? = brigadaService.obtenerPorId(id)
+    fun obtenerPorId(@PathVariable id: Int): ResponseEntity<Any> {
+        return try {
+            val brigada = brigadaService.obtenerPorId(id)
+                ?: throw NoSuchElementException("Brigada con ID $id no encontrada")
+            ResponseEntity.ok(brigada)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to e.message))
+        }
+    }
 
     @Operation(summary = "Crear nueva brigada", description = "Crea una nueva brigada con los datos proporcionados.")
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
+                responseCode = "201",
                 description = "Brigada creada exitosamente",
                 content = [Content(mediaType = "application/json", schema = Schema(implementation = Brigada::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Error en los datos proporcionados",
+                content = [Content(mediaType = "application/json")]
             )
         ]
     )
     @PostMapping
-    fun crear(@Valid @RequestBody request: BrigadaCreateRequest): Brigada? {
-        return brigadaService.crear(request)
+    fun crear(@Valid @RequestBody request: BrigadaCreateRequest): ResponseEntity<Any> {
+        return try {
+            val brigada = brigadaService.crear(request)
+            ResponseEntity.status(HttpStatus.CREATED).body(brigada)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().body(mapOf("error" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(mapOf("error" to "Error al crear la brigada: ${e.message}"))
+        }
     }
 
     @Operation(summary = "Actualizar brigada", description = "Actualiza una brigada existente mediante su ID.")
@@ -74,12 +98,31 @@ class BrigadaController {
                 responseCode = "200",
                 description = "Brigada actualizada",
                 content = [Content(mediaType = "application/json", schema = Schema(implementation = Brigada::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Error en los datos proporcionados",
+                content = [Content(mediaType = "application/json")]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Brigada no encontrada",
+                content = [Content(mediaType = "application/json")]
             )
         ]
     )
     @PutMapping("/{id}")
-    fun actualizar(@PathVariable id: Int, @Valid @RequestBody request: BrigadaUpdateRequest): Brigada? {
-        return brigadaService.actualizar(id, request)
+    fun actualizar(@PathVariable id: Int, @Valid @RequestBody request: BrigadaUpdateRequest): ResponseEntity<Any> {
+        return try {
+            val brigada = brigadaService.actualizar(id, request)
+            ResponseEntity.ok(brigada)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().body(mapOf("error" to e.message))
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(mapOf("error" to "Error al actualizar la brigada: ${e.message}"))
+        }
     }
 
     @Operation(summary = "Eliminar brigada", description = "Elimina una brigada mediante su ID.")
@@ -88,14 +131,27 @@ class BrigadaController {
             ApiResponse(
                 responseCode = "200",
                 description = "Brigada eliminada",
-                content = [Content(mediaType = "text/plain", examples = [ExampleObject(value = "Brigada eliminada")])]
+                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"message\": \"Brigada eliminada\"}")])]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Brigada no encontrada",
+                content = [Content(mediaType = "application/json")]
             )
         ]
     )
     @DeleteMapping("/{id}")
-    fun eliminar(@PathVariable id: Int): String {
-        val resultado = brigadaService.eliminar(id)
-        return if (resultado > 0) "Brigada eliminada" else "Brigada no encontrada"
+    fun eliminar(@PathVariable id: Int): ResponseEntity<Any> {
+        return try {
+            val resultado = brigadaService.eliminar(id)
+            if (resultado > 0) {
+                ResponseEntity.ok(mapOf("message" to "Brigada eliminada"))
+            } else {
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "Brigada con ID $id no encontrada"))
+            }
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(mapOf("error" to "Error al eliminar la brigada: ${e.message}"))
+        }
     }
 
     @Operation(
@@ -107,10 +163,7 @@ class BrigadaController {
             ApiResponse(
                 responseCode = "200",
                 description = "Lista de nombres de unidades activas",
-                content = [Content(
-                    mediaType = "application/json",
-                    schema = Schema(implementation = List::class))
-                ]
+                content = [Content(mediaType = "application/json")]
             ),
             ApiResponse(
                 responseCode = "404",
@@ -120,7 +173,18 @@ class BrigadaController {
         ]
     )
     @GetMapping("/{brigadaId}/unidades-asignadas")
-    fun obtenerUnidadesAsignadasABrigada(@PathVariable brigadaId: Int): List<String> {
-        return brigadaService.obtenerUnidadesAsignadas(brigadaId)
+    fun obtenerUnidadesAsignadasABrigada(@PathVariable brigadaId: Int): ResponseEntity<Any> {
+        return try {
+            val unidades = brigadaService.obtenerUnidadesAsignadas(brigadaId)
+            if (unidades.isEmpty()) {
+                ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(mapOf("message" to "No hay unidades activas asignadas a esta brigada"))
+            } else {
+                ResponseEntity.ok(unidades)
+            }
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError()
+                .body(mapOf("error" to "Error al obtener unidades asignadas: ${e.message}"))
+        }
     }
 }

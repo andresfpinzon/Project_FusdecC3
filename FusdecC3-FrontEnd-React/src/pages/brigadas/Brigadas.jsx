@@ -153,63 +153,65 @@ const Brigadas = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Validar el enlace de Google Maps
-    if (!isValidGoogleMapsLink(formData.ubicacionBrigada)) {
-      setSnackbar({
-        open: true,
-        message: "Por favor ingrese un enlace válido de Google Maps",
-        severity: "error"
-      });
-      return;
+  // Validación link para Google Maps
+  if (!isValidGoogleMapsLink(formData.ubicacionBrigada)) {
+    setSnackbar({
+      open: true,
+      message: "Por favor ingrese un enlace válido de Google Maps",
+      severity: "error"
+    });
+    return;
+  }
+
+  try {
+    const isUpdate = !!selectedBrigade;
+    const url = isUpdate 
+      ? `http://localhost:8080/brigadas/${selectedBrigade.id}`
+      : 'http://localhost:8080/brigadas';
+    
+    const response = await fetch(url, {
+      method: isUpdate ? 'PUT' : 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const responseData = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      // Manejo de errores de validación (400 con estructura específica)
+      if (response.status === 400 && responseData.errors) {
+        const errorMessages = Object.values(responseData.errors).join('\n');
+        throw new Error(errorMessages);
+      }
+      // Manejo de errores de negocio (409 u otros)
+      throw new Error(responseData.error || responseData.message || `Error al ${isUpdate ? 'actualizar' : 'crear'} la brigada`);
     }
 
-    try {
-      const response = await fetch(
-        selectedBrigade
-          ? `http://localhost:8080/brigadas/${selectedBrigade.id}`
-          : 'http://localhost:8080/brigadas',
-        {
-          method: selectedBrigade ? 'PUT' : 'POST',
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(formData)
-        }
-      );
+    // Éxito - Actualizar estado
+    await fetchBrigades();
+    resetForm();
 
-      const responseText = await response.text();
-      let errorData;
-      try {
-        errorData = JSON.parse(responseText);
-      } catch (e) {
-        errorData = { error: responseText };
-      }
+    setSnackbar({
+      open: true,
+      message: isUpdate ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
+      severity: "success"
+    });
 
-      if (!response.ok) {
-        throw new Error(errorData.error || `Error al ${selectedBrigade ? 'actualizar' : 'crear'} la brigada`);
-      }
-
-      await fetchBrigades();
-
-      resetForm();
-
-      setSnackbar({
-        open: true,
-        message: selectedBrigade ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
-        severity: "success"
-      });
-    } catch (error) {
-      console.error('Error al guardar brigada:', error);
-      setSnackbar({
-        open: true,
-        message: error.message,
-        severity: "error"
-      });
-    }
-  };
+  } catch (error) {
+    console.error('Error en handleSubmit:', error);
+    
+    setSnackbar({
+      open: true,
+      message: error.message,
+      severity: "error"
+    });
+  }
+};
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de que quieres eliminar esta brigada?')) return;
@@ -598,7 +600,10 @@ const Brigadas = () => {
         <Alert
           onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           severity={snackbar.severity}
-          sx={{ width: '100%' }}
+          sx={{
+            width: '100%',
+            whiteSpace: 'pre-line' // Esto permite mostrar saltos de línea
+          }}
         >
           {snackbar.message}
         </Alert>
