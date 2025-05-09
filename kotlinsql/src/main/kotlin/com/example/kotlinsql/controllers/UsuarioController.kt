@@ -55,7 +55,7 @@ class UsuarioController @Autowired constructor(private val usuarioService: Usuar
         ]
     )
     @PostMapping
-    fun crearUsuario(@Valid @RequestBody usuario: UsuarioCreateRequest): ResponseEntity<Any> {
+    fun crearUsuario(@RequestBody @Valid usuario: UsuarioCreateRequest): ResponseEntity<Any> {
         return try {
             val nuevoUsuario = usuarioService.crear(usuario)
             ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario)

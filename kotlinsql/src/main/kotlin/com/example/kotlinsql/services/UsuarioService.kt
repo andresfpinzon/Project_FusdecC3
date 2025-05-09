@@ -61,6 +61,19 @@ class UsuarioService(
             throw IllegalArgumentException("No se proporcionaron datos para actualizar")
         }
 
+        usuario.correo?.let { nuevoCorreo ->
+            val existeCorreoEnOtroUsuario = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM usuario WHERE correo = ? AND numero_documento != ?",
+                Int::class.java,
+                nuevoCorreo,
+                documento
+            ) ?: 0
+
+            if (existeCorreoEnOtroUsuario > 0) {
+                throw IllegalArgumentException("El correo '$nuevoCorreo' ya está registrado por otro usuario")
+            }
+        }
+
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
@@ -85,8 +98,11 @@ class UsuarioService(
             throw NoSuchElementException("No se encontró el usuario con documento $documento para actualizar")
         }
 
-        val sqlSelect = "SELECT * FROM usuario WHERE numero_documento = ?"
-        return jdbcTemplate.queryForObject(sqlSelect, rowMapper, documento)
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM usuario WHERE numero_documento = ?",
+            rowMapper,
+            documento
+        )
     }
 
     fun eliminarPorDocumento(documento: String): Int {

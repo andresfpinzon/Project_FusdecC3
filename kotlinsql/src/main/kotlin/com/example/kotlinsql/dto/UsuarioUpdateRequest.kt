@@ -2,15 +2,13 @@ package com.example.kotlinsql.dto
 
 import jakarta.validation.constraints.*
 
-/**
- * DTO para actualizar los datos de un usuario existente.
- * Todos los campos son opcionales, permitiendo actualizar solo los campos necesarios.
- */
 data class UsuarioUpdateRequest(
     @field:Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
+    @field:Pattern(regexp = "^[\\p{L} ]*\$", message = "El nombre solo puede contener letras y espacios")
     val nombre: String? = null,
 
     @field:Size(min = 2, max = 50, message = "El apellido debe tener entre 2 y 50 caracteres")
+    @field:Pattern(regexp = "^[\\p{L} ]*\$", message = "El apellido solo puede contener letras y espacios")
     val apellido: String? = null,
 
     @field:Email(message = "El correo electrónico debe ser válido")
@@ -21,4 +19,16 @@ data class UsuarioUpdateRequest(
     val password: String? = null,
 
     val estado: Boolean? = null
-)
+) {
+    fun normalizar(): UsuarioUpdateRequest {
+        return this.copy(
+            nombre = this.nombre?.lowercase()?.trim(),
+            apellido = this.apellido?.lowercase()?.trim(),
+            correo = this.correo?.lowercase()?.trim()
+        )
+    }
+
+    fun isEmpty(): Boolean {
+        return nombre == null && apellido == null && correo == null && password == null && estado == null
+    }
+}

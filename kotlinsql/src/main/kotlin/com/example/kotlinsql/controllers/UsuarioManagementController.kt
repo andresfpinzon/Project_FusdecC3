@@ -3,30 +3,27 @@ package com.example.kotlinsql.controllers
 import com.example.kotlinsql.dto.UsuarioCreateRequest
 import com.example.kotlinsql.dto.UsuarioUpdateRequest
 import com.example.kotlinsql.services.UsuarioManagementService
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotEmpty
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
 
 @RestController
 @RequestMapping("/usuarios-management")
 class UsuarioManagementController(
     private val usuarioManagementService: UsuarioManagementService
 ) {
+
     @PostMapping("/con-roles")
     fun crearUsuarioConRoles(
-        @RequestBody request: UsuarioConRolesRequest
+        @RequestBody @Valid request: UsuarioConRolesRequest
     ): ResponseEntity<Any> {
         return try {
-            val usuario = UsuarioCreateRequest(
-                numeroDocumento = request.numeroDocumento,
-                nombre = request.nombre,
-                apellido = request.apellido,
-                correo = request.correo,
-                password = request.password,
+            val usuarioCreado = usuarioManagementService.crearUsuarioConRoles(
+                usuario = request.usuarioCreate,
+                rolesIds = request.rolesIds
             )
-
-            val usuarioCreado = usuarioManagementService.crearUsuarioConRoles(usuario, request.rolesIds)
             ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("error" to e.message))
@@ -36,7 +33,7 @@ class UsuarioManagementController(
     @PutMapping("/{documento}/con-roles")
     fun actualizarUsuarioConRoles(
         @PathVariable documento: String,
-        @RequestBody request: UsuarioUpdateWithRolesRequest
+        @RequestBody @Valid request: UsuarioUpdateWithRolesRequest
     ): ResponseEntity<Any> {
         return try {
             val usuarioActualizado = usuarioManagementService.actualizarUsuarioConRoles(
@@ -51,17 +48,16 @@ class UsuarioManagementController(
     }
 }
 
-data class UsuarioUpdateWithRolesRequest(
-    val usuarioUpdate: UsuarioUpdateRequest,
+data class UsuarioConRolesRequest(
+    @field:Valid val usuarioCreate: UsuarioCreateRequest,
+    @field:NotEmpty(message = "Debe asignar al menos un rol")
     val rolesIds: List<Int>
 )
 
-data class UsuarioConRolesRequest(
-    val numeroDocumento: String,
-    val nombre: String,
-    val apellido: String,
-    val correo: String,
-    val password: String,
+data class UsuarioUpdateWithRolesRequest(
+    @field:Valid val usuarioUpdate: UsuarioUpdateRequest,
+    @field:NotEmpty(message = "Debe asignar al menos un rol")
     val rolesIds: List<Int>
 )
+
 

@@ -28,8 +28,8 @@ class RootSeeder(
         println("⏳ Creando usuario root...")
 
         val documento = "123456789"
-        val nombre = "Fundacion"
-        val apellido = "Fusdec"
+        val nombre = "fundacion"
+        val apellido = "fusdec"
         val passwordHash = passwordEncoder.encode(rootPassword)
 
         jdbcTemplate.update(

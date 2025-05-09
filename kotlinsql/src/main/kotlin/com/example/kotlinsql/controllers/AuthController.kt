@@ -54,7 +54,7 @@ class AuthController(
         val password = loginRequest.password
 
         val usuario = try {
-            jdbcTemplate.queryForMap("SELECT * FROM usuario WHERE correo = ?", correo)
+            jdbcTemplate.queryForMap("SELECT * FROM usuario WHERE LOWER(correo) = LOWER(?)", correo)
         } catch (e: EmptyResultDataAccessException) {
             return ResponseEntity.status(404).body(mapOf("error" to "Usuario no encontrado"))
         }
