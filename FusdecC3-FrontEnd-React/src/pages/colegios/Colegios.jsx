@@ -121,10 +121,12 @@ const Colegios = () => {
     setPage(0);
   };
 
-  const handleError = (message) => {
-    setErrorMessage(message);
-    setOpenSnackbar(true);
-  };
+  const handleError = (message, error = null) => {
+  if (error) console.error(message, error);
+  setErrorMessage(message);
+  setOpenSnackbar(true);
+};
+
 
   const handleInputChange = (e) => {
     setFormValues({
@@ -140,94 +142,145 @@ const Colegios = () => {
     });
   };
 
-  const handleCreateColegio = async () => {
-    // Validar campos obligatorios
-    if (!formValues.nombre.trim() || !formValues.email.trim()) {
-      setErrorMessage("Todos los campos son obligatorios");
+  const handleCreateColegio = async (e) => {
+    e.preventDefault();
+
+    // Validación básica del formulario
+    if (!formValues.nombre || !formValues.email) {
+      setErrorMessage("Por favor complete todos los campos obligatorios");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Validación de formato de email
+    if (!isValidEmail(formValues.email)) {
+      setErrorMessage("Por favor ingrese un email válido");
       setOpenSnackbar(true);
       return;
     }
 
     try {
+      const colegioData = {
+        nombre: formValues.nombre.trim(),
+        email: formValues.email.trim().toLowerCase()
+      };
+
       const response = await fetch("http://localhost:8080/colegios", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(colegioData),
       });
 
-      if (response.ok) {
-        const nuevoColegio = await response.json();
-        setColegios([...colegios, nuevoColegio]);
-        setFormValues({
-          nombre: "",
-          email: "",
-          estado: true,
-        });
-        setSuccessMessage("Colegio creado exitosamente");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear colegio");
+      const responseData = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al crear el colegio");
       }
+
+      setColegios([...colegios, responseData]);
+      setFormValues({
+        nombre: "",
+        email: "",
+        estado: true,
+      });
+      setErrorMessage(null); 
+      setSuccessMessage("Colegio creado correctamente");
+      setOpenSnackbar(true);
+
     } catch (error) {
-      handleError("Error al crear el colegio", error);
+      console.error('Error en Crear Colegio:', error);
+      setErrorMessage(error.message);
+      setOpenSnackbar(true);
     }
   };
 
-  const handleUpdateColegio = async () => {
-    if (!selectedColegio) return;
+  const handleUpdateColegio = async (e) => {
+    e.preventDefault();
 
-    // Validar campos obligatorios
-    if (!formValues.nombre.trim() || !formValues.email.trim()) {
-      setErrorMessage("Todos los campos son obligatorios");
+    if (!selectedColegio) {
+      setErrorMessage("No se ha seleccionado ningún colegio para actualizar");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Validación de formato de email si se está actualizando
+    if (formValues.email && !isValidEmail(formValues.email)) {
+      setErrorMessage("Por favor ingrese un email válido");
       setOpenSnackbar(true);
       return;
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/colegios/${selectedColegio.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
+      // Preparar datos para actualización
+      const updateData = {};
+      if (formValues.nombre) updateData.nombre = formValues.nombre.trim();
+      if (formValues.email) updateData.email = formValues.email.trim().toLowerCase();
+      if (formValues.estado !== undefined) updateData.estado = formValues.estado;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Error al actualizar el colegio");
+      // Verificar que hay datos para actualizar
+      if (Object.keys(updateData).length === 0) {
+        setErrorMessage("No se proporcionaron datos para actualizar");
+        setOpenSnackbar(true);
+        return;
       }
 
-      // Actualización optimizada del estado
+      const response = await fetch(`http://localhost:8080/colegios/${selectedColegio.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      const responseData = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al actualizar el colegio");
+      }
+
+      // Éxito - Actualizar estado
       setColegios(prevColegios =>
         prevColegios.map(colegio =>
-          colegio.id === selectedColegio.id ? { ...colegio, ...data } : colegio
+          colegio.id === selectedColegio.id ? { ...colegio, ...responseData } : colegio
         )
       );
-
       setSelectedColegio(null);
       setFormValues({
         nombre: "",
         email: "",
         estado: true,
       });
-
-      setSuccessMessage("Colegio actualizado exitosamente");
+      setErrorMessage(null);
+      setSuccessMessage("Colegio actualizado correctamente");
       setOpenSnackbar(true);
 
     } catch (error) {
-      console.error("Error en handleUpdateColegio:", error);
-      setErrorMessage(error.message || "Error al actualizar el colegio");
+      console.error('Error al actualizar colegio:', error);
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
+  };
+
+  // Función auxiliar para validar email
+  const isValidEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
   };
 
   const handleDeleteColegio = async () => {
@@ -256,7 +309,9 @@ const Colegios = () => {
         throw new Error(errorData.error || "Error al eliminar el colegio");
       }
     } catch (error) {
-      handleError("Error al eliminar el colegio", error);
+      console.error("Error al eliminar el colegio:", error);
+      setErrorMessage("Error al eliminar el colegio");
+      setOpenSnackbar(true);
     }
   };
 

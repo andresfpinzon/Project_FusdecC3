@@ -223,7 +223,7 @@ const Comandos = () => {
       setOpenSnackbar(true);
 
     } catch (error) {
-      console.error('Error en handleCreateComando:', error);
+      console.error('Error en Crear:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
@@ -289,7 +289,7 @@ const Comandos = () => {
       setOpenSnackbar(true);
 
     } catch (error) {
-      console.error('Error en handleUpdateComando:', error);
+      console.error('Error en al actualizar:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
