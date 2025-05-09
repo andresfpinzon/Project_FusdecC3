@@ -127,6 +127,25 @@ const Ediciones = () => {
     }
   };
 
+  const fetchEstudiantes = async (edicionId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/ediciones/${edicionId}/estudiantes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Error al obtener estudiantes del colegio");
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener estudiantes del colegio:", error);
+      setErrorMessage("Error al obtener estudiantes del colegio");
+      setOpenSnackbar(true);
+      return [];
+    }
+  };
+
   useEffect(() => {
     fetchEdiciones();
     fetchCursos();
@@ -291,7 +310,7 @@ const Ediciones = () => {
       fechaInicio: edicion.fechaInicio,
       fechaFin: edicion.fechaFin,
       estado: edicion.estado,
-      cursoId: edicion.cursoId?.id || "",
+      cursoId: edicion.cursoId || "",
     });
   };
 
@@ -302,26 +321,11 @@ const Ediciones = () => {
 
   const handleInfoClick = async (edicion) => {
     try {
-      const response = await fetch(`http://localhost:8080/ediciones/${edicion.id}/estudiantes`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-  
-      const estudiantesData = await response.json();
-      
-      // Mapea solo nombre y apellido
-      const estudiantesList = estudiantesData.map(est => 
-        `${est.nombre} ${est.apellido}`
-      );
+      const estudiantesDelaEdicion = await fetchEstudiantes(edicion.id);
   
       setInfoEdicion({
         ...edicion,
-        estudiantes: estudiantesList,
+        estudiantes: estudiantesDelaEdicion,
         curso: edicion.cursoId ? 
           (cursos.find(c => c.id === edicion.cursoId)?.nombre || "Curso no encontrado") 
           : "No asignado"
@@ -530,39 +534,32 @@ const Ediciones = () => {
               </Box>
 
               {/* Lista de Estudiantes */}
-              <Box sx={{ p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+              <Box>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
                   Estudiantes Inscritos ({infoEdicion.estudiantes?.length || 0}):
                 </Typography>
                 
                 {infoEdicion.estudiantes?.length > 0 ? (
-                  <Box component="ul" sx={{ 
-                    pl: 2, 
-                    maxHeight: '200px', 
-                    overflowY: 'auto',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: 1,
-                    backgroundColor: 'white',
-                    p: 1
-                  }}>
-                    {infoEdicion.estudiantes.map((estudiante, index) => (
-                      <Box 
-                        component="li" 
-                        key={index}
-                        sx={{ 
-                          py: 1,
-                          borderBottom: index < infoEdicion.estudiantes.length - 1 ? '1px solid #eeeeee' : 'none',
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}
-                      >
-                        <Person sx={{ color: 'action.active', mr: 1, fontSize: 20 }} />
-                        <Typography variant="body2">
-                          {estudiante}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Documento</TableCell>
+                          <TableCell>Nombre</TableCell>
+                          <TableCell>Apellido</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {infoEdicion.estudiantes.map((estudiante, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{estudiante.numeroDocumento}</TableCell>
+                            <TableCell>{estudiante.nombre}</TableCell>
+                            <TableCell>{estudiante.apellido}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 ) : (
                   <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
                     No hay estudiantes inscritos en esta edición
