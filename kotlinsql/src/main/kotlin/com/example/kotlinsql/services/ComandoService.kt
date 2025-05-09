@@ -29,38 +29,85 @@ class ComandoService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.query(sql, rowMapper, id).firstOrNull()
     }
 
-    fun crear(request: ComandoCreateRequest): Comando? {
+    fun crear(request: ComandoCreateRequest): Comando {
+        val comandoNormalizado = request.normalizar()
+
+        // Verificar si ya existe un comando con el mismo nombre
+        val existeNombre = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM comando WHERE LOWER(nombre_comando) = LOWER(?)",
+            Int::class.java,
+            comandoNormalizado.nombreComando
+        ) ?: 0
+
+        if (existeNombre > 0) {
+            throw IllegalArgumentException("Ya existe un comando con el nombre '${comandoNormalizado.nombreComando}'")
+        }
+
         val sql = """
-        INSERT INTO comando (nombre_comando, ubicacion_comando, fundacion_id)
-        VALUES (?, ?, ?)
-        RETURNING *
+            INSERT INTO comando (nombre_comando, ubicacion_comando, fundacion_id)
+            VALUES (?, ?, ?)
+            RETURNING *
         """.trimIndent()
+
         return jdbcTemplate.queryForObject(
             sql,
             rowMapper,
-            request.nombreComando,
-            request.ubicacionComando,
-            request.fundacionId
-        )
+            comandoNormalizado.nombreComando,
+            comandoNormalizado.ubicacionComando,
+            comandoNormalizado.fundacionId
+        ) ?: throw IllegalArgumentException("No se pudo crear el comando")
     }
 
     fun actualizar(id: Int, request: ComandoUpdateRequest): Comando? {
+        if (request.isEmpty()) {
+            throw IllegalArgumentException("No se proporcionaron datos para actualizar")
+        }
+
+        val comandoNormalizado = request.normalizar()
+
+        // Verificar si el nuevo nombre ya existe en otro comando
+        comandoNormalizado.nombreComando?.let { nuevoNombre ->
+            val existeNombreEnOtroComando = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM comando WHERE LOWER(nombre_comando) = LOWER(?) AND id != ?",
+                Int::class.java,
+                nuevoNombre,
+                id
+            ) ?: 0
+
+            if (existeNombreEnOtroComando > 0) {
+                throw IllegalArgumentException("Ya existe otro comando con el nombre '$nuevoNombre'")
+            }
+        }
+
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
-        request.nombreComando?.let { campos.add("nombre_comando = ?"); valores.add(it) }
-        request.ubicacionComando?.let { campos.add("ubicacion_comando = ?"); valores.add(it) }
-        request.estadoComando?.let { campos.add("estado_comando = ?"); valores.add(it) }
-        request.fundacionId?.let { campos.add("fundacion_id = ?"); valores.add(it) } // Añade esta línea
+        comandoNormalizado.nombreComando?.let { campos.add("nombre_comando = ?"); valores.add(it) }
+        comandoNormalizado.ubicacionComando?.let { campos.add("ubicacion_comando = ?"); valores.add(it) }
+        comandoNormalizado.estadoComando?.let { campos.add("estado_comando = ?"); valores.add(it) }
+        comandoNormalizado.fundacionId?.let { campos.add("fundacion_id = ?"); valores.add(it) }
 
-        if (campos.isEmpty()) return null
-
-        val sqlUpdate = "UPDATE comando SET ${campos.joinToString(", ")} WHERE id = ?"
         valores.add(id)
-        jdbcTemplate.update(sqlUpdate, *valores.toTypedArray())
 
-        return jdbcTemplate.queryForObject("SELECT * FROM comando WHERE id = ?", rowMapper, id)
+        val sql = """
+            UPDATE comando 
+            SET ${campos.joinToString(", ")} 
+            WHERE id = ?
+        """.trimIndent()
+
+        val filasActualizadas = jdbcTemplate.update(sql, *valores.toTypedArray())
+
+        if (filasActualizadas == 0) {
+            throw NoSuchElementException("No se encontró el comando con ID $id para actualizar")
+        }
+
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM comando WHERE id = ?",
+            rowMapper,
+            id
+        )
     }
+
 
     fun eliminar(id: Int): Int {
         return jdbcTemplate.update("DELETE FROM comando WHERE id = ?", id)

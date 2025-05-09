@@ -171,18 +171,30 @@ const Comandos = () => {
     });
   };
 
-  const handleCreateComando = async () => {
-    if (!formValues.nombreComando || !isValidGoogleMapsLink(formValues.ubicacionComando) || !formValues.fundacionId) {
-      setErrorMessage("Por favor, completa todos los campos requeridos y asegúrate de que la ubicación sea un enlace válido de Google Maps.");
+  const handleCreateComando = async (e) => {
+    e.preventDefault();
+
+    // Validación básica del formulario
+    if (!formValues.nombreComando || !formValues.ubicacionComando || !formValues.fundacionId) {
+      setErrorMessage("Por favor complete todos los campos obligatorios");
       setOpenSnackbar(true);
       return;
     }
 
-    const comandoData = {
-      ...formValues
-    };
+    // Validación link para Google Maps
+    if (!isValidGoogleMapsLink(formValues.ubicacionComando)) {
+      setErrorMessage("Por favor ingrese un enlace válido de Google Maps");
+      setOpenSnackbar(true);
+      return;
+    }
 
     try {
+      const comandoData = {
+        nombreComando: formValues.nombreComando.trim().toLowerCase(),
+        ubicacionComando: formValues.ubicacionComando.trim(),
+        fundacionId: formValues.fundacionId
+      };
+
       const response = await fetch("http://localhost:8080/comandos", {
         method: "POST",
         headers: {
@@ -192,50 +204,92 @@ const Comandos = () => {
         body: JSON.stringify(comandoData),
       });
 
-      if (response.ok) {
-        await fetchComandos(); // Actualiza la lista de comandos después de crear uno nuevo
-        clearForm();
+      const responseData = await response.json().catch(() => ({}));
 
-        // Muestra un mensaje de éxito
-        setSuccessMessage("Comando guardado exitosamente!");
-        setOpenSnackbar(true);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear comando");
+      if (!response.ok) {
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al crear el comando");
       }
+
+      await fetchComandos();
+      clearForm(); // Usamos clearForm en lugar de resetForm que no está definida
+
+      setSuccessMessage("Comando creado correctamente");
+      setOpenSnackbar(true);
+
     } catch (error) {
-      console.error("Error al crear comando:", error);
+      console.error('Error en handleCreateComando:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
 
-  const handleUpdateComando = async () => {
+  const handleUpdateComando = async (e) => {
+    e.preventDefault();
+
+    if (!selectedComando) {
+      setErrorMessage("No se ha seleccionado ningún comando para actualizar");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Validación link para Google Maps si se está actualizando
+    if (formValues.ubicacionComando && !isValidGoogleMapsLink(formValues.ubicacionComando)) {
+      setErrorMessage("Por favor ingrese un enlace válido de Google Maps");
+      setOpenSnackbar(true);
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `http://localhost:8080/comandos/${selectedComando.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
+      // Preparar datos para actualización
+      const updateData = {};
+      if (formValues.nombreComando) updateData.nombreComando = formValues.nombreComando.trim().toLowerCase();
+      if (formValues.ubicacionComando) updateData.ubicacionComando = formValues.ubicacionComando.trim();
+      if (formValues.estadoComando !== undefined) updateData.estadoComando = formValues.estadoComando;
+      if (formValues.fundacionId) updateData.fundacionId = formValues.fundacionId;
+
+      // Verificar que hay datos para actualizar
+      if (Object.keys(updateData).length === 0) {
+        setErrorMessage("No se proporcionaron datos para actualizar");
+        setOpenSnackbar(true);
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8080/comandos/${selectedComando.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar comando");
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al actualizar el comando");
       }
-      await fetchComandos(); // Actualiza la lista de comandos después de actualizar uno existente
+
+      // Éxito - Actualizar estado
+      await fetchComandos();
       clearForm();
 
-      // Muestra un mensaje de éxito
-      setSuccessMessage("Comando actualizado exitosamente!");
+      setSuccessMessage("Comando actualizado correctamente");
       setOpenSnackbar(true);
+
     } catch (error) {
-      console.error("Error al actualizar comando:", error);
+      console.error('Error en handleUpdateComando:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }

@@ -50,8 +50,8 @@ class BrigadaService(private val jdbcTemplate: JdbcTemplate) {
         }
 
         val sql = """
-            INSERT INTO brigada (nombre_brigada, ubicacion_brigada, comando_id, estado_brigada)
-            VALUES (?, ?, ?, true)
+            INSERT INTO brigada (nombre_brigada, ubicacion_brigada, comando_id)
+            VALUES (?, ?, ?)
             RETURNING *
         """.trimIndent()
 
