@@ -44,7 +44,10 @@ import React, { useState, useEffect } from "react";
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [colegioToDelete, setColegioToDelete] = useState(null);
     const [openInfoDialog, setOpenInfoDialog] = useState(false);
-    const [infoColegio, setInfoColegio] = useState(null);
+    const [infoColegio, setInfoColegio] = useState({
+      nombre: "",
+      estudiantes: [] // Ahora almacenará objetos completos de estudiantes
+    });
 
     // Paginación y búsqueda
     const [searchTerm, setSearchTerm] = useState("");
@@ -78,36 +81,27 @@ import React, { useState, useEffect } from "react";
       }
     };
 
-    const fetchEstudiantes = async () => {
+    const fetchEstudiantes = async (colegioId) => {
       try {
-        const response = await fetch("http://localhost:8080/estudiantes", {
+        const response = await fetch(`http://localhost:8080/colegios/${colegioId}/estudiantes`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           }
         });
-        if (!response.ok) throw new Error("Error al obtener estudiantes");
-        const data = await response.json();
-        
-        // Condicion que verifica si el arreglo de estudiantes está vacío
-        if (data.length === 0) {
-          setErrorMessage("No hay estudiantes registrados.");
-          setOpenSnackbar(true);
-          setEstudiantes([]); 
-        } else {
-          setEstudiantes(data);
-        }
+        if (!response.ok) throw new Error("Error al obtener estudiantes del colegio");
+        return await response.json();
       } catch (error) {
-        console.error("Error al obtener estudiantes:", error);
-        setErrorMessage("Error al obtener estudiantes");
+        console.error("Error al obtener estudiantes del colegio:", error);
+        setErrorMessage("Error al obtener estudiantes del colegio");
         setOpenSnackbar(true);
+        return [];
       }
     };
     
     useEffect(() => {
       fetchColegios();
-      fetchEstudiantes();
     }, []);
 
     // Filtrar usuarios según el término de búsqueda
@@ -273,19 +267,17 @@ import React, { useState, useEffect } from "react";
       setColegioToDelete(null);
     };
 
-    const handleInfoClick = (colegio) => {
+    const handleInfoClick = async (colegio) => {
       try {
-        const estudiantesFiltrados = estudiantes
-          .filter(est => est.colegioId === colegio.id)
-          .map(est => `${est.nombre} ${est.apellido}`);
+        const estudiantesDelColegio = await fetchEstudiantes(colegio.id);
         
         setInfoColegio({
           nombre: colegio.nombre,
-          estudiantes: estudiantesFiltrados
+          estudiantes: estudiantesDelColegio 
         });
         setOpenInfoDialog(true);
       } catch (error) {
-        console.error("Error al filtrar estudiantes:", error);
+        console.error("Error al cargar estudiantes del colegio:", error);
         setErrorMessage("Error al cargar información de estudiantes");
         setOpenSnackbar(true);
       }
@@ -415,7 +407,7 @@ import React, { useState, useEffect } from "react";
           </DialogActions>
         </Dialog>
 
-        <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="sm" fullWidth>
+        <Dialog open={openInfoDialog} onClose={handleCloseInfoDialog} maxWidth="md" fullWidth>
           <DialogTitle sx={{ backgroundColor: '#1d526eff', color: '#fff', textAlign: 'center' }}>
             Estudiantes de {infoColegio?.nombre}
           </DialogTitle>
@@ -423,11 +415,32 @@ import React, { useState, useEffect } from "react";
           <DialogContent sx={{ padding: '20px' }}>
             {infoColegio && (
               <Box>
-                <Typography variant="body1">
-                  <strong>Estudiantes:</strong> {infoColegio.estudiantes.length > 0 
-                    ? infoColegio.estudiantes.join(", ") 
-                    : "No hay estudiantes registrados"}
-                </Typography>
+                {infoColegio.estudiantes.length > 0 ? (
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Documento</TableCell>
+                          <TableCell>Nombre</TableCell>
+                          <TableCell>Apellido</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {infoColegio.estudiantes.map((estudiante, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{estudiante.numeroDocumento}</TableCell>
+                            <TableCell>{estudiante.nombre}</TableCell>
+                            <TableCell>{estudiante.apellido}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <Typography variant="body1" align="center" sx={{ marginTop: 2 }}>
+                    No hay estudiantes registrados en este colegio
+                  </Typography>
+                )}
               </Box>
             )}
           </DialogContent>

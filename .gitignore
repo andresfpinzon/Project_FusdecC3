@@ -97,3 +97,5 @@ __pycache__/
 
 kotlinsql/src/main/resources/application.properties
 kotlinsql/src/main/resources/local.properties
+
+/kotlinsql/target/classes/application.properties
