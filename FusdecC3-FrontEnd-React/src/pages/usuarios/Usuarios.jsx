@@ -460,25 +460,31 @@ const Usuarios = () => {
           </FormHelperText>
         </FormControl>
         
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={selectedUser ? handleUpdateUser : handleCreateUser}
-          sx={{ marginTop: "20px", marginRight: "10px" }}
-        >
-          {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
-        </Button>
-        
-        {selectedUser && (
+        <Box sx={{ display: 'flex', gap: 2, marginTop: "20px" }}>
           <Button
-            variant="outlined"
-            color="secondary"
-            onClick={resetForm}
-            sx={{ marginTop: "20px" }}
+            variant="contained"
+            color="primary"
+            onClick={selectedUser ? handleUpdateUser : handleCreateUser}
+            disabled={
+              !formValues.numeroDocumento || 
+              !formValues.correo || 
+              (!selectedUser && !formValues.password) || 
+              (formValues.password && formValues.password.length < 6)
+            }
           >
-            Cancelar
+            {selectedUser ? "Actualizar Usuario" : "Crear Usuario"}
           </Button>
-        )}
+          
+          {selectedUser && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={resetForm}
+            >
+              Cancelar
+            </Button>
+          )}
+        </Box>
       </form>
 
       <TableContainer component={Paper} sx={{ marginTop: "20px" }}>

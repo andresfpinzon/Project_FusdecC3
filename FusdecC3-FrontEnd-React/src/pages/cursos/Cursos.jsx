@@ -384,14 +384,38 @@ const Cursos = () => {
           Estado Activo
         </Box>
         
-        <Box marginTop={3}>
+        <Box marginTop={3} sx={{ display: 'flex', gap: 2 }}>
           <Button
             variant="contained"
             color="primary"
             onClick={selectedCurso ? handleUpdateCurso : handleCreateCurso}
+            disabled={
+              !formValues.nombre.trim() || 
+              !formValues.descripcion.trim() || 
+              !formValues.intensidadHoraria.trim()
+            }
           >
             {selectedCurso ? "Actualizar Curso" : "Crear Curso"}
           </Button>
+          
+          {selectedCurso && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => {
+                setSelectedCurso(null);
+                setFormValues({
+                  nombre: "",
+                  descripcion: "",
+                  intensidadHoraria: "",
+                  estado: true,
+                  fundacionId: ""
+                });
+              }}
+            >
+              Cancelar Edición
+            </Button>
+          )}
         </Box>
       </form>
 
