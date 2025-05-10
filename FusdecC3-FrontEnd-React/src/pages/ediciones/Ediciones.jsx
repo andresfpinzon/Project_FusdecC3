@@ -569,21 +569,6 @@ const Ediciones = () => {
         <DialogContent dividers sx={{ padding: '20px' }}>
           {infoEdicion && (
             <Box>
-              {/* Información básica */}
-              <Box mb={3}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Fechas:</Typography>
-                <Box display="flex" justifyContent="space-between" mt={1}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">Inicio:</Typography>
-                    <Typography>{formatDate(infoEdicion.fechaInicio)}</Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">Fin:</Typography>
-                    <Typography>{formatDate(infoEdicion.fechaFin)}</Typography>
-                  </Box>
-                </Box>
-              </Box>
-
               {/* Información del Curso */}
               <Box mb={3} sx={{ p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
