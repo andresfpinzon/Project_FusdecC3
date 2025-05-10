@@ -191,23 +191,36 @@ const Ediciones = () => {
 
   const handleCreateEdicion = async () => {
     try {
+      // Validación básica del formulario
+      if (!formValues.titulo || !formValues.fechaInicio || !formValues.fechaFin || !formValues.cursoId) {
+        throw new Error("Por favor complete todos los campos obligatorios");
+      }
+
       const response = await fetch("http://localhost:8080/ediciones", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify({
+          titulo: formValues.titulo,
+          fechaInicio: formValues.fechaInicio,
+          fechaFin: formValues.fechaFin,
+          cursoId: parseInt(formValues.cursoId)
+        })
       });
 
+      const responseData = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear edición");
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        throw new Error(responseData.error || responseData.message || "Error al crear la edición");
       }
 
-      const data = await response.json();
-      setEdiciones([...ediciones, data]);
-
+      await fetchEdiciones();
       setFormValues({
         titulo: "",
         fechaInicio: "",
@@ -216,20 +229,35 @@ const Ediciones = () => {
         cursoId: "",
         estudiantes: [],
       });
-      setSelectedEdicion(null);
-
-      setSuccessMessage("Edición creada exitosamente.");
+      setErrorMessage(null);
+      setSuccessMessage("Edición creada correctamente");
       setOpenSnackbar(true);
+
     } catch (error) {
+      console.error('Error al crear edición:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
 
   const handleUpdateEdicion = async () => {
-    if (!selectedEdicion) return;
-
     try {
+      if (!selectedEdicion) {
+        throw new Error("No se ha seleccionado ninguna edición para actualizar");
+      }
+
+      // Preparar datos para actualización
+      const updateData = {};
+      if (formValues.titulo) updateData.titulo = formValues.titulo;
+      if (formValues.fechaInicio) updateData.fechaInicio = formValues.fechaInicio;
+      if (formValues.fechaFin) updateData.fechaFin = formValues.fechaFin;
+      if (formValues.cursoId) updateData.cursoId = parseInt(formValues.cursoId);
+      if (formValues.estado !== undefined) updateData.estado = formValues.estado;
+
+      if (Object.keys(updateData).length === 0) {
+        throw new Error("No se proporcionaron datos para actualizar");
+      }
+
       const response = await fetch(
         `http://localhost:8080/ediciones/${selectedEdicion.id}`,
         {
@@ -238,21 +266,22 @@ const Ediciones = () => {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify(formValues),
+          body: JSON.stringify(updateData)
         }
       );
 
+      const responseData = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar edición");
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        throw new Error(responseData.error || responseData.message || "Error al actualizar la edición");
       }
 
-      const data = await response.json();
-
-      setEdiciones(ediciones.map(edicion =>
-        edicion.id === selectedEdicion.id ? data : edicion
-      ));
-
+      await fetchEdiciones();
+      setSelectedEdicion(null);
       setFormValues({
         titulo: "",
         fechaInicio: "",
@@ -261,11 +290,12 @@ const Ediciones = () => {
         cursoId: "",
         estudiantes: [],
       });
-      setSelectedEdicion(null);
-
-      setSuccessMessage("Edición actualizada exitosamente.");
+      setErrorMessage(null);
+      setSuccessMessage("Edición actualizada correctamente");
       setOpenSnackbar(true);
+
     } catch (error) {
+      console.error('Error al actualizar edición:', error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
     }

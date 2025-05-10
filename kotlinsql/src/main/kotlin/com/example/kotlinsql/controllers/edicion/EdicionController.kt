@@ -1,6 +1,7 @@
 package com.example.kotlinsql.controllers.edicion
 
 import com.example.kotlinsql.dto.EstudianteResumenResponse
+import com.example.kotlinsql.dto.edicion.CreateEdicionDto
 import com.example.kotlinsql.dto.edicion.UpdateEdicionDto
 import com.example.kotlinsql.model.edicion.Edicion
 import com.example.kotlinsql.services.edicion.EdicionServices
@@ -64,7 +65,7 @@ class EdicionController(
         ]
     )
     @PostMapping
-    fun createEdicion(@Valid @RequestBody edicion: Edicion): Edicion {
+    fun createEdicion(@Valid @RequestBody edicion: CreateEdicionDto): Edicion {
         return edicionServices.createEdicion(edicion)
     }
 
