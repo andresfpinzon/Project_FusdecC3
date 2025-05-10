@@ -1,6 +1,6 @@
 package com.example.kotlinsql.controllers.edicion
 
-import com.example.kotlinsql.dto.EstudianteResumenResponse
+import com.example.kotlinsql.dto.estudiante.EstudianteResumenResponse
 import com.example.kotlinsql.dto.edicion.CreateEdicionDto
 import com.example.kotlinsql.dto.edicion.UpdateEdicionDto
 import com.example.kotlinsql.model.edicion.Edicion
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

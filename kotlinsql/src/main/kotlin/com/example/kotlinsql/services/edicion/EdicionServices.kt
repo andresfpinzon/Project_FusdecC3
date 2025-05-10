@@ -1,6 +1,6 @@
 package com.example.kotlinsql.services.edicion
 
-import com.example.kotlinsql.dto.EstudianteResumenResponse
+import com.example.kotlinsql.dto.estudiante.EstudianteResumenResponse
 import com.example.kotlinsql.dto.edicion.UpdateEdicionDto
 import com.example.kotlinsql.dto.edicion.CreateEdicionDto
 import com.example.kotlinsql.model.edicion.Edicion
