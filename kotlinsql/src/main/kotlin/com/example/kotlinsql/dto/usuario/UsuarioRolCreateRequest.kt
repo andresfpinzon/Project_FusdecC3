@@ -1,8 +1,7 @@
-package com.example.kotlinsql.dto
+package com.example.kotlinsql.dto.usuario
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Pattern
 
 data class UsuarioRolCreateRequest(
     @field:NotBlank(message = "El número de documento es obligatorio")

@@ -217,7 +217,7 @@ const Comandos = () => {
       }
 
       await fetchComandos();
-      clearForm(); // Usamos clearForm en lugar de resetForm que no está definida
+      clearForm(); 
 
       setSuccessMessage("Comando creado correctamente");
       setOpenSnackbar(true);

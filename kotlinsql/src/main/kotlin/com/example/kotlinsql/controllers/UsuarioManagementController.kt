@@ -1,7 +1,8 @@
 package com.example.kotlinsql.controllers
 
-import com.example.kotlinsql.dto.UsuarioCreateRequest
-import com.example.kotlinsql.dto.UsuarioUpdateRequest
+
+import com.example.kotlinsql.dto.usuario.UsuarioCreateWithRolesRequest
+import com.example.kotlinsql.dto.usuario.UsuarioUpdateWithRolesRequest
 import com.example.kotlinsql.services.UsuarioManagementService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -16,18 +17,13 @@ class UsuarioManagementController(
 ) {
     @PostMapping("/con-roles")
     fun crearUsuarioConRoles(
-        @RequestBody @Valid request: UsuarioConRolesRequest
+        @RequestBody @Valid request: UsuarioCreateWithRolesRequest
     ): ResponseEntity<Any> {
         return try {
-            val usuario = UsuarioCreateRequest(
-                numeroDocumento = request.numeroDocumento,
-                nombre = request.nombre,
-                apellido = request.apellido,
-                correo = request.correo,
-                password = request.password,
+            val usuarioCreado = usuarioManagementService.crearUsuarioConRoles(
+                request.usuario.normalizar(),
+                request.rolesIds
             )
-
-            val usuarioCreado = usuarioManagementService.crearUsuarioConRoles(usuario, request.rolesIds)
             ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("error" to e.message))
@@ -52,17 +48,8 @@ class UsuarioManagementController(
     }
 }
 
-data class UsuarioUpdateWithRolesRequest(
-    val usuarioUpdate: UsuarioUpdateRequest,
-    val rolesIds: List<Int>
-)
 
-data class UsuarioConRolesRequest(
-    val numeroDocumento: String,
-    val nombre: String,
-    val apellido: String,
-    val correo: String,
-    val password: String,
-    val rolesIds: List<Int>
-)
+
+
+
 

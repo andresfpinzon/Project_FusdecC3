@@ -39,8 +39,8 @@ const Usuarios = () => {
   });
   const [selectedUser, setSelectedUser] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState("success");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -49,8 +49,7 @@ const Usuarios = () => {
       fetchUsuarios();
       fetchRolesDisponibles();
     } else {
-      setMessage("Token no encontrado. Por favor, inicia sesión.");
-      setSeverity("error");
+      setErrorMessage("Token no encontrado. Por favor, inicia sesión.");
       setOpenSnackbar(true);
       navigate("/login");
     }
@@ -67,7 +66,8 @@ const Usuarios = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Error al obtener roles disponibles");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.message || "Error al obtener roles disponibles");
       }
 
       const data = await response.json();
@@ -75,8 +75,7 @@ const Usuarios = () => {
       setRolesDisponibles(rolesFiltrados);
     } catch (error) {
       console.error("Error en fetchRolesDisponibles:", error);
-      setMessage("Error al obtener roles disponibles. Por favor, intente nuevamente.");
-      setSeverity("error");
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
@@ -92,7 +91,8 @@ const Usuarios = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Error al obtener usuarios");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.message || "Error al obtener usuarios");
       }
 
       const data = await response.json();
@@ -135,8 +135,7 @@ const Usuarios = () => {
       setUsuarios(usuariosFiltrados);
     } catch (error) {
       console.error("Error en fetchUsuarios:", error);
-      setMessage("Error al obtener usuarios. Por favor, intente nuevamente.");
-      setSeverity("error");
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
@@ -156,7 +155,8 @@ const Usuarios = () => {
       );
 
       if (!response.ok) {
-        throw new Error(`Error al obtener roles asignados: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.message || `Error al obtener roles asignados: ${response.status}`);
       }
 
       const rolesData = await response.json();
@@ -169,8 +169,7 @@ const Usuarios = () => {
 
     } catch (error) {
       console.error("Error en fetchRolesAsignados:", error);
-      setMessage(error.message);
-      setSeverity("error");
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
@@ -181,7 +180,6 @@ const Usuarios = () => {
   };
 
   const handleRoleChange = (event) => {
-    // Solo actualiza el estado local, no hace llamada API
     const { value } = event.target;
     const selectedRoles = rolesDisponibles
       .filter(rol => value.includes(rol.id))
@@ -191,17 +189,15 @@ const Usuarios = () => {
   };
 
   const handleCreateUser = async () => {
-    // Validaciones
+    // Validaciones básicas del frontend
     if (!formValues.numeroDocumento || !formValues.correo || !formValues.password) {
-      setMessage("Documento, correo y contraseña son obligatorios");
-      setSeverity("error");
+      setErrorMessage("Documento, correo y contraseña son obligatorios");
       setOpenSnackbar(true);
       return;
     }
 
     if (formValues.password.length < 6) {
-      setMessage("La contraseña debe tener al menos 6 caracteres");
-      setSeverity("error");
+      setErrorMessage("La contraseña debe tener al menos 6 caracteres");
       setOpenSnackbar(true);
       return;
     }
@@ -214,40 +210,60 @@ const Usuarios = () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          numeroDocumento: formValues.numeroDocumento,
-          nombre: formValues.nombre || "",
-          apellido: formValues.apellido || "",
-          correo: formValues.correo,
-          password: formValues.password,
+          usuario: {  // <-- Anidar los datos del usuario aquí
+            numeroDocumento: formValues.numeroDocumento,
+            nombre: formValues.nombre || "",
+            apellido: formValues.apellido || "",
+            correo: formValues.correo,
+            password: formValues.password  // En texto plano
+          },
           rolesIds: formValues.roles
             .map(rolNombre => rolesDisponibles.find(r => r.nombre === rolNombre)?.id)
             .filter(id => id !== undefined)
         })
       });
 
+      const responseData = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear el usuario");
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400) {
+          if (responseData.errors) {
+            // Errores de validación del DTO
+            const errorMessages = Object.entries(responseData.errors)
+              .map(([field, message]) => `${field}: ${message}`)
+              .join('\n');
+            throw new Error(errorMessages);
+          } else if (responseData.error) {
+            // Errores de negocio (como correo/documento duplicado)
+            throw new Error(responseData.error);
+          }
+        }
+        // Manejo de otros errores
+        throw new Error(responseData.message || "Error al crear el usuario");
       }
 
-      setMessage("Usuario creado correctamente con sus roles");
-      setSeverity("success");
+      setSuccessMessage("Usuario creado correctamente con sus roles");
       setOpenSnackbar(true);
       resetForm();
       await fetchUsuarios();
     } catch (error) {
       console.error("Error al crear usuario:", error);
-      setMessage(error.message || "Error al crear usuario");
-      setSeverity("error");
+      // Mostrar mensaje de error completo
+      setErrorMessage(error.message || "Ocurrió un error al crear el usuario");
       setOpenSnackbar(true);
     }
   };
 
   const handleUpdateUser = async () => {
-    // Validaciones
+    if (!selectedUser) {
+      setErrorMessage("No se ha seleccionado ningún usuario para actualizar");
+      setOpenSnackbar(true);
+      return;
+    }
+
     if (!formValues.numeroDocumento || !formValues.correo) {
-      setMessage("Documento y correo son obligatorios");
-      setSeverity("error");
+      setErrorMessage("Documento y correo son obligatorios");
       setOpenSnackbar(true);
       return;
     }
@@ -278,20 +294,30 @@ const Usuarios = () => {
         }
       );
 
+      const responseData = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar el usuario");
+        // Manejo similar al de creación
+        if (response.status === 400 || response.status === 409) {
+          if (responseData.errors) {
+            const errorMessages = Object.entries(responseData.errors)
+              .map(([field, message]) => `${field}: ${message}`)
+              .join('\n');
+            throw new Error(errorMessages);
+          } else if (responseData.error) {
+            throw new Error(responseData.error);
+          }
+        }
+        throw new Error(responseData.message || "Error al actualizar el usuario");
       }
 
-      setMessage("Usuario actualizado correctamente");
-      setSeverity("success");
+      setSuccessMessage("Usuario actualizado correctamente");
       setOpenSnackbar(true);
       resetForm();
       await fetchUsuarios();
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
-      setMessage(error.message || "Error al actualizar usuario");
-      setSeverity("error");
+      setErrorMessage(error.message || "Ocurrió un error al actualizar el usuario");
       setOpenSnackbar(true);
     }
   };
@@ -310,18 +336,18 @@ const Usuarios = () => {
         }
       );
 
+      const responseData = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        throw new Error("Error al eliminar el usuario");
+        throw new Error(responseData.error || responseData.message || "Error al eliminar el usuario");
       }
 
-      setMessage("Usuario eliminado correctamente");
-      setSeverity("success");
+      setSuccessMessage("Usuario eliminado correctamente");
       setOpenSnackbar(true);
       await fetchUsuarios();
     } catch (error) {
       console.error(error);
-      setMessage(error.message);
-      setSeverity("error");
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
   };
@@ -351,6 +377,8 @@ const Usuarios = () => {
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
+    setErrorMessage(null);
+    setSuccessMessage("");
   };
 
   return (
@@ -580,8 +608,13 @@ const Usuarios = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={severity} variant="filled">
-          {message}
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={errorMessage ? "error" : "success"}
+          variant="filled"
+          sx={{ width: '100%', whiteSpace: 'pre-line' }}
+        >
+          {errorMessage || successMessage}
         </Alert>
       </Snackbar>
     </Container>

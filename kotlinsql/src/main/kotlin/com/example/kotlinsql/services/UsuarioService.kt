@@ -1,7 +1,7 @@
 package com.example.kotlinsql.services
 
-import com.example.kotlinsql.dto.UsuarioCreateRequest
-import com.example.kotlinsql.dto.UsuarioUpdateRequest
+import com.example.kotlinsql.dto.usuario.UsuarioCreateRequest
+import com.example.kotlinsql.dto.usuario.UsuarioUpdateRequest
 import com.example.kotlinsql.model.Usuario
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
@@ -63,12 +63,23 @@ class UsuarioService(
             throw IllegalArgumentException("No se proporcionaron datos para actualizar")
         }
 
-        // Normalizar los datos antes de procesarlos
         val usuarioNormalizado = usuario.normalizar()
 
+        // Verificar si el usuario existe primero
+        val usuarioExiste = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM usuario WHERE numero_documento = ?",
+            Int::class.java,
+            documento
+        ) ?: 0
+
+        if (usuarioExiste == 0) {
+            throw NoSuchElementException("No se encontró el usuario con documento $documento")
+        }
+
+        // Verificar correo duplicado (case-insensitive)
         usuarioNormalizado.correo?.let { nuevoCorreo ->
             val existeCorreoEnOtroUsuario = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM usuario WHERE correo = ? AND numero_documento != ?",
+                "SELECT COUNT(*) FROM usuario WHERE LOWER(correo) = LOWER(?) AND numero_documento != ?",
                 Int::class.java,
                 nuevoCorreo,
                 documento
@@ -117,7 +128,7 @@ class UsuarioService(
 
     private fun validarExistenciaCorreoYDocumento(correo: String, numeroDocumento: String) {
         val existeCorreo = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM usuario WHERE correo = ?",
+            "SELECT COUNT(*) FROM usuario WHERE LOWER(correo) = LOWER(?)",
             Int::class.java,
             correo
         ) ?: 0

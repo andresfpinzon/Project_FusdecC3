@@ -1,4 +1,4 @@
-package com.example.kotlinsql.dto
+package com.example.kotlinsql.dto.usuario
 
 data class UsuarioRolResponse(
     val usuarioNumeroDocumento: String,

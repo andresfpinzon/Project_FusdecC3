@@ -1,4 +1,4 @@
-package com.example.kotlinsql.dto
+package com.example.kotlinsql.dto.usuario
 
 import jakarta.validation.constraints.*
 

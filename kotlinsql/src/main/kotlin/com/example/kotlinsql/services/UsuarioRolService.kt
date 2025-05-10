@@ -1,7 +1,7 @@
 package com.example.kotlinsql.services
 
-import com.example.kotlinsql.dto.UsuarioRolCreateRequest
-import com.example.kotlinsql.dto.UsuarioRolResponse
+import com.example.kotlinsql.dto.usuario.UsuarioRolCreateRequest
+import com.example.kotlinsql.dto.usuario.UsuarioRolResponse
 import com.example.kotlinsql.model.UsuarioRol
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate

@@ -1,7 +1,7 @@
 package com.example.kotlinsql.controllers
 
-import com.example.kotlinsql.dto.UsuarioRolCreateRequest
-import com.example.kotlinsql.dto.UsuarioRolResponse
+import com.example.kotlinsql.dto.usuario.UsuarioRolCreateRequest
+import com.example.kotlinsql.dto.usuario.UsuarioRolResponse
 import com.example.kotlinsql.model.UsuarioRol
 import com.example.kotlinsql.services.UsuarioRolService
 import jakarta.validation.Valid

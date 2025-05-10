@@ -1,8 +1,8 @@
 package com.example.kotlinsql.services
 
-import com.example.kotlinsql.dto.UsuarioCreateRequest
-import com.example.kotlinsql.dto.UsuarioRolCreateRequest
-import com.example.kotlinsql.dto.UsuarioUpdateRequest
+import com.example.kotlinsql.dto.usuario.UsuarioCreateRequest
+import com.example.kotlinsql.dto.usuario.UsuarioRolCreateRequest
+import com.example.kotlinsql.dto.usuario.UsuarioUpdateRequest
 import com.example.kotlinsql.model.Usuario
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
