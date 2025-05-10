@@ -1,19 +1,34 @@
 package com.example.kotlinsql.dto
 
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.Positive
 
-class CursoCreateRequest (
-
-    @NotBlank(message = "El Nombre es obligatorio")
+data class CursoCreateRequest(
+    @field:Size(min = 3, max = 100, message = "El nombre del curso debe tener entre 3 y 100 caracteres")
+    @field:NotBlank(message = "El nombre del curso es obligatorio")
+    @field:Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]+\$", message = "El nombre solo puede contener letras, números y espacios")
     val nombre: String,
 
-    @NotBlank(message = "La descripcion es obligatoria")
+    @field:Size(min = 10, max = 500, message = "La descripción debe tener entre 10 y 500 caracteres")
+    @field:NotBlank(message = "La descripción es obligatoria")
     val descripcion: String,
 
-    @NotBlank(message = "La intencidad horaria es obligatoria")
+    @field:Pattern(regexp = "^[0-9]+ horas?\$", message = "La intensidad horaria debe estar en formato 'X horas'")
+    @field:NotBlank(message = "La intensidad horaria es obligatoria")
     val intensidadHoraria: String,
 
-    @NotBlank(message = "El id de la fundación es obligatorio")
-    val fundacionId: Int,
-
-)
+    @field:NotNull(message = "El ID de la fundación es obligatorio")
+    @field:Positive(message = "El ID de la fundación debe ser un número positivo")
+    val fundacionId: Int
+) {
+    fun normalizar(): CursoCreateRequest {
+        return this.copy(
+            nombre = this.nombre.lowercase().trim(),
+            descripcion = this.descripcion.lowercase().trim(),
+            intensidadHoraria = this.intensidadHoraria.lowercase().trim()
+        )
+    }
+}

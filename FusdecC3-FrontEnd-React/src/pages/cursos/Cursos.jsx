@@ -178,50 +178,81 @@ const Cursos = () => {
   };
 
   const handleCreateCurso = async () => {
-    if (!formValues.nombre || !formValues.descripcion || !formValues.intensidadHoraria) {
-      setErrorMessage("Todos los campos son obligatorios");
-      setOpenSnackbar(true);
-      return;
-    }
     try {
+      // Validación básica del formulario
+      if (!formValues.nombre || !formValues.descripcion || !formValues.intensidadHoraria || !formValues.fundacionId) {
+        throw new Error("Por favor complete todos los campos obligatorios");
+      }
+
+      // Validar formato de intensidad horaria
+      if (!/^\d+ horas?$/i.test(formValues.intensidadHoraria)) {
+        throw new Error("La intensidad horaria debe estar en formato 'X horas'");
+      }
+
       const response = await fetch("http://localhost:8080/cursos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(formValues)
       });
 
-      const data = await response.json();
+      const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.error || "Error al crear curso");
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al crear el curso");
       }
 
-      setCursos([...cursos, data]);
+      await fetchCursos();
       setFormValues({
         nombre: "",
         descripcion: "",
         intensidadHoraria: "",
         estado: true,
-        fundacionId: "",
+        fundacionId: ""
       });
-
-      setSuccessMessage("Curso creado exitosamente.");
       setErrorMessage(null);
+      setSuccessMessage("Curso creado correctamente");
       setOpenSnackbar(true);
 
     } catch (error) {
-      setErrorMessage(error.message || "Error al crear curso");
+      console.error('Error al crear curso:', error);
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
-  };
+};
 
-  const handleUpdateCurso = async () => {
-    if (!selectedCurso) return;
-
+const handleUpdateCurso = async () => {
     try {
+      if (!selectedCurso) {
+        throw new Error("No se ha seleccionado ningún curso para actualizar");
+      }
+
+      // Validar formato de intensidad horaria si se está actualizando
+      if (formValues.intensidadHoraria && !/^\d+ horas?$/i.test(formValues.intensidadHoraria)) {
+        throw new Error("La intensidad horaria debe estar en formato 'X horas'");
+      }
+
+      // Preparar datos para actualización
+      const updateData = {};
+      if (formValues.nombre) updateData.nombre = formValues.nombre;
+      if (formValues.descripcion) updateData.descripcion = formValues.descripcion;
+      if (formValues.intensidadHoraria) updateData.intensidadHoraria = formValues.intensidadHoraria;
+      if (formValues.estado !== undefined) updateData.estado = formValues.estado;
+      if (formValues.fundacionId) updateData.fundacionId = formValues.fundacionId;
+
+      // Verificar que hay datos para actualizar
+      if (Object.keys(updateData).length === 0) {
+        throw new Error("No se proporcionaron datos para actualizar");
+      }
+
       const response = await fetch(
         `http://localhost:8080/cursos/${selectedCurso.id}`,
         {
@@ -230,14 +261,20 @@ const Cursos = () => {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify(formValues),
+          body: JSON.stringify(updateData)
         }
       );
 
-      const data = await response.json();
+      const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.error || "Error al actualizar curso");
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || "Error al actualizar el curso");
       }
 
       await fetchCursos();
@@ -247,18 +284,18 @@ const Cursos = () => {
         descripcion: "",
         intensidadHoraria: "",
         estado: true,
-        fundacionId: "",
+        fundacionId: ""
       });
-
-      setSuccessMessage("El curso se actualizó correctamente");
       setErrorMessage(null);
+      setSuccessMessage("Curso actualizado correctamente");
       setOpenSnackbar(true);
 
     } catch (error) {
-      setErrorMessage(error.message || "Error al actualizar curso");
+      console.error('Error al actualizar curso:', error);
+      setErrorMessage(error.message);
       setOpenSnackbar(true);
     }
-  };
+};
 
   const handleDeleteCurso = async () => {
     if (!cursoToDelete) return;

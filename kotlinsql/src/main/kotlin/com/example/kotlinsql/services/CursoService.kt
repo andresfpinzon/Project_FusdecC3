@@ -32,33 +32,89 @@ class CursoService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.query("SELECT * FROM curso", rowMapper)
     }
 
-    fun crear(request: CursoCreateRequest): Curso? {
+    fun crear(request: CursoCreateRequest): Curso {
+        val cursoNormalizado = request.normalizar()
+
+        // Verificar si ya existe un curso con el mismo nombre en la misma fundación
+        val existeCurso = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM curso WHERE LOWER(nombre) = LOWER(?) AND fundacion_id = ?",
+            Int::class.java,
+            cursoNormalizado.nombre,
+            cursoNormalizado.fundacionId
+        ) ?: 0
+
+        if (existeCurso > 0) {
+            throw IllegalArgumentException("Ya existe un curso con el nombre '${cursoNormalizado.nombre}' en esta fundación")
+        }
+
         val sql = """
-        INSERT INTO curso (nombre, descripcion, intensidad_horaria, fundacion_id)
-        VALUES (?, ?, ?, ?)
-        RETURNING *
-    """.trimIndent()
-        return jdbcTemplate.queryForObject(sql, rowMapper, request.nombre, request.descripcion, request.intensidadHoraria, request.fundacionId)
+            INSERT INTO curso (nombre, descripcion, intensidad_horaria, fundacion_id, estado)
+            VALUES (?, ?, ?, ?, true)
+            RETURNING *
+        """.trimIndent()
+
+        return jdbcTemplate.queryForObject(
+            sql,
+            rowMapper,
+            cursoNormalizado.nombre,
+            cursoNormalizado.descripcion,
+            cursoNormalizado.intensidadHoraria,
+            cursoNormalizado.fundacionId
+        ) ?: throw IllegalArgumentException("No se pudo crear el curso")
     }
 
-    fun actualizar(id: Int, request: CursoUpdateRequest): Curso? {
+    fun actualizar(id: Int, request: CursoUpdateRequest): Curso {
+        if (request.isEmpty()) {
+            throw IllegalArgumentException("No se proporcionaron datos para actualizar")
+        }
+
+        val cursoNormalizado = request.normalizar()
+
+        // Verificar si el nuevo nombre ya existe en otro curso de la misma fundación
+        cursoNormalizado.nombre?.let { nuevoNombre ->
+            cursoNormalizado.fundacionId?.let { fundacionId ->
+                val existeNombreEnOtroCurso = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM curso WHERE LOWER(nombre) = LOWER(?) AND fundacion_id = ? AND id != ?",
+                    Int::class.java,
+                    nuevoNombre,
+                    fundacionId,
+                    id
+                ) ?: 0
+
+                if (existeNombreEnOtroCurso > 0) {
+                    throw IllegalArgumentException("Ya existe otro curso con el nombre '$nuevoNombre' en esta fundación")
+                }
+            }
+        }
+
         val campos = mutableListOf<String>()
         val valores = mutableListOf<Any>()
 
-        request.nombre?.let { campos.add("nombre = ?"); valores.add(it) }
-        request.descripcion?.let { campos.add("descripcion = ?"); valores.add(it) }
-        request.intensidadHoraria?.let { campos.add("intensidad_horaria = ?"); valores.add(it) }
-        request.estado?.let { campos.add("estado = ?"); valores.add(it) }
+        cursoNormalizado.nombre?.let { campos.add("nombre = ?"); valores.add(it) }
+        cursoNormalizado.descripcion?.let { campos.add("descripcion = ?"); valores.add(it) }
+        cursoNormalizado.intensidadHoraria?.let { campos.add("intensidad_horaria = ?"); valores.add(it) }
+        cursoNormalizado.estado?.let { campos.add("estado = ?"); valores.add(it) }
+        cursoNormalizado.fundacionId?.let { campos.add("fundacion_id = ?"); valores.add(it) }
 
-        if (campos.isEmpty()) return null
-
-        val sqlUpdate = "UPDATE curso SET ${campos.joinToString(", ")} WHERE id = ?"
         valores.add(id)
-        jdbcTemplate.update(sqlUpdate, *valores.toTypedArray())
 
-        // Devolver el curso actualizado
-        val sqlSelect = "SELECT * FROM curso WHERE id = ?"
-        return jdbcTemplate.queryForObject(sqlSelect, rowMapper, id)
+        val sql = """
+            UPDATE curso 
+            SET ${campos.joinToString(", ")} 
+            WHERE id = ?
+        """.trimIndent()
+
+        val filasActualizadas = jdbcTemplate.update(sql, *valores.toTypedArray())
+
+        if (filasActualizadas == 0) {
+            throw NoSuchElementException("No se encontró el curso con ID $id para actualizar")
+        }
+
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM curso WHERE id = ?",
+            rowMapper,
+            id
+        ) ?: throw NoSuchElementException("No se pudo recuperar el curso actualizado")
     }
 
     fun eliminar(id: Int): Int {
