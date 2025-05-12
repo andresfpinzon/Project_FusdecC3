@@ -12,16 +12,23 @@ import {
   Paper,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Select,
   MenuItem,
+  Typography,
   Checkbox,
   ListItemText,
   Chip,
+  IconButton,
   FormControl,
   InputLabel,
   Box,
   FormHelperText,
 } from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const Usuarios = () => {
@@ -41,6 +48,8 @@ const Usuarios = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [usuarioToDelete, setUsuarioToDelete] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -322,15 +331,20 @@ const Usuarios = () => {
     }
   };
 
-  const handleDeleteUser = async (numeroDocumento) => {
-    if (!numeroDocumento) return;
+  const handleDeleteUser = async () => {
+    if (!usuarioToDelete) {
+      setErrorMessage("No se ha seleccionado ningún usuario para eliminar");
+      setOpenSnackbar(true);
+      return;
+    }
 
     try {
       const response = await fetch(
-        `http://localhost:8080/usuarios/${numeroDocumento}`,
+        `http://localhost:8080/usuarios/${usuarioToDelete.numeroDocumento}`,
         {
           method: "DELETE",
           headers: {
+            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
         }
@@ -344,6 +358,7 @@ const Usuarios = () => {
 
       setSuccessMessage("Usuario eliminado correctamente");
       setOpenSnackbar(true);
+      setOpenDeleteDialog(false);
       await fetchUsuarios();
     } catch (error) {
       console.error(error);
@@ -379,6 +394,16 @@ const Usuarios = () => {
     setOpenSnackbar(false);
     setErrorMessage(null);
     setSuccessMessage("");
+  };
+
+  const handleDeleteClick = (usuario) => {
+    setUsuarioToDelete(usuario);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setUsuarioToDelete(null);
+    setOpenDeleteDialog(false);
   };
 
   return (
@@ -576,24 +601,24 @@ const Usuarios = () => {
                 </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
+                    <IconButton
                       variant="contained"
                       color="info"
                       size="small"
                       onClick={() => handleEdit(usuario)}
                       sx={{ minWidth: 'auto' }}
                     >
-                      Editar
-                    </Button>
-                    <Button
+                      <Edit />
+                    </IconButton>
+                    <IconButton
                       variant="contained"
                       color="error"
                       size="small"
-                      onClick={() => handleDeleteUser(usuario.numeroDocumento)}
+                      onClick={() => handleDeleteClick(usuario)}
                       sx={{ minWidth: 'auto' }}
                     >
-                      Eliminar
-                    </Button>
+                      <Delete />
+                    </IconButton>
                   </Box>
                 </TableCell>
               </TableRow>
@@ -601,6 +626,17 @@ const Usuarios = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Eliminar Usuario</DialogTitle>
+        <DialogContent>
+          <Typography>¿Estás seguro de que deseas eliminar a {usuarioToDelete?.nombre}?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
+          <Button onClick={handleDeleteUser} color="secondary">Eliminar</Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={openSnackbar}

@@ -29,10 +29,12 @@ const Unidades = () => {
   const [showStats, setShowStats] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [brigadeToDelete, setBrigadeToDelete] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
-    severity: 'info' 
+    severity: 'info'
   });
   const [estudiantes, setEstudiantes] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -335,28 +337,43 @@ const Unidades = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar esta unidad?')) return;
+    setBrigadeToDelete(id);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!brigadeToDelete) return;
+
     try {
-      const response = await fetch(`http://localhost:8080/unidades/${id}`, {
+      const response = await fetch(`http://localhost:8080/unidades/${brigadeToDelete}`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
       });
-      if (!response.ok) throw new Error('Error al eliminar unidad');
-      await fetchUnidades();
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.message || 'Error al eliminar unidad');
+      }
+
       setSnackbar({
         open: true,
-        message: 'Unidad eliminada con éxito',
-        severity: 'success'
+        message: "Unidad eliminada correctamente",
+        severity: "success"
       });
+
+      await fetchUnidades();
     } catch (error) {
       setSnackbar({
         open: true,
-        message: 'Error al eliminar la unidad',
-        severity: 'error'
+        message: error.message,
+        severity: "error"
       });
+    } finally {
+      setOpenDeleteDialog(false);
+      setBrigadeToDelete(null);
     }
   };
 
@@ -655,7 +672,9 @@ const Unidades = () => {
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
                           </button>
-                          <button onClick={(e) => { e.stopPropagation(); handleDelete(unidad.id); }} className="delete-button">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDelete(unidad.id); }} className="delete-button"
+                          >
                             <i className="fas fa-trash-alt"></i> Eliminar
                           </button>
                         </div>
@@ -785,6 +804,68 @@ const Unidades = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#1d526eff',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '16px 24px'
+        }}>
+          Confirmar Eliminación
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          <Typography variant="body1" sx={{ textAlign: 'center', fontSize: '1.1rem' }}>
+            ¿Estás seguro que deseas eliminar esta unidad?
+          </Typography>
+          <Typography variant="body2" sx={{
+            textAlign: 'center',
+            color: 'text.secondary',
+            marginTop: '8px'
+          }}>
+            Esta acción no se puede deshacer.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{
+          justifyContent: 'center',
+          padding: '16px 24px',
+          gap: '16px'
+        }}>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            variant="outlined"
+            sx={{
+              minWidth: '120px',
+              borderColor: '#1d526eff',
+              color: '#1d526eff',
+              '&:hover': {
+                backgroundColor: '#f0f7ff',
+                borderColor: '#1a4863'
+              }
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            sx={{
+              minWidth: '120px',
+              backgroundColor: '#d32f2f',
+              '&:hover': {
+                backgroundColor: '#b71c1c'
+              }
+            }}
+          >
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

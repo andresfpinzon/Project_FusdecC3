@@ -29,7 +29,7 @@ import {
   Chip,
   TablePagination
 } from "@mui/material";
-import { Edit, Delete, Info, Person, Description, CreditCard, School, ToggleOn, CheckCircle, Star } from "@mui/icons-material";
+import { Edit, Delete, Info, CreditCard} from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 

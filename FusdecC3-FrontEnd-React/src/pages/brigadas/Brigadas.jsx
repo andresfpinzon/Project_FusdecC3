@@ -28,6 +28,8 @@ const Brigadas = () => {
   const [showForm, setShowForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [openInfoDialog, setOpenInfoDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [brigadeToDelete, setBrigadeToDelete] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -153,85 +155,99 @@ const Brigadas = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Validación link para Google Maps
-  if (!isValidGoogleMapsLink(formData.ubicacionBrigada)) {
-    setSnackbar({
-      open: true,
-      message: "Por favor ingrese un enlace válido de Google Maps",
-      severity: "error"
-    });
-    return;
-  }
-
-  try {
-    const isUpdate = !!selectedBrigade;
-    const url = isUpdate 
-      ? `http://localhost:8080/brigadas/${selectedBrigade.id}`
-      : 'http://localhost:8080/brigadas';
-    
-    const response = await fetch(url, {
-      method: isUpdate ? 'PUT' : 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(formData)
-    });
-
-    const responseData = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      // Manejo de errores de validación (400 con estructura específica)
-      if (response.status === 400 && responseData.errors) {
-        const errorMessages = Object.values(responseData.errors).join('\n');
-        throw new Error(errorMessages);
-      }
-      // Manejo de errores de negocio (409 u otros)
-      throw new Error(responseData.error || responseData.message || `Error al ${isUpdate ? 'actualizar' : 'crear'} la brigada`);
+    // Validación link para Google Maps
+    if (!isValidGoogleMapsLink(formData.ubicacionBrigada)) {
+      setSnackbar({
+        open: true,
+        message: "Por favor ingrese un enlace válido de Google Maps",
+        severity: "error"
+      });
+      return;
     }
 
-    // Éxito - Actualizar estado
-    await fetchBrigades();
-    resetForm();
-
-    setSnackbar({
-      open: true,
-      message: isUpdate ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
-      severity: "success"
-    });
-
-  } catch (error) {
-    console.error('Error en handleSubmit:', error);
-    
-    setSnackbar({
-      open: true,
-      message: error.message,
-      severity: "error"
-    });
-  }
-};
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar esta brigada?')) return;
     try {
-      const response = await fetch(`http://localhost:8080/brigadas/${id}`, {
+      const isUpdate = !!selectedBrigade;
+      const url = isUpdate
+        ? `http://localhost:8080/brigadas/${selectedBrigade.id}`
+        : 'http://localhost:8080/brigadas';
+
+      const response = await fetch(url, {
+        method: isUpdate ? 'PUT' : 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const responseData = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        // Manejo de errores de validación (400 con estructura específica)
+        if (response.status === 400 && responseData.errors) {
+          const errorMessages = Object.values(responseData.errors).join('\n');
+          throw new Error(errorMessages);
+        }
+        // Manejo de errores de negocio (409 u otros)
+        throw new Error(responseData.error || responseData.message || `Error al ${isUpdate ? 'actualizar' : 'crear'} la brigada`);
+      }
+
+      // Éxito - Actualizar estado
+      await fetchBrigades();
+      resetForm();
+
+      setSnackbar({
+        open: true,
+        message: isUpdate ? "Brigada actualizada correctamente" : "Brigada creada correctamente",
+        severity: "success"
+      });
+
+    } catch (error) {
+      console.error('Error en handleSubmit:', error);
+
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: "error"
+      });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!brigadeToDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:8080/brigadas/${brigadeToDelete}`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
       });
-      if (!response.ok) throw new Error('Error al eliminar brigada');
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.message || 'Error al eliminar brigada');
+      }
+
+      setSnackbar({
+        open: true,
+        message: "Brigada eliminada correctamente",
+        severity: "success"
+      });
+
       await fetchBrigades();
-
-      // Mostrar mensaje de éxito
-      setSuccessMessage("La brigada se eliminó correctamente");
-      setOpenSnackbar(true);
-
     } catch (error) {
-      setError('Error al eliminar brigada');
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: "error"
+      });
+    } finally {
+      setOpenDeleteDialog(false);
+      setBrigadeToDelete(null);
     }
   };
 
@@ -276,6 +292,11 @@ const Brigadas = () => {
       horario: 'mañana'
     });
     setShowForm(true);
+  };
+
+  const handleDeleteClick = (id) => {
+    setBrigadeToDelete(id);
+    setOpenDeleteDialog(true);
   };
 
   const onDragEnd = (result) => {
@@ -451,7 +472,7 @@ const Brigadas = () => {
                           <button onClick={(e) => { e.stopPropagation(); handleEdit(brigade); }} className="edit-button">
                             <i className="fas fa-edit"></i> Editar
                           </button>
-                          <button onClick={() => handleDelete(brigade.id)} className="delete-button">
+                          <button onClick={(e) => { e.stopPropagation(); handleDeleteClick(brigade.id); }} className="delete-button">
                             <i className="fas fa-trash-alt"></i> Eliminar
                           </button>
                         </div>
@@ -602,12 +623,74 @@ const Brigadas = () => {
           severity={snackbar.severity}
           sx={{
             width: '100%',
-            whiteSpace: 'pre-line' // Esto permite mostrar saltos de línea
+            whiteSpace: 'pre-line'
           }}
         >
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#1d526eff',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '16px 24px'
+        }}>
+          Confirmar Eliminación
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          <Typography variant="body1" sx={{ textAlign: 'center', fontSize: '1.1rem' }}>
+            ¿Estás seguro que deseas eliminar esta brigada?
+          </Typography>
+          <Typography variant="body2" sx={{
+            textAlign: 'center',
+            color: 'text.secondary',
+            marginTop: '8px'
+          }}>
+            Esta acción no se puede deshacer.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{
+          justifyContent: 'center',
+          padding: '16px 24px',
+          gap: '16px'
+        }}>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            variant="outlined"
+            sx={{
+              minWidth: '120px',
+              borderColor: '#1d526eff',
+              color: '#1d526eff',
+              '&:hover': {
+                backgroundColor: '#f0f7ff',
+                borderColor: '#1a4863'
+              }
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            sx={{
+              minWidth: '120px',
+              backgroundColor: '#d32f2f',
+              '&:hover': {
+                backgroundColor: '#b71c1c'
+              }
+            }}
+          >
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
