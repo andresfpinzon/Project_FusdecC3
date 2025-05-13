@@ -353,6 +353,10 @@ const Usuarios = () => {
       const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
+        // Manejo específico para el error 409 (Conflict)
+        if (response.status === 409) {
+          throw new Error(responseData.mensaje);
+        }
         throw new Error(responseData.error || responseData.message || "Error al eliminar el usuario");
       }
 
@@ -364,6 +368,7 @@ const Usuarios = () => {
       console.error(error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
+      setOpenDeleteDialog(false); // Cierra el diálogo también en caso de error
     }
   };
 

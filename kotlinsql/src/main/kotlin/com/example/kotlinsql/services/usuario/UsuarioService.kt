@@ -3,6 +3,7 @@ package com.example.kotlinsql.services.usuario
 import com.example.kotlinsql.dto.usuario.UsuarioCreateRequest
 import com.example.kotlinsql.dto.usuario.UsuarioUpdateRequest
 import com.example.kotlinsql.model.usuario.Usuario
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
@@ -122,8 +123,12 @@ class UsuarioService(
     }
 
     fun eliminarPorDocumento(documento: String): Int {
-        val sql = "DELETE FROM usuario WHERE numero_documento = ?"
-        return jdbcTemplate.update(sql, documento)
+        return try {
+            val sql = "DELETE FROM usuario WHERE numero_documento = ?"
+            jdbcTemplate.update(sql, documento)
+        } catch (ex: DataIntegrityViolationException) {
+            throw IllegalStateException("No se puede eliminar el usuario con documento $documento porque está asignado a una unidad.")
+        }
     }
 
     private fun validarExistenciaCorreoYDocumento(correo: String, numeroDocumento: String) {

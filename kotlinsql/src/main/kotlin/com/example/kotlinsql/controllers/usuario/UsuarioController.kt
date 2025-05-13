@@ -119,18 +119,30 @@ class UsuarioController @Autowired constructor(private val usuarioService: Usuar
                 responseCode = "404",
                 description = "Usuario no encontrado",
                 content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"mensaje\": \"Usuario no encontrado\"}")])]
+            ),
+            ApiResponse(
+                responseCode = "409",
+                description = "No se puede eliminar el usuario porque está asignado a una unidad",
+                content = [Content(mediaType = "application/json", examples = [ExampleObject(value = "{\"mensaje\": \"No se puede eliminar el usuario porque está asignado a una unidad.\"}")])]
             )
         ]
     )
     @DeleteMapping("/{documento}")
     fun eliminarUsuario(@PathVariable documento: String): ResponseEntity<Map<String, String>> {
-        val resultado = usuarioService.eliminarPorDocumento(documento)
-        return if (resultado > 0) {
-            ResponseEntity.ok(mapOf("mensaje" to "Usuario eliminado"))
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("mensaje" to "Usuario no encontrado"))
+        return try {
+            val resultado = usuarioService.eliminarPorDocumento(documento)
+            if (resultado > 0) {
+                ResponseEntity.ok(mapOf("mensaje" to "Usuario eliminado"))
+            } else {
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("mensaje" to "Usuario no encontrado"))
+            }
+        } catch (ex: IllegalStateException) {
+            val mensaje = ex.message ?: "Conflicto al eliminar el usuario"
+            ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("mensaje" to mensaje))
+
         }
     }
+
 
     @Operation(summary = "Obtener usuario por documento", description = "Obtiene un usuario por su número de documento.")
     @ApiResponses(
