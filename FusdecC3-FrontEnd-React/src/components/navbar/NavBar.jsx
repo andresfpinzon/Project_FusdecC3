@@ -39,6 +39,7 @@ export default function Navbar() {
 
   const drawer = (
     <Box 
+      id="menuLateral"
       sx={{ 
         width: 250, 
         height: '100%', 
@@ -114,6 +115,7 @@ export default function Navbar() {
         <Toolbar>
           {isAuthenticated && (
             <IconButton
+              id="menuButtonLateral"
               color="inherit"
               aria-label="open drawer"
               onClick={handleDrawerToggle}

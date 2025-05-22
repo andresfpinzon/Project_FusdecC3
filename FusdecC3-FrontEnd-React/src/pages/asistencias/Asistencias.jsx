@@ -267,6 +267,7 @@ const Asistencias = () => {
             }}
           />
           <Button
+            id="btnGuardarAsistencia"
             variant="contained"
             startIcon={<SaveIcon />}
             onClick={handleSaveAttendance}
@@ -284,6 +285,7 @@ const Asistencias = () => {
         </Box>
 
         <TextField
+          id="estudianteInputAsistencia"
           fullWidth
           label="Buscar estudiantes"
           variant="outlined"
@@ -299,7 +301,7 @@ const Asistencias = () => {
                 <TableCell>Documento</TableCell>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Apellido</TableCell>
-                <TableCell align="center">Asistencia</TableCell>
+                <TableCell id="checkBoxAsistencia" align="center">Asistencia</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -448,11 +450,14 @@ const Asistencias = () => {
 
       {/* Snackbar para notificaciones */}
       <Snackbar
+      id="snackbarAsistencias"
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
       >
         <Alert
+      id="snackbarAsistencias"
+
           severity={snackbar.severity}
           onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
         >

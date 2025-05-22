@@ -62,7 +62,8 @@ const Login = () => {
         // Llamar la función `login` del contexto
         login(token, rolesNormalizados);
 
-        navigate("/home", { replace: true });
+        //navigate("/home", { replace: true });
+        window.location.href = "/home";
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error al iniciar sesión");
@@ -88,6 +89,7 @@ const Login = () => {
           Iniciar Sesión
         </Typography>
         <TextField
+        id="correoInput"
           label="Correo"
           name="correo"
           value={formValues.correo}
@@ -97,6 +99,7 @@ const Login = () => {
           variant="outlined"
         />
         <TextField
+          id="passwordInput"
           label="Contraseña"
           name="password"
           type={showPassword ? "text" : "password"}
@@ -121,6 +124,7 @@ const Login = () => {
         />
         <Box marginTop={3}>
           <Button
+            id="iniciarSesionButton"
             variant="contained"
             color="primary"
             fullWidth
