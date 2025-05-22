@@ -88,6 +88,7 @@ const Login = () => {
           Iniciar Sesión
         </Typography>
         <TextField
+          id="correoInput"
           label="Correo"
           name="correo"
           value={formValues.correo}
@@ -97,6 +98,7 @@ const Login = () => {
           variant="outlined"
         />
         <TextField
+          id="passwordInput"
           label="Contraseña"
           name="password"
           type={showPassword ? "text" : "password"}
@@ -121,6 +123,7 @@ const Login = () => {
         />
         <Box marginTop={3}>
           <Button
+            id="iniciarSesionButton"
             variant="contained"
             color="primary"
             fullWidth
