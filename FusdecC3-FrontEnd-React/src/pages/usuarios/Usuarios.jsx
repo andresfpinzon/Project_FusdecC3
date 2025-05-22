@@ -416,6 +416,7 @@ const Usuarios = () => {
       <h1>Gestión de Usuarios</h1>
       <form>
         <TextField
+          id= "numeroDocumento"
           label="Número de Documento *"
           name="numeroDocumento"
           value={formValues.numeroDocumento}
@@ -426,6 +427,7 @@ const Usuarios = () => {
           helperText="Campo obligatorio"
         />
         <TextField
+          id= "nombre"
           label="Nombre"
           name="nombre"
           value={formValues.nombre}
@@ -435,6 +437,7 @@ const Usuarios = () => {
           inputProps={{ style: { textTransform: 'capitalize' } }}
         />
         <TextField
+          id= "apellido"
           label="Apellido"
           name="apellido"
           value={formValues.apellido}
@@ -444,6 +447,7 @@ const Usuarios = () => {
           inputProps={{ style: { textTransform: 'capitalize' } }}
         />
         <TextField
+          id= "correo"
           label="Correo Electrónico *"
           name="correo"
           value={formValues.correo}
@@ -454,6 +458,7 @@ const Usuarios = () => {
           type="email"
         />
         <TextField
+          id= "password"
           label="Contraseña"
           name="password"
           type="password"
