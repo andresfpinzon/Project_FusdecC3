@@ -152,6 +152,7 @@ export default function Navbar() {
           <Box>
             {!isAuthenticated ? (
               <Button 
+                id= "loginButton"
                 color="inherit" 
                 onClick={() => navigate("/login")} 
                 style={{ 
