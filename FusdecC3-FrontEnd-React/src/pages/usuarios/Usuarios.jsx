@@ -581,7 +581,7 @@ const Usuarios = () => {
       {/* Busqueda */}
       <TextField
         id="searchInput"
-        label="Buscar estudiantes"
+        label="Buscar usuarios"
         variant="outlined"
         fullWidth
         margin="normal"
