@@ -436,17 +436,6 @@ const Usuarios = () => {
     <Container>
       <h1>Gestión de Usuarios</h1>
 
-      {/* Barra de búsqueda */}
-      <TextField
-        id= "numeroDocumento"
-        label="Buscar usuarios"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-
       <form>
         <TextField
           id= "numeroDocumento"
