@@ -435,7 +435,6 @@ const Usuarios = () => {
   return (
     <Container>
       <h1>Gestión de Usuarios</h1>
-
       <form>
         <TextField
           id= "numeroDocumento"
