@@ -356,7 +356,7 @@ const Certificados = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel>Estudiante</InputLabel>
+              <InputLabel id="estudiante-label">Estudiante</InputLabel>
               <Select
                 value={formValues.estudianteId}
                 onChange={handleEstudianteChange}

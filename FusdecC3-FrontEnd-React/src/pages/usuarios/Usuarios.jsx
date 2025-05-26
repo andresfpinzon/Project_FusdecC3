@@ -27,6 +27,7 @@ import {
   InputLabel,
   Box,
   FormHelperText,
+  TablePagination
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -50,6 +51,11 @@ const Usuarios = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [usuarioToDelete, setUsuarioToDelete] = useState(null);
+
+  // Paginación y búsqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const token = localStorage.getItem("token");
 
@@ -183,6 +189,28 @@ const Usuarios = () => {
     }
   };
 
+  // Filtrar usuarios según el término de búsqueda
+  const filteredUsuarios = usuarios.filter((usuario) =>
+    usuario.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    usuario.apellido?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    usuario.numeroDocumento?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    usuario.correo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (usuario.roles && usuario.roles.some(rol =>
+      rol.toLowerCase().includes(searchTerm.toLowerCase())
+    ))
+  );
+
+  // Cambiar página
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Cambiar filas por página
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
@@ -219,12 +247,12 @@ const Usuarios = () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          usuario: {  // <-- Anidar los datos del usuario aquí
+          usuario: {
             numeroDocumento: formValues.numeroDocumento,
             nombre: formValues.nombre || "",
             apellido: formValues.apellido || "",
             correo: formValues.correo,
-            password: formValues.password  // En texto plano
+            password: formValues.password
           },
           rolesIds: formValues.roles
             .map(rolNombre => rolesDisponibles.find(r => r.nombre === rolNombre)?.id)
@@ -235,20 +263,16 @@ const Usuarios = () => {
       const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        // Manejo de errores de validación (400 con estructura específica)
         if (response.status === 400) {
           if (responseData.errors) {
-            // Errores de validación del DTO
             const errorMessages = Object.entries(responseData.errors)
               .map(([field, message]) => `${field}: ${message}`)
               .join('\n');
             throw new Error(errorMessages);
           } else if (responseData.error) {
-            // Errores de negocio (como correo/documento duplicado)
             throw new Error(responseData.error);
           }
         }
-        // Manejo de otros errores
         throw new Error(responseData.message || "Error al crear el usuario");
       }
 
@@ -258,7 +282,6 @@ const Usuarios = () => {
       await fetchUsuarios();
     } catch (error) {
       console.error("Error al crear usuario:", error);
-      // Mostrar mensaje de error completo
       setErrorMessage(error.message || "Ocurrió un error al crear el usuario");
       setOpenSnackbar(true);
     }
@@ -306,7 +329,6 @@ const Usuarios = () => {
       const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        // Manejo similar al de creación
         if (response.status === 400 || response.status === 409) {
           if (responseData.errors) {
             const errorMessages = Object.entries(responseData.errors)
@@ -353,7 +375,6 @@ const Usuarios = () => {
       const responseData = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        // Manejo específico para el error 409 (Conflict)
         if (response.status === 409) {
           throw new Error(responseData.mensaje);
         }
@@ -368,7 +389,7 @@ const Usuarios = () => {
       console.error(error);
       setErrorMessage(error.message);
       setOpenSnackbar(true);
-      setOpenDeleteDialog(false); // Cierra el diálogo también en caso de error
+      setOpenDeleteDialog(false);
     }
   };
 
@@ -416,6 +437,7 @@ const Usuarios = () => {
       <h1>Gestión de Usuarios</h1>
       <form>
         <TextField
+          id= "numeroDocumento"
           label="Número de Documento *"
           name="numeroDocumento"
           value={formValues.numeroDocumento}
@@ -426,6 +448,7 @@ const Usuarios = () => {
           helperText="Campo obligatorio"
         />
         <TextField
+          id= "nombre"
           label="Nombre"
           name="nombre"
           value={formValues.nombre}
@@ -435,6 +458,7 @@ const Usuarios = () => {
           inputProps={{ style: { textTransform: 'capitalize' } }}
         />
         <TextField
+          id= "apellido"
           label="Apellido"
           name="apellido"
           value={formValues.apellido}
@@ -444,6 +468,7 @@ const Usuarios = () => {
           inputProps={{ style: { textTransform: 'capitalize' } }}
         />
         <TextField
+          id= "correo"
           label="Correo Electrónico *"
           name="correo"
           value={formValues.correo}
@@ -454,6 +479,7 @@ const Usuarios = () => {
           type="email"
         />
         <TextField
+          id= "password"
           label="Contraseña"
           name="password"
           type="password"
@@ -544,6 +570,18 @@ const Usuarios = () => {
           )}
         </Box>
       </form>
+      <br></br>
+
+      {/* Busqueda */}
+      <TextField
+        id="searchInput"
+        label="Buscar usuarios"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
       <TableContainer component={Paper} sx={{ marginTop: "20px" }}>
         <Table>
@@ -559,77 +597,91 @@ const Usuarios = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {usuarios.map((usuario) => (
-              <TableRow
-                key={usuario.numeroDocumento}
-                sx={{
-                  '&:hover': { backgroundColor: '#f8f8f8' },
-                  backgroundColor: usuario.estado ? 'inherit' : '#fafafa'
-                }}
-              >
-                <TableCell>{usuario.numeroDocumento}</TableCell>
-                <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.nombre || '-'}</TableCell>
-                <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.apellido || '-'}</TableCell>
-                <TableCell>{usuario.correo}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={usuario.estado ? "Activo" : "Inactivo"}
-                    color={usuario.estado ? "success" : "default"}
-                    size="small"
-                    sx={{ width: '80px' }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {usuario.roles && usuario.roles.length > 0 ? (
-                      usuario.roles.map((rol, index) => {
-                        const rolInfo = rolesDisponibles.find(r => r.nombre === rol);
-                        if (!rolInfo) return null;
-                        return (
-                          <Chip
-                            key={`${usuario.numeroDocumento}-${rol}-${index}`}
-                            label={rol}
-                            size="small"
-                            sx={{
-                              backgroundColor: rol === 'Administrativo' ? '#2196f3' :
-                                rol === 'Instructor' ? '#4caf50' :
-                                  rol === 'Secretario' ? '#9c27b0' : '#757575',
-                              color: 'white'
-                            }}
-                          />
-                        );
-                      })
-                    ) : (
-                      <Chip label="Sin roles" size="small" sx={{ backgroundColor: '#e0e0e0' }} />
-                    )}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton
-                      variant="contained"
-                      color="info"
+            {filteredUsuarios
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((usuario) => (
+                <TableRow
+                  key={usuario.numeroDocumento}
+                  sx={{
+                    '&:hover': { backgroundColor: '#f8f8f8' },
+                    backgroundColor: usuario.estado ? 'inherit' : '#fafafa'
+                  }}
+                >
+                  <TableCell>{usuario.numeroDocumento}</TableCell>
+                  <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.nombre || '-'}</TableCell>
+                  <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.apellido || '-'}</TableCell>
+                  <TableCell>{usuario.correo}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={usuario.estado ? "Activo" : "Inactivo"}
+                      color={usuario.estado ? "success" : "default"}
                       size="small"
-                      onClick={() => handleEdit(usuario)}
-                      sx={{ minWidth: 'auto' }}
-                    >
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      variant="contained"
-                      color="error"
-                      size="small"
-                      onClick={() => handleDeleteClick(usuario)}
-                      sx={{ minWidth: 'auto' }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
+                      sx={{ width: '80px' }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {usuario.roles && usuario.roles.length > 0 ? (
+                        usuario.roles.map((rol, index) => {
+                          const rolInfo = rolesDisponibles.find(r => r.nombre === rol);
+                          if (!rolInfo) return null;
+                          return (
+                            <Chip
+                              key={`${usuario.numeroDocumento}-${rol}-${index}`}
+                              label={rol}
+                              size="small"
+                              sx={{
+                                backgroundColor: rol === 'Administrativo' ? '#2196f3' :
+                                  rol === 'Instructor' ? '#4caf50' :
+                                    rol === 'Secretario' ? '#9c27b0' : '#757575',
+                                color: 'white'
+                              }}
+                            />
+                          );
+                        })
+                      ) : (
+                        <Chip label="Sin roles" size="small" sx={{ backgroundColor: '#e0e0e0' }} />
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <IconButton
+                        variant="contained"
+                        color="info"
+                        size="small"
+                        onClick={() => handleEdit(usuario)}
+                        sx={{ minWidth: 'auto' }}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        onClick={() => handleDeleteClick(usuario)}
+                        sx={{ minWidth: 'auto' }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+
+        {/* Paginación */}
+        <TablePagination
+          id="paginacionUsuarios"
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredUsuarios.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>

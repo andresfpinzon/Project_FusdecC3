@@ -62,7 +62,6 @@ const Login = () => {
         // Llamar la función `login` del contexto
         login(token, rolesNormalizados);
 
-        //navigate("/home", { replace: true });
         window.location.href = "/home";
       } else {
         const errorData = await response.json();
@@ -89,7 +88,7 @@ const Login = () => {
           Iniciar Sesión
         </Typography>
         <TextField
-        id="correoInput"
+          id="correoInput"
           label="Correo"
           name="correo"
           value={formValues.correo}

@@ -513,6 +513,7 @@ const Estudiantes = () => {
       <form noValidate autoComplete="off">
         {/* Número de Documento */}
         <TextField
+          id="numeroDocumento"
           label="Número de Documento"
           name="numeroDocumento"
           value={formValues.numeroDocumento}
@@ -525,6 +526,7 @@ const Estudiantes = () => {
 
         {/* Nombre */}
         <TextField
+          id="nombre"
           label="Nombre"
           name="nombre"
           value={formValues.nombre}
@@ -536,6 +538,7 @@ const Estudiantes = () => {
 
         {/* Apellido */}
         <TextField
+          id="apellido" 
           label="Apellido"
           name="apellido"
           value={formValues.apellido}
@@ -549,6 +552,7 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Tipo de Documento</InputLabel>
           <Select
+          id="tipoDocumento"
             name="tipoDocumento"
             value={formValues.tipoDocumento}
             onChange={handleInputChange}
@@ -564,6 +568,7 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Género</InputLabel>
           <Select
+          id="genero"
             name="genero"
             value={formValues.genero}
             onChange={handleInputChange}
@@ -579,6 +584,7 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Unidad</InputLabel>
           <Select
+          id="unidadId"
             name="unidadId"
             value={formValues.unidadId || ""}
             onChange={handleInputChange}
@@ -596,6 +602,7 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Colegio</InputLabel>
           <Select
+          id="colegioId"
             name="colegioId"
             value={formValues.colegioId || ""}
             onChange={handleInputChange}
@@ -613,6 +620,7 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Edición</InputLabel>
           <Select
+          id="edicionId"
             name="edicionId"
             value={formValues.edicionId || ""}
             onChange={handleInputChange}
@@ -630,6 +638,7 @@ const Estudiantes = () => {
         <FormControl fullWidth margin="normal" required>
           <InputLabel>Grado</InputLabel>
           <Select
+          id="grado"
             name="grado"
             value={formValues.grado}
             onChange={handleInputChange}
@@ -642,21 +651,10 @@ const Estudiantes = () => {
             ))}
           </Select>
         </FormControl>
-
-        {/* Estado */}
-        <Box marginTop={2} marginBottom={2}>
-          <Switch
-            checked={formValues.estado}
-            onChange={handleSwitchChange}
-            name="estado"
-            color="primary"
-          />
-          <Typography component="span">Estado Activo</Typography>
-        </Box>
-
         {/* Botón de enviar */}
         <Box marginTop={3}>
           <Button
+          id="crearEstudianteButton"
             variant="contained"
             color="primary"
             onClick={selectedEstudiante ? handleUpdateEstudiante : handleCreateEstudiante}
@@ -676,6 +674,7 @@ const Estudiantes = () => {
           </Button>
           {selectedEstudiante && (
             <Button
+            id="cancelarEdicionButton"
               variant="outlined"
               color="secondary"
               onClick={() => {
@@ -704,6 +703,7 @@ const Estudiantes = () => {
 
       {/* Busqueda */}
       <TextField
+      id="searchInput"
         label="Buscar estudiantes"
         variant="outlined"
         fullWidth
@@ -751,6 +751,7 @@ const Estudiantes = () => {
                   </TableCell>
                   <TableCell>
                     <IconButton
+                    id="editarEstudianteButton"
                       onClick={() => handleEditClick(estudiante)}
                       color="primary"
                       aria-label="editar"
@@ -758,6 +759,7 @@ const Estudiantes = () => {
                       <Edit />
                     </IconButton>
                     <IconButton
+                    id="informacionEstudianteButton"
                       onClick={() => handleInfoClick(estudiante)}
                       color="info"
                       aria-label="información"
@@ -765,6 +767,7 @@ const Estudiantes = () => {
                       <Info />
                     </IconButton>
                     <IconButton
+                    id="eliminarEstudianteButton" 
                       onClick={() => handleDeleteClick(estudiante)}
                       color="error"
                       aria-label="eliminar"
@@ -778,6 +781,7 @@ const Estudiantes = () => {
         </Table>
         {/* Paginación */}
         <TablePagination
+        id="paginacionEstudiantes"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={filteredEstudiantes.length}
@@ -794,8 +798,8 @@ const Estudiantes = () => {
           <Typography>¿Estás seguro de que deseas eliminar a {estudianteToDelete?.nombre}?</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteEstudiante} color="secondary">Eliminar</Button>
+          <Button id="cancelarEliminar"  onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
+          <Button id="confirmarEliminar" onClick={handleDeleteEstudiante} color="secondary">Eliminar</Button>
         </DialogActions>
       </Dialog>
 
@@ -857,7 +861,7 @@ const Estudiantes = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+          <Button id="cerrarDialogInfo" onClick={handleCloseInfoDialog} variant="contained" color="primary">
             Cerrar
           </Button>
         </DialogActions>
