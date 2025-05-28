@@ -217,7 +217,7 @@ const Comandos = () => {
       }
 
       await fetchComandos();
-      clearForm(); 
+      clearForm();
 
       setSuccessMessage("Comando creado correctamente");
       setOpenSnackbar(true);
@@ -392,6 +392,7 @@ const Comandos = () => {
         <Grid item xs={12} md={12} style={{ paddingLeft: '20px' }}>
           <form noValidate autoComplete="off">
             <TextField
+              id="nombreComando"
               label="Nombre del Comando"
               name="nombreComando"
               value={formValues.nombreComando}
@@ -400,6 +401,7 @@ const Comandos = () => {
               margin="normal"
             />
             <TextField
+              id="ubicacionComando"
               label="Ubicación del Comando"
               name="ubicacionComando"
               value={formValues.ubicacionComando}
@@ -407,18 +409,10 @@ const Comandos = () => {
               fullWidth
               margin="normal"
             />
-            <Box marginTop={2} marginBottom={2}>
-              <Switch
-                checked={formValues.estadoComando}
-                onChange={handleSwitchChange}
-                name="estadoComando"
-                color="primary"
-              />
-              Estado Activo
-            </Box>
             <FormControl fullWidth margin="normal">
               <InputLabel id="fundacion-select-label">Fundación</InputLabel>
               <Select
+                id="fundacionId"
                 labelId="fundacion-select-label"
                 name="fundacionId"
                 value={formValues.fundacionId}
@@ -434,6 +428,7 @@ const Comandos = () => {
             </FormControl>
             <Box marginTop={3}>
               <Button
+                id="enviarComandoButton"
                 variant="contained"
                 color="primary"
                 onClick={selectedComando ? handleUpdateComando : handleCreateComando}
@@ -448,6 +443,7 @@ const Comandos = () => {
 
               {selectedComando && (
                 <Button
+                  id="cancelarEdicionButton"
                   variant="outlined"
                   color="secondary"
                   onClick={() => {
@@ -469,6 +465,7 @@ const Comandos = () => {
         </Grid>
         <Grid item xs={12} md={12}>
           <TextField
+            id="buscarComandos"
             label="Buscar comandos"
             variant="outlined"
             fullWidth
@@ -513,6 +510,7 @@ const Comandos = () => {
               </TableBody>
             </Table>
             <TablePagination
+            id="paginacionComandos"
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
               count={filteredComandos.length}

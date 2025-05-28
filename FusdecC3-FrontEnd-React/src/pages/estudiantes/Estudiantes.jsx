@@ -654,7 +654,7 @@ const Estudiantes = () => {
         {/* Botón de enviar */}
         <Box marginTop={3}>
           <Button
-          id="crearEstudianteButton"
+          id="enviarEstudianteButton"
             variant="contained"
             color="primary"
             onClick={selectedEstudiante ? handleUpdateEstudiante : handleCreateEstudiante}
@@ -703,7 +703,7 @@ const Estudiantes = () => {
 
       {/* Busqueda */}
       <TextField
-      id="searchInput"
+        id="buscarEstudiantes"
         label="Buscar estudiantes"
         variant="outlined"
         fullWidth
