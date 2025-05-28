@@ -492,13 +492,13 @@ const Comandos = () => {
                     <TableCell>{comando.estadoComando ? "Activo" : "Inactivo"}</TableCell>
                     <TableCell>{comando.fundacionNombre || "No asignada"}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => handleEditClick(comando)} color="primary">
+                      <IconButton id="editarComandoButton" onClick={() => handleEditClick(comando)} color="primary">
                         <Edit />
                       </IconButton>
-                      <IconButton onClick={() => handleInfoClick(comando)} color="primary">
+                      <IconButton id="informacionComandoButton" onClick={() => handleInfoClick(comando)} color="primary">
                         <Info />
                       </IconButton>
-                      <IconButton onClick={() => {
+                      <IconButton id="eliminarComandoButton" onClick={() => {
                         setSelectedComando(comando);
                         setOpenDeleteDialog(true);
                       }} color="error">
@@ -541,10 +541,10 @@ const Comandos = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="default">
+          <Button id="cancelarEliminar" onClick={handleCloseDeleteDialog} color="default">
             Cancelar
           </Button>
-          <Button onClick={handleDeleteComando} color="error">
+          <Button id="confirmarEliminar" onClick={handleDeleteComando} color="error">
             Eliminar
           </Button>
         </DialogActions>
@@ -634,7 +634,7 @@ const Comandos = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseInfoDialog} variant="contained" color="primary">
+          <Button id="cerrarDialogInfo" onClick={handleCloseInfoDialog} variant="contained" color="primary">
             Cerrar
           </Button>
         </DialogActions>
