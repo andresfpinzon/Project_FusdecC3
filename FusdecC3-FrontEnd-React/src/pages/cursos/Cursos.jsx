@@ -379,6 +379,7 @@ const handleUpdateCurso = async () => {
           margin="normal"
         />
         <TextField
+          id="descripcion"
           label="Descripción"
           name="descripcion"
           value={formValues.descripcion}
