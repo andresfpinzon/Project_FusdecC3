@@ -388,6 +388,7 @@ const handleUpdateCurso = async () => {
           margin="normal"
         />
         <TextField
+          id="intensidadHoraria"
           label="Intensidad Horaria"
           name="intensidadHoraria"
           value={formValues.intensidadHoraria}
