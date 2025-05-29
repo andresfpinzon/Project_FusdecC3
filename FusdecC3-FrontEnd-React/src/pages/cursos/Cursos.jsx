@@ -370,6 +370,7 @@ const handleUpdateCurso = async () => {
       <h1>Gestión de Cursos:</h1>
       <form noValidate autoComplete="off">
         <TextField
+          id="nombre"
           label="Nombre del Curso"
           name="nombre"
           value={formValues.nombre}
