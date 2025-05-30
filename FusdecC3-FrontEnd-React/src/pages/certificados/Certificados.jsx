@@ -394,7 +394,7 @@ const Certificados = () => {
 
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel>Horas Completadas</InputLabel>
+              <InputLabel id="horasCompletadas">Horas Completadas</InputLabel>
               <Select
                 value={formValues.horasCompletadas}
                 onChange={(e) => setFormValues({ ...formValues, horasCompletadas: e.target.value })}
@@ -409,6 +409,7 @@ const Certificados = () => {
 
           <Grid item xs={12} md={6}>
             <TextField
+              id="fechaEmision"
               fullWidth
               type="date"
               label="Fecha de Emisión"
@@ -421,6 +422,7 @@ const Certificados = () => {
 
           <Grid item xs={12}>
             <Button
+              id="generarCertificado"
               variant="contained"
               startIcon={<School />}
               onClick={generateCertificate}
@@ -434,6 +436,7 @@ const Certificados = () => {
       </Paper>
 
       <Snackbar
+        id="snackbar"
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
