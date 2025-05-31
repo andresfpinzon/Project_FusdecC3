@@ -385,6 +385,7 @@ const Ediciones = () => {
       <h1>Gestión de Ediciones:</h1>
       <form noValidate autoComplete="off">
         <TextField
+          id="titulo"
           label="Título de la Edición"
           name="titulo"
           value={formValues.titulo}

@@ -563,7 +563,7 @@ const handleUpdateCurso = async () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={openSnackbar} autoHideDuration={20000} onClose={() => setOpenSnackbar(false)}>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
         <Alert
           onClose={() => setOpenSnackbar(false)}
           severity={errorMessage ? "error" : "success"}
