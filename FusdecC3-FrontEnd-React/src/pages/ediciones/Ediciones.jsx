@@ -404,6 +404,7 @@ const Ediciones = () => {
         />
         <br /><br />
         <TextField
+          id="fechaFin"
           label="Fecha de Fin"
           type="date"
           name="fechaFin"
