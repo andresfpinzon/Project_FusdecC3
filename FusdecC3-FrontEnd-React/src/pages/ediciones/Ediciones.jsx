@@ -394,6 +394,7 @@ const Ediciones = () => {
           margin="normal"
         />
         <TextField
+          id="fechaInicio"
           label="Fecha de inicio"
           type="date"
           name="fechaInicio"
