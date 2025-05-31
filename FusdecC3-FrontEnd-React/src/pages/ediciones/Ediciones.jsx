@@ -416,6 +416,7 @@ const Ediciones = () => {
         <FormControl fullWidth margin="normal">
           <InputLabel>Curso</InputLabel>
           <Select
+            id="cursoId"
             name="cursoId"
             value={formValues.cursoId}
             onChange={handleInputChange}
