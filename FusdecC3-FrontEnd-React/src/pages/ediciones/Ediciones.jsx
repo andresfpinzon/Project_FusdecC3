@@ -400,7 +400,13 @@ const Ediciones = () => {
           name="fechaInicio"
           value={formValues.fechaInicio}
           onChange={handleInputChange}
-          sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
+          sx={{ 
+            width: '300px', // Mismo ancho que el primero para consistencia
+            "& .MuiInputLabel-root": { 
+              transform: "translateY(2px)", 
+              shrink: true 
+            }
+          }}
         />
         <br /><br />
         <TextField
@@ -410,7 +416,13 @@ const Ediciones = () => {
           name="fechaFin"
           value={formValues.fechaFin}
           onChange={handleInputChange}
-          sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
+          sx={{ 
+            width: '300px', // Mismo ancho que el primero para consistencia
+            "& .MuiInputLabel-root": { 
+              transform: "translateY(2px)", 
+              shrink: true 
+            }
+          }}
         />
 
         <FormControl fullWidth margin="normal">
