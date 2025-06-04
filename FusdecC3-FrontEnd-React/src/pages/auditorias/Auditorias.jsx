@@ -18,7 +18,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton
+  IconButton,
+  TextField
 } from "@mui/material";
 import { Info } from "@mui/icons-material";
 
@@ -31,6 +32,7 @@ const Auditorias = () => {
   const [severity, setSeverity] = useState("success");
   const [selectedAuditoria, setSelectedAuditoria] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -147,6 +149,14 @@ const Auditorias = () => {
         Registro de Auditorías
       </Typography>
 
+      <TextField
+        label="Buscar Auditorías"
+        variant="outlined"
+        fullWidth
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -161,9 +171,13 @@ const Auditorias = () => {
           </TableHead>
           <TableBody>
             {auditorias
+              .filter(auditoria => 
+                auditoria.nombreEmisor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                auditoria.id.toString().includes(searchTerm)
+              )
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((auditoria) => (
-                <TableRow key={auditoria.id}>
+                <TableRow key={auditoria.id} id={`auditoria-row-${auditoria.id}`}>
                   <TableCell>{auditoria.id}</TableCell>
                   <TableCell>{formatDate(auditoria.fecha)}</TableCell>
                   <TableCell>{auditoria.nombreEmisor}</TableCell>
@@ -184,7 +198,10 @@ const Auditorias = () => {
         </Table>
         <TablePagination
           component="div"
-          count={auditorias.length}
+          count={auditorias.filter(auditoria => 
+            auditoria.nombreEmisor.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            auditoria.id.toString().includes(searchTerm)
+          ).length}
           page={page}
           onPageChange={(e, newPage) => setPage(newPage)}
           rowsPerPage={rowsPerPage}
@@ -198,7 +215,7 @@ const Auditorias = () => {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
+        <DialogTitle id={`dialog-title-${selectedAuditoria?.id}`}>
           <Typography variant="h5" component="div">
             Detalles de la Auditoría #{selectedAuditoria?.id}
           </Typography>
