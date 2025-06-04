@@ -22,7 +22,9 @@ import {
   DialogContent,
   DialogActions,
   Alert,
+  TablePagination,
   Snackbar,
+  Chip,
 } from "@mui/material"
 import SaveIcon from "@mui/icons-material/Save"
 import HistoryIcon from "@mui/icons-material/History"
@@ -47,6 +49,12 @@ const Asistencias = () => {
   const [currentAttendanceStudents, setCurrentAttendanceStudents] = useState([]);
   const [currentAttendanceInfo, setCurrentAttendanceInfo] = useState(null);
 
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    
+    const [searchStudentTerm, setSearchStudentTerm] = useState("");
+    const [allStudents, setAllStudents] = useState([]);
   // Función para mostrar notificaciones
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
@@ -107,40 +115,36 @@ const Asistencias = () => {
   }
 
   // Obtener estudiantes de una asistencia específica
-  const fetchStudentsForAttendance = async (attendanceId) => {
-    try {
-      // Primero obtener las relaciones asistencia-estudiante
-      const relationsRes = await fetch(
-        `http://localhost:8080/asistencia-estudiantes?asistenciaId=${attendanceId}`,
-        {
-          headers: { "Authorization": `Bearer ${token}` }
-        }
-      );
+ // Obtener estudiantes de una asistencia específica
+const fetchStudentsForAttendance = async (attendanceId) => {
+  try {
+    // Primero obtener las relaciones asistencia-estudiante
+    const relationsRes = await fetch(
+      `http://localhost:8080/asistencia-estudiantes?asistenciaId=${attendanceId}`,
+      {
+        headers: { "Authorization": `Bearer ${token}` }
+      }
+    );
+    if (!relationsRes.ok) throw new Error("Error al obtener relaciones");
+    const relations = await relationsRes.json();
 
-      if (!relationsRes.ok) throw new Error("Error al obtener relaciones");
+    // Obtener los IDs de los estudiantes
+    const studentIds = relations.map(rel => rel.estudianteId);
 
-      const relations = await relationsRes.json();
-
-      // Obtener los IDs de los estudiantes
-      const studentIds = relations.map(rel => rel.estudianteId);
-
-      // Obtener los datos completos de los estudiantes
-      const studentsRes = await fetch(
-        `http://localhost:8080/estudiantes?ids=${studentIds.join(",")}`,
-        {
-          headers: { "Authorization": `Bearer ${token}` }
-        }
-      );
-
-      if (!studentsRes.ok) throw new Error("Error al obtener estudiantes");
-
-      const studentsData = await studentsRes.json();
-
-      setCurrentAttendanceStudents(studentsData);
-    } catch (error) {
-      showSnackbar("Error al cargar estudiantes: " + error.message, "error");
-    }
-  };
+    // Obtener los datos completos de los estudiantes
+    const studentsRes = await fetch(
+      `http://localhost:8080/estudiantes?ids=${studentIds.join(",")}`,
+      {
+        headers: { "Authorization": `Bearer ${token}` }
+      }
+    );
+    if (!studentsRes.ok) throw new Error("Error al obtener estudiantes");
+    const studentsData = await studentsRes.json();
+    setCurrentAttendanceStudents(studentsData);
+  } catch (error) {
+    showSnackbar("Error al cargar estudiantes: " + error.message, "error");
+  }
+};
 
   // Manejar cambio en checkbox de asistencia
   const handleAttendanceChange = (studentId) => {
@@ -249,6 +253,11 @@ const Asistencias = () => {
     student.numeroDocumento?.includes(searchTerm))
 
 
+    const filteredStudentsForDialog = currentAttendanceStudents.filter(student =>
+    student.nombre?.toLowerCase().includes(searchStudentTerm.toLowerCase()) ||
+    student.apellido?.toLowerCase().includes(searchStudentTerm.toLowerCase()) ||
+    student.numeroDocumento.includes(searchStudentTerm));
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
@@ -325,108 +334,168 @@ const Asistencias = () => {
       </Paper>
 
       {/* Diálogo de historial */}
-      <Dialog open={openHistory} onClose={() => setOpenHistory(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Historial de Asistencias</DialogTitle>
-        <DialogContent>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Título</TableCell>
-                  <TableCell align="center">Estado</TableCell>
-                  <TableCell align="center">Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {attendanceHistory.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{record.id}</TableCell>
-                    <TableCell>{new Date(record.fecha + 'T00:00:00').toLocaleDateString('es-ES')}</TableCell>
-                    <TableCell>{record.titulo}</TableCell>
-                    <TableCell align="center">
-                      {record.estado ? "Activa" : "Inactiva"}
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        onClick={async () => {
-                          setCurrentAttendanceInfo(record);
-                          await fetchStudentsForAttendance(record.id);
-                          setOpenStudentsDialog(true);
-                        }}
-                        color="info"
-                        aria-label="ver estudiantes"
-                      >
-                        <InfoIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleOpenDeleteDialog(record)}
-                        color="error"
-                        aria-label="eliminar asistencia"
-                        sx={{ ml: 1 }}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenHistory(false)}>Cerrar</Button>
-        </DialogActions>
-      </Dialog>
+<Dialog open={openHistory} onClose={() => setOpenHistory(false)} maxWidth="md" fullWidth>
+  <DialogTitle sx={{ pb: 1 }}>Historial de Asistencias</DialogTitle>
+  <DialogContent>
+    <TableContainer sx={{ maxHeight: '60vh' }}>
+      <Table stickyHeader size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell width="10%">ID</TableCell>
+            <TableCell width="20%">Fecha</TableCell>
+            <TableCell width="40%">Título</TableCell>
+            <TableCell width="15%" align="center">Estado</TableCell>
+            <TableCell width="15%" align="center">Acciones</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {attendanceHistory
+            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((record) => (
+              <TableRow key={record.id} hover>
+                <TableCell>{record.id}</TableCell>
+                <TableCell>
+                  {new Date(record.fecha).toLocaleDateString('es-ES')}
+                </TableCell>
+                <TableCell sx={{ 
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '300px'
+                }}>
+                  {record.titulo}
+                </TableCell>
+                <TableCell align="center">
+                  <Chip 
+                    label={record.estado ? "Activa" : "Inactiva"} 
+                    color={record.estado ? "success" : "error"} 
+                    size="small"
+                  />
+                </TableCell>
+                <TableCell align="center" sx={{ p: 1 }}>
+                  <IconButton
+                    onClick={async () => {
+                      setCurrentAttendanceInfo(record);
+                      await fetchStudentsForAttendance(record.id);
+                      setOpenStudentsDialog(true);
+                    }}
+                    size="small"
+                    color="info"
+                  >
+                    <InfoIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleOpenDeleteDialog(record)}
+                    size="small"
+                    color="error"
+                    sx={{ ml: 0.5 }}
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={attendanceHistory.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(_, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(e) => {
+          setRowsPerPage(parseInt(e.target.value, 10));
+          setPage(0);
+        }}
+        labelRowsPerPage="Registros por página:"
+        labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+        sx={{
+          '.MuiTablePagination-toolbar': {
+            minHeight: 'auto',
+            padding: '8px 0'
+          }
+        }}
+      />
+    </DialogContent>
+    <DialogActions sx={{ p: 2 }}>
+      <Button 
+        onClick={() => setOpenHistory(false)} 
+        variant="outlined"
+        size="small"
+      >
+        Cerrar
+      </Button>
+    </DialogActions>
+  </Dialog>
 
       {/* Diálogo de estudiantes de la asistencia */}
       <Dialog
-        open={openStudentsDialog}
-        onClose={() => setOpenStudentsDialog(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>
-          Estudiantes en la asistencia del {currentAttendanceInfo && new Date(currentAttendanceInfo.fecha).toLocaleDateString()}
-        </DialogTitle>
-        <DialogContent>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Tipo Documento</TableCell>
-                  <TableCell>Documento</TableCell>
-                  <TableCell>Nombre</TableCell>
-                  <TableCell>Apellido</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {currentAttendanceStudents.length > 0 ? (
-                  currentAttendanceStudents.map((student) => (
-                    <TableRow key={student.numeroDocumento}>
-                      <TableCell>{student.tipoDocumento}</TableCell>
-                      <TableCell>{student.numeroDocumento}</TableCell>
-                      <TableCell>{student.nombre}</TableCell>
-                      <TableCell>{student.apellido}</TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} align="center">
-                      No hay estudiantes registrados en esta asistencia
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenStudentsDialog(false)}>Cerrar</Button>
-        </DialogActions>
-      </Dialog>
+  open={openStudentsDialog}
+  onClose={() => {
+    setOpenStudentsDialog(false);
+    setSearchStudentTerm(""); // Limpiar búsqueda al cerrar
+  }}
+  maxWidth="md"
+  fullWidth
+>
+  <DialogTitle>
+    Estudiantes en la asistencia del{" "}
+    {currentAttendanceInfo &&
+      new Date(currentAttendanceInfo.fecha).toLocaleDateString()}
+  </DialogTitle>
+  <DialogContent>
+    {/* Campo de búsqueda */}
+    <TextField
+      label="Buscar estudiante por nombre o documento"
+      variant="outlined"
+      fullWidth
+      margin="normal"
+      value={searchStudentTerm}
+      onChange={(e) => setSearchStudentTerm(e.target.value)}
+    />
+
+    {/* Tabla de estudiantes filtrados */}
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>Tipo Documento</TableCell>
+            <TableCell>Documento</TableCell>
+            <TableCell>Nombre</TableCell>
+            <TableCell>Apellido</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {filteredStudentsForDialog.length > 0 ? (
+            filteredStudentsForDialog.map((student) => (
+              <TableRow key={student.numeroDocumento}>
+                <TableCell>{student.tipoDocumento}</TableCell>
+                <TableCell>{student.numeroDocumento}</TableCell>
+                <TableCell>{student.nombre}</TableCell>
+                <TableCell>{student.apellido}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} align="center">
+                No se encontraron estudiantes
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenStudentsDialog(false)}>Cerrar</Button>
+  </DialogActions>
+</Dialog>
+
+
+
 
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Eliminar Asistencia</DialogTitle>
