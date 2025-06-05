@@ -461,6 +461,7 @@ const handleUpdateCurso = async () => {
 
       {/* Busqueda */}
       <TextField
+        id="busquedaCurso"
         label="Buscar cursos"
         variant="outlined"
         fullWidth
