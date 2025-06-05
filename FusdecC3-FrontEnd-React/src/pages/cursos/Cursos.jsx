@@ -509,6 +509,7 @@ const handleUpdateCurso = async () => {
 
         {/* Paginación */}
         <TablePagination
+          id="paginacionCurso"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={filteredCursos.length}
