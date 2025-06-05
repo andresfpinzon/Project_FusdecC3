@@ -548,6 +548,7 @@ const Ediciones = () => {
 
         {/* Paginación */}
         <TablePagination
+          id="paginacionEdicion"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={filteredEdiciones.length}
