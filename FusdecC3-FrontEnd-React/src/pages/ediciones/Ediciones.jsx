@@ -401,7 +401,7 @@ const Ediciones = () => {
           value={formValues.fechaInicio}
           onChange={handleInputChange}
           sx={{ 
-            width: '300px', // Mismo ancho que el primero para consistencia
+            width: '300px',
             "& .MuiInputLabel-root": { 
               transform: "translateY(2px)", 
               shrink: true 
@@ -417,7 +417,7 @@ const Ediciones = () => {
           value={formValues.fechaFin}
           onChange={handleInputChange}
           sx={{ 
-            width: '300px', // Mismo ancho que el primero para consistencia
+            width: '300px',
             "& .MuiInputLabel-root": { 
               transform: "translateY(2px)", 
               shrink: true 
@@ -492,6 +492,7 @@ const Ediciones = () => {
 
       {/* Busqueda */}
       <TextField
+        id="busquedaEdicion"
         label="Buscar ediciones"
         variant="outlined"
         fullWidth
