@@ -574,7 +574,7 @@ const Usuarios = () => {
 
       {/* Busqueda */}
       <TextField
-        id="busquedaUsuarios"
+        id="busquedaUsuario"
         label="Buscar usuarios"
         variant="outlined"
         fullWidth
@@ -673,7 +673,7 @@ const Usuarios = () => {
 
         {/* Paginación */}
         <TablePagination
-          id="paginacionUsuarios"
+          id="paginacionUsuario"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={filteredUsuarios.length}
