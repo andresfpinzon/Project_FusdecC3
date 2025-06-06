@@ -285,6 +285,7 @@ const fetchStudentsForAttendance = async (attendanceId) => {
             Guardar Asistencia
           </Button>
           <Button
+          id='btnHistorialAsistence'
             variant="outlined"
             startIcon={<HistoryIcon />}
             onClick={() => setOpenHistory(true)}
@@ -400,6 +401,7 @@ const fetchStudentsForAttendance = async (attendanceId) => {
       </Table>
     </TableContainer>
     <TablePagination
+        id="paginationAsistice"
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={attendanceHistory.length}
@@ -449,6 +451,7 @@ const fetchStudentsForAttendance = async (attendanceId) => {
   <DialogContent>
     {/* Campo de búsqueda */}
     <TextField
+      id="inputIdentificacionAsistenciaValidacion"
       label="Buscar estudiante por nombre o documento"
       variant="outlined"
       fullWidth
