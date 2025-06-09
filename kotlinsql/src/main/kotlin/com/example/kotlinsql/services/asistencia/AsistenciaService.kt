@@ -6,6 +6,7 @@ import com.example.kotlinsql.model.asistencia.Asistencia
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AsistenciaService(private val jdbcTemplate: JdbcTemplate) {
@@ -53,7 +54,27 @@ class AsistenciaService(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.queryForObject(sqlSelect, rowMapper, id)
     }
 
+    @Transactional
     fun eliminar(id: Int): Int {
+        val estudiantes = jdbcTemplate.queryForList(
+            "SELECT estudiante_id FROM asistencia_estudiante WHERE asistencia_id = ?",
+            String::class.java,
+            id
+        )
+
+        estudiantes.forEach { estudianteId ->
+            jdbcTemplate.update(
+                """
+            UPDATE estudiante 
+            SET 
+                asistencias_registradas = asistencias_registradas - 1,
+                aprobado = (asistencias_registradas - 1) >= 15
+            WHERE numero_documento = ?
+            """,
+                estudianteId
+            )
+        }
+
         return jdbcTemplate.update("DELETE FROM asistencia WHERE id = ?", id)
     }
 }

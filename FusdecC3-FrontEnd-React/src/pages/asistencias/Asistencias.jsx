@@ -108,39 +108,22 @@ const Asistencias = () => {
 
   // Obtener estudiantes de una asistencia específica
   const fetchStudentsForAttendance = async (attendanceId) => {
-    try {
-      // Primero obtener las relaciones asistencia-estudiante
-      const relationsRes = await fetch(
-        `http://localhost:8080/asistencia-estudiantes?asistenciaId=${attendanceId}`,
-        {
-          headers: { "Authorization": `Bearer ${token}` }
-        }
-      );
+  try {
+    const response = await fetch(
+      `http://localhost:8080/estudiantes/por-asistencia/${attendanceId}`,
+      {
+        headers: { "Authorization": `Bearer ${token}` }
+      }
+    );
 
-      if (!relationsRes.ok) throw new Error("Error al obtener relaciones");
+    if (!response.ok) throw new Error("Error al obtener estudiantes");
 
-      const relations = await relationsRes.json();
-
-      // Obtener los IDs de los estudiantes
-      const studentIds = relations.map(rel => rel.estudianteId);
-
-      // Obtener los datos completos de los estudiantes
-      const studentsRes = await fetch(
-        `http://localhost:8080/estudiantes?ids=${studentIds.join(",")}`,
-        {
-          headers: { "Authorization": `Bearer ${token}` }
-        }
-      );
-
-      if (!studentsRes.ok) throw new Error("Error al obtener estudiantes");
-
-      const studentsData = await studentsRes.json();
-
-      setCurrentAttendanceStudents(studentsData);
-    } catch (error) {
-      showSnackbar("Error al cargar estudiantes: " + error.message, "error");
-    }
-  };
+    const studentsData = await response.json();
+    setCurrentAttendanceStudents(studentsData);
+  } catch (error) {
+    showSnackbar("Error al cargar estudiantes: " + error.message, "error");
+  }
+};
 
   // Manejar cambio en checkbox de asistencia
   const handleAttendanceChange = (studentId) => {
