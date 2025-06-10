@@ -5,15 +5,15 @@ import com.google.gson.annotations.SerializedName
 import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 
 data class Unidad(
-    @SerializedName("_id")
+    @SerializedName("id_unidad")
     private val id: String,
-    @SerializedName("nombreUnidad")
+    @SerializedName("nombre_unidad")
     private var nombreUnidad: String,
-    @SerializedName("brigadaId")
+    @SerializedName("brigada_Id")
     private var brigadaId: Any,
-    @SerializedName("estadoUnidad")
+    @SerializedName("estado_unidad")
     private var estadoUnidad: Boolean = true,
-    @SerializedName("usuarioId")
+    @SerializedName("usuario_id")
     private var usuarioId: Any,
 ) {
     fun getId() = id
@@ -43,7 +43,7 @@ data class Unidad(
              nombreBrigada = "",
              ubicacionBrigada = "",
              comandoId = "",
-             unidades = emptyList(),
+             //unidades = emptyList(),
          )
     }
 
@@ -53,7 +53,7 @@ data class Unidad(
             nombreBrigada = map["nombreBrigada"] as? String ?: "",
             ubicacionBrigada = map["ubicacionBrigada"] as? String ?: "",
             comandoId = map["comandoId"] as? String ?: "",
-            unidades = map["unidades"] as? List<String> ?: emptyList()
+            //unidades = map["unidades"] as? List<String> ?: emptyList()
         )
     }
     fun getEstadoUnidad() = estadoUnidad
