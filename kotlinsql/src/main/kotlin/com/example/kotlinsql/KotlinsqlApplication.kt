@@ -18,3 +18,4 @@ fun main(args: Array<String>) {
 	runApplication<KotlinsqlApplication>(*args)
 
 }
+

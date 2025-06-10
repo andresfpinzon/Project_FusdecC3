@@ -79,6 +79,30 @@ const Certificados = () => {
     inicializarDatos();
   }, [token]);
 
+  const obtenerColegioPorId = async (colegioId) => {
+  try {
+    const response = await fetch(`http://localhost:8080/colegios/${colegioId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { nombre: "Colegio no encontrado" };
+      }
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const colegio = await response.json();
+    return colegio;
+  } catch (error) {
+    handleError("Error al obtener el colegio: " + error.message);
+    return { nombre: "Error al cargar colegio" };
+  }
+};
+
   const fetchUsuarioActual = async (numeroDocumento) => {
     try {
       const response = await fetch(`http://localhost:8080/usuarios`, {
@@ -261,12 +285,15 @@ const Certificados = () => {
     }
   };
 
-  const generatePDF = (certificado, estudiante) => {
+  const generatePDF = async (certificado, estudiante) => {
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
       format: "letter"
     });
+
+    const colegio = await obtenerColegioPorId(estudiante.colegioId);
+    const nombreColegio = colegio.nombre || "Colegio no especificado";
 
     // Configuración del PDF
     doc.addImage(encabezadoCertificado, "PNG", 30, 15, 150, 25);
@@ -282,7 +309,7 @@ const Certificados = () => {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);
 
-    const textoCompleto = `Que ${estudiante.nombre} ${estudiante.apellido} identificado(a) con ${estudiante.tipoDocumento} ${estudiante.numeroDocumento} del\n${estudiante.colegio} del curso ${estudiante.grado} prestó ${formValues.horasCompletadas} horas de servicio social\nestudiantil en nuestra entidad. De acuerdo a lo establecido en\nla resolución 4210 del ministerio de educación nacional y\nnormas concordantes.`;
+    const textoCompleto = `Que ${estudiante.nombre} ${estudiante.apellido} identificado(a) con ${estudiante.tipoDocumento} ${estudiante.numeroDocumento} del colegio\n${nombreColegio} del grado ${estudiante.grado} prestó ${formValues.horasCompletadas} horas de servicio social\nestudiantil en nuestra entidad. De acuerdo a lo establecido en\nla resolución 4210 del ministerio de educación nacional y\nnormas concordantes.`;
 
     const lineas = textoCompleto.split('\n');
     let y = 100;
