@@ -84,10 +84,12 @@ object RetrofitClient {
     val colegioApi: ColegioApi by lazy { nodeRetrofit.create(ColegioApi::class.java) }
     val fundacionApi: FundacionApi by lazy { nodeRetrofit.create(FundacionApi::class.java) }
 
-    val brigadaApi: BrigadaApi by lazy { nodeRetrofit.create(BrigadaApi::class.java)}
     val comandoApi: ComandoApi by lazy {nodeRetrofit.create(ComandoApi::class.java)}
 
     // TODO: Al parecer funciona, falta ver las demás funcionalidaes, por ahora obtiene datos
     val unidadApi : UnidadApi by lazy { springRetrofit.create(UnidadApi::class.java)}
+
+    // TODO: Por ahora trae las brigadas, falta probar las demás funcionalidades...
+    val brigadaApi: BrigadaApi by lazy { springRetrofit.create(BrigadaApi::class.java)}
 
 }
