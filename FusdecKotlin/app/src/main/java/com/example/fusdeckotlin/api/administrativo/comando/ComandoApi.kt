@@ -7,21 +7,21 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ComandoApi {
-    @GET("api/comandos")
+    @GET("/comandos")
     suspend fun listarComandos(): Response<List<Comando>>
 
-    @POST("api/comandos")
+    @POST("/comandos")
     suspend fun crearComando(@Body request: CrearComandoRequest): Response<Comando>
 
-    @PUT("api/comandos/{id}")
+    @PUT("/comandos/{id}")
     suspend fun actualizarComando(
         @Path("id") id: String,
         @Body request: ActualizarComandoRequest
     ): Response<Comando>
 
-    @DELETE("api/comandos/{id}")
+    @DELETE("/comandos/{id}")
     suspend fun desactivarComando(@Path("id") id: String): Response<Comando>
 
-    @GET("api/comandos/{id}")
+    @GET("/comandos/{id}")
     suspend fun obtenerComandoPorId(@Path("id") id: String): Response<Comando>
 }
