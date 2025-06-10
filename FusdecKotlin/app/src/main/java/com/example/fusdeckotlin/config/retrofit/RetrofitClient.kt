@@ -79,10 +79,10 @@ object RetrofitClient {
     val auditoriaApi : AuditoriaApi by lazy {springRetrofit.create(AuditoriaApi::class.java)}
 
     //Node
-    val cursoApi: CursoApi by lazy { nodeRetrofit.create(CursoApi::class.java) }
-    val edicionApi: EdicionApi by lazy { nodeRetrofit.create(EdicionApi::class.java) }
-    val colegioApi: ColegioApi by lazy { nodeRetrofit.create(ColegioApi::class.java) }
-    val fundacionApi: FundacionApi by lazy { nodeRetrofit.create(FundacionApi::class.java) }
+    val cursoApi: CursoApi by lazy { springRetrofit.create(CursoApi::class.java) }
+    val edicionApi: EdicionApi by lazy { springRetrofit.create(EdicionApi::class.java) }
+    val colegioApi: ColegioApi by lazy { springRetrofit.create(ColegioApi::class.java) }
+    val fundacionApi: FundacionApi by lazy { springRetrofit.create(FundacionApi::class.java) }
 
 
     // TODO: Al parecer funciona, falta ver las demás funcionalidaes, por ahora obtiene datos
@@ -91,6 +91,8 @@ object RetrofitClient {
     // TODO: Por ahora trae las brigadas, falta probar las demás funcionalidades...
     val brigadaApi: BrigadaApi by lazy { springRetrofit.create(BrigadaApi::class.java)}
 
+    // Todo: se ven las funcionalidades de comando, falta probar las demás funcionalidades... pero al listar no se ve
+    //  el nombre de la fundacion
     val comandoApi: ComandoApi by lazy { springRetrofit.create(ComandoApi::class.java)}
 
 
