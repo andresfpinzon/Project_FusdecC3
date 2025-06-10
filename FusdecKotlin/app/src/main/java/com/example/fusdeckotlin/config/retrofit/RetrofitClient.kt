@@ -86,6 +86,8 @@ object RetrofitClient {
 
     val brigadaApi: BrigadaApi by lazy { nodeRetrofit.create(BrigadaApi::class.java)}
     val comandoApi: ComandoApi by lazy {nodeRetrofit.create(ComandoApi::class.java)}
-    val unidadApi : UnidadApi by lazy { nodeRetrofit.create(UnidadApi::class.java)}
+
+    // TODO: Al parecer funciona, falta ver las demás funcionalidaes, por ahora obtiene datos
+    val unidadApi : UnidadApi by lazy { springRetrofit.create(UnidadApi::class.java)}
 
 }
