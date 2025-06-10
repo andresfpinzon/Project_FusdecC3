@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 class Fundacion(
     @SerializedName("_id") private val id: String,
-    @SerializedName("nombreFundacion") private var nombreFundacion: String,
-    @SerializedName("estadoFundacion") private var estadoFundacion: Boolean = true,
+    @SerializedName("nombre") private var nombreFundacion: String,
+    @SerializedName("estado") private var estadoFundacion: Boolean = true,
     @SerializedName("comando") private var comando: List<Any> = emptyList()
 ) {
     // Getters básicos
