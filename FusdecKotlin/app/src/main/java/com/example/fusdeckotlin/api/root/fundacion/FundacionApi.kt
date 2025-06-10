@@ -7,9 +7,9 @@ import retrofit2.http.Path
 
 interface FundacionApi {
 
-    @GET("api/fundaciones")
+    @GET("/fundaciones")
     suspend fun listarFundaciones(): Response<List<Fundacion>>
 
-    @GET("api/fundaciones/{id}")
+    @GET("/fundaciones/{id}")
     suspend fun obtenerFundacionPorId(@Path("id") id: String): Response<Fundacion>
 }
