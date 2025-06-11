@@ -385,6 +385,7 @@ const Ediciones = () => {
       <h1>Gestión de Ediciones:</h1>
       <form noValidate autoComplete="off">
         <TextField
+          id="titulo"
           label="Título de la Edición"
           name="titulo"
           value={formValues.titulo}
@@ -393,26 +394,41 @@ const Ediciones = () => {
           margin="normal"
         />
         <TextField
+          id="fechaInicio"
           label="Fecha de inicio"
           type="date"
           name="fechaInicio"
           value={formValues.fechaInicio}
           onChange={handleInputChange}
-          sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
+          sx={{ 
+            width: '300px',
+            "& .MuiInputLabel-root": { 
+              transform: "translateY(2px)", 
+              shrink: true 
+            }
+          }}
         />
         <br /><br />
         <TextField
+          id="fechaFin"
           label="Fecha de Fin"
           type="date"
           name="fechaFin"
           value={formValues.fechaFin}
           onChange={handleInputChange}
-          sx={{ "& .MuiInputLabel-root": { transform: "translateY(2px)", shrink: true } }}
+          sx={{ 
+            width: '300px',
+            "& .MuiInputLabel-root": { 
+              transform: "translateY(2px)", 
+              shrink: true 
+            }
+          }}
         />
 
         <FormControl fullWidth margin="normal">
           <InputLabel>Curso</InputLabel>
           <Select
+            id="cursoId"
             name="cursoId"
             value={formValues.cursoId}
             onChange={handleInputChange}
@@ -476,6 +492,7 @@ const Ediciones = () => {
 
       {/* Busqueda */}
       <TextField
+        id="busquedaEdicion"
         label="Buscar ediciones"
         variant="outlined"
         fullWidth
@@ -531,6 +548,7 @@ const Ediciones = () => {
 
         {/* Paginación */}
         <TablePagination
+          id="paginacionEdicion"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={filteredEdiciones.length}
@@ -626,7 +644,7 @@ const Ediciones = () => {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+      <Snackbar open={openSnackbar} autoHideDuration={20000} onClose={() => setOpenSnackbar(false)}>
         <Alert
           onClose={() => setOpenSnackbar(false)}
           severity={errorMessage ? "error" : "success"}
