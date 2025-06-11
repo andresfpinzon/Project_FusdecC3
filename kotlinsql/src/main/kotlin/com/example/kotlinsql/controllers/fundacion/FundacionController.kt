@@ -1,5 +1,7 @@
 package com.example.kotlinsql.controllers.fundacion
 
+import com.example.kotlinsql.dto.fundacion.FundacionCreateDto
+import com.example.kotlinsql.dto.fundacion.UpdateFundacionDto
 import com.example.kotlinsql.model.fundacion.Fundacion
 import com.example.kotlinsql.services.fundacion.FundacionService
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,45 +14,71 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @RestController
 @RequestMapping("/fundaciones")
-class FundacionController {
+class FundacionController(
+    private val fundacionService: FundacionService
+) {
 
     @Autowired
-    lateinit var fundacionService: FundacionService
 
-    @Operation(
-        summary = "Obtener todas las fundaciones",
-        description = "Devuelve una lista de todas las fundaciones registradas."
-    )
+    @Operation(summary = "Get all fundaciones")
     @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Lista de fundaciones",
-                content = [Content(mediaType = "application/json", schema = Schema(implementation = Fundacion::class))]
-            )
-        ]
+        ApiResponse(responseCode = "200", description = "List of fundaciones", content = [Content(schema = Schema(implementation = Fundacion::class))]),
+        ApiResponse(responseCode = "500", description = "Internal server error")
     )
     @GetMapping
-    fun obtenerTodas(): List<Fundacion> = fundacionService.obtenerTodas()
+    fun getAllFundaciones(): List<Fundacion> {
+        return fundacionService.getFundaciones()
+    }
 
-    @Operation(summary = "Obtener fundación por ID", description = "Devuelve una fundación dado su ID.")
+    @Operation(summary = "Create a new fundacion")
     @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Fundación encontrada",
-                content = [Content(mediaType = "application/json", schema = Schema(implementation = Fundacion::class))]
-            ),
-            ApiResponse(
-                responseCode = "404",
-                description = "Fundación no encontrada",
-                content = [Content(mediaType = "text/plain", examples = [io.swagger.v3.oas.annotations.media.ExampleObject(value = "Fundación no encontrada")])]
-            )
-        ]
+        ApiResponse(responseCode = "201", description = "Fundacion created successfully", content = [Content(schema = Schema(implementation = Fundacion::class))]),
+        ApiResponse(responseCode = "400", description = "Bad request"),
+        ApiResponse(responseCode = "500", description = "Internal server error")
+    )
+    @PostMapping
+    fun createFundacion(@RequestBody fundacion: FundacionCreateDto): Fundacion {
+        return fundacionService.createFundacion(fundacion)
+    }
+
+    @Operation(summary = "Get a fundacion by ID")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Fundacion found", content = [Content(schema = Schema(implementation = Fundacion::class))]),
+        ApiResponse(responseCode = "404", description = "Fundacion not found"),
+        ApiResponse(responseCode = "500", description = "Internal server error")
     )
     @GetMapping("/{id}")
-    fun obtenerPorId(@PathVariable id: Int): Any {
-        return fundacionService.obtenerPorId(id) ?: "Fundación no encontrada"
+    fun getFundacionById(@PathVariable id: Long): Fundacion? {
+        return fundacionService.getFundacionById(id)
+    }
+    @Operation(summary = "Delete a fundacion by ID")
+    @ApiResponses(
+        ApiResponse(responseCode = "204", description = "Fundacion deleted successfully"),
+        ApiResponse(responseCode = "404", description = "Fundacion not found"),
+        ApiResponse(responseCode = "500", description = "Internal server error")
+    )
+    @DeleteMapping("/{id}")
+    fun deleteFundacionById(@PathVariable id: Long): String {
+        return if (fundacionService.deleteFundacionById(id)) {
+            "Fundación eliminada con éxito"
+        } else {
+            "Fundación no encontrada"
+        }
+    }
+    @Operation(summary = "Update a fundacion by ID")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Fundacion updated successfully", content = [Content(schema = Schema(implementation = Fundacion::class))]),
+        ApiResponse(responseCode = "400", description = "Bad request"),
+        ApiResponse(responseCode = "404", description = "Fundacion not found"),
+        ApiResponse(responseCode = "500", description = "Internal server error")
+    )
+    @PutMapping("/{id}")
+    fun updateFundacion(
+        @PathVariable id: Long,
+        @RequestBody fundacion: UpdateFundacionDto
+    ): Fundacion? {
+        return fundacionService.updateFundacion(id, fundacion)
+
     }
 
 
