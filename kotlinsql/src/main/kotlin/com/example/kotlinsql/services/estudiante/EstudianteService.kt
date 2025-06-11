@@ -114,4 +114,14 @@ class EstudianteService(private val jdbcTemplate: JdbcTemplate) {
         val sql = "DELETE FROM estudiante WHERE numero_documento = ?"
         return jdbcTemplate.update(sql, documento)
     }
+
+    fun obtenerPorAsistencia(asistenciaId: Int): List<Estudiante> {
+        val sql = """
+        SELECT e.* FROM estudiante e
+        JOIN asistencia_estudiante ae ON e.numero_documento = ae.estudiante_id
+        WHERE ae.asistencia_id = ?
+    """.trimIndent()
+
+        return jdbcTemplate.query(sql, rowMapper, asistenciaId)
+    }
 }

@@ -329,6 +329,7 @@ const Brigadas = () => {
     return (
       <form onSubmit={handleSubmit} className="brigade-form">
         <input
+          id="inputNombreBrigada"
           type="text"
           name="nombreBrigada"
           value={formData.nombreBrigada}
@@ -337,6 +338,7 @@ const Brigadas = () => {
           required
         />
         <input
+          id="inputUbicacionBrigada"
           type="text"
           name="ubicacionBrigada"
           value={formData.ubicacionBrigada}
@@ -345,6 +347,7 @@ const Brigadas = () => {
           required
         />
         <select
+          id='selectComando'
           name="comandoId"
           value={formData.comandoId}
           onChange={(e) => handleInputChange('comandoId', e.target.value)}
@@ -358,16 +361,18 @@ const Brigadas = () => {
           ))}
         </select>
         <select
+          id='selectHorario'
           name="horario"
           value={formData.horario}
           onChange={(e) => handleInputChange('horario', e.target.value)}
           required
         >
-          <option value="mañana">Horario de Mañana (9 AM - 12 PM)</option>
-          <option value="tarde">Horario de Tarde (2 PM - 5 PM)</option>
+          <option id='optMañana' value="mañana">Horario de Mañana (9 AM - 12 PM)</option>
+          <option id='optTarde' value="tarde">Horario de Tarde (2 PM - 5 PM)</option>
         </select>
         <label className="switch">
           <input
+            id='checboxEstadoBrigada'
             type="checkbox"
             name="estadoBrigada"
             checked={formData.estadoBrigada}
@@ -377,7 +382,7 @@ const Brigadas = () => {
           <span className="switch-label">Activo</span>
         </label>
         <div className="form-actions">
-          <button type="submit" className="submit-button">
+          <button type="submit" className="submit-button" id='btnConfirmarBrigada'>
             {selectedBrigade ? 'Actualizar' : 'Crear'} Brigada
           </button>
           <button type="button" className="cancel-button" onClick={() => setShowForm(false)}>
@@ -408,7 +413,7 @@ const Brigadas = () => {
       <header className="header">
         <h1>Gestión de Brigadas</h1>
         <div className="header-actions">
-          <button className="add-button" onClick={handleAddBrigade}>
+          <button id="btnAgregarBrigada" className="add-button" onClick={handleAddBrigade}>
             <i className="fas fa-plus"></i> Agregar Brigada
           </button>
           <button className="stats-button" onClick={() => setShowStats(!showStats)}>
@@ -428,6 +433,7 @@ const Brigadas = () => {
 
       <div className="search-container">
         <input
+          id="inputBuscarBrigada"
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
