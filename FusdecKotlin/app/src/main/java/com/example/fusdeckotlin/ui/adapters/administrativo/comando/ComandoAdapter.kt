@@ -43,7 +43,7 @@ class ComandoAdapter(
         holder.ubicacionTextView.text = comando.getUbicacionComando()
         holder.fundacionTextView.text = when {
             comando.getFundacion().getNombreFundacion().isNotEmpty() -> comando.getFundacion().getNombreFundacion()
-            else -> comando.getFundacionId()
+            else -> comando.getFundacion().getId()
         }
 
 
