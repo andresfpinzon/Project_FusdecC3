@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface FundacionRepository : JpaRepository<Fundacion, Long> {
 
-    @Query("SELECT COUNT(f) > 0 FROM fundacion f WHERE LOWER(f.nombre) = LOWER(:nombre)")
-    fun existFundacionByName(nombre: String) : Boolean
+    @Query("SELECT COUNT(f) > 0 FROM Fundacion f WHERE LOWER(f.nombre) = LOWER(:nombre)")
+    fun existFundacionByName(nombre: String): Boolean
 }
