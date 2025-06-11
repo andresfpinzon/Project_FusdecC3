@@ -9,95 +9,48 @@ data class Comando(
     @SerializedName("nombreComando") private var nombreComando: String,
     @SerializedName("estadoComando") private var estadoComando: Boolean = true,
     @SerializedName("ubicacionComando") private var ubicacionComando: String,
-    @SerializedName("fundacionId") private var fundacionId: Any,
-    @SerializedName("brigadas") private var brigadas: List<Any> = emptyList()
+    @SerializedName("fundacionId") private val fundacion: Any? = null,
+    //@SerializedName("brigadas") private val brigadas: List<Brigada> = emptyList()
 ) {
-    // Getters básicos
+    // getters básicos
     fun getId(): String = id
     fun getNombreComando(): String = nombreComando
     fun getEstadoComando(): Boolean = estadoComando
     fun getUbicacionComando(): String = ubicacionComando
 
-    // Manejo de fundación - similar al manejo de curso en Edicion
-    fun getFundacionId(): String {
-        return when(fundacionId) {
-            is String -> fundacionId as String
-            is Fundacion -> (fundacionId as Fundacion).getId()
-            is Map<*, *> -> (fundacionId as Map<*, *>)["_id"] as? String ?: ""
-            else -> ""
-        }
-    }
 
     fun getFundacion(): Fundacion {
-        return when(fundacionId) {
-            is Fundacion -> fundacionId as Fundacion
-            is String -> crearFundacionVacia(fundacionId as String)
-            is Map<*, *> -> convertMapToFundacion(fundacionId as Map<*, *>)
-            else -> crearFundacionVacia("")
+        return when (fundacion) {
+            is Fundacion -> fundacion as Fundacion
+            is String -> Fundacion(
+                id = fundacion as String,
+                nombreFundacion = "",
+                estadoFundacion = true,
+            )
+            is Map<*, *> -> convertMapToFundacion(fundacion as Map<*, *>)
+            else -> Fundacion(
+                id = "",
+                nombreFundacion = "",
+                estadoFundacion = true,
+            )
         }
-    }
-
-    private fun crearFundacionVacia(id: String): Fundacion {
-        return Fundacion(
-            id = id,
-            nombreFundacion = "",
-            estadoFundacion = true,
-        )
     }
 
     private fun convertMapToFundacion(map: Map<*, *>): Fundacion {
         return Fundacion(
             id = map["_id"] as? String ?: "",
-            nombreFundacion = map["nombreFundacion"] as? String ?: "",
-            estadoFundacion = map["estadoFundacion"] as? Boolean ?: true,
+            nombreFundacion = map["nombre"] as? String ?: "",
+            estadoFundacion = map["estado"] as? Boolean ?: true,
         )
     }
 
-    // Manejo de brigadas
-    fun getBrigadas(): List<Brigada> {
-        return brigadas.mapNotNull {
-            when(it) {
-                is Brigada -> it
-                is String -> crearBrigadaVacia(it)
-                is Map<*, *> -> convertMapToBrigada(it as Map<String, Any>)
-                else -> null
-            }
-        }
+    // setters
+    fun setNombreComando(nombre: String) {
+        this.nombreComando = nombre
+    }
+    fun setUbicacionComando(ubicacion: String) {
+        this.ubicacionComando = ubicacion
     }
 
-    fun getBrigadasIds(): List<String> {
-        return brigadas.map {
-            when(it) {
-                is Brigada -> it.getId()
-                is String -> it
-                is Map<*, *> -> (it as Map<String, Any>)["_id"] as? String ?: ""
-                else -> ""
-            }
-        }.filter { it.isNotEmpty() }
     }
 
-    private fun crearBrigadaVacia(id: String): Brigada {
-        return Brigada(
-            id = id,
-            nombreBrigada = "",
-            ubicacionBrigada = "",
-            estadoBrigada = true,
-            comandoId = this.id,
-        )
-    }
-
-    private fun convertMapToBrigada(map: Map<String, Any>): Brigada {
-        return Brigada(
-            id = map["_id"] as? String ?: "",
-            nombreBrigada = map["nombreBrigada"] as? String ?: "",
-            ubicacionBrigada = map["ubicacionBrigada"] as? String ?: "",
-            estadoBrigada = map["estadoBrigada"] as? Boolean ?: true,
-            comandoId = map["comandoId"] as? String ?: this.id,
-        )
-    }
-
-    override fun toString(): String {
-        return "Comando(id='$id', nombre='$nombreComando', ubicación='$ubicacionComando', " +
-                "fundacionId='${getFundacionId()}', brigadas=${getBrigadasIds().joinToString()})"
-    }
-}
