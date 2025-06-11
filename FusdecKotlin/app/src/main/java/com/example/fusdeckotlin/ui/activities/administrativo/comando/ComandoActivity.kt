@@ -209,9 +209,8 @@ class ComandoActivity : AppCompatActivity() {
             fundacionSeleccionada = comando.getFundacion()
             actualizarTextoFundacionSeleccionada()
         } else {
-            // Only make API call if we don't have the foundation data
             lifecycleScope.launch {
-                val result = fundacionService.obtenerFundacionPorId(comando.getFundacionId())
+                val result = fundacionService.obtenerFundacionPorId(comando.getFundacion().getId())
                 result.onSuccess { fundacion ->
                     runOnUiThread {
                         fundacionSeleccionada = fundacion
