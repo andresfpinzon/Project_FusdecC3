@@ -592,7 +592,6 @@ const Usuarios = () => {
               <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Apellido</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Correo</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Estado</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '15%' }}>Roles</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Acciones</TableCell>
             </TableRow>
@@ -612,14 +611,6 @@ const Usuarios = () => {
                   <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.nombre || '-'}</TableCell>
                   <TableCell sx={{ textTransform: 'capitalize' }}>{usuario.apellido || '-'}</TableCell>
                   <TableCell>{usuario.correo}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={usuario.estado ? "Activo" : "Inactivo"}
-                      color={usuario.estado ? "success" : "default"}
-                      size="small"
-                      sx={{ width: '80px' }}
-                    />
-                  </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {usuario.roles && usuario.roles.length > 0 ? (
