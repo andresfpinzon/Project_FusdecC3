@@ -11,5 +11,5 @@ interface FundacionApi {
     suspend fun listarFundaciones(): Response<List<Fundacion>>
 
     @GET("/fundaciones/{id}")
-    suspend fun obtenerFundacionPorId(@Path("id") id: String): Response<Fundacion>
+    suspend fun obtenerFundacionPorId(@Path("id") id: Int): Response<Fundacion>
 }
