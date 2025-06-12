@@ -9,7 +9,7 @@ data class Comando(
     @SerializedName("nombreComando") private var nombreComando: String,
     @SerializedName("estadoComando") private var estadoComando: Boolean = true,
     @SerializedName("ubicacionComando") private var ubicacionComando: String,
-    @SerializedName("fundacionId") private val fundacion: Any? = null,
+    @SerializedName("fundacionId") private val fundacion: Int
     //@SerializedName("brigadas") private val brigadas: List<Brigada> = emptyList()
 ) {
     // getters básicos
@@ -19,30 +19,7 @@ data class Comando(
     fun getUbicacionComando(): String = ubicacionComando
 
 
-    fun getFundacion(): Fundacion {
-        return when (fundacion) {
-            is Fundacion -> fundacion as Fundacion
-            is String -> Fundacion(
-                id = fundacion as String,
-                nombreFundacion = "",
-                estadoFundacion = true,
-            )
-            is Map<*, *> -> convertMapToFundacion(fundacion as Map<*, *>)
-            else -> Fundacion(
-                id = "",
-                nombreFundacion = "",
-                estadoFundacion = true,
-            )
-        }
-    }
-
-    private fun convertMapToFundacion(map: Map<*, *>): Fundacion {
-        return Fundacion(
-            id = map["_id"] as? String ?: "",
-            nombreFundacion = map["nombre"] as? String ?: "",
-            estadoFundacion = map["estado"] as? Boolean ?: true,
-        )
-    }
+    fun getFundacion(): Int = fundacion
 
     // setters
     fun setNombreComando(nombre: String) {
