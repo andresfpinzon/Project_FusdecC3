@@ -477,7 +477,6 @@ const handleUpdateCurso = async () => {
               <TableCell>Nombre del Curso</TableCell>
               <TableCell>Descripción</TableCell>
               <TableCell>Intensidad Horaria</TableCell>
-              <TableCell>Estado</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -489,7 +488,6 @@ const handleUpdateCurso = async () => {
                   <TableCell>{curso.nombre}</TableCell>
                   <TableCell>{curso.descripcion}</TableCell>
                   <TableCell>{curso.intensidadHoraria}</TableCell>
-                  <TableCell>{curso.estado ? "Activo" : "Inactivo"}</TableCell>
                   <TableCell>
                     <IconButton
                       onClick={() => handleEditClick(curso)} color="primary">
