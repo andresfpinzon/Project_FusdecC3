@@ -30,6 +30,9 @@ import SaveIcon from "@mui/icons-material/Save"
 import HistoryIcon from "@mui/icons-material/History"
 import InfoIcon from "@mui/icons-material/Info"
 import Delete from "@mui/icons-material/Delete";
+import SearchIcon from '@mui/icons-material/Search';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const Asistencias = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
@@ -425,18 +428,40 @@ const Asistencias = () => {
         open={openStudentsDialog}
         onClose={() => {
           setOpenStudentsDialog(false);
-          setSearchStudentTerm(""); // Limpiar búsqueda al cerrar
+          setSearchStudentTerm("");
         }}
         maxWidth="md"
         fullWidth
+        sx={{
+          '& .MuiPaper-root': {
+            borderRadius: '12px'
+          }
+        }}
       >
-        <DialogTitle>
-          Estudiantes en la asistencia del{" "}
-          {currentAttendanceInfo &&
-            new Date(currentAttendanceInfo.fecha).toLocaleDateString()}
+        <DialogTitle sx={{ 
+          backgroundColor: '#1d526eff', 
+          color: '#fff', 
+          textAlign: 'center',
+          padding: '16px 24px',
+          fontSize: '1.25rem',
+          fontWeight: '500'
+        }}>
+          Estudiantes en la asistencia del {currentAttendanceInfo && 
+            new Date(currentAttendanceInfo.fecha).toLocaleDateString('es-ES', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            })
+          }
         </DialogTitle>
-        <DialogContent>
-          {/* Campo de búsqueda */}
+
+        <DialogContent sx={{ 
+          padding: '20px',
+          '&.MuiDialogContent-root': {
+            paddingTop: '24px'
+          }
+        }}>
+          {/* Campo de búsqueda mejorado */}
           <TextField
             id="inputIdentificacionAsistenciaValidacion"
             label="Buscar estudiante por nombre o documento"
@@ -445,33 +470,89 @@ const Asistencias = () => {
             margin="normal"
             value={searchStudentTerm}
             onChange={(e) => setSearchStudentTerm(e.target.value)}
+            sx={{
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px'
+              }
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              )
+            }}
           />
 
-          {/* Tabla de estudiantes filtrados */}
-          <TableContainer>
-            <Table size="small">
+          {/* Tabla de estudiantes con mejor estilo */}
+          <TableContainer component={Paper} elevation={3} sx={{
+            borderRadius: '12px',
+            border: '1px solid rgba(0, 0, 0, 0.12)',
+            maxHeight: '400px',
+            overflow: 'auto'
+          }}>
+            <Table size="small" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell>Tipo Documento</TableCell>
-                  <TableCell>Documento</TableCell>
-                  <TableCell>Nombre</TableCell>
-                  <TableCell>Apellido</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: '600', 
+                    backgroundColor: '#f5f5f5'
+                  }}>Tipo Documento</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: '600', 
+                    backgroundColor: '#f5f5f5'
+                  }}>Documento</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: '600', 
+                    backgroundColor: '#f5f5f5'
+                  }}>Nombre</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: '600', 
+                    backgroundColor: '#f5f5f5'
+                  }}>Apellido</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredStudentsForDialog.length > 0 ? (
                   filteredStudentsForDialog.map((student) => (
-                    <TableRow key={student.numeroDocumento}>
+                    <TableRow 
+                      key={student.numeroDocumento}
+                      hover
+                      sx={{ 
+                        '&:nth-of-type(even)': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                        },
+                        '&:last-child td': {
+                          borderBottom: 0
+                        }
+                      }}
+                    >
                       <TableCell>{student.tipoDocumento}</TableCell>
-                      <TableCell>{student.numeroDocumento}</TableCell>
+                      <TableCell sx={{ fontFamily: 'monospace' }}>
+                        {student.numeroDocumento}
+                      </TableCell>
                       <TableCell>{student.nombre}</TableCell>
                       <TableCell>{student.apellido}</TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} align="center">
-                      No se encontraron estudiantes
+                    <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                      <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        color: 'text.secondary'
+                      }}>
+                        <SearchOffIcon sx={{ fontSize: 40, mb: 1 }} />
+                        <Typography variant="body1">
+                          No se encontraron estudiantes
+                        </Typography>
+                        <Typography variant="body2" sx={{ mt: 1 }}>
+                          Intenta con otro término de búsqueda
+                        </Typography>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 )}
@@ -479,8 +560,27 @@ const Asistencias = () => {
             </Table>
           </TableContainer>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenStudentsDialog(false)}>Cerrar</Button>
+
+        <DialogActions sx={{ 
+          padding: '16px 24px',
+          borderTop: '1px solid rgba(0, 0, 0, 0.12)'
+        }}>
+          <Button 
+            onClick={() => {
+              setOpenStudentsDialog(false);
+              setSearchStudentTerm("");
+            }}
+            variant="contained" 
+            color="primary"
+            sx={{
+              textTransform: 'none',
+              fontWeight: '600',
+              padding: '8px 20px',
+              borderRadius: '8px'
+            }}
+          >
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
 
