@@ -251,7 +251,7 @@ class ComandoActivity : AppCompatActivity() {
 
                 resultBrigadas.onSuccess { todasBrigadas ->
                     val brigadasComando = todasBrigadas.filter { brigada ->
-                        brigada.getComandoId() == comando.getId()
+                        brigada.getComandoId() == comando.getId().toInt()
                     }.map { brigada ->
                         "• ${brigada.getNombreBrigada()} (${brigada.getUbicacionBrigada()})"
                     }.toTypedArray()
