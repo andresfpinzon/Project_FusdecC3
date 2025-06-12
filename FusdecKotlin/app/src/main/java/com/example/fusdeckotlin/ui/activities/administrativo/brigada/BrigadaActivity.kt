@@ -243,7 +243,7 @@ class BrigadaActivity : AppCompatActivity() {
 
                 resultUnidades.onSuccess { todasUnidades ->
                     val unidadesBrigada = todasUnidades.filter { unidad ->
-                        unidad.getBrigadaId() == brigada.getId()
+                        unidad.getBrigadaId() == brigada.getId().toInt()
                     }.map { unidad ->
                         "• ${unidad.getNombreUnidad()}"
                     }.toTypedArray()
