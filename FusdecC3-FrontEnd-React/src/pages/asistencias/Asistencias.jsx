@@ -335,7 +335,6 @@ const Asistencias = () => {
                   <TableCell width="10%">ID</TableCell>
                   <TableCell width="20%">Fecha</TableCell>
                   <TableCell width="40%">Título</TableCell>
-                  <TableCell width="15%" align="center">Estado</TableCell>
                   <TableCell width="15%" align="center">Acciones</TableCell>
                 </TableRow>
               </TableHead>
@@ -357,13 +356,7 @@ const Asistencias = () => {
                       }}>
                         {record.titulo}
                       </TableCell>
-                      <TableCell align="center">
-                        <Chip 
-                          label={record.estado ? "Activa" : "Inactiva"} 
-                          color={record.estado ? "success" : "error"} 
-                          size="small"
-                        />
-                      </TableCell>
+                      
                       <TableCell align="center" sx={{ p: 1 }}>
                         <IconButton
                           onClick={async () => {
