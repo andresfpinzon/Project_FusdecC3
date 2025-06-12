@@ -792,14 +792,65 @@ const Estudiantes = () => {
         />
       </TableContainer>
 
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Estudiante</DialogTitle>
-        <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {estudianteToDelete?.nombre}?</Typography>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#1d526eff',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '16px 24px'
+        }}>
+          Confirmar Eliminación
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          <Typography variant="body1" sx={{ textAlign: 'center', fontSize: '1.1rem' }}>
+            ¿Estás seguro que deseas eliminar al estudiante <strong>{estudianteToDelete?.nombre} {estudianteToDelete?.apellido}</strong>?
+          </Typography>
+          <Typography variant="body2" sx={{
+            textAlign: 'center',
+            color: 'text.secondary',
+            marginTop: '8px'
+          }}>
+            Documento: {estudianteToDelete?.tipoDocumento} {estudianteToDelete?.numeroDocumento}
+          </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button id="cancelarEliminar"  onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button id="confirmarEliminar" onClick={handleDeleteEstudiante} color="secondary">Eliminar</Button>
+        <DialogActions sx={{
+          justifyContent: 'center',
+          padding: '16px 24px',
+          gap: '16px'
+        }}>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            variant="outlined"
+            sx={{
+              minWidth: '120px',
+              borderColor: '#1d526eff',
+              color: '#1d526eff',
+              '&:hover': {
+                backgroundColor: '#f0f7ff',
+                borderColor: '#1a4863'
+              }
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleDeleteEstudiante}
+            variant="contained"
+            sx={{
+              minWidth: '120px',
+              backgroundColor: '#d32f2f',
+              '&:hover': {
+                backgroundColor: '#b71c1c'
+              }
+            }}
+          >
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
 
