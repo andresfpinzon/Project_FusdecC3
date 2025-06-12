@@ -669,21 +669,91 @@ const Asistencias = () => {
 
 
 
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Asistencia</DialogTitle>
-        <DialogContent>
-          <Typography>
-            ¿Estás seguro de que deseas eliminar la asistencia del día {attendanceToDelete && new Date(attendanceToDelete.fecha).toLocaleDateString()}?
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          '& .MuiPaper-root': {
+            borderRadius: '12px'
+          }
+        }}
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#1d526eff',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '16px 24px',
+          fontSize: '1.25rem',
+          fontWeight: '500'
+        }}>
+          Confirmar Eliminación
+        </DialogTitle>
+        
+        <DialogContent dividers sx={{ 
+          padding: '20px',
+          textAlign: 'center'
+        }}>
+          <Typography variant="body1" sx={{ 
+            fontSize: '1.1rem',
+            mb: 1
+          }}>
+            ¿Estás seguro que deseas eliminar la asistencia del día {' '}
+            <strong>
+              {attendanceToDelete && new Date(attendanceToDelete.fecha).toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              })}
+            </strong>?
           </Typography>
-          <Typography variant="body2" color="text.secondary" mt={2}>
+          
+          <Typography variant="body2" sx={{
+            color: 'text.secondary',
+            fontStyle: 'italic'
+          }}>
             Título: {attendanceToDelete?.titulo}
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">
+        
+        <DialogActions sx={{
+          justifyContent: 'center',
+          padding: '16px 24px',
+          borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+          gap: '16px'
+        }}>
+          <Button
+            onClick={handleCloseDeleteDialog}
+            variant="outlined"
+            sx={{
+              minWidth: '120px',
+              borderColor: '#1d526eff',
+              color: '#1d526eff',
+              borderRadius: '8px',
+              fontWeight: '600',
+              '&:hover': {
+                backgroundColor: '#f0f7ff',
+                borderColor: '#1a4863'
+              }
+            }}
+          >
             Cancelar
           </Button>
-          <Button onClick={handleDeleteAttendance} color="error" variant="contained">
+          
+          <Button
+            onClick={handleDeleteAttendance}
+            variant="contained"
+            sx={{
+              minWidth: '120px',
+              backgroundColor: '#d32f2f',
+              borderRadius: '8px',
+              fontWeight: '600',
+              '&:hover': {
+                backgroundColor: '#b71c1c'
+              }
+            }}
+          >
             Eliminar
           </Button>
         </DialogActions>
