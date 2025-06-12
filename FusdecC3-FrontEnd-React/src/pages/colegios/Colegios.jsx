@@ -482,14 +482,84 @@ const Colegios = () => {
 
       </TableContainer>
 
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar colegio</DialogTitle>
-        <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {colegioToDelete?.nombre}?</Typography>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#1d526eff',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '16px 24px'
+        }}>
+          Confirmar Eliminación
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          <Typography variant="body1" sx={{ textAlign: 'center', fontSize: '1.1rem' }}>
+            ¿Estás seguro que deseas eliminar el colegio <strong>{colegioToDelete?.nombre}</strong>?
+          </Typography>
+          <Typography variant="body2" sx={{
+            textAlign: 'center',
+            color: 'text.secondary',
+            marginTop: '8px'
+          }}>
+            Esta acción no se puede deshacer y eliminará todos los datos asociados.
+          </Typography>
+          
+          {/* Advertencia sobre estudiantes asociados */}
+          {colegioToDelete?.estudiantes?.length > 0 && (
+            <Box sx={{
+              backgroundColor: '#fff3e0',
+              borderRadius: '4px',
+              padding: '10px',
+              marginTop: '15px',
+              borderLeft: '4px solid #ffa000'
+            }}>
+              <Box display="flex" alignItems="center">
+                <Warning color="warning" sx={{ mr: 1 }} />
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Advertencia:</strong> Este colegio tiene {colegioToDelete.estudiantes.length} estudiante(s) registrado(s).
+                  Todos serán desvinculados al eliminar el colegio.
+                </Typography>
+              </Box>
+            </Box>
+          )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteColegio} color="error">Eliminar</Button>
+        <DialogActions sx={{
+          justifyContent: 'center',
+          padding: '16px 24px',
+          gap: '16px'
+        }}>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            variant="outlined"
+            sx={{
+              minWidth: '120px',
+              borderColor: '#1d526eff',
+              color: '#1d526eff',
+              '&:hover': {
+                backgroundColor: '#f0f7ff',
+                borderColor: '#1a4863'
+              }
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleDeleteColegio}
+            variant="contained"
+            sx={{
+              minWidth: '120px',
+              backgroundColor: '#d32f2f',
+              '&:hover': {
+                backgroundColor: '#b71c1c'
+              }
+            }}
+          >
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
 
