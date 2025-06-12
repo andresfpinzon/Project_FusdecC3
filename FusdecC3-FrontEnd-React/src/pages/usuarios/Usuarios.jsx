@@ -649,7 +649,7 @@ const Usuarios = () => {
                     <Box sx={{ display: 'flex', gap: 1 }}>
                       <IconButton
                         variant="contained"
-                        color="info"
+                        color="primary"
                         size="small"
                         onClick={() => handleEdit(usuario)}
                         sx={{ minWidth: 'auto' }}
