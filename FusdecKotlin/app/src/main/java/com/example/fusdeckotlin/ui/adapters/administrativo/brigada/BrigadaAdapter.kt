@@ -10,15 +10,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
+import com.example.fusdeckotlin.services.administrativo.comando.ComandoServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BrigadaAdapter(
     private var brigadas: List<Brigada>,
     private val onUpdateClick: (Brigada) -> Unit,
     private val onDeleteClick: (Brigada) -> Unit,
-    private val onInfoClick: (Brigada) -> Unit
+    private val onInfoClick: (Brigada) -> Unit,
+    private val comandoServices: ComandoServices
 ) : RecyclerView.Adapter<BrigadaAdapter.BrigadaViewHolder>(), Filterable {
 
     private var brigadasFiltradas: List<Brigada> = brigadas
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
 
     class BrigadaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreBrigada)
@@ -40,14 +49,32 @@ class BrigadaAdapter(
 
         holder.nombreTextView.text = brigada.getNombreBrigada()
         holder.ubicacionTextView.text = brigada.getUbicacionBrigada()
-        holder.comandoTextView.text = when {
-            brigada.getComando().getNombreComando().isNotEmpty() -> brigada.getComando().getNombreComando()
-            else -> brigada.getComandoId()
-        }
-
+        holder.comandoTextView.text = "ID: ${brigada.getComandoId()}"
+        cargarNombreComando(brigada.getComandoId(), holder.comandoTextView)
         holder.updateButton.setOnClickListener { onUpdateClick(brigada) }
         holder.deleteButton.setOnClickListener { onDeleteClick(brigada) }
         holder.infoButton.setOnClickListener { onInfoClick(brigada) }
+    }
+
+    // cargar el nombre del comando de forma asíncrona
+    private fun cargarNombreComando(comandoId: Int, textView: TextView) {
+        coroutineScope.launch{
+            try {
+             val comando = comandoServices.obtenerComandoPorId(comandoId.toString())
+                comando.onSuccess { f ->
+                    withContext(Dispatchers.Main){
+                        textView.text = f.getNombreComando()
+                    }
+                }
+                comando.onFailure { e ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = "Comando no encontrado"
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun getItemCount(): Int = brigadasFiltradas.size
@@ -63,8 +90,7 @@ class BrigadaAdapter(
                     brigadas.forEach { brigada ->
                         if (brigada.getNombreBrigada().lowercase().contains(filterPattern) ||
                             brigada.getUbicacionBrigada().lowercase().contains(filterPattern) ||
-                            (brigada.getComando().getNombreComando().isNotEmpty() &&
-                                    brigada.getComando().getNombreComando().lowercase().contains(filterPattern))
+                            brigada.getComandoId().toString().contains(filterPattern)
                         ) {
                             filteredList.add(brigada)
                         }
