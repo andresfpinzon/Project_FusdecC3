@@ -86,4 +86,17 @@ class EstudianteController {
         val filas = estudianteService.eliminar(documento)
         return if (filas > 0) "Estudiante eliminado correctamente" else "Estudiante no encontrado"
     }
+
+    @Operation(summary = "Obtener estudiantes por asistencia", description = "Devuelve una lista de estudiantes registrados en una asistencia específica.")
+    @ApiResponses(
+        value = [ApiResponse(
+            responseCode = "200",
+            description = "Lista de estudiantes de la asistencia",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = Estudiante::class))]
+        )]
+    )
+    @GetMapping("/por-asistencia/{asistenciaId}")
+    fun obtenerPorAsistencia(@PathVariable asistenciaId: Int): List<Estudiante> {
+        return estudianteService.obtenerPorAsistencia(asistenciaId)
+    }
 }

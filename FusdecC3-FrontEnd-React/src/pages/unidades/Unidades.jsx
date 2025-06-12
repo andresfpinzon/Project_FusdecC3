@@ -461,7 +461,7 @@ const Unidades = () => {
       <header className="header">
         <h1>Gestión de Unidades</h1>
         <div className="header-actions">
-          <button className="add-button" onClick={handleAddUnidad}>
+          <button className="add-button" onClick={handleAddUnidad} id='btnAgregarUnidad'>
             <i className="fas fa-plus"></i> Agregar Unidad
           </button>
           <button className="stats-button" onClick={() => setShowStats(!showStats)}>
@@ -481,6 +481,7 @@ const Unidades = () => {
 
       <div className="search-container">
         <input
+          id='inputSearchUnidad'
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -506,6 +507,7 @@ const Unidades = () => {
               <div className="form-group">
                 <label>Nombre de la Unidad</label>
                 <input
+                  id='inpurtNombre'
                   type="text"
                   value={formValues.nombreUnidad}
                   onChange={(e) => setFormValues({ ...formValues, nombreUnidad: e.target.value })}
@@ -615,6 +617,7 @@ const Unidades = () => {
                 <label>Estado de la Unidad</label>
                 <label className="switch">
                   <input
+                    id='checkboxEstadoUnidadCrear'
                     type="checkbox"
                     checked={formValues.estadoUnidad}
                     onChange={(e) => setFormValues({ ...formValues, estadoUnidad: e.target.checked })}
@@ -632,6 +635,7 @@ const Unidades = () => {
                   Cancelar
                 </button>
                 <button
+                  id='btnConfirmar'
                   type="submit"
                   className="button-primary"
                 >

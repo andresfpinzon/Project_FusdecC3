@@ -370,6 +370,7 @@ const handleUpdateCurso = async () => {
       <h1>Gestión de Cursos:</h1>
       <form noValidate autoComplete="off">
         <TextField
+          id="nombre"
           label="Nombre del Curso"
           name="nombre"
           value={formValues.nombre}
@@ -378,6 +379,7 @@ const handleUpdateCurso = async () => {
           margin="normal"
         />
         <TextField
+          id="descripcion"
           label="Descripción"
           name="descripcion"
           value={formValues.descripcion}
@@ -386,6 +388,7 @@ const handleUpdateCurso = async () => {
           margin="normal"
         />
         <TextField
+          id="intensidadHoraria"
           label="Intensidad Horaria"
           name="intensidadHoraria"
           value={formValues.intensidadHoraria}
@@ -458,6 +461,7 @@ const handleUpdateCurso = async () => {
 
       {/* Busqueda */}
       <TextField
+        id="busquedaCurso"
         label="Buscar cursos"
         variant="outlined"
         fullWidth
@@ -506,6 +510,7 @@ const handleUpdateCurso = async () => {
 
         {/* Paginación */}
         <TablePagination
+          id="paginacionCurso"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={filteredCursos.length}

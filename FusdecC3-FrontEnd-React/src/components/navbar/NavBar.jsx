@@ -173,7 +173,7 @@ export default function Navbar() {
               <Button 
                 button={true.toString()} 
                 variant="contained" 
-                color="primary" 
+                color="error" 
                 onClick={handleLogout}
               >
                 <LogoutIcon />
