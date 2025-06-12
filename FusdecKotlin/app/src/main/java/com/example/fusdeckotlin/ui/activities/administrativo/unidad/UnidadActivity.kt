@@ -102,7 +102,9 @@ class UnidadActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            brigadaService,
+            usuarioService
         )
         unidadesRecyclerView.layoutManager = LinearLayoutManager(this)
         unidadesRecyclerView.adapter = adapter
@@ -244,12 +246,12 @@ class UnidadActivity : AppCompatActivity() {
 
     private fun onUpdateClick(unidad: Unidad) {
         isEditing = true
-        currentUnidadId = unidad.getId()
+        currentUnidadId = unidad.getId().toString()
         nombreEditText.setText(unidad.getNombreUnidad())
 
         // Cargar brigada
         lifecycleScope.launch {
-            val resultBrigada = brigadaService.obtenerBrigadaPorId(unidad.getBrigadaId())
+            val resultBrigada = brigadaService.obtenerBrigadaPorId(unidad.getBrigadaId().toString())
             resultBrigada.onSuccess { brigada ->
                 brigadaSeleccionada = brigada
                 actualizarTextoBrigadaSeleccionada()
@@ -274,7 +276,7 @@ class UnidadActivity : AppCompatActivity() {
             .setMessage("¿Estás seguro de que deseas eliminar esta unidad?")
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
-                    val result = unidadService.desactivarUnidad(unidad.getId())
+                    val result = unidadService.desactivarUnidad(unidad.getId().toString())
                     result.onSuccess {
                         showSuccess("Unidad eliminada")
                         cargarUnidades()
