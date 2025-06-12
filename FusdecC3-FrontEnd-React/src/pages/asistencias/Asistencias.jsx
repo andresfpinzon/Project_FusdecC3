@@ -485,23 +485,96 @@ const Asistencias = () => {
 </Dialog>
 
 
-
-
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Asistencia</DialogTitle>
-        <DialogContent>
-          <Typography>
-            ¿Estás seguro de que deseas eliminar la asistencia del día {attendanceToDelete && new Date(attendanceToDelete.fecha).toLocaleDateString()}?
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#1d526eff',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '16px 24px'
+        }}>
+          Confirmar Eliminación
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          <Typography variant="body1" sx={{ textAlign: 'center', fontSize: '1.1rem' }}>
+            ¿Estás seguro que deseas eliminar el registro de asistencia del día <strong>
+              {attendanceToDelete && new Date(attendanceToDelete.fecha).toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </strong>?
           </Typography>
-          <Typography variant="body2" color="text.secondary" mt={2}>
-            Título: {attendanceToDelete?.titulo}
+          
+          <Box sx={{
+            backgroundColor: '#f5f5f5',
+            borderRadius: '8px',
+            padding: '12px',
+            marginTop: '16px',
+            borderLeft: '4px solid #1d526eff'
+          }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              Detalles del registro:
+            </Typography>
+            <Typography variant="body2">
+              Título: {attendanceToDelete?.titulo || 'Sin título'}
+            </Typography>
+            <Typography variant="body2">
+              Estado: 
+              <Chip 
+                label={attendanceToDelete?.estado ? "Activo" : "Inactivo"} 
+                size="small" 
+                color={attendanceToDelete?.estado ? "success" : "error"}
+                sx={{ ml: 1 }}
+              />
+            </Typography>
+          </Box>
+
+          <Typography variant="body2" sx={{
+            textAlign: 'center',
+            color: 'text.secondary',
+            marginTop: '16px',
+            fontStyle: 'italic'
+          }}>
+            Esta acción no se puede deshacer y eliminará todos los datos de asistencia asociados.
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">
+        <DialogActions sx={{
+          justifyContent: 'center',
+          padding: '16px 24px',
+          gap: '16px'
+        }}>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            variant="outlined"
+            sx={{
+              minWidth: '120px',
+              borderColor: '#1d526eff',
+              color: '#1d526eff',
+              '&:hover': {
+                backgroundColor: '#f0f7ff',
+                borderColor: '#1a4863'
+              }
+            }}
+          >
             Cancelar
           </Button>
-          <Button onClick={handleDeleteAttendance} color="error" variant="contained">
+          <Button
+            onClick={handleDeleteAttendance}
+            variant="contained"
+            sx={{
+              minWidth: '120px',
+              backgroundColor: '#d32f2f',
+              '&:hover': {
+                backgroundColor: '#b71c1c'
+              }
+            }}
+          >
             Eliminar
           </Button>
         </DialogActions>
