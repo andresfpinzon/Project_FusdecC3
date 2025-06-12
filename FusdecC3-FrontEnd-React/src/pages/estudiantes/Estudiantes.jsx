@@ -753,7 +753,7 @@ const Estudiantes = () => {
                     <IconButton
                     id="informacionEstudianteButton"
                       onClick={() => handleInfoClick(estudiante)}
-                      color="info"
+                      color="primary"
                       aria-label="información"
                     >
                       <Info />
