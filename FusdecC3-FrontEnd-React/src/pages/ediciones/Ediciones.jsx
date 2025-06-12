@@ -536,7 +536,7 @@ const Ediciones = () => {
                     </IconButton>
                     <IconButton
                       onClick={() => handleDeleteClick(edicion)}
-                      color="secondary"
+                      color="error"
                     >
                       <Delete />
                     </IconButton>
@@ -567,7 +567,7 @@ const Ediciones = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteEdicion} color="secondary">Eliminar</Button>
+          <Button onClick={handleDeleteEdicion} color="error">Eliminar</Button>
         </DialogActions>
       </Dialog>
 
