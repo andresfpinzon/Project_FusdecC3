@@ -10,15 +10,22 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
+import com.example.fusdeckotlin.services.root.fundacion.FundacionService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ComandoAdapter(
     private var comandos: List<Comando>,
     private val onUpdateClick: (Comando) -> Unit,
     private val onDeleteClick: (Comando) -> Unit,
-    private val onInfoClick: (Comando) -> Unit
+    private val onInfoClick: (Comando) -> Unit,
+    private val fundacionService: FundacionService // Inyectamos el servicio
 ) : RecyclerView.Adapter<ComandoAdapter.ComandoViewHolder>(), Filterable {
 
     private var comandosFiltradas: List<Comando> = comandos
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     class ComandoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreComando)
@@ -38,18 +45,39 @@ class ComandoAdapter(
     override fun onBindViewHolder(holder: ComandoViewHolder, position: Int) {
         val comando = comandosFiltradas[position]
 
-
         holder.nombreTextView.text = comando.getNombreComando()
         holder.ubicacionTextView.text = comando.getUbicacionComando()
-        holder.fundacionTextView.text = when {
-            comando.getFundacion().getNombreFundacion().isNotEmpty() -> comando.getFundacion().getNombreFundacion()
-            else -> comando.getFundacion().getId()
-        }
 
+        // Mostramos inicialmente solo el ID de la fundación
+        holder.fundacionTextView.text = "ID: ${comando.getFundacion()}"
+
+        // Opcional: Cargar el nombre de la fundación de forma asíncrona
+        cargarNombreFundacion(comando.getFundacion(), holder.fundacionTextView)
 
         holder.updateButton.setOnClickListener { onUpdateClick(comando) }
         holder.deleteButton.setOnClickListener { onDeleteClick(comando) }
         holder.infoButton.setOnClickListener { onInfoClick(comando) }
+    }
+
+    private fun cargarNombreFundacion(fundacionId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val fundacion = fundacionService.obtenerFundacionPorId(fundacionId)
+                fundacion.onSuccess { f ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = f.getNombreFundacion()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $fundacionId (No encontrada)"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "ID: $fundacionId (Error)"
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int = comandosFiltradas.size
@@ -65,8 +93,7 @@ class ComandoAdapter(
                     comandos.forEach { comando ->
                         if (comando.getNombreComando().lowercase().contains(filterPattern) ||
                             comando.getUbicacionComando().lowercase().contains(filterPattern) ||
-                            (comando.getFundacion().getNombreFundacion().isNotEmpty() &&
-                                    comando.getFundacion().getNombreFundacion().lowercase().contains(filterPattern))
+                            comando.getFundacion().toString().contains(filterPattern)
                         ) {
                             filteredList.add(comando)
                         }
