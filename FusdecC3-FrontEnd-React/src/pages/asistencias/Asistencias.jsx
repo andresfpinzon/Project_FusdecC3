@@ -369,7 +369,7 @@ const Asistencias = () => {
                             setOpenStudentsDialog(true);
                           }}
                           size="small"
-                          color="info"
+                          color="primary"
                         >
                           <InfoIcon fontSize="small" />
                         </IconButton>
