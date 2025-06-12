@@ -664,9 +664,6 @@ const Unidades = () => {
                       >
                         <div className="unit-header">
                           <h3>{unidad.nombreUnidad}</h3>
-                          <span className={`status-badge ${unidad.estadoUnidad ? 'active' : 'inactive'}`}>
-                            {unidad.estadoUnidad ? 'Activo' : 'Inactivo'}
-                          </span>
                         </div>
                         <p className="unit-brigada">
                           <i className="fas fa-flag"></i>
@@ -680,21 +677,21 @@ const Unidades = () => {
                             <i className="fas fa-edit white-icon"></i> Editar
                           </button>
                           <button
-                        onClick={(e) => { e.stopPropagation(); handleDelete(unidad.id); }}
-                        style={{
-                          backgroundColor: '#d32f2f',
-                          color: 'white',
-                          border: 'none',
-                          padding: '8px 12px',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}
-                      >
-                        <i className="fas fa-trash-alt" style={{ color: 'white' }}></i> Eliminar
-                      </button>
+                            onClick={(e) => { e.stopPropagation(); handleDelete(unidad.id); }}
+                            style={{
+                              backgroundColor: '#d32f2f',
+                              color: 'white',
+                              border: 'none',
+                              padding: '8px 12px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px'
+                            }}
+                          >
+                            <i className="fas fa-trash-alt" style={{ color: 'white' }}></i> Eliminar
+                          </button>
                         </div>
                       </div>
                     )}
