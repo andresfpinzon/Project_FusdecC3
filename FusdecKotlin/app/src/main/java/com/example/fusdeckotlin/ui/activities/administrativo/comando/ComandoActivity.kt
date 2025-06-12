@@ -96,7 +96,8 @@ class ComandoActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            fundacionService // Añade este parámetro
         )
         comandosRecyclerView.layoutManager = LinearLayoutManager(this)
         comandosRecyclerView.adapter = adapter
@@ -204,26 +205,24 @@ class ComandoActivity : AppCompatActivity() {
         nombreEditText.setText(comando.getNombreComando())
         ubicacionEditText.setText(comando.getUbicacionComando())
 
-        // Check if we already have the foundation object
-        if (comando.getFundacion().getNombreFundacion().isNotEmpty()) {
-            fundacionSeleccionada = comando.getFundacion()
-            actualizarTextoFundacionSeleccionada()
-        } else {
-            lifecycleScope.launch {
-                val result = fundacionService.obtenerFundacionPorId(comando.getFundacion().getId())
-                result.onSuccess { fundacion ->
-                    runOnUiThread {
-                        fundacionSeleccionada = fundacion
-                        actualizarTextoFundacionSeleccionada()
-                    }
-                }.onFailure { error ->
-                    runOnUiThread {
-                        showError("Error al cargar fundación: ${error.message}")
-                    }
+        // Obtenemos el objeto Fundacion completo usando el ID
+        lifecycleScope.launch {
+            val result = fundacionService.obtenerFundacionPorId(comando.getFundacion())
+            result.onSuccess { fundacion ->
+                runOnUiThread {
+                    fundacionSeleccionada = fundacion
+                    actualizarTextoFundacionSeleccionada()
+                }
+            }.onFailure { error ->
+                runOnUiThread {
+                    showError("Error al cargar fundación: ${error.message}")
+                    // Aunque falle, podemos mostrar al menos el ID
+                    fundacionSeleccionadaText.text = "Fundación ID: ${comando.getFundacion()}"
                 }
             }
         }
     }
+
 
     private fun onDeleteClick(comando: Comando) {
         AlertDialog.Builder(this)
