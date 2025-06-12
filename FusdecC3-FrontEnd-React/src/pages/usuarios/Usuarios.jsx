@@ -30,6 +30,7 @@ import {
   TablePagination
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import WarningIcon from '@mui/icons-material/Warning';
 import { useNavigate } from "react-router-dom";
 
 const Usuarios = () => {
@@ -684,14 +685,112 @@ const Usuarios = () => {
         />
       </TableContainer>
 
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Eliminar Usuario</DialogTitle>
-        <DialogContent>
-          <Typography>¿Estás seguro de que deseas eliminar a {usuarioToDelete?.nombre}?</Typography>
+      {/* Modal de Confirmación de Eliminación - Versión Corregida */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{
+          backgroundColor: '#1d526eff',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '16px 24px'
+        }}>
+          Confirmar Eliminación de Usuario
+        </DialogTitle>
+        <DialogContent dividers sx={{ padding: '20px' }}>
+          <Typography variant="body1" sx={{ textAlign: 'center', fontSize: '1.1rem', mb: 2 }}>
+            ¿Estás seguro que deseas eliminar al usuario <strong>{usuarioToDelete?.nombre} {usuarioToDelete?.apellido}</strong>?
+          </Typography>
+          
+          <Box sx={{
+            backgroundColor: '#f5f5f5',
+            borderRadius: '8px',
+            padding: '12px',
+            marginBottom: '16px',
+            borderLeft: '4px solid #1d526eff'
+          }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              Detalles del usuario:
+            </Typography>
+            <Typography variant="body2">
+              Documento: {usuarioToDelete?.numeroDocumento}
+            </Typography>
+            <Typography variant="body2">
+              Correo: {usuarioToDelete?.correo}
+            </Typography>
+            <Typography variant="body2">
+              Estado: 
+              <Chip 
+                label={usuarioToDelete?.estado ? "Activo" : "Inactivo"} 
+                size="small" 
+                color={usuarioToDelete?.estado ? "success" : "error"}
+                sx={{ ml: 1 }}
+              />
+            </Typography>
+          </Box>
+
+          {usuarioToDelete?.estado && (
+            <Box sx={{
+              backgroundColor: '#fff3e0',
+              borderRadius: '4px',
+              padding: '10px',
+              marginTop: '10px',
+              borderLeft: '4px solid #ffa000'
+            }}>
+              <Box display="flex" alignItems="center">
+                <WarningIcon color="warning" sx={{ mr: 1 }} /> {/* Icono corregido */}
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Advertencia:</strong> Este usuario está actualmente activo. Al eliminarlo, perderá acceso al sistema inmediatamente.
+                </Typography>
+              </Box>
+            </Box>
+          )}
+
+          <Typography variant="body2" sx={{
+            textAlign: 'center',
+            color: 'text.secondary',
+            marginTop: '16px',
+            fontStyle: 'italic'
+          }}>
+            Esta acción no se puede deshacer y eliminará permanentemente todos los datos asociados.
+          </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">Cancelar</Button>
-          <Button onClick={handleDeleteUser} color="secondary">Eliminar</Button>
+        <DialogActions sx={{
+          justifyContent: 'center',
+          padding: '16px 24px',
+          gap: '16px'
+        }}>
+          <Button
+            onClick={() => setOpenDeleteDialog(false)}
+            variant="outlined"
+            sx={{
+              minWidth: '120px',
+              borderColor: '#1d526eff',
+              color: '#1d526eff',
+              '&:hover': {
+                backgroundColor: '#f0f7ff',
+                borderColor: '#1a4863'
+              }
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleDeleteUser}
+            variant="contained"
+            sx={{
+              minWidth: '120px',
+              backgroundColor: '#d32f2f',
+              '&:hover': {
+                backgroundColor: '#b71c1c'
+              }
+            }}
+          >
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
 
