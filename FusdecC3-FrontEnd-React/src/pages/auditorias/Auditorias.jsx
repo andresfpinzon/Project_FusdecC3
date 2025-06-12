@@ -19,7 +19,8 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  TextField
+  TextField,
+  Box
 } from "@mui/material";
 import { Info } from "@mui/icons-material";
 
@@ -214,60 +215,147 @@ const Auditorias = () => {
         />
       </TableContainer>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle id={`dialog-title-${selectedAuditoria?.id}`}>
-          <Typography variant="h5" component="div">
-            Detalles de la Auditoría #{selectedAuditoria?.id}
-          </Typography>
+      {/*pop-up de mas información*/}
+      <Dialog 
+        open={openDialog} 
+        onClose={() => setOpenDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+      >
+        <DialogTitle sx={{ 
+          backgroundColor: '#1d526eff', 
+          color: '#fff', 
+          textAlign: 'center',
+          padding: '16px 24px',
+          fontSize: '1.25rem',
+          fontWeight: '500'
+        }}>
+          Detalles de la Auditoría #{selectedAuditoria?.id}
         </DialogTitle>
-        <DialogContent>
+        
+        <DialogContent sx={{ 
+          padding: '20px',
+          '&.MuiDialogContent-root': {
+            paddingTop: '24px'
+          }
+        }}>
           {selectedAuditoria && (
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Paper elevation={2} sx={{ p: 2 }}>
-                  <Typography variant="h6" gutterBottom color="primary">
-                    Información de la Auditoría
-                  </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                      <Typography><strong>ID de Auditoría:</strong> {selectedAuditoria.id}</Typography>
-                      <Typography><strong>Fecha:</strong> {formatDate(selectedAuditoria.fecha)}</Typography>
-                      <Typography><strong>Nombre del Emisor:</strong> {selectedAuditoria.nombreEmisor}</Typography>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography><strong>ID del Certificado:</strong> {selectedAuditoria.certificadoId}</Typography>
-                      <Typography><strong>Estado:</strong> {selectedAuditoria.estado ? "Activo" : "Inactivo"}</Typography>
-                      <Typography><strong>Fecha de Creación:</strong> {formatDate(selectedAuditoria.createdAt)}</Typography>
-                    </Grid>
-                  </Grid>
-                </Paper>
-              </Grid>
-
-              {selectedAuditoria.certificadoInfo && (
+            <Box sx={{ marginTop: 1 }}>
+              <Grid container spacing={3}>
+                {/* Sección de Información de Auditoría */}
                 <Grid item xs={12}>
-                  <Paper elevation={2} sx={{ p: 2 }}>
-                    <Typography variant="h6" gutterBottom color="primary">
-                      Información del Certificado
+                  <Paper elevation={3} sx={{ 
+                    p: 3,
+                    borderRadius: '12px',
+                    borderLeft: '4px solid #1d526eff'
+                  }}>
+                    <Typography variant="h6" gutterBottom color="primary" sx={{ fontWeight: '600' }}>
+                      Información de la Auditoría
                     </Typography>
                     <Grid container spacing={2}>
                       <Grid item xs={12} md={6}>
-                        <Typography><strong>Estudiante:</strong> {selectedAuditoria.certificadoInfo.estudiante}</Typography>
-                        <Typography><strong>Documento:</strong> {selectedAuditoria.certificadoInfo.documento}</Typography>
-                        <Typography><strong>Horas:</strong> {selectedAuditoria.certificadoInfo.horas}</Typography>
+                        <Typography sx={{ mb: 1 }}>
+                          <Box component="span" sx={{ fontWeight: '600' }}>ID de Auditoría:</Box> {selectedAuditoria.id}
+                        </Typography>
+                        <Typography sx={{ mb: 1 }}>
+                          <Box component="span" sx={{ fontWeight: '600' }}>Fecha:</Box> {formatDate(selectedAuditoria.fecha)}
+                        </Typography>
+                        <Typography sx={{ mb: 1 }}>
+                          <Box component="span" sx={{ fontWeight: '600' }}>Nombre del Emisor:</Box> {selectedAuditoria.nombreEmisor}
+                        </Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <Typography><strong>Fecha de Emisión:</strong> {formatDate(selectedAuditoria.certificadoInfo.fecha)}</Typography>
-                        <Typography><strong>Código de Verificación:</strong> {selectedAuditoria.certificadoInfo.codigoVerificacion}</Typography>
+                        <Typography sx={{ mb: 1 }}>
+                          <Box component="span" sx={{ fontWeight: '600' }}>ID del Certificado:</Box> {selectedAuditoria.certificadoId}
+                        </Typography>
+                        <Typography sx={{ mb: 1 }}>
+                          <Box component="span" sx={{ fontWeight: '600' }}>Estado:</Box> 
+                          <Box 
+                            component="span" 
+                            sx={{ 
+                              color: selectedAuditoria.estado ? '#2e7d32' : '#d32f2f',
+                              fontWeight: '500',
+                              ml: 1
+                            }}
+                          >
+                            {selectedAuditoria.estado ? "Activo" : "Inactivo"}
+                          </Box>
+                        </Typography>
+                        <Typography sx={{ mb: 1 }}>
+                          <Box component="span" sx={{ fontWeight: '600' }}>Fecha de Creación:</Box> {formatDate(selectedAuditoria.createdAt)}
+                        </Typography>
                       </Grid>
                     </Grid>
                   </Paper>
                 </Grid>
-              )}
-            </Grid>
+
+                {/* Sección de Información del Certificado (condicional) */}
+                {selectedAuditoria.certificadoInfo && (
+                  <Grid item xs={12}>
+                    <Paper elevation={3} sx={{ 
+                      p: 3,
+                      borderRadius: '12px',
+                      borderLeft: '4px solid #1d526eff'
+                    }}>
+                      <Typography variant="h6" gutterBottom color="primary" sx={{ fontWeight: '600' }}>
+                        Información del Certificado
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                          <Typography sx={{ mb: 1 }}>
+                            <Box component="span" sx={{ fontWeight: '600' }}>Estudiante:</Box> {selectedAuditoria.certificadoInfo.estudiante}
+                          </Typography>
+                          <Typography sx={{ mb: 1 }}>
+                            <Box component="span" sx={{ fontWeight: '600' }}>Documento:</Box> {selectedAuditoria.certificadoInfo.documento}
+                          </Typography>
+                          <Typography sx={{ mb: 1 }}>
+                            <Box component="span" sx={{ fontWeight: '600' }}>Horas:</Box> {selectedAuditoria.certificadoInfo.horas}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <Typography sx={{ mb: 1 }}>
+                            <Box component="span" sx={{ fontWeight: '600' }}>Fecha de Emisión:</Box> {formatDate(selectedAuditoria.certificadoInfo.fecha)}
+                          </Typography>
+                          <Typography sx={{ mb: 1 }}>
+                            <Box component="span" sx={{ fontWeight: '600' }}>Código de Verificación:</Box> 
+                            <Box 
+                              component="span" 
+                              sx={{ 
+                                fontFamily: 'monospace',
+                                backgroundColor: '#f5f5f5',
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                ml: 1
+                              }}
+                            >
+                              {selectedAuditoria.certificadoInfo.codigoVerificacion}
+                            </Box>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                )}
+              </Grid>
+            </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary" variant="contained">
+        
+        <DialogActions sx={{ 
+          padding: '16px 24px',
+          borderTop: '1px solid rgba(0, 0, 0, 0.12)'
+        }}>
+          <Button 
+            onClick={() => setOpenDialog(false)} 
+            variant="contained" 
+            color="primary"
+            sx={{
+              textTransform: 'none',
+              fontWeight: '600',
+              padding: '8px 20px',
+              borderRadius: '8px'
+            }}
+          >
             Cerrar
           </Button>
         </DialogActions>
