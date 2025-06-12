@@ -508,7 +508,6 @@ const Ediciones = () => {
               <TableCell>Título</TableCell>
               <TableCell>Fecha Inicio</TableCell>
               <TableCell>Fecha Fin</TableCell>
-              <TableCell>Estado</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -520,13 +519,6 @@ const Ediciones = () => {
                   <TableCell>{edicion.titulo}</TableCell>
                   <TableCell>{formatDate(edicion.fechaInicio)}</TableCell>
                   <TableCell>{formatDate(edicion.fechaFin)}</TableCell>
-                  <TableCell>
-                    {edicion.estado ? (
-                      <Chip label="Activo" color="success" size="small" />
-                    ) : (
-                      <Chip label="Inactivo" color="error" size="small" />
-                    )}
-                  </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleEditClick(edicion)} color="primary">
                       <Edit />
