@@ -673,13 +673,27 @@ const Unidades = () => {
                           {unidad.brigadaNombre || 'Sin brigada asignada'}
                         </p>
                         <div className="unit-actions">
-                          <button onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} className="edit-button">
-                            <i className="fas fa-edit"></i> Editar
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); handleEdit(unidad); }} 
+                            className="edit-button"
+                          >
+                            <i className="fas fa-edit white-icon"></i> Editar
                           </button>
                           <button
-                            onClick={(e) => { e.stopPropagation(); handleDelete(unidad.id); }} className="delete-button"
+                            onClick={(e) => { e.stopPropagation(); handleDelete(unidad.id); }}
+                            style={{
+                              backgroundColor: '#d32f2f',
+                              color: 'white',
+                              border: 'none',
+                              padding: '8px 12px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px'
+                            }}
                           >
-                            <i className="fas fa-trash-alt"></i> Eliminar
+                            <i className="fas fa-trash-alt" style={{ color: 'white' }}></i> Eliminar
                           </button>
                         </div>
                       </div>
