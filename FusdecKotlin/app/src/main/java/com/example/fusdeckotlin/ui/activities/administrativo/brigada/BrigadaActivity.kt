@@ -96,7 +96,8 @@ class BrigadaActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            comandoService
         )
         brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
         brigadasRecyclerView.adapter = adapter
@@ -204,24 +205,13 @@ class BrigadaActivity : AppCompatActivity() {
         nombreEditText.setText(brigada.getNombreBrigada())
         ubicacionEditText.setText(brigada.getUbicacionBrigada())
 
-        // Check if we already have the comando object
-        if (brigada.getComando().getNombreComando().isNotEmpty()) {
-            comandoSeleccionado = brigada.getComando()
-            actualizarTextoComandoSeleccionado()
-        } else {
-            // Only make API call if we don't have the comando data
-            lifecycleScope.launch {
-                val result = comandoService.obtenerComandoPorId(brigada.getComandoId())
-                result.onSuccess { comando ->
-                    runOnUiThread {
-                        comandoSeleccionado = comando
-                        actualizarTextoComandoSeleccionado()
-                    }
-                }.onFailure { error ->
-                    runOnUiThread {
-                        showError("Error al cargar comando: ${error.message}")
-                    }
-                }
+        lifecycleScope.launch {
+            val result = comandoService.obtenerComandoPorId(brigada.getComandoId().toString())
+            result.onSuccess {
+                comandoSeleccionado = it
+                actualizarTextoComandoSeleccionado()
+            }.onFailure { error ->
+                showError("Error al cargar comando: ${error.message}")
             }
         }
     }
