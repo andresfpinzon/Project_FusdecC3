@@ -468,9 +468,6 @@ const Brigadas = () => {
                       >
                         <div className="brigade-header">
                           <h3>{brigade.nombreBrigada}</h3>
-                          <span className={`status-badge ${brigade.estadoBrigada ? 'active' : 'inactive'}`}>
-                            {brigade.estadoBrigada ? 'Activo' : 'Inactivo'}
-                          </span>
                         </div>
                         <p><i className="fas fa-map-marker-alt"></i> {brigade.ubicacionBrigada}</p>
                         <p><i className="fas fa-flag"></i> {brigade.comandoNombre || 'Sin comando asignado'}</p>
