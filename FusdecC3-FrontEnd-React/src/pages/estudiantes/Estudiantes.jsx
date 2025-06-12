@@ -725,7 +725,6 @@ const Estudiantes = () => {
               <TableCell>Colegio</TableCell>
               <TableCell>Edición</TableCell>
               <TableCell>Grado</TableCell>
-              <TableCell>Estado</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -742,13 +741,6 @@ const Estudiantes = () => {
                   <TableCell>{estudiante.colegioNombre}</TableCell>
                   <TableCell>{estudiante.edicionNombre}</TableCell>
                   <TableCell>{estudiante.grado}</TableCell>
-                  <TableCell>
-                    {estudiante.estado ? (
-                      <Chip label="Activo" color="success" size="small" />
-                    ) : (
-                      <Chip label="Inactivo" color="error" size="small" />
-                    )}
-                  </TableCell>
                   <TableCell>
                     <IconButton
                     id="editarEstudianteButton"
