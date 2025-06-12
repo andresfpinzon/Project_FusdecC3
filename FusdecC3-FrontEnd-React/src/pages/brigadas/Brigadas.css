@@ -167,6 +167,26 @@
   margin-top: 15px;
 }
 
+.white-icon {
+  color: white !important;
+}
+
+.edit-button {
+  background-color: #1d526eff; /* Color azul similar al que usas */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-button:hover {
+  background-color: #1a4863; /* Color azul más oscuro para hover */
+}
+
 .brigade-management .edit-button,
 .brigade-management .delete-button {
   padding: 8px 12px;
