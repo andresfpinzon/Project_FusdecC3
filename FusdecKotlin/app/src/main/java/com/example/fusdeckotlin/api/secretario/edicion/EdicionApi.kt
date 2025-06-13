@@ -7,21 +7,21 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface EdicionApi {
-    @GET("api/ediciones")
+    @GET("/ediciones")
     suspend fun listarEdicionesActivas(): Response<List<Edicion>>
 
-    @POST("api/ediciones")
+    @POST("/ediciones")
     suspend fun crearEdicion(@Body request: CrearEdicionRequest): Response<Edicion>
 
-    @PUT("api/ediciones/{id}")
+    @PUT("/ediciones/{id}")
     suspend fun actualizarEdicion(
         @Path("id") id: String,
         @Body request: ActualizarEdicionRequest
     ): Response<Edicion>
 
-    @DELETE("api/ediciones/{id}")
+    @DELETE("/ediciones/{id}")
     suspend fun desactivarEdicion(@Path("id") id: String): Response<Edicion>
 
-    @GET("api/ediciones/{id}")
+    @GET("/ediciones/{id}")
     suspend fun obtenerEdicionPorId(@Path("id") id: String): Response<Edicion>
 }
