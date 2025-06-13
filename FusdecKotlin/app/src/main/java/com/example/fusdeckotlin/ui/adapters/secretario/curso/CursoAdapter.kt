@@ -14,15 +14,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.curso.Curso
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.example.fusdeckotlin.services.root.fundacion.FundacionService
+import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CursoAdapter(
     private var cursos: List<Curso>,
     private val onUpdateClick: (Curso) -> Unit,
     private val onDeleteClick: (Curso) -> Unit,
-    private val onInfoClick: (Curso) -> Unit
+    private val onInfoClick: (Curso) -> Unit,
+    private val fundacionService: FundacionService
 ) : RecyclerView.Adapter<CursoAdapter.CursoViewHolder>(), Filterable {
 
     private var cursosFiltrados: List<Curso> = cursos
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private var context: Context? = null
 
     class CursoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -50,12 +58,7 @@ class CursoAdapter(
         holder.descripcionTextView.text = curso.getDescripcionCurso()
         holder.intensidadHorariaTextView.text = curso.getIntensidadHorariaCurso()
 
-        // Mostrar información de la fundación según lo disponible
-        holder.fundacionTextView.text = when {
-            curso.getFundacion().getNombreFundacion().isNotEmpty() ->
-                curso.getFundacion().getNombreFundacion()
-            else -> "Fundación ID: ${curso.getFundacionId()}"
-        }
+        cargarNombreFundacion(curso.getFundacionId(), holder.fundacionTextView)
 
         holder.updateButton.setOnClickListener { onUpdateClick(curso) }
         holder.deleteButton.setOnClickListener { onDeleteClick(curso) }
@@ -65,6 +68,26 @@ class CursoAdapter(
         holder.itemView.setOnClickListener {
             it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
                 it.animate().scaleX(1f).scaleY(1f).duration = 100
+            }
+        }
+    }
+
+    private fun cargarNombreFundacion(fundacionId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val fundacion = fundacionService.obtenerFundacionPorId(fundacionId)
+                fundacion.onSuccess { f ->
+                    withContext(Dispatchers.Main) {
+                    textView.text = f.getNombreFundacion()
+                }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $fundacionId (No encontrada)"
+                    }
+                }
+            }
+            catch (e: Exception) {
+                textView.text = "ID: $fundacionId (No encontrada)"
             }
         }
     }
@@ -83,7 +106,7 @@ class CursoAdapter(
                         if (curso.getNombreCurso().lowercase().contains(filterPattern) ||
                             curso.getDescripcionCurso().lowercase().contains(filterPattern) ||
                             curso.getIntensidadHorariaCurso().lowercase().contains(filterPattern) ||
-                            curso.getFundacion().getNombreFundacion().lowercase().contains(filterPattern)) {
+                            curso.getFundacionId().toString().contains(filterPattern)) {
                             filteredList.add(curso)
                         }
                     }
