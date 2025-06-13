@@ -3,10 +3,10 @@ package com.example.fusdeckotlin.models.administrativo.colegio
 import com.google.gson.annotations.SerializedName
 
 class Colegio(
-    @SerializedName("_id") private val id: String,
-    @SerializedName("nombreColegio") private var nombreColegio: String,
-    @SerializedName("emailColegio") private var emailColegio: String,
-    @SerializedName("estadoColegio") private var estadoColegio: Boolean,
+    @SerializedName("id") private val id: String,
+    @SerializedName("nombre") private var nombreColegio: String,
+    @SerializedName("email") private var emailColegio: String,
+    @SerializedName("estado") private var estadoColegio: Boolean,
 
 ) {
     // Getters básicos
