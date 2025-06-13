@@ -102,7 +102,8 @@ class EdicionActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            cursoService
         )
         edicionesRecyclerView.layoutManager = LinearLayoutManager(this)
         edicionesRecyclerView.adapter = adapter
@@ -239,7 +240,7 @@ class EdicionActivity : AppCompatActivity() {
 
         // Cargar curso
         lifecycleScope.launch {
-            val result = cursoService.obtenerCursoPorId(edicion.getCursoId())
+            val result = cursoService.obtenerCursoPorId(edicion.getCursoId().toString())
             result.onSuccess { curso ->
                 cursoSeleccionado = curso
                 actualizarTextoCursoSeleccionado()
