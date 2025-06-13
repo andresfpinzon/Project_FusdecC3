@@ -73,7 +73,8 @@ class CursoActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            fundacionService
         )
         cursosRecyclerView.layoutManager = LinearLayoutManager(this)
         cursosRecyclerView.adapter = adapter
@@ -235,7 +236,7 @@ class CursoActivity : AppCompatActivity() {
 
         // Cargar fundación seleccionada
         lifecycleScope.launch {
-            val result = fundacionService.obtenerFundacionPorId(curso.getFundacionId())
+            val result = fundacionService.obtenerFundacionPorId(curso.getFundacionId().toInt())
             result.onSuccess { fundacion ->
                 fundacionSeleccionada = fundacion
                 actualizarTextoFundacionSeleccionada()
@@ -274,7 +275,7 @@ class CursoActivity : AppCompatActivity() {
                 resultEdiciones.onSuccess { todasEdiciones ->
                     // Filtrar ediciones que pertenecen a este curso
                     val edicionesDelCurso = todasEdiciones.filter {
-                        it.getCursoId() == curso.getId()
+                        it.getCursoId() == curso.getId().toInt()
                     }.map { edicion ->
                         "• ${edicion.getNombreEdicion()} (${edicion.getFechaInicio()} - ${edicion.getFechaFin()})"
                     }.toTypedArray()
