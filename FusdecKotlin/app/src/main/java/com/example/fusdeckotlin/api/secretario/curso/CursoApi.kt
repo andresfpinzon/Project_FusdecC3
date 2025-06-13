@@ -7,21 +7,21 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface CursoApi {
-    @GET("api/cursos")
+    @GET("/cursos")
     suspend fun listarCursosActivos(): Response<List<Curso>>
 
-    @GET("api/cursos/{id}")
+    @GET("/cursos/{id}")
     suspend fun obtenerCursoPorId(@Path("id") id: String): Response<Curso>
 
-    @POST("api/cursos")
+    @POST("/cursos")
     suspend fun crearCurso(@Body request: CrearCursoRequest): Response<Curso>
 
-    @PUT("api/cursos/{id}")
+    @PUT("/cursos/{id}")
     suspend fun actualizarCurso(
         @Path("id") id: String,
         @Body request: ActualizarCursoRequest
     ): Response<Curso>
 
-    @DELETE("api/cursos/{id}")
+    @DELETE("/cursos/{id}")
     suspend fun desactivarCurso(@Path("id") id: String): Response<Curso>
 }
