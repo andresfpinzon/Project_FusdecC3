@@ -88,7 +88,8 @@ class ColegioActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+
         )
         colegiosRecyclerView.layoutManager = LinearLayoutManager(this)
         colegiosRecyclerView.adapter = adapter
@@ -184,7 +185,7 @@ class ColegioActivity : AppCompatActivity() {
                 resultEstudiantes.onSuccess { todosEstudiantes ->
                     // Filtrar estudiantes que tienen este colegio (por nombre)
                     val estudiantesColegio = todosEstudiantes.filter {
-                        it.getColegio().equals(colegio.getNombreColegio(), ignoreCase = true)
+                        it.getColegio().equals(colegio.getNombreColegio(),)
                     }.map { estudiante ->
                         "• ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
                     }.toTypedArray()
