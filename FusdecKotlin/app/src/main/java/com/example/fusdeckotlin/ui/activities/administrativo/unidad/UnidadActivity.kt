@@ -299,7 +299,7 @@ class UnidadActivity : AppCompatActivity() {
                 resultEstudiantes.onSuccess { todosEstudiantes ->
                     // Filtrar estudiantes cuyo campo unidad coincida
                     val estudiantesUnidad = todosEstudiantes.filter { estudiante ->
-                        estudiante.getUnidad() == unidad.getNombreUnidad()
+                        estudiante.getUnidad() == unidad.getId()
                     }.map { estudiante ->
                         "• Num: ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
                     }.toTypedArray()
