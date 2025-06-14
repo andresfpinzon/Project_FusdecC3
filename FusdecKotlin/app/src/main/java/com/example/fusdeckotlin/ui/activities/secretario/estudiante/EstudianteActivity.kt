@@ -223,7 +223,8 @@ class EstudianteActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Seleccionar Edición")
             .setItems(edicionArray) { _, which ->
-                edicionEditText.setText(ediciones[which].getNombreEdicion())
+                edicionSeleccionada = ediciones[which]
+                edicionEditText.setText(edicionSeleccionada?.getNombreEdicion())
             }
             .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
             .create()
