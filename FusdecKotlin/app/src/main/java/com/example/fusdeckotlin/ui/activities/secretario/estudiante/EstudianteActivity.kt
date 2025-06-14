@@ -16,6 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
+import com.example.fusdeckotlin.models.administrativo.colegio.Colegio
+import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
+import com.example.fusdeckotlin.models.secretario.edicion.Edicion
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
 import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
 import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
@@ -61,6 +64,10 @@ class EstudianteActivity : AppCompatActivity() {
     private val unidades = mutableListOf<String>()
     private val colegios = mutableListOf<String>()
     private val ediciones = mutableListOf<String>()
+
+    private var unidadSeleccionada: Unidad? = null
+    private var colegioSeleccionado: Colegio? = null
+    private var edicionSeleccionada: Edicion? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,12 +149,85 @@ class EstudianteActivity : AppCompatActivity() {
         tipoDocumentoEditText.setOnClickListener { mostrarDialogoSeleccion("Tipo de Documento", tiposDocumento, tipoDocumentoEditText) }
         generoEditText.setOnClickListener { mostrarDialogoSeleccion("Género", generos, generoEditText) }
         gradoEditText.setOnClickListener { mostrarDialogoSeleccion("Grado", grados, gradoEditText) }
-        unidadEditText.setOnClickListener { mostrarDialogoSeleccion("Unidad", unidades.toTypedArray(), unidadEditText) }
-        colegioEditText.setOnClickListener { mostrarDialogoSeleccion("Colegio", colegios.toTypedArray(), colegioEditText) }
-        edicionEditText.setOnClickListener { mostrarDialogoSeleccion("Edición", ediciones.toTypedArray(), edicionEditText) }
+        unidadEditText.setOnClickListener { mostrarDialogoSeleccionUnidad() }
+        colegioEditText.setOnClickListener { mostrarDialogoSeleccionColegio() }
+        edicionEditText.setOnClickListener { mostrarDialogoSeleccionEdicion() }
 
         confirmarButton.setOnClickListener { guardarEstudiante() }
         cancelarButton.setOnClickListener { finish() }
+    }
+
+    private fun mostrarDialogoSeleccionUnidad(){
+        lifecycleScope.launch {
+            val result = unidadServices.listarUnidadesActivas()
+            result.onSuccess {
+                c -> mosrarDialogoSeleccionUnidad(c)
+            }.onFailure {
+                error -> showError("Error al cargar unidades: ${error.message}")
+            }
+        }
+    }
+    private fun mosrarDialogoSeleccionUnidad(unidades: List<Unidad>){
+        val unidadArray = unidades.map {
+            " ---> ${it.getNombreUnidad()}"
+        }.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar Unidad")
+            .setItems(unidadArray) { _, which ->
+                unidadSeleccionada = unidades[which]
+                unidadEditText.setText(unidadSeleccionada?.getNombreUnidad())
+            }
+            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
+    }
+    private fun mostrarDialogoSeleccionColegio(){
+        lifecycleScope.launch {
+            val result = colegioServices.listarColegiosActivos()
+            result.onSuccess {
+                c -> mostrarDialogoSeleccionColegio(c)
+            }.onFailure {
+                error -> showError("Error al cargar colegios: ${error.message}")
+            }
+        }
+    }
+    private fun mostrarDialogoSeleccionColegio(colegios: List<Colegio>) {
+        val colegioArray = colegios.map {
+            " --> ${it.getNombreColegio()}"
+        }.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar Colegio")
+            .setItems(colegioArray) { _, which ->
+                colegioSeleccionado = colegios[which]
+                colegioEditText.setText(colegioSeleccionado?.getNombreColegio())
+            }
+            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
+    }
+
+    private fun mostrarDialogoSeleccionEdicion() {
+        lifecycleScope.launch {
+            val result = edicionService.listarEdicionesActivas()
+            result.onSuccess {
+                e -> mostrarDialogoSeleccionEdicion(e)
+            }.onFailure { error ->
+                showError("Error al cargar ediciones: ${error.message}")
+            }
+        }
+    }
+    private fun mostrarDialogoSeleccionEdicion(ediciones: List<Edicion>) {
+        val edicionArray = ediciones.map {
+            " --> ${it.getNombreEdicion()}"
+        }.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar Edición")
+            .setItems(edicionArray) { _, which ->
+                edicionEditText.setText(ediciones[which].getNombreEdicion())
+            }
+            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
     }
 
     private fun mostrarDialogoSeleccion(titulo: String, opciones: Array<String>, campoDestino: EditText) {
