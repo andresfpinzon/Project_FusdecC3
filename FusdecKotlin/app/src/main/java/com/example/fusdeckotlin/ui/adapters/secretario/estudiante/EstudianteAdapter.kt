@@ -14,16 +14,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
+import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EstudianteAdapter(
     private var estudiantes: List<Estudiante>,
     private val onUpdateClick: (Estudiante) -> Unit,
     private val onDeleteClick: (Estudiante) -> Unit,
-    private val onInfoClick: (Estudiante) -> Unit
+    private val onInfoClick: (Estudiante) -> Unit,
+    private val unidadServices: UnidadServices,
+    private val colegioServices: ColegioServices,
+    private val edicionServices: EdicionServices
 ) : RecyclerView.Adapter<EstudianteAdapter.EstudianteViewHolder>(), Filterable {
 
     private var estudiantesFiltrados: List<Estudiante> = estudiantes
     private var context: Context? = null
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
 
     class EstudianteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreTextView)
@@ -54,9 +67,11 @@ class EstudianteAdapter(
         holder.nombreTextView.text = "${estudiante.getNombre()} ${estudiante.getApellido()}"
         holder.numeroDocumentoTextView.text = estudiante.getNumeroDocumento()
         holder.generoTextView.text = estudiante.getGenero()
-        holder.unidadValueTextView.text = estudiante.getUnidad()
-        holder.colegioValueTextView.text = estudiante.getColegio()
-        holder.edicionValueTextView.text = estudiante.getEdicion()
+
+        cargarUnidadNombre(estudiante.getUnidad().toInt(), holder.unidadValueTextView)
+        cargarColegioNombre(estudiante.getColegio(), holder.colegioValueTextView)
+        cargarEdicionNombre(estudiante.getEdicion(), holder.edicionValueTextView)
+
         holder.gradoValueTextView.text = estudiante.getGrado()
 
         // Configurar estado visual
@@ -87,6 +102,67 @@ class EstudianteAdapter(
         }
     }
 
+    private fun cargarUnidadNombre(unidadId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val unidad = unidadServices.obtenerUnidadPorId(unidadId.toString())
+                unidad.onSuccess { u ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = u.getNombreUnidad()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $unidadId (No encontrada)"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "ID: $unidadId (Error)"
+                }
+            }
+        }
+    }
+    private fun cargarColegioNombre(colegioId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val colegio = colegioServices.obtenerColegioPorId(colegioId.toString())
+                colegio.onSuccess { c ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = c.getNombreColegio()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $colegioId (No encontrado)"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "ID: $colegioId (Error)"
+                }
+            }
+        }
+    }
+    private fun cargarEdicionNombre(edicionId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val edicion = edicionServices.obtenerEdicionPorId(edicionId.toString())
+                edicion.onSuccess { e ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = e.getNombreEdicion()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $edicionId (No encontrada)"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "ID: $edicionId (Error)"
+                }
+            }
+        }
+    }
+
     override fun getItemCount(): Int = estudiantesFiltrados.size
 
     override fun getFilter(): Filter {
@@ -103,9 +179,9 @@ class EstudianteAdapter(
                             estudiante.getNumeroDocumento().lowercase().contains(filterPattern) ||
                             estudiante.getTipoDocumento().lowercase().contains(filterPattern) ||
                             estudiante.getGenero().lowercase().contains(filterPattern) ||
-                            estudiante.getUnidad().lowercase().contains(filterPattern) ||
-                            estudiante.getColegio().lowercase().contains(filterPattern) ||
-                            estudiante.getEdicion().lowercase().contains(filterPattern) ||
+                            estudiante.getUnidad().toString().contains(filterPattern) ||
+                            estudiante.getColegio().toString().contains(filterPattern) ||
+                            estudiante.getEdicion().toString().contains(filterPattern) ||
                             estudiante.getGrado().lowercase().contains(filterPattern)) {
                             filteredList.add(estudiante)
                         }
