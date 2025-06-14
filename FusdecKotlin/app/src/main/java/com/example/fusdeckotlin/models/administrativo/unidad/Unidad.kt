@@ -6,7 +6,7 @@ import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 
 data class Unidad(
     @SerializedName("id")
-    private val id: Long? = null,
+    private val id: Int? = null,
     @SerializedName("nombreUnidad")
     private var nombreUnidad: String,
     @SerializedName("brigadaId")
