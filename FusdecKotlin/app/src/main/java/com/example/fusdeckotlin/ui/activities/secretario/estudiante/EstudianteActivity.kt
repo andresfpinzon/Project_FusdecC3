@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
 import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
 import com.example.fusdeckotlin.services.instructor.asistenciaestudiante.AsistenciaEstudianteService
 import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
@@ -39,6 +41,9 @@ class EstudianteActivity : AppCompatActivity() {
     private lateinit var cancelarButton: Button
     private lateinit var searchEditText: EditText
     private lateinit var estudiantesRecyclerView: RecyclerView
+
+    private val unidadServices = UnidadServices()
+    private val colegioServices = ColegioServices()
 
     private val estudianteServicio = EstudianteServices()
     private val asistenciaService = AsistenciaServices()
@@ -98,7 +103,10 @@ class EstudianteActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            unidadServices,
+            colegioServices,
+            edicionService
         )
         estudiantesRecyclerView.layoutManager = LinearLayoutManager(this)
         estudiantesRecyclerView.adapter = adapter
@@ -118,11 +126,11 @@ class EstudianteActivity : AppCompatActivity() {
                 colegios.clear()
 
                 estudiantes.forEach {
-                    if (!unidades.contains(it.getUnidad())) {
-                        unidades.add(it.getUnidad())
+                    if (!unidades.contains(it.getUnidad().toString())) {
+                        unidades.add(it.getUnidad().toString())
                     }
-                    if (!colegios.contains(it.getColegio())) {
-                        colegios.add(it.getColegio())
+                    if (!colegios.contains(it.getColegio().toString())) {
+                        colegios.add(it.getColegio().toString())
                     }
                 }
             }
@@ -289,7 +297,7 @@ class EstudianteActivity : AppCompatActivity() {
         tipoDocumentoEditText.setText(estudiante.getTipoDocumento())
         numeroDocumentoEditText.setText(estudiante.getNumeroDocumento())
         generoEditText.setText(estudiante.getGenero())
-        unidadEditText.setText(estudiante.getUnidad())
+        unidadEditText.setText(estudiante.getUnidad().toInt())
         colegioEditText.setText(estudiante.getColegio())
         edicionEditText.setText(estudiante.getEdicion())
         gradoEditText.setText(estudiante.getGrado())
