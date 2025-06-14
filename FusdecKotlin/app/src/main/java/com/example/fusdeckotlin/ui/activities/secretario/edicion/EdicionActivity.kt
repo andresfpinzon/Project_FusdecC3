@@ -279,7 +279,7 @@ class EdicionActivity : AppCompatActivity() {
                 resultEstudiantes.onSuccess { todosEstudiantes ->
                     // Filtrar estudiantes cuyo campo coincida
                     val estudiantesEdicion = todosEstudiantes.filter { estudiante ->
-                        estudiante.getEdicion() == edicion.getNombreEdicion()
+                        estudiante.getEdicion() == edicion.getId().toInt()
                     }.map { estudiante ->
                         "• Num: ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
                     }.toTypedArray()
