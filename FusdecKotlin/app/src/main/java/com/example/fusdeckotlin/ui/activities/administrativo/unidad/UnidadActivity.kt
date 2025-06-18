@@ -244,7 +244,7 @@ class UnidadActivity : AppCompatActivity() {
 
     private fun onUpdateClick(unidad: Unidad) {
         isEditing = true
-        currentUnidadId = unidad.getId()
+        currentUnidadId = unidad.getId().toString()
         nombreEditText.setText(unidad.getNombreUnidad())
 
         // Cargar brigada
@@ -274,7 +274,7 @@ class UnidadActivity : AppCompatActivity() {
             .setMessage("¿Estás seguro de que deseas eliminar esta unidad?")
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
-                    val result = unidadService.desactivarUnidad(unidad.getId())
+                    val result = unidadService.desactivarUnidad(unidad.getId().toString())
                     result.onSuccess {
                         showSuccess("Unidad eliminada")
                         cargarUnidades()
@@ -297,7 +297,7 @@ class UnidadActivity : AppCompatActivity() {
                 resultEstudiantes.onSuccess { todosEstudiantes ->
                     // Filtrar estudiantes cuyo campo unidad coincida
                     val estudiantesUnidad = todosEstudiantes.filter { estudiante ->
-                        estudiante.getUnidad() == unidad.getNombreUnidad()
+                        estudiante.getUnidad().toString() == unidad.getId().toString()
                     }.map { estudiante ->
                         "• Num: ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
                     }.toTypedArray()

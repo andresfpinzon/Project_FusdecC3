@@ -40,10 +40,7 @@ class BrigadaAdapter(
 
         holder.nombreTextView.text = brigada.getNombreBrigada()
         holder.ubicacionTextView.text = brigada.getUbicacionBrigada()
-        holder.comandoTextView.text = when {
-            brigada.getComando().getNombreComando().isNotEmpty() -> brigada.getComando().getNombreComando()
-            else -> brigada.getComandoId()
-        }
+        holder.comandoTextView.text = "Comando ID: ${brigada.getComandoId()}"
 
         holder.updateButton.setOnClickListener { onUpdateClick(brigada) }
         holder.deleteButton.setOnClickListener { onDeleteClick(brigada) }
@@ -62,9 +59,8 @@ class BrigadaAdapter(
                     val filterPattern = constraint.toString().lowercase().trim()
                     brigadas.forEach { brigada ->
                         if (brigada.getNombreBrigada().lowercase().contains(filterPattern) ||
-                            brigada.getUbicacionBrigada().lowercase().contains(filterPattern) ||
-                            (brigada.getComando().getNombreComando().isNotEmpty() &&
-                                    brigada.getComando().getNombreComando().lowercase().contains(filterPattern))
+                            brigada.getUbicacionBrigada().lowercase().contains(filterPattern)
+
                         ) {
                             filteredList.add(brigada)
                         }

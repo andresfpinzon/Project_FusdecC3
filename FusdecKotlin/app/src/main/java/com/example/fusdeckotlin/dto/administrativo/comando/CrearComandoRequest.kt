@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class CrearComandoRequest(
     @SerializedName("nombreComando")
-    var nombreComando: String?,
+    val nombreComando: String,
 
     @SerializedName("ubicacionComando")
-    var ubicacionComando: String?,
+    val ubicacionComando: String,
 
     @SerializedName("fundacionId")
-    var fundacionId: String?,
+    val fundacionId: Int
 )

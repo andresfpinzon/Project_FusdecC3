@@ -117,14 +117,7 @@ class EstudianteActivity : AppCompatActivity() {
                 unidades.clear()
                 colegios.clear()
 
-                estudiantes.forEach {
-                    if (!unidades.contains(it.getUnidad())) {
-                        unidades.add(it.getUnidad())
-                    }
-                    if (!colegios.contains(it.getColegio())) {
-                        colegios.add(it.getColegio())
-                    }
-                }
+
             }
         }
     }
@@ -215,9 +208,9 @@ class EstudianteActivity : AppCompatActivity() {
                         apellido,
                         tipoDocumento,
                         genero,
-                        unidad,
-                        colegio,
-                        edicion,
+                        unidad.toInt(),
+                        colegio.toInt(),
+                        edicion.toInt(),
                         grado,
                         true
                     ).onSuccess {
@@ -234,9 +227,9 @@ class EstudianteActivity : AppCompatActivity() {
                         tipoDocumento,
                         numeroDocumento,
                         genero,
-                        unidad,
-                        colegio,
-                        edicion,
+                        unidad.toInt(),
+                        colegio.toInt(),
+                        edicion.toInt(),
                         grado
                     ).onSuccess {
                         showSuccess("Estudiante creado")

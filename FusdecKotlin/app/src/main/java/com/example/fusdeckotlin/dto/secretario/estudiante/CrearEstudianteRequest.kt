@@ -18,14 +18,14 @@ data class CrearEstudianteRequest(
     @SerializedName("genero")
     val genero: String,
 
-    @SerializedName("unidad")
-    val unidad: String,
+    @SerializedName("unidadId")
+    val unidad: Int,
 
-    @SerializedName("colegio")
-    val colegio: String,
+    @SerializedName("colegioId")
+    val colegio: Int,
 
-    @SerializedName("edicion")
-    val edicion: String,
+    @SerializedName("edicionId")
+    val edicion: Int,
 
     @SerializedName("grado")
     val grado: String

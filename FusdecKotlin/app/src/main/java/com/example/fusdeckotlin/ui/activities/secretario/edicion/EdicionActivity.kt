@@ -232,7 +232,7 @@ class EdicionActivity : AppCompatActivity() {
 
     private fun onUpdateClick(edicion: Edicion) {
         isEditing = true
-        currentEdicionId = edicion.getId()
+        currentEdicionId = edicion.getId().toString()
         tituloEditText.setText(edicion.getNombreEdicion())
         fechaInicioEditText.setText(edicion.getFechaInicio().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
         fechaFinEditText.setText(edicion.getFechaFin().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
@@ -255,7 +255,7 @@ class EdicionActivity : AppCompatActivity() {
             .setMessage("¿Estás seguro de que deseas eliminar esta edición?")
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
-                    val result = edicionService.desactivarEdicion(edicion.getId())
+                    val result = edicionService.desactivarEdicion(edicion.getId().toString())
                     result.onSuccess {
                         showSuccess("Edición eliminada")
                         cargarEdiciones()
@@ -278,7 +278,7 @@ class EdicionActivity : AppCompatActivity() {
                 resultEstudiantes.onSuccess { todosEstudiantes ->
                     // Filtrar estudiantes cuyo campo coincida
                     val estudiantesEdicion = todosEstudiantes.filter { estudiante ->
-                        estudiante.getEdicion() == edicion.getNombreEdicion()
+                        estudiante.getEdicion().toString() == edicion.getId().toString()
                     }.map { estudiante ->
                         "• Num: ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
                     }.toTypedArray()

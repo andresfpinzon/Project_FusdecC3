@@ -8,9 +8,9 @@ class Estudiante(
     @SerializedName("apellido") private var apellido: String,
     @SerializedName("tipoDocumento") private var tipoDocumento: String,
     @SerializedName("genero") private var genero: String,
-    @SerializedName("unidad") private var unidad: String,
-    @SerializedName("colegio") private var colegio: String,
-    @SerializedName("edicion") private var edicion: String,
+    @SerializedName("unidadId") private var unidad: Int,
+    @SerializedName("colegioId") private var colegio: Int,
+    @SerializedName("edicionId") private var edicion: Int,
     @SerializedName("grado") private var grado: String,
     @SerializedName("estado") private var estado: Boolean = true,
     @SerializedName("asistenciasRegistradas") private var asistenciasRegistradas: Int,
@@ -23,9 +23,9 @@ class Estudiante(
     fun getApellido(): String = apellido
     fun getTipoDocumento(): String = tipoDocumento
     fun getGenero(): String = genero
-    fun getUnidad(): String = unidad
-    fun getColegio(): String = colegio
-    fun getEdicion(): String = edicion
+    fun getUnidad(): Int = unidad
+    fun getColegio(): Int = colegio
+    fun getEdicion(): Int = edicion
     fun getGrado(): String = grado
     fun getEstado(): Boolean = estado
     fun getAsistenciasRegistradas(): Int = asistenciasRegistradas

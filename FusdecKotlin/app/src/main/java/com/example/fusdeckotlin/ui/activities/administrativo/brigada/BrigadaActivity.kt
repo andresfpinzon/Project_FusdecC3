@@ -42,7 +42,7 @@ class BrigadaActivity : AppCompatActivity() {
     private lateinit var adapter: BrigadaAdapter
 
     private var isEditing: Boolean = false
-    private var currentBrigadaId: String? = null
+    private var currentBrigadaId: Int? = null
     private var comandoSeleccionado: Comando? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,15 +166,17 @@ class BrigadaActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            val comandoId = comandoSeleccionado!!.getId()
+            val comandoId = comandoSeleccionado!!.getId().toIntOrNull() ?: run {
+                showError("ID de comando inválido")
+                return@launch
+            }
 
             if (isEditing && currentBrigadaId != null) {
                 brigadaService.actualizarBrigada(
                     currentBrigadaId!!,
                     nombre,
                     ubicacion,
-                    comandoId,
-                    true
+                    comandoId
                 ).onSuccess {
                     showSuccess("Brigada actualizada")
                     resetEditingState()
@@ -204,23 +206,17 @@ class BrigadaActivity : AppCompatActivity() {
         nombreEditText.setText(brigada.getNombreBrigada())
         ubicacionEditText.setText(brigada.getUbicacionBrigada())
 
-        // Check if we already have the comando object
-        if (brigada.getComando().getNombreComando().isNotEmpty()) {
-            comandoSeleccionado = brigada.getComando()
-            actualizarTextoComandoSeleccionado()
-        } else {
-            // Only make API call if we don't have the comando data
-            lifecycleScope.launch {
-                val result = comandoService.obtenerComandoPorId(brigada.getComandoId())
-                result.onSuccess { comando ->
-                    runOnUiThread {
-                        comandoSeleccionado = comando
-                        actualizarTextoComandoSeleccionado()
-                    }
-                }.onFailure { error ->
-                    runOnUiThread {
-                        showError("Error al cargar comando: ${error.message}")
-                    }
+        // Cargar comando desde el ID
+        lifecycleScope.launch {
+            val result = comandoService.obtenerComandoPorId(brigada.getComandoId().toString())
+            result.onSuccess { comando ->
+                runOnUiThread {
+                    comandoSeleccionado = comando
+                    actualizarTextoComandoSeleccionado()
+                }
+            }.onFailure { error ->
+                runOnUiThread {
+                    showError("Error al cargar comando: ${error.message}")
                 }
             }
         }
@@ -253,7 +249,7 @@ class BrigadaActivity : AppCompatActivity() {
 
                 resultUnidades.onSuccess { todasUnidades ->
                     val unidadesBrigada = todasUnidades.filter { unidad ->
-                        unidad.getBrigadaId() == brigada.getId()
+                        unidad.getBrigadaId() == brigada.getId().toString()
                     }.map { unidad ->
                         "• ${unidad.getNombreUnidad()}"
                     }.toTypedArray()

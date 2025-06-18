@@ -5,15 +5,15 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
 class Edicion(
-    @SerializedName("_id") private val id: String,
-    @SerializedName("tituloEdicion") private var nombreEdicion: String,
-    @SerializedName("fechaInicioEdicion") private var fechaInicioString: String,
-    @SerializedName("fechaFinEdicion") private var fechaFinString: String,
+    @SerializedName("id") private val id: Long,
+    @SerializedName("titulo") private var nombreEdicion: String,
+    @SerializedName("fechaInicio") private var fechaInicioString: String,
+    @SerializedName("fechaFin") private var fechaFinString: String,
     @SerializedName("cursoId") private var cursoId: Any,
-    @SerializedName("estadoEdicion") private var estadoEdicion: Boolean = true,
+    @SerializedName("estado") private var estadoEdicion: Boolean = true,
 ) {
     // Getters básicos
-    fun getId(): String = id
+    fun getId(): Long = id
     fun getNombreEdicion(): String = nombreEdicion
 
     // Getters para fechas con manejo de valores nulos
@@ -44,7 +44,7 @@ class Edicion(
         return when(cursoId) {
             is String -> cursoId as String
             is Curso -> (cursoId as Curso).getId()
-            is Map<*, *> -> (cursoId as Map<*, *>)["_id"] as? String ?: ""
+            is Map<*, *> -> (cursoId as Map<*, *>)["id"] as? String ?: ""
             else -> ""
         }
     }
@@ -66,19 +66,17 @@ class Edicion(
             intensidadHorariaCurso = "",
             estadoCurso = true,
             fundacionId = "",
-            ediciones = emptyList()
         )
     }
 
     private fun convertMapToCurso(map: Map<*, *>): Curso {
         return Curso(
-            id = map["_id"] as? String ?: "",
+            id = map["id"] as? String ?: "",
             nombreCurso = map["nombreCurso"] as? String ?: "",
             descripcionCurso = map["descripcionCurso"] as? String ?: "",
             intensidadHorariaCurso = map["intensidadHorariaCurso"] as? String ?: "",
             estadoCurso = map["estadoCurso"] as? Boolean ?: true,
             fundacionId = map["fundacionId"] as? String ?: "",
-            ediciones = map["ediciones"] as? List<Any> ?: emptyList()
         )
     }
 

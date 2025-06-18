@@ -38,14 +38,9 @@ class ComandoAdapter(
     override fun onBindViewHolder(holder: ComandoViewHolder, position: Int) {
         val comando = comandosFiltradas[position]
 
-
         holder.nombreTextView.text = comando.getNombreComando()
         holder.ubicacionTextView.text = comando.getUbicacionComando()
-        holder.fundacionTextView.text = when {
-            comando.getFundacion().getNombreFundacion().isNotEmpty() -> comando.getFundacion().getNombreFundacion()
-            else -> comando.getFundacionId()
-        }
-
+        holder.fundacionTextView.text = "Fundación ID: ${comando.getFundacionId()}"
 
         holder.updateButton.setOnClickListener { onUpdateClick(comando) }
         holder.deleteButton.setOnClickListener { onDeleteClick(comando) }
@@ -65,9 +60,8 @@ class ComandoAdapter(
                     comandos.forEach { comando ->
                         if (comando.getNombreComando().lowercase().contains(filterPattern) ||
                             comando.getUbicacionComando().lowercase().contains(filterPattern) ||
-                            (comando.getFundacion().getNombreFundacion().isNotEmpty() &&
-                                    comando.getFundacion().getNombreFundacion().lowercase().contains(filterPattern))
-                        ) {
+                            comando.getFundacionId().toString().contains(filterPattern))
+                        {
                             filteredList.add(comando)
                         }
                     }

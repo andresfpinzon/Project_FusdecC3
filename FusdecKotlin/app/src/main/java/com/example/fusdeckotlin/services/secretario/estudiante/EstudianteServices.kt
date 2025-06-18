@@ -19,9 +19,9 @@ class EstudianteServices {
         tipoDocumento: String,
         numeroDocumento: String,
         genero: String,
-        unidad: String,
-        colegio: String,
-        edicion: String,
+        unidadId: Int,
+        colegioId: Int,
+        edicionId: Int,
         grado: String
     ): Result<Estudiante> {
         return try {
@@ -31,9 +31,9 @@ class EstudianteServices {
                 apellido = apellido,
                 tipoDocumento = tipoDocumento,
                 genero = genero,
-                unidad = unidad,
-                colegio = colegio,
-                edicion = edicion,
+                unidad = unidadId,
+                colegio = colegioId,
+                edicion = edicionId,
                 grado = grado
             )
 
@@ -68,9 +68,9 @@ class EstudianteServices {
         apellido: String? = null,
         tipoDocumento: String? = null,
         genero: String? = null,
-        unidad: String? = null,
-        colegio: String? = null,
-        edicion: String? = null,
+        unidad: Int? = null,
+        colegio: Int? = null,
+        edicion: Int? = null,
         grado: String? = null,
         estado: Boolean? = null
 

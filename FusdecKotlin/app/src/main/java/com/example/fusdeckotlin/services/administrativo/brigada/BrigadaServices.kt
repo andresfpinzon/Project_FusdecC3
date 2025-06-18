@@ -15,7 +15,7 @@ class BrigadaServices {
     suspend fun crearBrigada(
         nombreBrigada: String,
         ubicacionBrigada: String,
-        comandoId: String
+        comandoId: Int
     ): Result<Brigada> {
         return try {
             val request = CrearBrigadaRequest(
@@ -40,7 +40,7 @@ class BrigadaServices {
         }
     }
 
-    suspend fun obtenerBrigadaPorId(id: String): Result<Brigada> {
+    suspend fun obtenerBrigadaPorId(id: Int): Result<Brigada> {
         return try {
             val response = brigadaApi.obtenerBrigadaPorId(id)
             handleResponse(response)
@@ -50,10 +50,10 @@ class BrigadaServices {
     }
 
     suspend fun actualizarBrigada(
-        id: String,
+        id: Int,
         nombreBrigada: String? = null,
         ubicacionBrigada: String? = null,
-        comandoId: String? = null,
+        comandoId: Int? = null,
         estadoBrigada: Boolean? = null
     ): Result<Brigada> {
         return try {
@@ -71,7 +71,7 @@ class BrigadaServices {
         }
     }
 
-    suspend fun desactivarBrigada(id: String): Result<Brigada> {
+    suspend fun desactivarBrigada(id: Int): Result<Brigada> {
         return try {
             val response = brigadaApi.desactivarBrigada(id)
             handleResponse(response)

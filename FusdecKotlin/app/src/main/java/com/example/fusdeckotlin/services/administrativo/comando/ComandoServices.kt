@@ -7,6 +7,8 @@ import com.example.fusdeckotlin.dto.administrativo.comando.CrearComandoRequest
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ComandoServices {
 
@@ -15,9 +17,9 @@ class ComandoServices {
     suspend fun crearComando(
         nombreComando: String,
         ubicacionComando: String,
-        fundacionId: String
-    ): Result<Comando> {
-        return try {
+        fundacionId: Int
+    ): Result<Comando> = withContext(Dispatchers.IO) {
+        try {
             val request = CrearComandoRequest(
                 nombreComando = nombreComando,
                 ubicacionComando = ubicacionComando,
@@ -31,8 +33,8 @@ class ComandoServices {
         }
     }
 
-    suspend fun listarComandosActivos(): Result<List<Comando>> {
-        return try {
+    suspend fun listarComandosActivos(): Result<List<Comando>> = withContext(Dispatchers.IO) {
+        try {
             val response = comandoApi.listarComandos()
             handleListResponse(response) { it.filter { comando -> comando.getEstadoComando() } }
         } catch (e: Exception) {
@@ -40,8 +42,8 @@ class ComandoServices {
         }
     }
 
-    suspend fun obtenerComandoPorId(id: String): Result<Comando> {
-        return try {
+    suspend fun obtenerComandoPorId(id: Int): Result<Comando> = withContext(Dispatchers.IO) {
+        try {
             val response = comandoApi.obtenerComandoPorId(id)
             handleResponse(response)
         } catch (e: Exception) {
@@ -50,13 +52,13 @@ class ComandoServices {
     }
 
     suspend fun actualizarComando(
-        id: String,
+        id: Int,
         nombreComando: String? = null,
         ubicacionComando: String? = null,
-        fundacionId: String? = null,
+        fundacionId: Int? = null,
         estadoComando: Boolean? = null
-    ): Result<Comando> {
-        return try {
+    ): Result<Comando> = withContext(Dispatchers.IO) {
+        try {
             val request = ActualizarComandoRequest(
                 nombreComando = nombreComando,
                 ubicacionComando = ubicacionComando,
@@ -71,8 +73,8 @@ class ComandoServices {
         }
     }
 
-    suspend fun desactivarComando(id: String): Result<Comando> {
-        return try {
+    suspend fun desactivarComando(id: Int): Result<Comando> = withContext(Dispatchers.IO) {
+        try {
             val response = comandoApi.desactivarComando(id)
             handleResponse(response)
         } catch (e: Exception) {

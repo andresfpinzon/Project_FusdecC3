@@ -54,9 +54,9 @@ class EstudianteAdapter(
         holder.nombreTextView.text = "${estudiante.getNombre()} ${estudiante.getApellido()}"
         holder.numeroDocumentoTextView.text = estudiante.getNumeroDocumento()
         holder.generoTextView.text = estudiante.getGenero()
-        holder.unidadValueTextView.text = estudiante.getUnidad()
-        holder.colegioValueTextView.text = estudiante.getColegio()
-        holder.edicionValueTextView.text = estudiante.getEdicion()
+        holder.unidadValueTextView.text = estudiante.getUnidad().toString()
+        holder.colegioValueTextView.text = estudiante.getColegio().toString()
+        holder.edicionValueTextView.text = estudiante.getEdicion().toString()
         holder.gradoValueTextView.text = estudiante.getGrado()
 
         // Configurar estado visual
@@ -103,9 +103,9 @@ class EstudianteAdapter(
                             estudiante.getNumeroDocumento().lowercase().contains(filterPattern) ||
                             estudiante.getTipoDocumento().lowercase().contains(filterPattern) ||
                             estudiante.getGenero().lowercase().contains(filterPattern) ||
-                            estudiante.getUnidad().lowercase().contains(filterPattern) ||
-                            estudiante.getColegio().lowercase().contains(filterPattern) ||
-                            estudiante.getEdicion().lowercase().contains(filterPattern) ||
+                            estudiante.getUnidad().toString().contains(filterPattern) ||
+                            estudiante.getColegio().toString().contains(filterPattern) ||
+                            estudiante.getEdicion().toString().contains(filterPattern) ||
                             estudiante.getGrado().lowercase().contains(filterPattern)) {
                             filteredList.add(estudiante)
                         }

@@ -42,7 +42,7 @@ class ComandoActivity : AppCompatActivity() {
     private lateinit var adapter: ComandoAdapter
 
     private var isEditing: Boolean = false
-    private var currentComandoId: String? = null
+    private var currentComandoId: Int? = null
     private var fundacionSeleccionada: Fundacion? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,15 +166,17 @@ class ComandoActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            val fundacionId = fundacionSeleccionada!!.getId()
+            val fundacionId = fundacionSeleccionada!!.getId().toIntOrNull() ?: run {
+                showError("ID de fundación inválido")
+                return@launch
+            }
 
             if (isEditing && currentComandoId != null) {
                 comandoService.actualizarComando(
                     currentComandoId!!,
                     nombre,
                     ubicacion,
-                    fundacionId,
-                    true
+                    fundacionId
                 ).onSuccess {
                     showSuccess("Comando actualizado")
                     resetEditingState()
@@ -204,23 +206,17 @@ class ComandoActivity : AppCompatActivity() {
         nombreEditText.setText(comando.getNombreComando())
         ubicacionEditText.setText(comando.getUbicacionComando())
 
-        // Check if we already have the foundation object
-        if (comando.getFundacion().getNombreFundacion().isNotEmpty()) {
-            fundacionSeleccionada = comando.getFundacion()
-            actualizarTextoFundacionSeleccionada()
-        } else {
-            // Only make API call if we don't have the foundation data
-            lifecycleScope.launch {
-                val result = fundacionService.obtenerFundacionPorId(comando.getFundacionId())
-                result.onSuccess { fundacion ->
-                    runOnUiThread {
-                        fundacionSeleccionada = fundacion
-                        actualizarTextoFundacionSeleccionada()
-                    }
-                }.onFailure { error ->
-                    runOnUiThread {
-                        showError("Error al cargar fundación: ${error.message}")
-                    }
+        // Cargar fundación desde el ID
+        lifecycleScope.launch {
+            val result = fundacionService.obtenerFundacionPorId(comando.getFundacionId().toString())
+            result.onSuccess { fundacion ->
+                runOnUiThread {
+                    fundacionSeleccionada = fundacion
+                    actualizarTextoFundacionSeleccionada()
+                }
+            }.onFailure { error ->
+                runOnUiThread {
+                    showError("Error al cargar fundación: ${error.message}")
                 }
             }
         }

@@ -11,7 +11,6 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
       { nombre: "Brigadas", ruta: "/brigadas", roles: ["Administrativo", "Root"] },
       { nombre: "Unidades", ruta: "/unidades", roles: ["Administrativo", "Root"] },
       { nombre: "Colegios", ruta: "/colegios", roles: ["Administrativo", "Root"] },
-      { nombre: "Asistencias", ruta: "/asistencias", roles: ["Administrativo", "Root"] },
       { nombre: "Auditorias", ruta: "/auditorias", roles: ["Administrativo", "Root"] },
       { nombre: "Certificados", ruta: "/certificados", roles: ["Administrativo", "Root"] },
       { nombre: "Usuarios", ruta: "/usuarios", roles: ["Administrativo", "Root"] },
@@ -24,7 +23,7 @@ const obtenerRutasPermitidas = (isAuthenticated, roles) => {
     ];
   
     const rutasInstructor = [
-      { nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor", "Root"] },
+      //{ nombre: "Estudiantes", ruta: "/estudiantes", roles: ["Instructor", "Root"] },
       { nombre: "Asistencias", ruta: "/asistencias", roles: ["Instructor", "Root"] },
     ];
 
