@@ -287,7 +287,7 @@ const Estudiantes = () => {
         throw new Error("Por favor complete todos los campos obligatorios");
       }
 
-      const response = await fetch("http://localhost:8080/estudiantes", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -361,7 +361,7 @@ const Estudiantes = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/estudiantes/${selectedEstudiante.numeroDocumento}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes/${selectedEstudiante.numeroDocumento}`,
         {
           method: "PUT",
           headers: {
@@ -401,7 +401,7 @@ const Estudiantes = () => {
     if (!estudianteToDelete) return;
     try {
       const response = await fetch(
-        `http://localhost:8080/estudiantes/${estudianteToDelete.numeroDocumento}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes/${estudianteToDelete.numeroDocumento}`,
         {
           method: "DELETE",
           headers: {
@@ -457,7 +457,7 @@ const Estudiantes = () => {
 
   const handleInfoClick = async (estudiante) => {
     try {
-      const relacionesResponse = await fetch("http://localhost:8080/asistencia-estudiantes", {
+      const relacionesResponse = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/asistencia-estudiantes", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -473,7 +473,7 @@ const Estudiantes = () => {
         rel => rel.estudianteId === estudiante.numeroDocumento
       );
 
-      const asistenciasResponse = await fetch("http://localhost:8080/asistencias", {
+      const asistenciasResponse = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/asistencias", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

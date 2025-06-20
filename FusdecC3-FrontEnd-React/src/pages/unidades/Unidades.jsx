@@ -281,8 +281,8 @@ const Unidades = () => {
     try {
       const isUpdate = !!selectedUnidad;
       const url = isUpdate
-        ? `http://localhost:8080/unidades/${selectedUnidad.id}`
-        : 'http://localhost:8080/unidades';
+        ? `https://qf5sx04q-8080.use2.devtunnels.ms/unidades/${selectedUnidad.id}`
+        : 'https://qf5sx04q-8080.use2.devtunnels.ms/unidades';
 
       // Normalizar datos antes de enviar
       const requestData = {
@@ -345,7 +345,7 @@ const Unidades = () => {
     if (!brigadeToDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/unidades/${brigadeToDelete}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/unidades/${brigadeToDelete}`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
