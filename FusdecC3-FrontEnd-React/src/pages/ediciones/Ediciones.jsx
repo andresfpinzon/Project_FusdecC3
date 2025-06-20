@@ -75,7 +75,7 @@ const Ediciones = () => {
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:8080/ediciones", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/ediciones", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ const Ediciones = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/cursos", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/cursos", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ const Ediciones = () => {
 
   const fetchEstudiantes = async (edicionId) => {
     try {
-      const response = await fetch(`http://localhost:8080/ediciones/${edicionId}/estudiantes`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/ediciones/${edicionId}/estudiantes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +196,7 @@ const Ediciones = () => {
         throw new Error("Por favor complete todos los campos obligatorios");
       }
 
-      const response = await fetch("http://localhost:8080/ediciones", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/ediciones", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -259,7 +259,7 @@ const Ediciones = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/ediciones/${selectedEdicion.id}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/ediciones/${selectedEdicion.id}`,
         {
           method: "PUT",
           headers: {
@@ -307,7 +307,7 @@ const Ediciones = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/ediciones/${edicionToDelete.id}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/ediciones/${edicionToDelete.id}`,
         {
           method: "DELETE",
           headers: {

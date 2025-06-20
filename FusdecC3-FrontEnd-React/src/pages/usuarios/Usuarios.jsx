@@ -72,7 +72,7 @@ const Usuarios = () => {
 
   const fetchRolesDisponibles = async () => {
     try {
-      const response = await fetch("http://localhost:8080/roles", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/roles", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -97,7 +97,7 @@ const Usuarios = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch("http://localhost:8080/usuarios", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/usuarios", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -116,7 +116,7 @@ const Usuarios = () => {
         data.map(async (usuario) => {
           try {
             const rolesResponse = await fetch(
-              `http://localhost:8080/rolesAsignados/${usuario.numeroDocumento}/detallado`,
+              `https://qf5sx04q-8080.use2.devtunnels.ms/rolesAsignados/${usuario.numeroDocumento}/detallado`,
               {
                 headers: {
                   "Authorization": `Bearer ${token}`,
@@ -160,7 +160,7 @@ const Usuarios = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/rolesAsignados/${documento}/detallado`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/rolesAsignados/${documento}/detallado`,
         {
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -240,7 +240,7 @@ const Usuarios = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/usuarios-management/con-roles", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/usuarios-management/con-roles", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -315,7 +315,7 @@ const Usuarios = () => {
       };
 
       const response = await fetch(
-        `http://localhost:8080/usuarios-management/${formValues.numeroDocumento}/con-roles`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/usuarios-management/${formValues.numeroDocumento}/con-roles`,
         {
           method: "PUT",
           headers: {
@@ -362,7 +362,7 @@ const Usuarios = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/usuarios/${usuarioToDelete.numeroDocumento}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/usuarios/${usuarioToDelete.numeroDocumento}`,
         {
           method: "DELETE",
           headers: {

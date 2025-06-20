@@ -56,7 +56,7 @@ const Colegios = () => {
 
   const fetchColegios = async () => {
     try {
-      const response = await fetch("http://localhost:8080/colegios", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/colegios", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const Colegios = () => {
 
   const fetchEstudiantes = async (colegioId) => {
     try {
-      const response = await fetch(`http://localhost:8080/colegios/${colegioId}/estudiantes`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/colegios/${colegioId}/estudiantes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +165,7 @@ const Colegios = () => {
         email: formValues.email.trim().toLowerCase()
       };
 
-      const response = await fetch("http://localhost:8080/colegios", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/colegios", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -233,7 +233,7 @@ const Colegios = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:8080/colegios/${selectedColegio.id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/colegios/${selectedColegio.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -288,7 +288,7 @@ const Colegios = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/colegios/${colegioToDelete.id}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/colegios/${colegioToDelete.id}`,
         {
           method: "DELETE",
           headers: {

@@ -70,7 +70,7 @@ const Unidades = () => {
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch('http://localhost:8080/unidades', {
+      const response = await fetch('https://qf5sx04q-8080.use2.devtunnels.ms/unidades', {
         headers: { "Authorization": `Bearer ${token}` },
       });
 
@@ -104,7 +104,7 @@ const Unidades = () => {
 
   const fetchBrigadas = async () => {
     try {
-      const response = await fetch('http://localhost:8080/brigadas', {
+      const response = await fetch('https://qf5sx04q-8080.use2.devtunnels.ms/brigadas', {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -136,7 +136,7 @@ const Unidades = () => {
 
   const getUsuarioNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/usuarios/numero-documento/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/usuarios/numero-documento/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -151,7 +151,7 @@ const Unidades = () => {
 
   const getBrigadaNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/brigadas/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/brigadas/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -166,7 +166,7 @@ const Unidades = () => {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch('http://localhost:8080/usuarios', {
+      const response = await fetch('https://qf5sx04q-8080.use2.devtunnels.ms/usuarios', {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -184,7 +184,7 @@ const Unidades = () => {
         data.map(async (usuario) => {
           try {
             const rolesResponse = await fetch(
-              `http://localhost:8080/rolesAsignados/${usuario.numeroDocumento}/detallado`,
+              `https://qf5sx04q-8080.use2.devtunnels.ms/rolesAsignados/${usuario.numeroDocumento}/detallado`,
               {
                 headers: {
                   "Content-Type": "application/json",
@@ -233,7 +233,7 @@ const Unidades = () => {
 
   const fetchEstudiantes = async (unidadId) => {
     try {
-      const response = await fetch("http://localhost:8080/estudiantes", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes", {
         headers: { "Authorization": `Bearer ${token}` },
       });
 

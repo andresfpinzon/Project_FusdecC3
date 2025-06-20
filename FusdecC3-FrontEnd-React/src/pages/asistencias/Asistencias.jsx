@@ -77,7 +77,7 @@ const Asistencias = () => {
   // Cargar estudiantes
   const fetchStudents = async () => {
     try {
-      const response = await fetch("http://localhost:8080/estudiantes", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes", {
         headers: { "Authorization": `Bearer ${token}` }
       });
 
@@ -99,7 +99,7 @@ const Asistencias = () => {
   // Obtener historial de asistencias
   const fetchAttendanceHistory = async () => {
     try {
-      const response = await fetch("http://localhost:8080/asistencias", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/asistencias", {
         headers: {
           "Authorization": `Bearer ${token}`
         },
@@ -118,7 +118,7 @@ const Asistencias = () => {
   const fetchStudentsForAttendance = async (attendanceId) => {
   try {
     const response = await fetch(
-      `http://localhost:8080/estudiantes/por-asistencia/${attendanceId}`,
+      `https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes/por-asistencia/${attendanceId}`,
       {
         headers: { "Authorization": `Bearer ${token}` }
       }
@@ -151,7 +151,7 @@ const Asistencias = () => {
       }
 
       // Crear asistencia
-      const asistenciaRes = await fetch("http://localhost:8080/asistencias", {
+      const asistenciaRes = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/asistencias", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -175,7 +175,7 @@ const Asistencias = () => {
 
       await Promise.all(
         presentes.map(doc =>
-          fetch("http://localhost:8080/asistencia-estudiantes", {
+          fetch("https://qf5sx04q-8080.use2.devtunnels.ms/asistencia-estudiantes", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -202,7 +202,7 @@ const Asistencias = () => {
     if (!attendanceToDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/asistencias/${attendanceToDelete.id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/asistencias/${attendanceToDelete.id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`

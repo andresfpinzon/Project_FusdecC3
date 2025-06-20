@@ -81,7 +81,7 @@ const Certificados = () => {
 
   const obtenerColegioPorId = async (colegioId) => {
   try {
-    const response = await fetch(`http://localhost:8080/colegios/${colegioId}`, {
+    const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/colegios/${colegioId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -105,7 +105,7 @@ const Certificados = () => {
 
   const fetchUsuarioActual = async (numeroDocumento) => {
     try {
-      const response = await fetch(`http://localhost:8080/usuarios`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/usuarios`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json'
@@ -135,7 +135,7 @@ const Certificados = () => {
         throw new Error('No hay token de autenticación');
       }
 
-      const response = await fetch("http://localhost:8080/estudiantes", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes", {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -232,7 +232,7 @@ const Certificados = () => {
       };
 
       try {
-        const certificadoResponse = await fetch("http://localhost:8080/certificados", {
+        const certificadoResponse = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/certificados", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

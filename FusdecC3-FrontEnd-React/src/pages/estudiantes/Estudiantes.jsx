@@ -74,7 +74,7 @@ const Estudiantes = () => {
 
   const fetchEstudiantes = async () => {
     try {
-      const response = await fetch("http://localhost:8080/estudiantes", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const Estudiantes = () => {
   // Funciones auxiliares para obtener nombres
   const getUnidadNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/unidades/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/unidades/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -130,7 +130,7 @@ const Estudiantes = () => {
 
   const getColegioNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/colegios/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/colegios/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -145,7 +145,7 @@ const Estudiantes = () => {
 
   const getEdicionNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/ediciones/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/ediciones/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -160,7 +160,7 @@ const Estudiantes = () => {
 
   const fetchUnidades = async () => {
     try {
-      const response = await fetch("http://localhost:8080/unidades", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/unidades", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -187,7 +187,7 @@ const Estudiantes = () => {
 
   const fetchColegios = async () => {
     try {
-      const response = await fetch("http://localhost:8080/colegios", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/colegios", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -216,7 +216,7 @@ const Estudiantes = () => {
 
   const fetchEdiciones = async () => {
     try {
-      const response = await fetch("http://localhost:8080/ediciones", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/ediciones", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

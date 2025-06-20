@@ -59,7 +59,7 @@ const Cursos = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/cursos", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/cursos", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const Cursos = () => {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:8080/fundaciones", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/fundaciones", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +123,7 @@ const Cursos = () => {
 
   const getFundacionNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/fundaciones/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/fundaciones/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -189,7 +189,7 @@ const Cursos = () => {
         throw new Error("La intensidad horaria debe estar en formato 'X horas'");
       }
 
-      const response = await fetch("http://localhost:8080/cursos", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/cursos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -254,7 +254,7 @@ const handleUpdateCurso = async () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/cursos/${selectedCurso.id}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/cursos/${selectedCurso.id}`,
         {
           method: "PUT",
           headers: {
@@ -302,7 +302,7 @@ const handleUpdateCurso = async () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/cursos/${cursoToDelete.id}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/cursos/${cursoToDelete.id}`,
         {
           method: "DELETE",
           headers: {

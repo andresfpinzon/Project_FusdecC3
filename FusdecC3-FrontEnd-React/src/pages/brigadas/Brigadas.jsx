@@ -43,7 +43,7 @@ const Brigadas = () => {
 
   const fetchBrigades = async () => {
     try {
-      const response = await fetch('http://localhost:8080/brigadas', {
+      const response = await fetch('https://qf5sx04q-8080.use2.devtunnels.ms/brigadas', {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -80,7 +80,7 @@ const Brigadas = () => {
 
   const fetchCommands = async () => {
     try {
-      const response = await fetch('http://localhost:8080/comandos', {
+      const response = await fetch('https://qf5sx04q-8080.use2.devtunnels.ms/comandos', {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -105,7 +105,7 @@ const Brigadas = () => {
 
   const fetchUnidadesAsignadas = async (brigadaId) => {
     try {
-      const response = await fetch(`http://localhost:8080/brigadas/${brigadaId}/unidades-asignadas`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/brigadas/${brigadaId}/unidades-asignadas`, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -121,7 +121,7 @@ const Brigadas = () => {
 
   const getComandoNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/comandos/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/comandos/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -170,8 +170,8 @@ const Brigadas = () => {
     try {
       const isUpdate = !!selectedBrigade;
       const url = isUpdate
-        ? `http://localhost:8080/brigadas/${selectedBrigade.id}`
-        : 'http://localhost:8080/brigadas';
+        ? `https://qf5sx04q-8080.use2.devtunnels.ms/brigadas/${selectedBrigade.id}`
+        : 'https://qf5sx04q-8080.use2.devtunnels.ms/brigadas';
 
       const response = await fetch(url, {
         method: isUpdate ? 'PUT' : 'POST',
@@ -219,7 +219,7 @@ const Brigadas = () => {
     if (!brigadeToDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/brigadas/${brigadeToDelete}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/brigadas/${brigadeToDelete}`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",

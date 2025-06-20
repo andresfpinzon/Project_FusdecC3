@@ -61,7 +61,7 @@ const Comandos = () => {
 
   const fetchComandos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/comandos", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/comandos", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const Comandos = () => {
 
   const fetchFundaciones = async () => {
     try {
-      const response = await fetch("http://localhost:8080/fundaciones", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/fundaciones", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +125,7 @@ const Comandos = () => {
 
   const getFundacionNombre = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/fundaciones/${id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/fundaciones/${id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -140,7 +140,7 @@ const Comandos = () => {
 
   const fetchBrigadasActivas = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/comandos/${id}/brigadas-asignadas`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/comandos/${id}/brigadas-asignadas`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -195,7 +195,7 @@ const Comandos = () => {
         fundacionId: formValues.fundacionId
       };
 
-      const response = await fetch("http://localhost:8080/comandos", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/comandos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -260,7 +260,7 @@ const Comandos = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:8080/comandos/${selectedComando.id}`, {
+      const response = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/comandos/${selectedComando.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -300,7 +300,7 @@ const Comandos = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/comandos/${selectedComando.id}`,
+        `https://qf5sx04q-8080.use2.devtunnels.ms/comandos/${selectedComando.id}`,
         {
           method: "DELETE",
           headers: {

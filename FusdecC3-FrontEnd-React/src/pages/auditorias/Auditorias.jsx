@@ -52,7 +52,7 @@ const Auditorias = () => {
 
   const fetchAuditorias = async () => {
     try {
-      const response = await fetch("http://localhost:8080/auditorias", {
+      const response = await fetch("https://qf5sx04q-8080.use2.devtunnels.ms/auditorias", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -76,7 +76,7 @@ const Auditorias = () => {
       console.log('Datos de la auditoría:', auditoria);
 
       // Obtener todos los certificados
-      const certificadosResponse = await fetch(`http://localhost:8080/certificados`, {
+      const certificadosResponse = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/certificados`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -97,7 +97,7 @@ const Auditorias = () => {
       console.log('Datos del certificado:', certificadoData);
 
       // Obtener todos los estudiantes
-      const estudiantesResponse = await fetch(`http://localhost:8080/estudiantes`, {
+      const estudiantesResponse = await fetch(`https://qf5sx04q-8080.use2.devtunnels.ms/estudiantes`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
