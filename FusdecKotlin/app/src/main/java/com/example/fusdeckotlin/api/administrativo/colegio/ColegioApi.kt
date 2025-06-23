@@ -15,13 +15,13 @@ interface ColegioApi {
 
     @PUT("colegios/{id}")
     suspend fun actualizarColegio(
-        @Path("id") id: String,
+        @Path("id") id: Int,
         @Body request: ActualizarColegioRequest
     ): Response<Colegio>
 
     @DELETE("colegios/{id}")
-    suspend fun desactivarColegio(@Path("id") id: String): Response<Colegio>
+    suspend fun desactivarColegio(@Path("id") id: Int): Response<Colegio>
 
     @GET("colegios/{id}")
-    suspend fun obtenerColegioPorId(@Path("id") id: String): Response<Colegio>
+    suspend fun obtenerColegioPorId(@Path("id") id: Int): Response<Colegio>
 }

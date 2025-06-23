@@ -1,22 +1,20 @@
 package com.example.fusdeckotlin.dto.secretario.edicion
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDate
 
 data class CrearEdicionRequest(
-    @SerializedName("tituloEdicion")
+    @SerializedName("titulo")
     val nombre: String,
 
-    @SerializedName("fechaInicioEdicion")
+    @SerializedName("fechaInicio")
     val fechaInicio: String,  // Formato: "YYYY-MM-DD"
 
-    @SerializedName("fechaFinEdicion")
+    @SerializedName("fechaFin")
     val fechaFin: String,     // Formato: "YYYY-MM-DD"
 
     @SerializedName("cursoId")
-    val cursoId: String,
+    val cursoId: Int?,
 
-    @SerializedName("estadoEdicion")
-    val estado: Boolean = true,
-
+    @SerializedName("estado")
+    val estado: Boolean = true
 )

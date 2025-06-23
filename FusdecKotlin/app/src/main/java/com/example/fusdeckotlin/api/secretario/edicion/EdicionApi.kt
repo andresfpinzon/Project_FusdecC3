@@ -15,13 +15,13 @@ interface EdicionApi {
 
     @PUT("ediciones/{id}")
     suspend fun actualizarEdicion(
-        @Path("id") id: String,
+        @Path("id") id: Long,
         @Body request: ActualizarEdicionRequest
     ): Response<Edicion>
 
     @DELETE("ediciones/{id}")
-    suspend fun desactivarEdicion(@Path("id") id: String): Response<Edicion>
+    suspend fun desactivarEdicion(@Path("id") id: Long): Response<Edicion>
 
     @GET("ediciones/{id}")
-    suspend fun obtenerEdicionPorId(@Path("id") id: String): Response<Edicion>
+    suspend fun obtenerEdicionPorId(@Path("id") id: Long): Response<Edicion>
 }

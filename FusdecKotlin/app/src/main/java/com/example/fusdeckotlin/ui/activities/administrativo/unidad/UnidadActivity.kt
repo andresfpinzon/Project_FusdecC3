@@ -46,7 +46,7 @@ class UnidadActivity : AppCompatActivity() {
     private lateinit var adapter: UnidadAdapter
 
     private var isEditing: Boolean = false
-    private var currentUnidadId: String? = null
+    private var currentUnidadId: Int? = null
     private var brigadaSeleccionada: Brigada? = null
     private var usuarioSeleccionado: Usuario? = null
 
@@ -102,7 +102,9 @@ class UnidadActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            brigadaService,
+            usuarioService
         )
         unidadesRecyclerView.layoutManager = LinearLayoutManager(this)
         unidadesRecyclerView.adapter = adapter
@@ -217,8 +219,7 @@ class UnidadActivity : AppCompatActivity() {
                     currentUnidadId!!,
                     nombre,
                     brigadaId,
-                    usuarioId,
-                    true
+                    usuarioId
                 ).onSuccess {
                     showSuccess("Unidad actualizada")
                     resetEditingState()
@@ -244,26 +245,34 @@ class UnidadActivity : AppCompatActivity() {
 
     private fun onUpdateClick(unidad: Unidad) {
         isEditing = true
-        currentUnidadId = unidad.getId().toString()
+        currentUnidadId = unidad.getId()
         nombreEditText.setText(unidad.getNombreUnidad())
 
         // Cargar brigada
         lifecycleScope.launch {
             val resultBrigada = brigadaService.obtenerBrigadaPorId(unidad.getBrigadaId())
             resultBrigada.onSuccess { brigada ->
-                brigadaSeleccionada = brigada
-                actualizarTextoBrigadaSeleccionada()
+                runOnUiThread {
+                    brigadaSeleccionada = brigada
+                    actualizarTextoBrigadaSeleccionada()
+                }
             }.onFailure { error ->
-                showError("Error al cargar brigada: ${error.message}")
+                runOnUiThread {
+                    showError("Error al cargar brigada: ${error.message}")
+                }
             }
 
             // Cargar usuario
-            val resultUsuario = usuarioService.getUserByDocument(unidad.getUsuarioId())
+            val resultUsuario = usuarioService.getUserByDocument(unidad.getUsuarioId().toString())
             resultUsuario.onSuccess { usuario ->
-                usuarioSeleccionado = usuario
-                actualizarTextoUsuarioSeleccionado()
+                runOnUiThread {
+                    usuarioSeleccionado = usuario
+                    actualizarTextoUsuarioSeleccionado()
+                }
             }.onFailure { error ->
-                showError("Error al cargar usuario: ${error.message}")
+                runOnUiThread {
+                    showError("Error al cargar usuario: ${error.message}")
+                }
             }
         }
     }
@@ -274,7 +283,7 @@ class UnidadActivity : AppCompatActivity() {
             .setMessage("¿Estás seguro de que deseas eliminar esta unidad?")
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
-                    val result = unidadService.desactivarUnidad(unidad.getId().toString())
+                    val result = unidadService.desactivarUnidad(unidad.getId())
                     result.onSuccess {
                         showSuccess("Unidad eliminada")
                         cargarUnidades()
@@ -291,13 +300,11 @@ class UnidadActivity : AppCompatActivity() {
     private fun onInfoClick(unidad: Unidad) {
         lifecycleScope.launch {
             try {
-                // Obtener todos los estudiantes activos
                 val resultEstudiantes = estudianteService.listarEstudiantesActivos()
 
                 resultEstudiantes.onSuccess { todosEstudiantes ->
-                    // Filtrar estudiantes cuyo campo unidad coincida
                     val estudiantesUnidad = todosEstudiantes.filter { estudiante ->
-                        estudiante.getUnidad().toString() == unidad.getId().toString()
+                        estudiante.getUnidad() == unidad.getId()
                     }.map { estudiante ->
                         "• Num: ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
                     }.toTypedArray()

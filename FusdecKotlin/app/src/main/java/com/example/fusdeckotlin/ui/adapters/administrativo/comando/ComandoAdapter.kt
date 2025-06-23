@@ -10,15 +10,23 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.comando.Comando
+import com.example.fusdeckotlin.services.root.fundacion.FundacionService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
 class ComandoAdapter(
     private var comandos: List<Comando>,
     private val onUpdateClick: (Comando) -> Unit,
     private val onDeleteClick: (Comando) -> Unit,
-    private val onInfoClick: (Comando) -> Unit
+    private val onInfoClick: (Comando) -> Unit,
+    private val fundacionService: FundacionService
 ) : RecyclerView.Adapter<ComandoAdapter.ComandoViewHolder>(), Filterable {
 
     private var comandosFiltradas: List<Comando> = comandos
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     class ComandoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreComando)
@@ -40,7 +48,7 @@ class ComandoAdapter(
 
         holder.nombreTextView.text = comando.getNombreComando()
         holder.ubicacionTextView.text = comando.getUbicacionComando()
-        holder.fundacionTextView.text = "Fundación ID: ${comando.getFundacionId()}"
+        cargarFundacionNombre(comando.getFundacionId(), holder.fundacionTextView)
 
         holder.updateButton.setOnClickListener { onUpdateClick(comando) }
         holder.deleteButton.setOnClickListener { onDeleteClick(comando) }
@@ -75,6 +83,27 @@ class ComandoAdapter(
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 comandosFiltradas = results?.values as List<Comando>
                 notifyDataSetChanged()
+            }
+        }
+    }
+
+    private fun cargarFundacionNombre(fundacionId: Int, textView: TextView){
+        coroutineScope.launch {
+            try {
+                val fundacion = fundacionService.obtenerFundacionPorId(fundacionId)
+                fundacion.onSuccess { f ->
+                    withContext(Dispatchers.Main){
+                        textView.text = f.getNombreFundacion()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $fundacionId"
+                    }
+                }
+            }catch (e: Exception){
+                withContext(Dispatchers.Main){
+                    textView.text = "ID: $fundacionId"
+                }
             }
         }
     }

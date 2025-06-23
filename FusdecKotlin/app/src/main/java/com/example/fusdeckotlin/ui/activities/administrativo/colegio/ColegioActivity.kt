@@ -1,6 +1,5 @@
 package com.example.fusdeckotlin.ui.activities.administrativo.colegio
 
-
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -37,7 +36,7 @@ class ColegioActivity : AppCompatActivity() {
     private lateinit var adapter: ColegioAdapter
 
     private var isEditing: Boolean = false
-    private var currentColegioId: String? = null
+    private var currentColegioId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,17 +149,65 @@ class ColegioActivity : AppCompatActivity() {
 
     private fun onUpdateClick(colegio: Colegio) {
         isEditing = true
+        currentColegioId = colegio.getId()
         nombreEditText.setText(colegio.getNombreColegio())
         emailEditText.setText(colegio.getEmailColegio())
     }
 
     private fun onDeleteClick(colegio: Colegio) {
-
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Estás seguro de que deseas eliminar este colegio?")
+            .setPositiveButton("Sí") { _, _ ->
+                lifecycleScope.launch {
+                    val result = colegioService.desactivarColegio(colegio.getId())
+                    result.onSuccess {
+                        showSuccess("Colegio eliminado")
+                        cargarColegios()
+                    }.onFailure { error ->
+                        showError(error.message ?: "Error al eliminar")
+                    }
+                }
+            }
+            .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .show()
     }
 
     private fun onInfoClick(colegio: Colegio) {
+        lifecycleScope.launch {
+            try {
+                // Obtener estudiantes de este colegio (coincidencia por nombre)
+                val resultEstudiantes = estudianteService.listarEstudiantesActivos()
 
+                resultEstudiantes.onSuccess { todosEstudiantes ->
+                    // Filtrar estudiantes que tienen este colegio (por nombre)
+                    val estudiantesColegio = todosEstudiantes.filter {
+                        it.getColegio().equals(colegio.getId(),)
+                    }.map { estudiante ->
+                        "• ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
+                    }.toTypedArray()
 
+                    runOnUiThread {
+                        if (estudiantesColegio.isNotEmpty()) {
+                            mostrarDialogoEstudiantes(estudiantesColegio)
+                        } else {
+                            mostrarDialogoEstudiantes(
+                                arrayOf("No hay estudiantes asociados al colegio: ${colegio.getNombreColegio()}")
+                            )
+                        }
+                    }
+                }.onFailure { error ->
+                    runOnUiThread {
+                        showError("Error al cargar estudiantes: ${error.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    showError("Error inesperado: ${e.message}")
+                }
+            }
+        }
     }
 
     private fun mostrarDialogoEstudiantes(estudiantes: Array<String>) {

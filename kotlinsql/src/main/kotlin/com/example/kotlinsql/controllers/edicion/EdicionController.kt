@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -111,9 +113,13 @@ class EdicionController(
         ]
     )
     @DeleteMapping("/{id}")
-    fun deleteEdicion(@PathVariable id: Long): String {
-        edicionServices.deleteEdicion(id)
-        return "Edición eliminada"
+    fun deleteEdicion(@PathVariable id: Long): ResponseEntity<Map<String, String>> {
+        return try {
+            edicionServices.deleteEdicion(id)
+            ResponseEntity.ok(mapOf("message" to "Edición eliminada correctamente"))
+        } catch (e: EmptyResultDataAccessException) {
+            ResponseEntity.ok(mapOf("message" to "Edición no encontrada"))
+        }
     }
 
     @Operation(summary = "Obtener edición por ID", description = "Devuelve una edición específica mediante su ID.")

@@ -10,16 +10,25 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.edicion.Edicion
+import com.example.fusdeckotlin.services.secretario.curso.CursoServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.format.DateTimeFormatter
 
 class EdicionAdapter(
     private var ediciones: List<Edicion>,
     private val onUpdateClick: (Edicion) -> Unit,
     private val onDeleteClick: (Edicion) -> Unit,
-    private val onInfoClick: (Edicion) -> Unit
+    private val onInfoClick: (Edicion) -> Unit,
+    private val cursoServices: CursoServices
 ) : RecyclerView.Adapter<EdicionAdapter.EdicionViewHolder>(), Filterable {
 
     private var edicionesFiltradas: List<Edicion> = ediciones
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
 
     class EdicionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.tituloEdicion)
@@ -41,17 +50,38 @@ class EdicionAdapter(
         val edicion = edicionesFiltradas[position]
         val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-        holder.nombreTextView.text = edicion.getNombreEdicion()
+        holder.nombreTextView.text = edicion.getNombre()
         holder.fechaInicioTextView.text = edicion.getFechaInicio().format(dateFormatter)
         holder.fechaFinTextView.text = edicion.getFechaFin().format(dateFormatter)
-        holder.cursoTextView.text = when {
-            edicion.getCurso().getNombreCurso().isNotEmpty() -> edicion.getCurso().getNombreCurso()
-            else -> edicion.getCursoId()
-        }
+        holder.cursoTextView.text = "${edicion.getCursoId()}"
+        edicion.getCursoId()?.let { cargarNombreCurso(it,holder.cursoTextView) }
 
         holder.updateButton.setOnClickListener { onUpdateClick(edicion) }
         holder.deleteButton.setOnClickListener { onDeleteClick(edicion) }
         holder.infoButton.setOnClickListener { onInfoClick(edicion) }
+    }
+
+    private fun cargarNombreCurso(cursoId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val curso = cursoServices.obtenerCursoPorId(cursoId)
+                curso.onSuccess {
+                        c ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = c.getNombre()
+                    }
+                }
+                curso.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "$cursoId (No encontrado)"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "Error al cargar curso"
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int = edicionesFiltradas.size
@@ -65,14 +95,12 @@ class EdicionAdapter(
                 } else {
                     val filterPattern = constraint.toString().lowercase().trim()
                     ediciones.forEach { edicion ->
-                        if (edicion.getNombreEdicion().lowercase().contains(filterPattern) ||
-                            edicion.getCursoId().lowercase().contains(filterPattern) ||
+                        if (edicion.getNombre().lowercase().contains(filterPattern) ||
+                            edicion.getCursoId().toString().contains(filterPattern) ||
                             edicion.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                                 .lowercase().contains(filterPattern) ||
                             edicion.getFechaFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                .lowercase().contains(filterPattern) ||
-                            (edicion.getCurso().getNombreCurso().isNotEmpty() &&
-                                    edicion.getCurso().getNombreCurso().lowercase().contains(filterPattern))
+                                .lowercase().contains(filterPattern)
                         ) {
                             filteredList.add(edicion)
                         }

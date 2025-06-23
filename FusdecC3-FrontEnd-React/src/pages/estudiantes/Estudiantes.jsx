@@ -574,8 +574,8 @@ const Estudiantes = () => {
             onChange={handleInputChange}
             input={<OutlinedInput label="Género" />}
           >
-            <MenuItem value="Masculino">Masculino</MenuItem>
-            <MenuItem value="Femenino">Femenino</MenuItem>
+            <MenuItem value="masculino">Masculino</MenuItem>
+            <MenuItem value="femenino">Femenino</MenuItem>
             <MenuItem value="Otro">Otro</MenuItem>
           </Select>
         </FormControl>

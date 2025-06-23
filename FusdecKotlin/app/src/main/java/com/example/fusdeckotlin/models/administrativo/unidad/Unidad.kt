@@ -1,100 +1,23 @@
 package com.example.fusdeckotlin.models.administrativo.unidad
 
-import com.example.fusdeckotlin.models.administrativo.brigada.Brigada
 import com.google.gson.annotations.SerializedName
-import com.example.fusdeckotlin.models.administrativo.user.model.Usuario
 
 data class Unidad(
-    @SerializedName("id")
-    private val id: Long?,
-    @SerializedName("nombreUnidad")
-    private var nombreUnidad: String,
-    @SerializedName("brigadaId")
-    private var brigadaId: Any,
-    @SerializedName("estadoUnidad")
-    private var estadoUnidad: Boolean = true,
-    @SerializedName("usuarioId")
-    private var usuarioId: Any,
+    @SerializedName("id") private val id: Int,
+    @SerializedName("nombreUnidad") private var nombreUnidad: String,
+    @SerializedName("brigadaId") private var brigadaId: Int,
+    @SerializedName("estadoUnidad") private var estadoUnidad: Boolean = true,
+    @SerializedName("usuarioId") private var usuarioId: String
 ) {
-    fun getId() = id
-    fun getNombreUnidad() = nombreUnidad
+    // Funciones get() para acceder a las propiedades
+    fun getId(): Int = id
+    fun getNombreUnidad(): String = nombreUnidad
+    fun getBrigadaId(): Int = brigadaId
+    fun getEstadoUnidad(): Boolean = estadoUnidad
+    fun getUsuarioId(): String = usuarioId
 
-    fun getBrigadaId(): String{
-        return when (brigadaId) {
-            is String -> brigadaId as String
-            is Brigada -> (brigadaId as Brigada).getId()
-            is Map<*, *> -> (brigadaId as Map<*, *>)["id"] as? String ?: ""
-            else -> ""
-        }
+    override fun toString(): String {
+        return "Unidad(id=${getId()}, nombre='${getNombreUnidad()}', " +
+                "brigadaId=${getBrigadaId()}, usuarioId=${getUsuarioId()})"
     }
-
-    fun getBrigada(): Brigada {
-        return when (brigadaId){
-            is Brigada -> brigadaId as Brigada
-            is String -> createBrigradaEmpty(brigadaId as String)
-            is Map<*,*> -> convertMaptoBrigada(brigadaId as Map<*,*>)
-            else -> createBrigradaEmpty("")
-        }
-    }
-
-    private fun createBrigradaEmpty(id: String): Brigada{
-         return Brigada(
-             id = id,
-             nombreBrigada = "",
-             ubicacionBrigada = "",
-             comandoId = "",
-         )
-    }
-
-    private fun convertMaptoBrigada(map: Map<*,*>): Brigada {
-        return Brigada(
-            id = map["_id"] as? String ?: "",
-            nombreBrigada = map["nombreBrigada"] as? String ?: "",
-            ubicacionBrigada = map["ubicacionBrigada"] as? String ?: "",
-            comandoId = map["comandoId"] as? String ?: "",
-        )
-    }
-    fun getEstadoUnidad() = estadoUnidad
-
-    fun getUsuarioId(): String {
-        return when (usuarioId) {
-            is String -> usuarioId as String
-            is Usuario -> (usuarioId as Usuario).getNumeroDocumento()
-            is Map<*,*> -> (usuarioId as Map<*,*>) ["_id"] as? String ?:""
-            else -> ""
-        }
-    }
-    fun getUser(): Usuario {
-        return when (usuarioId){
-            is Usuario -> usuarioId as Usuario
-            is String -> createUsersEmpty(usuarioId as String)
-            is Map<*,*> -> convertMapToUsers(usuarioId as Map<*,*>)
-            else -> createUsersEmpty("")
-        }
-    }
-
-    private fun createUsersEmpty(numeroDocumento: String): Usuario {
-        return Usuario(
-            numeroDocumento = numeroDocumento,
-            nombre = "",
-            apellido = "",
-            correo = "",
-            password = "",
-            createAt = "",
-            updateAt = ""
-        )
-    }
-
-    private fun convertMapToUsers(map: Map<*,*>): Usuario {
-        return Usuario(
-            numeroDocumento = map["numero_documento"] as? String ?: "",
-            nombre = map["nombre"] as? String ?: "",
-            apellido = map["apellido"] as? String ?: "",
-            correo = map["correo"] as? String ?: "",
-            password = map["password"] as? String ?: "",
-            createAt = map["create_at"] as? String ?: "",
-            updateAt = map["update_at"]  as? String ?: ""
-        )
-    }
-
 }

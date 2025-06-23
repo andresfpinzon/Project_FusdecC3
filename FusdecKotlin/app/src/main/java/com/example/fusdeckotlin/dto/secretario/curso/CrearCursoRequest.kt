@@ -3,18 +3,18 @@ package com.example.fusdeckotlin.dto.secretario.curso
 import com.google.gson.annotations.SerializedName
 
 data class CrearCursoRequest(
-    @SerializedName("nombreCurso")
+    @SerializedName("nombre")
     val nombre: String,
 
-    @SerializedName("descripcionCurso")
+    @SerializedName("descripcion")
     val descripcion: String,
 
-    @SerializedName("intensidadHorariaCurso")
+    @SerializedName("intensidadHoraria")
     val intensidadHoraria: String,
 
     @SerializedName("fundacionId")
-    val fundacionId: String,
+    val fundacionId: Int,
 
-    @SerializedName("estadoCurso")
-    val estado: Boolean = true,
+    @SerializedName("estado")
+    val estado: Boolean = true
 )

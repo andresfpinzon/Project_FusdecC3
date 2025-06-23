@@ -3,13 +3,13 @@ package com.example.fusdeckotlin.dto.administrativo.colegio
 import com.google.gson.annotations.SerializedName
 
 data class CrearColegioRequest(
-    @SerializedName("nombreColegio")
+    @SerializedName("nombre")
     val nombre: String,
 
-    @SerializedName("emailColegio")
+    @SerializedName("email")
     val email: String,
 
-    @SerializedName("estadoColegio")
+    @SerializedName("estado")
     val estado: Boolean = true,
 
 )

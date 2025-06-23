@@ -4,9 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class CrearUnidadRequest(
     @SerializedName("nombreUnidad")
-    var nombreUnidad: String?,
+    val nombreUnidad: String,
+
     @SerializedName("brigadaId")
-    var brigadaId: String?,
+    val brigadaId: Int,
+
     @SerializedName("usuarioId")
-    var usuarioId: String?,
+    val usuarioId: String
 )

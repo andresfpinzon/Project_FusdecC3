@@ -23,7 +23,7 @@ class FundacionService {
         }
     }
 
-    suspend fun obtenerFundacionPorId(id: String): Result<Fundacion> {
+    suspend fun obtenerFundacionPorId(id: Int): Result<Fundacion> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = api.obtenerFundacionPorId(id)

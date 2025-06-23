@@ -11,17 +11,17 @@ interface CursoApi {
     suspend fun listarCursosActivos(): Response<List<Curso>>
 
     @GET("cursos/{id}")
-    suspend fun obtenerCursoPorId(@Path("id") id: String): Response<Curso>
+    suspend fun obtenerCursoPorId(@Path("id") id: Int): Response<Curso>
 
     @POST("cursos")
     suspend fun crearCurso(@Body request: CrearCursoRequest): Response<Curso>
 
     @PUT("cursos/{id}")
     suspend fun actualizarCurso(
-        @Path("id") id: String,
+        @Path("id") id: Int,
         @Body request: ActualizarCursoRequest
     ): Response<Curso>
 
     @DELETE("cursos/{id}")
-    suspend fun desactivarCurso(@Path("id") id: String): Response<Curso>
+    suspend fun desactivarCurso(@Path("id") id: Int): Response<Curso>
 }

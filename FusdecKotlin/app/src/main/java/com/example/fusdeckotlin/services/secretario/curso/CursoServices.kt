@@ -7,6 +7,8 @@ import com.example.fusdeckotlin.dto.secretario.curso.CrearCursoRequest
 import com.example.fusdeckotlin.models.secretario.curso.Curso
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class CursoServices {
 
@@ -16,14 +18,14 @@ class CursoServices {
         nombre: String,
         descripcion: String,
         intensidadHoraria: String,
-        fundacionId: String,
-    ): Result<Curso> {
-        return try {
+        fundacionId: Int
+    ): Result<Curso> = withContext(Dispatchers.IO) {
+        try {
             val request = CrearCursoRequest(
                 nombre = nombre,
                 descripcion = descripcion,
                 intensidadHoraria = intensidadHoraria,
-                fundacionId = fundacionId,
+                fundacionId = fundacionId
             )
 
             val response = cursoApi.crearCurso(request)
@@ -33,17 +35,17 @@ class CursoServices {
         }
     }
 
-    suspend fun listarCursosActivos(): Result<List<Curso>> {
-        return try {
+    suspend fun listarCursosActivos(): Result<List<Curso>> = withContext(Dispatchers.IO) {
+        try {
             val response = cursoApi.listarCursosActivos()
-            handleListResponse(response) { it.filter { curso -> curso.getEstadoCurso() } }
+            handleListResponse(response) { it.filter { curso -> curso.getEstado() } }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun obtenerCursoPorId(id: String): Result<Curso> {
-        return try {
+    suspend fun obtenerCursoPorId(id: Int): Result<Curso> = withContext(Dispatchers.IO) {
+        try {
             val response = cursoApi.obtenerCursoPorId(id)
             handleResponse(response)
         } catch (e: Exception) {
@@ -52,20 +54,20 @@ class CursoServices {
     }
 
     suspend fun actualizarCurso(
-        id: String,
+        id: Int,
         nombre: String? = null,
         descripcion: String? = null,
         intensidadHoraria: String? = null,
-        estado: Boolean? = null,
-        fundacionId: String? = null,
-    ): Result<Curso> {
-        return try {
+        fundacionId: Int? = null,
+        estado: Boolean? = null
+    ): Result<Curso> = withContext(Dispatchers.IO) {
+        try {
             val request = ActualizarCursoRequest(
                 nombre = nombre,
                 descripcion = descripcion,
                 intensidadHoraria = intensidadHoraria,
                 fundacionId = fundacionId,
-                estado = estado,
+                estado = estado
             )
 
             val response = cursoApi.actualizarCurso(id, request)
@@ -75,20 +77,10 @@ class CursoServices {
         }
     }
 
-    suspend fun desactivarCurso(id: String): Result<Curso> {
-        return try {
+    suspend fun desactivarCurso(id: Int): Result<Curso> = withContext(Dispatchers.IO) {
+        try {
             val response = cursoApi.desactivarCurso(id)
-
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    Result.success(it)
-                } ?: Result.failure(Exception("Respuesta vacía del servidor"))
-            } else {
-                when (response.code()) {
-                    404 -> Result.failure(Exception("Curso no encontrado"))
-                    else -> Result.failure(Exception("Error del servidor: ${response.code()}"))
-                }
-            }
+            handleResponse(response)
         } catch (e: Exception) {
             Result.failure(e)
         }

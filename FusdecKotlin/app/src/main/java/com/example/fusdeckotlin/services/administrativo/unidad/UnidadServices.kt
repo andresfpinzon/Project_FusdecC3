@@ -7,7 +7,8 @@ import com.example.fusdeckotlin.dto.administrativo.unidad.CrearUnidadRequest
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
 import com.example.fusdeckotlin.utils.ResponseHandler.handleListResponse
 import com.example.fusdeckotlin.utils.ResponseHandler.handleResponse
-import java.lang.Exception
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class UnidadServices {
 
@@ -15,10 +16,10 @@ class UnidadServices {
 
     suspend fun crearUnidad(
         nombreUnidad: String,
-        brigadaId: String,
+        brigadaId: Int,
         usuarioId: String
-    ): Result<Unidad> {
-        return try {
+    ): Result<Unidad> = withContext(Dispatchers.IO) {
+        try {
             val request = CrearUnidadRequest(
                 nombreUnidad = nombreUnidad,
                 brigadaId = brigadaId,
@@ -32,8 +33,8 @@ class UnidadServices {
         }
     }
 
-    suspend fun listarUnidadesActivas(): Result<List<Unidad>> {
-        return try {
+    suspend fun listarUnidadesActivas(): Result<List<Unidad>> = withContext(Dispatchers.IO) {
+        try {
             val response = unidadApi.listarUnidades()
             handleListResponse(response) { it.filter { unidad -> unidad.getEstadoUnidad() } }
         } catch (e: Exception) {
@@ -41,8 +42,8 @@ class UnidadServices {
         }
     }
 
-    suspend fun obtenerUnidadPorId(id: String): Result<Unidad> {
-        return try {
+    suspend fun obtenerUnidadPorId(id: Int): Result<Unidad> = withContext(Dispatchers.IO) {
+        try {
             val response = unidadApi.obtenerUnidadPorId(id)
             handleResponse(response)
         } catch (e: Exception) {
@@ -51,13 +52,13 @@ class UnidadServices {
     }
 
     suspend fun actualizarUnidad(
-        id: String,
+        id: Int,
         nombreUnidad: String? = null,
-        brigadaId: String? = null,
+        brigadaId: Int? = null,
         usuarioId: String? = null,
         estadoUnidad: Boolean? = null
-    ): Result<Unidad> {
-        return try {
+    ): Result<Unidad> = withContext(Dispatchers.IO) {
+        try {
             val request = ActualizarUnidadRequest(
                 nombreUnidad = nombreUnidad,
                 brigadaId = brigadaId,
@@ -72,8 +73,8 @@ class UnidadServices {
         }
     }
 
-    suspend fun desactivarUnidad(id: String): Result<Unidad> {
-        return try {
+    suspend fun desactivarUnidad(id: Int): Result<Unidad> = withContext(Dispatchers.IO) {
+        try {
             val response = unidadApi.desactivarUnidad(id)
             handleResponse(response)
         } catch (e: Exception) {

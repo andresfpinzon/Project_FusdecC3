@@ -38,7 +38,7 @@ class ColegioServices {
         }
     }
 
-    suspend fun obtenerColegioPorId(id: String): Result<Colegio> {
+    suspend fun obtenerColegioPorId(id: Int): Result<Colegio> {
         return try {
             val response = colegioApi.obtenerColegioPorId(id)
             handleResponse(response)
@@ -48,7 +48,7 @@ class ColegioServices {
     }
 
     suspend fun actualizarColegio(
-        id: String,
+        id: Int,
         nombre: String? = null,
         email: String? = null,
         estado: Boolean? = null,
@@ -67,7 +67,7 @@ class ColegioServices {
         }
     }
 
-    suspend fun desactivarColegio(id: String): Result<Colegio> {
+    suspend fun desactivarColegio(id: Int): Result<Colegio> {
         return try {
             val response = colegioApi.desactivarColegio(id)
 

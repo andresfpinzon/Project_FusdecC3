@@ -96,7 +96,8 @@ class ComandoActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            fundacionService
         )
         comandosRecyclerView.layoutManager = LinearLayoutManager(this)
         comandosRecyclerView.adapter = adapter
@@ -166,10 +167,7 @@ class ComandoActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            val fundacionId = fundacionSeleccionada!!.getId().toIntOrNull() ?: run {
-                showError("ID de fundación inválido")
-                return@launch
-            }
+            val fundacionId = fundacionSeleccionada!!.getId()
 
             if (isEditing && currentComandoId != null) {
                 comandoService.actualizarComando(
@@ -208,7 +206,7 @@ class ComandoActivity : AppCompatActivity() {
 
         // Cargar fundación desde el ID
         lifecycleScope.launch {
-            val result = fundacionService.obtenerFundacionPorId(comando.getFundacionId().toString())
+            val result = fundacionService.obtenerFundacionPorId(comando.getFundacionId())
             result.onSuccess { fundacion ->
                 runOnUiThread {
                     fundacionSeleccionada = fundacion

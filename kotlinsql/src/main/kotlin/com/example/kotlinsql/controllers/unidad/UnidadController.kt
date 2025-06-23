@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -147,11 +148,12 @@ class UnidadController (
         ]
     )
     @DeleteMapping("/{id}")
-    fun eliminar(@PathVariable id: Long): ResponseEntity<String> {
-        return if (unidadServices.eliminarUnidadPorId(id)) {
-            ResponseEntity.ok("Unidad eliminada")
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Unidad no encontrada")
+    fun eliminar(@PathVariable id: Long): ResponseEntity<Map<String, String>> {
+        return try {
+            unidadServices.eliminarUnidadPorId(id)
+            ResponseEntity.ok(mapOf("message" to "Unidad eliminada correctamente"))
+        } catch (e: EmptyResultDataAccessException) {
+            ResponseEntity.ok(mapOf("message" to "Unidad no encontrada"))
         }
     }
 }

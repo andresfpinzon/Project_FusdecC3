@@ -12,18 +12,28 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
-import com.example.fusdeckotlin.models.instructor.asistencia.Asistencia
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
+import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EstudianteAdapter(
     private var estudiantes: List<Estudiante>,
     private val onUpdateClick: (Estudiante) -> Unit,
     private val onDeleteClick: (Estudiante) -> Unit,
-    private val onInfoClick: (Estudiante) -> Unit
+    private val onInfoClick: (Estudiante) -> Unit,
+    private val unidadServices: UnidadServices,
+    private val colegioServices: ColegioServices,
+    private val edicionServices: EdicionServices
 ) : RecyclerView.Adapter<EstudianteAdapter.EstudianteViewHolder>(), Filterable {
 
     private var estudiantesFiltrados: List<Estudiante> = estudiantes
     private var context: Context? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     class EstudianteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreTextView)
@@ -50,16 +60,91 @@ class EstudianteAdapter(
     override fun onBindViewHolder(holder: EstudianteViewHolder, position: Int) {
         val estudiante = estudiantesFiltrados[position]
 
-        // Configurar datos del estudiante
+        // Configurar datos básicos del estudiante
         holder.nombreTextView.text = "${estudiante.getNombre()} ${estudiante.getApellido()}"
         holder.numeroDocumentoTextView.text = estudiante.getNumeroDocumento()
         holder.generoTextView.text = estudiante.getGenero()
-        holder.unidadValueTextView.text = estudiante.getUnidad().toString()
-        holder.colegioValueTextView.text = estudiante.getColegio().toString()
-        holder.edicionValueTextView.text = estudiante.getEdicion().toString()
         holder.gradoValueTextView.text = estudiante.getGrado()
 
+        // Cargar nombres de unidad, colegio y edición
+        cargarUnidadNombre(estudiante.getUnidad(), holder.unidadValueTextView)
+        cargarColegioNombre(estudiante.getColegio(), holder.colegioValueTextView)
+        cargarEdicionNombre(estudiante.getEdicion(), holder.edicionValueTextView)
+
         // Configurar estado visual
+        configurarEstado(estudiante, holder)
+
+        // Configurar botones
+        configurarBotones(estudiante, holder)
+
+        // Efecto de elevación al hacer clic
+        configurarEfectoClic(holder)
+    }
+
+    private fun cargarUnidadNombre(unidadId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val unidad = unidadServices.obtenerUnidadPorId(unidadId)
+                unidad.onSuccess { u ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = u.getNombreUnidad()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $unidadId"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "ID: $unidadId"
+                }
+            }
+        }
+    }
+
+    private fun cargarColegioNombre(colegioId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val colegio = colegioServices.obtenerColegioPorId(colegioId)
+                colegio.onSuccess { c ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = c.getNombreColegio()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $colegioId"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "ID: $colegioId"
+                }
+            }
+        }
+    }
+
+    private fun cargarEdicionNombre(edicionId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val edicion = edicionServices.obtenerEdicionPorId(edicionId.toLong())
+                edicion.onSuccess { e ->
+                    withContext(Dispatchers.Main) {
+                        textView.text = e.getNombre()
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        textView.text = "ID: $edicionId"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "ID: $edicionId"
+                }
+            }
+        }
+    }
+
+    private fun configurarEstado(estudiante: Estudiante, holder: EstudianteViewHolder) {
         if (estudiante.getEstado()) {
             holder.estadoTextView.text = context?.getString(R.string.estado_activo)
             holder.estadoTextView.background = ContextCompat.getDrawable(
@@ -73,13 +158,15 @@ class EstudianteAdapter(
                 R.drawable.bg_estado_inactivo
             )
         }
+    }
 
-        // Configurar botones
+    private fun configurarBotones(estudiante: Estudiante, holder: EstudianteViewHolder) {
         holder.updateButton.setOnClickListener { onUpdateClick(estudiante) }
         holder.deleteButton.setOnClickListener { onDeleteClick(estudiante) }
         holder.infoButton.setOnClickListener { onInfoClick(estudiante) }
+    }
 
-        // Efecto de elevación al hacer clic
+    private fun configurarEfectoClic(holder: EstudianteViewHolder) {
         holder.itemView.setOnClickListener {
             it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
                 it.animate().scaleX(1f).scaleY(1f).duration = 100
@@ -118,7 +205,7 @@ class EstudianteAdapter(
 
             @Suppress("UNCHECKED_CAST")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                estudiantesFiltrados = results?.values as List<Estudiante>
+                estudiantesFiltrados = results?.values as? List<Estudiante> ?: emptyList()
                 notifyDataSetChanged()
             }
         }

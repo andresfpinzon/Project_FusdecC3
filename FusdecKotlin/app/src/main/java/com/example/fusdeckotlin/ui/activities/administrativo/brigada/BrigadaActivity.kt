@@ -96,7 +96,8 @@ class BrigadaActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            comandoService
         )
         brigadasRecyclerView.layoutManager = LinearLayoutManager(this)
         brigadasRecyclerView.adapter = adapter
@@ -166,10 +167,7 @@ class BrigadaActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            val comandoId = comandoSeleccionado!!.getId().toIntOrNull() ?: run {
-                showError("ID de comando inválido")
-                return@launch
-            }
+            val comandoId = comandoSeleccionado!!.getId()
 
             if (isEditing && currentBrigadaId != null) {
                 brigadaService.actualizarBrigada(
@@ -208,7 +206,7 @@ class BrigadaActivity : AppCompatActivity() {
 
         // Cargar comando desde el ID
         lifecycleScope.launch {
-            val result = comandoService.obtenerComandoPorId(brigada.getComandoId().toString())
+            val result = comandoService.obtenerComandoPorId(brigada.getComandoId())
             result.onSuccess { comando ->
                 runOnUiThread {
                     comandoSeleccionado = comando
@@ -249,7 +247,7 @@ class BrigadaActivity : AppCompatActivity() {
 
                 resultUnidades.onSuccess { todasUnidades ->
                     val unidadesBrigada = todasUnidades.filter { unidad ->
-                        unidad.getBrigadaId() == brigada.getId().toString()
+                        unidad.getBrigadaId() == brigada.getId()
                     }.map { unidad ->
                         "• ${unidad.getNombreUnidad()}"
                     }.toTypedArray()

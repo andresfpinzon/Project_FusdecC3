@@ -23,7 +23,7 @@ data class EstudianteCreateRequest(
     val tipoDocumento: String,
 
     @field:NotBlank(message = "El género es obligatorio")
-    @field:Pattern(regexp = "^(Masculino|Femenino|Otro)\$", message = "Género no válido")
+    @field:Pattern(regexp = "^(masculino|femenino|Otro)\$", message = "Género no válido")
     val genero: String,
 
     @field:NotBlank(message = "El grado es obligatorio")

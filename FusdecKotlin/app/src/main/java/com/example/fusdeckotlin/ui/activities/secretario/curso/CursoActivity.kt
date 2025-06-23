@@ -26,23 +26,23 @@ import kotlinx.coroutines.launch
 
 class CursoActivity : AppCompatActivity() {
 
-    private lateinit var tituloCurso: EditText
-    private lateinit var descripcionCurso: EditText
-    private lateinit var intensidadHorariaCurso: EditText
+    private lateinit var nombreEditText: EditText
+    private lateinit var descripcionEditText: EditText
+    private lateinit var intensidadHorariaEditText: EditText
     private lateinit var seleccionarFundacionButton: Button
     private lateinit var fundacionSeleccionadaText: TextView
-    private lateinit var confirmarCursoButton: Button
-    private lateinit var cancelarCursoButton: Button
+    private lateinit var confirmarButton: Button
+    private lateinit var cancelarButton: Button
     private lateinit var searchEditText: EditText
     private lateinit var cursosRecyclerView: RecyclerView
 
-    private val cursoServicio = CursoServices()
+    private val cursoService = CursoServices()
     private val edicionService = EdicionServices()
     private val fundacionService = FundacionService()
     private lateinit var adapter: CursoAdapter
 
     private var isEditing: Boolean = false
-    private var currentCursoId: String? = null
+    private var currentCursoId: Int? = null
     private var fundacionSeleccionada: Fundacion? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,13 +57,13 @@ class CursoActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        tituloCurso = findViewById(R.id.tituloCurso)
-        descripcionCurso = findViewById(R.id.descripcionCurso)
-        intensidadHorariaCurso = findViewById(R.id.intensidadHorariaCurso)
+        nombreEditText = findViewById(R.id.tituloCurso)
+        descripcionEditText = findViewById(R.id.descripcionCurso)
+        intensidadHorariaEditText = findViewById(R.id.intensidadHorariaCurso)
         seleccionarFundacionButton = findViewById(R.id.seleccionarFundacionButton)
         fundacionSeleccionadaText = findViewById(R.id.fundacionSeleccionadaText)
-        confirmarCursoButton = findViewById(R.id.confirmarCursoButton)
-        cancelarCursoButton = findViewById(R.id.cancelarCursoButton)
+        confirmarButton = findViewById(R.id.confirmarCursoButton)
+        cancelarButton = findViewById(R.id.cancelarCursoButton)
         searchEditText = findViewById(R.id.searchEditText)
         cursosRecyclerView = findViewById(R.id.cursosRecyclerView)
     }
@@ -73,7 +73,8 @@ class CursoActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            fundacionService
         )
         cursosRecyclerView.layoutManager = LinearLayoutManager(this)
         cursosRecyclerView.adapter = adapter
@@ -81,8 +82,8 @@ class CursoActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         seleccionarFundacionButton.setOnClickListener { mostrarDialogoSeleccionFundaciones() }
-        confirmarCursoButton.setOnClickListener { guardarCurso() }
-        cancelarCursoButton.setOnClickListener { finish() }
+        confirmarButton.setOnClickListener { guardarCurso() }
+        cancelarButton.setOnClickListener { finish() }
     }
 
     private fun configurarBusqueda() {
@@ -111,7 +112,7 @@ class CursoActivity : AppCompatActivity() {
 
     private fun cargarCursos() {
         lifecycleScope.launch {
-            val result = cursoServicio.listarCursosActivos()
+            val result = cursoService.listarCursosActivos()
             result.onSuccess { cursos ->
                 adapter.actualizarLista(cursos)
             }.onFailure { error ->
@@ -157,49 +158,45 @@ class CursoActivity : AppCompatActivity() {
     }
 
     private fun guardarCurso() {
-        val nombre = tituloCurso.text.toString().trim()
-        val descripcion = descripcionCurso.text.toString().trim()
-        val intensidadHoraria = intensidadHorariaCurso.text.toString().trim()
-        val fundacionId = fundacionSeleccionada?.getId() ?: ""
+        val nombre = nombreEditText.text.toString().trim()
+        val descripcion = descripcionEditText.text.toString().trim()
+        val intensidadHoraria = intensidadHorariaEditText.text.toString().trim()
 
-        if (nombre.isEmpty() || descripcion.isEmpty() || intensidadHoraria.isEmpty() || fundacionId.isEmpty()) {
+        if (nombre.isEmpty() || descripcion.isEmpty() || intensidadHoraria.isEmpty() || fundacionSeleccionada == null) {
             showError("Por favor, complete todos los campos y seleccione una fundación")
             return
         }
 
         lifecycleScope.launch {
-            try {
-                if (isEditing && currentCursoId != null) {
-                    cursoServicio.actualizarCurso(
-                        id = currentCursoId!!,
-                        nombre = nombre,
-                        descripcion = descripcion,
-                        intensidadHoraria = intensidadHoraria,
-                        fundacionId = fundacionId,
-                        estado = true
-                    ).onSuccess {
-                        showSuccess("Curso actualizado")
-                        resetEditingState()
-                        cargarCursos()
-                    }.onFailure { error ->
-                        showError("Error al actualizar: ${error.message}")
-                    }
-                } else {
-                    cursoServicio.crearCurso(
-                        nombre = nombre,
-                        descripcion = descripcion,
-                        intensidadHoraria = intensidadHoraria,
-                        fundacionId = fundacionId
-                    ).onSuccess {
-                        showSuccess("Curso creado")
-                        resetEditingState()
-                        cargarCursos()
-                    }.onFailure { error ->
-                        showError("Error al crear: ${error.message}")
-                    }
+            val fundacionId = fundacionSeleccionada!!.getId()
+
+            if (isEditing && currentCursoId != null) {
+                cursoService.actualizarCurso(
+                    id = currentCursoId!!,
+                    nombre = nombre,
+                    descripcion = descripcion,
+                    intensidadHoraria = intensidadHoraria,
+                    fundacionId = fundacionId
+                ).onSuccess {
+                    showSuccess("Curso actualizado")
+                    resetEditingState()
+                    cargarCursos()
+                }.onFailure { error ->
+                    showError("Error al actualizar: ${error.message}")
                 }
-            } catch (e: Exception) {
-                showError("Error: ${e.message}")
+            } else {
+                cursoService.crearCurso(
+                    nombre = nombre,
+                    descripcion = descripcion,
+                    intensidadHoraria = intensidadHoraria,
+                    fundacionId = fundacionId
+                ).onSuccess {
+                    showSuccess("Curso creado")
+                    resetEditingState()
+                    cargarCursos()
+                }.onFailure { error ->
+                    showError("Error al crear: ${error.message}")
+                }
             }
         }
     }
@@ -220,27 +217,31 @@ class CursoActivity : AppCompatActivity() {
     }
 
     private fun limpiarFormulario() {
-        tituloCurso.text.clear()
-        descripcionCurso.text.clear()
-        intensidadHorariaCurso.text.clear()
+        nombreEditText.text.clear()
+        descripcionEditText.text.clear()
+        intensidadHorariaEditText.text.clear()
         fundacionSeleccionadaText.text = "Ninguna fundación seleccionada"
     }
 
     private fun onUpdateClick(curso: Curso) {
         isEditing = true
         currentCursoId = curso.getId()
-        tituloCurso.setText(curso.getNombreCurso())
-        descripcionCurso.setText(curso.getDescripcionCurso())
-        intensidadHorariaCurso.setText(curso.getIntensidadHorariaCurso())
+        nombreEditText.setText(curso.getNombre())
+        descripcionEditText.setText(curso.getDescripcion())
+        intensidadHorariaEditText.setText(curso.getIntensidadHoraria())
 
         // Cargar fundación seleccionada
         lifecycleScope.launch {
             val result = fundacionService.obtenerFundacionPorId(curso.getFundacionId())
             result.onSuccess { fundacion ->
-                fundacionSeleccionada = fundacion
-                actualizarTextoFundacionSeleccionada()
+                runOnUiThread {
+                    fundacionSeleccionada = fundacion
+                    actualizarTextoFundacionSeleccionada()
+                }
             }.onFailure { error ->
-                showError("Error al cargar fundación: ${error.message}")
+                runOnUiThread {
+                    showError("Error al cargar fundación: ${error.message}")
+                }
             }
         }
     }
@@ -251,7 +252,7 @@ class CursoActivity : AppCompatActivity() {
             .setMessage("¿Estás seguro de que deseas eliminar este curso?")
             .setPositiveButton("Sí") { _, _ ->
                 lifecycleScope.launch {
-                    val result = cursoServicio.desactivarCurso(curso.getId())
+                    val result = cursoService.desactivarCurso(curso.getId())
                     result.onSuccess {
                         showSuccess("Curso eliminado")
                         cargarCursos()
@@ -268,15 +269,13 @@ class CursoActivity : AppCompatActivity() {
     private fun onInfoClick(curso: Curso) {
         lifecycleScope.launch {
             try {
-                // Obtener todas las ediciones del curso
                 val resultEdiciones = edicionService.listarEdicionesActivas()
 
                 resultEdiciones.onSuccess { todasEdiciones ->
-                    // Filtrar ediciones que pertenecen a este curso
                     val edicionesDelCurso = todasEdiciones.filter {
                         it.getCursoId() == curso.getId()
                     }.map { edicion ->
-                        "• ${edicion.getNombreEdicion()} (${edicion.getFechaInicio()} - ${edicion.getFechaFin()})"
+                        "• ${edicion.getNombre()} (${edicion.getFechaInicio()} - ${edicion.getFechaFin()})"
                     }.toTypedArray()
 
                     runOnUiThread {
