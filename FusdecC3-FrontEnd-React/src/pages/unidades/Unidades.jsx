@@ -462,7 +462,7 @@ const Unidades = () => {
         <h1>Gestión de Unidades</h1>
         <div className="header-actions">
           <button className="add-button" onClick={handleAddUnidad} id='btnAgregarUnidad'>
-            <i className="fas fa-plus"></i> Agregar Unidad
+            <i className="fas fa-plus" color='#f4f4f4'></i> Agregar Unidad
           </button>
           <button className="stats-button" onClick={() => setShowStats(!showStats)}>
             <i className="fas fa-chart-pie"></i> {showStats ? 'Ocultar Estadísticas' : 'Mostrar Estadísticas'}
@@ -494,7 +494,7 @@ const Unidades = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>{selectedUnidad ? 'Editar Unidad' : 'Nueva Unidad'}</h2>
+              <h2 style={{ color: '#f4f4f4' }}>{selectedUnidad ? 'Editar Unidad' : 'Nueva Unidad'}</h2>
               <button
                 className="close-button"
                 onClick={() => setShowForm(false)}

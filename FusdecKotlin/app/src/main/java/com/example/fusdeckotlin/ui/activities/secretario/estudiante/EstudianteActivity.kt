@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.secretario.estudiante.Estudiante
+import com.example.fusdeckotlin.services.administrativo.colegio.ColegioServices
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
 import com.example.fusdeckotlin.services.instructor.asistencia.AsistenciaServices
 import com.example.fusdeckotlin.services.instructor.asistenciaestudiante.AsistenciaEstudianteService
 import com.example.fusdeckotlin.services.secretario.edicion.EdicionServices
@@ -43,6 +45,8 @@ class EstudianteActivity : AppCompatActivity() {
     private val estudianteServicio = EstudianteServices()
     private val asistenciaService = AsistenciaServices()
     private val asistenciaEstudianteService = AsistenciaEstudianteService()
+    private val unidadServices = UnidadServices()
+    private val colegioServices = ColegioServices()
     private val edicionService = EdicionServices()
     private lateinit var adapter: EstudianteAdapter
 
@@ -51,7 +55,7 @@ class EstudianteActivity : AppCompatActivity() {
 
     // Opciones para los select
     private val tiposDocumento = arrayOf("T.I", "C.C")
-    private val generos = arrayOf("Masculino", "Femenino")
+    private val generos = arrayOf("masculino", "femenino")
     private val grados = arrayOf("Noveno", "Décimo", "Once")
     private val unidades = mutableListOf<String>()
     private val colegios = mutableListOf<String>()
@@ -98,7 +102,10 @@ class EstudianteActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            unidadServices,
+            colegioServices,
+            edicionService
         )
         estudiantesRecyclerView.layoutManager = LinearLayoutManager(this)
         estudiantesRecyclerView.adapter = adapter
@@ -109,7 +116,7 @@ class EstudianteActivity : AppCompatActivity() {
             // Cargar ediciones disponibles
             edicionService.listarEdicionesActivas().onSuccess { listaEdiciones ->
                 ediciones.clear()
-                ediciones.addAll(listaEdiciones.map { it.getNombreEdicion() })
+                ediciones.addAll(listaEdiciones.map { it.getNombre() })
             }
 
             // Cargar unidades y colegios de estudiantes existentes
@@ -117,14 +124,7 @@ class EstudianteActivity : AppCompatActivity() {
                 unidades.clear()
                 colegios.clear()
 
-                estudiantes.forEach {
-                    if (!unidades.contains(it.getUnidad())) {
-                        unidades.add(it.getUnidad())
-                    }
-                    if (!colegios.contains(it.getColegio())) {
-                        colegios.add(it.getColegio())
-                    }
-                }
+
             }
         }
     }
@@ -215,9 +215,9 @@ class EstudianteActivity : AppCompatActivity() {
                         apellido,
                         tipoDocumento,
                         genero,
-                        unidad,
-                        colegio,
-                        edicion,
+                        unidad.toInt(),
+                        colegio.toInt(),
+                        edicion.toInt(),
                         grado,
                         true
                     ).onSuccess {
@@ -234,9 +234,9 @@ class EstudianteActivity : AppCompatActivity() {
                         tipoDocumento,
                         numeroDocumento,
                         genero,
-                        unidad,
-                        colegio,
-                        edicion,
+                        unidad.toInt(),
+                        colegio.toInt(),
+                        edicion.toInt(),
                         grado
                     ).onSuccess {
                         showSuccess("Estudiante creado")
@@ -289,9 +289,9 @@ class EstudianteActivity : AppCompatActivity() {
         tipoDocumentoEditText.setText(estudiante.getTipoDocumento())
         numeroDocumentoEditText.setText(estudiante.getNumeroDocumento())
         generoEditText.setText(estudiante.getGenero())
-        unidadEditText.setText(estudiante.getUnidad())
-        colegioEditText.setText(estudiante.getColegio())
-        edicionEditText.setText(estudiante.getEdicion())
+        unidadEditText.setText(estudiante.getUnidad().toString())
+        colegioEditText.setText(estudiante.getColegio().toString())
+        edicionEditText.setText(estudiante.getEdicion().toString())
         gradoEditText.setText(estudiante.getGrado())
         numeroDocumentoEditText.isEnabled = false
     }

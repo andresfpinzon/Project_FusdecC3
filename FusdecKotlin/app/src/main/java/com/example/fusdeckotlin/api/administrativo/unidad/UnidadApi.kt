@@ -7,21 +7,21 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface UnidadApi {
-    @GET("api/unidades")
+    @GET("unidades")
     suspend fun listarUnidades(): Response<List<Unidad>>
 
-    @POST("api/unidades")
+    @POST("unidades")
     suspend fun crearUnidad(@Body data: CrearUnidadRequest): Response<Unidad>
 
-    @PUT("api/unidades/{id}")
+    @PUT("unidades/{id}")
     suspend fun actualizarUnidad(
-        @Path("id") id: String, 
+        @Path("id") id: Int,
         @Body data: ActualizarUnidadRequest
     ): Response<Unidad>
 
-    @GET("api/unidades/{id}")
-    suspend fun obtenerUnidadPorId(@Path("id") id: String): Response<Unidad>
+    @GET("unidades/{id}")
+    suspend fun obtenerUnidadPorId(@Path("id") id: Int): Response<Unidad>
 
-    @DELETE("api/unidades/{id}")
-    suspend fun desactivarUnidad(@Path("id") id: String): Response<Unidad>
+    @DELETE("unidades/{id}")
+    suspend fun desactivarUnidad(@Path("id") id: Int): Response<Unidad>
 }

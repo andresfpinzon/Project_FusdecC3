@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -93,9 +94,10 @@ class ComandoController {
         ]
     )
     @DeleteMapping("/{id}")
-    fun eliminar(@PathVariable id: Int): String {
+    fun eliminar(@PathVariable id: Int): ResponseEntity<Map<String, String>> {
         val resultado = comandoService.eliminar(id)
-        return if (resultado > 0) "Comando eliminado" else "Comando no encontrado"
+        val message = if (resultado > 0) "Comando eliminado correctamente" else "Comando no encontrado"
+        return ResponseEntity.ok(mapOf("message" to message))
     }
 
     @Operation(

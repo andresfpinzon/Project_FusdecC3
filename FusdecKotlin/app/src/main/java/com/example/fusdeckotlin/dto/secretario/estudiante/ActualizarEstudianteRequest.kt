@@ -15,14 +15,14 @@ data class ActualizarEstudianteRequest(
     @SerializedName("genero")
     val genero: String? = null,
 
-    @SerializedName("unidad")
-    val unidad: String? = null,
+    @SerializedName("unidadId")
+    val unidad: Int? = null,
 
-    @SerializedName("colegio")
-    val colegio: String? = null,
+    @SerializedName("colegioId")
+    val colegio: Int? = null,
 
-    @SerializedName("edicion")
-    val edicion: String? = null,
+    @SerializedName("edicionId")
+    val edicion: Int? = null,
 
     @SerializedName("grado")
     val grado: String? = null,

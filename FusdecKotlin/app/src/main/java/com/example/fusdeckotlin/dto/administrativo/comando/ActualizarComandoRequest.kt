@@ -4,15 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class ActualizarComandoRequest(
     @SerializedName("nombreComando")
-    var nombreComando: String? = null,
+    val nombreComando: String? = null,
 
-    @SerializedName("estadoComadno")
-    var estadoComando: Boolean ? = null,
+    @SerializedName("estadoComando")
+    val estadoComando: Boolean? = null,
 
     @SerializedName("ubicacionComando")
-    var ubicacionComando: String? = null,
+    val ubicacionComando: String? = null,
 
     @SerializedName("fundacionId")
-    var fundacionId: String? = null,
-
+    val fundacionId: Int? = null
 )

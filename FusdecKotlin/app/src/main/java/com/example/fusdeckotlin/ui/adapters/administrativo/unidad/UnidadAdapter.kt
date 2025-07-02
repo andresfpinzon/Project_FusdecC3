@@ -10,15 +10,27 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fusdeckotlin.R
 import com.example.fusdeckotlin.models.administrativo.unidad.Unidad
+import com.example.fusdeckotlin.services.administrativo.brigada.BrigadaServices
+import com.example.fusdeckotlin.services.administrativo.unidad.UnidadServices
+import com.example.fusdeckotlin.services.administrativo.usuario.UsuarioServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UnidadAdapter(
     private var unidades: List<Unidad>,
     private val onUpdateClick: (Unidad) -> Unit,
     private val onDeleteClick: (Unidad) -> Unit,
-    private val onInfoClick: (Unidad) -> Unit
+    private val onInfoClick: (Unidad) -> Unit,
+    private val brigadaServices: BrigadaServices,
+    private val usuarioServices: UsuarioServices
 ) : RecyclerView.Adapter<UnidadAdapter.UnidadViewHolder>(), Filterable {
 
     private var unidadesFiltradas: List<Unidad> = unidades
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
 
     class UnidadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView = itemView.findViewById(R.id.nombreUnidad)
@@ -41,21 +53,58 @@ class UnidadAdapter(
         holder.nombreTextView.text = unidad.getNombreUnidad()
 
         // Mostrar nombre de brigada si está disponible, sino mostrar ID
-        holder.brigadaTextView.text = when {
-            unidad.getBrigada().getNombreBrigada().isNotEmpty() -> unidad.getBrigada().getNombreBrigada()
-            else -> unidad.getBrigadaId()
-        }
+        cargarNombreBrigada(unidad.getBrigadaId(), holder.brigadaTextView)
 
         // Mostrar nombre de usuario si está disponible, sino mostrar ID
-        holder.usuarioTextView.text = when {
-            unidad.getUser().getNombreUsuario().isNotEmpty() ->
-                "${unidad.getUser().getNombreUsuario()} ${unidad.getUser().getApellidoUsuario()}"
-            else -> unidad.getUsuarioId()
-        }
+        cargarNombreUsuario(unidad.getUsuarioId(), holder.usuarioTextView)
+
 
         holder.updateButton.setOnClickListener { onUpdateClick(unidad) }
         holder.deleteButton.setOnClickListener { onDeleteClick(unidad) }
         holder.infoButton.setOnClickListener { onInfoClick(unidad) }
+    }
+
+    private fun cargarNombreBrigada(brigadaId: Int, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val brigada = brigadaServices.obtenerBrigadaPorId(brigadaId)
+                brigada.onSuccess {
+                        b ->
+                    withContext(Dispatchers.Main) {
+                        if (b != null) {
+                            textView.text = b.getNombreBrigada()
+                        } else {
+                            textView.text = "Brigada no encontrada"
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "Error al cargar brigada"
+                }
+            }
+        }
+    }
+
+    private fun cargarNombreUsuario(usuarioId: String, textView: TextView) {
+        coroutineScope.launch {
+            try {
+                val user = usuarioServices.getUserByDocument(usuarioId)
+                user.onSuccess { u ->
+                    withContext(Dispatchers.Main) {
+                        if (u != null) {
+                            textView.text = "${u.getNombreUsuario()} ${u.getApellidoUsuario()}"
+                        } else {
+                            textView.text = "Usuario no encontrado"
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    textView.text = "Error al cargar usuario"
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int = unidadesFiltradas.size
@@ -70,12 +119,7 @@ class UnidadAdapter(
                     val filterPattern = constraint.toString().lowercase().trim()
                     unidades.forEach { unidad ->
                         if (unidad.getNombreUnidad().lowercase().contains(filterPattern) ||
-                            unidad.getBrigadaId().lowercase().contains(filterPattern) ||
-                            unidad.getUsuarioId().lowercase().contains(filterPattern) ||
-                            (unidad.getBrigada().getNombreBrigada().isNotEmpty() &&
-                                    unidad.getBrigada().getNombreBrigada().lowercase().contains(filterPattern)) ||
-                            (unidad.getUser().getNombreUsuario().isNotEmpty() &&
-                                    "${unidad.getUser().getNombreUsuario()} ${unidad.getUser().getApellidoUsuario()}".lowercase().contains(filterPattern))
+                            unidad.getBrigadaId().toString().contains(filterPattern)
                         ) {
                             filteredList.add(unidad)
                         }

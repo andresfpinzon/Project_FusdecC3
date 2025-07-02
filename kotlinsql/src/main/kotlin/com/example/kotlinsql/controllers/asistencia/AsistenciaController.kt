@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.http.ResponseEntity
 
 @RestController
 @RequestMapping("/asistencias")
@@ -90,9 +91,10 @@ class AsistenciaController {
         ]
     )
     @DeleteMapping("/{id}")
-    fun eliminar(@PathVariable id: Int): String {
+    fun eliminar(@PathVariable id: Int): ResponseEntity<Map<String, String>> {
         val resultado = asistenciaService.eliminar(id)
-        return if (resultado > 0) "Asistencia eliminada" else "Asistencia no encontrada"
+        val message = if (resultado >0 )"Asistencia eliminada" else "Asistencia no encontrada"
+        return ResponseEntity.ok(mapOf("message" to message))
     }
 }
 

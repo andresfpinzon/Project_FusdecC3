@@ -4,15 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class ActualizarUnidadRequest(
     @SerializedName("nombreUnidad")
-     var nombreUnidad: String? = null,
+    val nombreUnidad: String? = null,
+
     @SerializedName("brigadaId")
-     var brigadaId: String? = null,
+    val brigadaId: Int? = null,
+
     @SerializedName("estadoUnidad")
-     var estadoUnidad: Boolean? = null,
+    val estadoUnidad: Boolean? = null,
+
     @SerializedName("usuarioId")
-     var usuarioId: String? = null,
-    @SerializedName("comandos")
-     var comandos: List<String>? = null,
-    @SerializedName("estudiantes")
-     var estudiantes: List<String> ? = null
+    val usuarioId: String? = null
 )

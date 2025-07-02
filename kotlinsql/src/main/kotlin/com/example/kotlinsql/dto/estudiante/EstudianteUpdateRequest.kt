@@ -16,7 +16,7 @@ data class EstudianteUpdateRequest(
     @field:Pattern(regexp = "^(C\\.C|T\\.I|C\\.E)?\$", message = "Tipo de documento no válido")
     val tipoDocumento: String? = null,
 
-    @field:Pattern(regexp = "^(Masculino|Femenino|Otro)?\$", message = "Género no válido")
+    @field:Pattern(regexp = "^(masculino|femenino|Otro)?\$", message = "Género no válido")
     val genero: String? = null,
 
     @field:Pattern(regexp = "^([8-9]°|1[0-1]°)?\$", message = "Grado no válido (debe ser entre 8° y 11°)")

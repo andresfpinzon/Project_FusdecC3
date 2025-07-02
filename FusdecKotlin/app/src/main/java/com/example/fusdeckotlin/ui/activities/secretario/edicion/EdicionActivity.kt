@@ -47,7 +47,7 @@ class EdicionActivity : AppCompatActivity() {
     private lateinit var adapter: EdicionAdapter
 
     private var isEditing: Boolean = false
-    private var currentEdicionId: String? = null
+    private var currentEdicionId: Long? = null
     private var cursoSeleccionado: Curso? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +102,8 @@ class EdicionActivity : AppCompatActivity() {
             emptyList(),
             ::onUpdateClick,
             ::onDeleteClick,
-            ::onInfoClick
+            ::onInfoClick,
+            cursoService
         )
         edicionesRecyclerView.layoutManager = LinearLayoutManager(this)
         edicionesRecyclerView.adapter = adapter
@@ -155,7 +156,7 @@ class EdicionActivity : AppCompatActivity() {
 
     private fun mostrarDialogoSeleccionCurso(cursos: List<Curso>) {
         val cursosArray = cursos.map {
-            "• ${it.getNombreCurso()}"
+            "• ${it.getNombre()}"
         }.toTypedArray()
 
         AlertDialog.Builder(this)
@@ -173,7 +174,7 @@ class EdicionActivity : AppCompatActivity() {
     private fun actualizarTextoCursoSeleccionado() {
         cursoSeleccionado?.let { curso ->
             cursoSeleccionadoText.text =
-                "Curso seleccionado: ${curso.getNombreCurso()} (${curso.getId()})"
+                "Curso seleccionado: ${curso.getNombre()} (${curso.getId()})"
         } ?: run {
             cursoSeleccionadoText.text = "Ningún curso seleccionado"
         }
@@ -201,8 +202,7 @@ class EdicionActivity : AppCompatActivity() {
                         titulo,
                         fechaInicio,
                         fechaFin,
-                        cursoId,
-                        true
+                        cursoId
                     ).onSuccess {
                         showSuccess("Edición actualizada")
                         resetEditingState()
@@ -215,7 +215,7 @@ class EdicionActivity : AppCompatActivity() {
                         titulo,
                         fechaInicio,
                         fechaFin,
-                        cursoId,
+                        cursoId
                     ).onSuccess {
                         showSuccess("Edición creada")
                         resetEditingState()
@@ -233,18 +233,22 @@ class EdicionActivity : AppCompatActivity() {
     private fun onUpdateClick(edicion: Edicion) {
         isEditing = true
         currentEdicionId = edicion.getId()
-        tituloEditText.setText(edicion.getNombreEdicion())
+        tituloEditText.setText(edicion.getNombre())
         fechaInicioEditText.setText(edicion.getFechaInicio().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
         fechaFinEditText.setText(edicion.getFechaFin().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
 
         // Cargar curso
         lifecycleScope.launch {
-            val result = cursoService.obtenerCursoPorId(edicion.getCursoId())
+            val result = cursoService.obtenerCursoPorId(edicion.getCursoId() ?: return@launch)
             result.onSuccess { curso ->
-                cursoSeleccionado = curso
-                actualizarTextoCursoSeleccionado()
+                runOnUiThread {
+                    cursoSeleccionado = curso
+                    actualizarTextoCursoSeleccionado()
+                }
             }.onFailure { error ->
-                showError("Error al cargar curso: ${error.message}")
+                runOnUiThread {
+                    showError("Error al cargar curso: ${error.message}")
+                }
             }
         }
     }
@@ -272,13 +276,11 @@ class EdicionActivity : AppCompatActivity() {
     private fun onInfoClick(edicion: Edicion) {
         lifecycleScope.launch {
             try {
-                // Obtener todos los estudiantes activos
                 val resultEstudiantes = estudianteService.listarEstudiantesActivos()
 
                 resultEstudiantes.onSuccess { todosEstudiantes ->
-                    // Filtrar estudiantes cuyo campo coincida
                     val estudiantesEdicion = todosEstudiantes.filter { estudiante ->
-                        estudiante.getEdicion() == edicion.getNombreEdicion()
+                        estudiante.getEdicion().toLong() == edicion.getId()
                     }.map { estudiante ->
                         "• Num: ${estudiante.getNumeroDocumento()} - ${estudiante.getNombre()} ${estudiante.getApellido()}"
                     }.toTypedArray()
@@ -288,7 +290,7 @@ class EdicionActivity : AppCompatActivity() {
                             mostrarDialogoEstudiantes(estudiantesEdicion)
                         } else {
                             mostrarDialogoEstudiantes(
-                                arrayOf("No hay estudiantes asociados a la edición: ${edicion.getNombreEdicion()}")
+                                arrayOf("No hay estudiantes asociados a la edición: ${edicion.getNombre()}")
                             )
                         }
                     }

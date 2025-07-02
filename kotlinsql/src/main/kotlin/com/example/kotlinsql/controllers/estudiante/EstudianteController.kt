@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -82,9 +83,10 @@ class EstudianteController {
         ]
     )
     @DeleteMapping("/{documento}")
-    fun eliminar(@PathVariable documento: String): String {
+    fun eliminar(@PathVariable documento: String): ResponseEntity<Map<String, String>> {
         val filas = estudianteService.eliminar(documento)
-        return if (filas > 0) "Estudiante eliminado correctamente" else "Estudiante no encontrado"
+        val message = if (filas > 0) "Estudiante eliminado correctamente" else "Estudiante no encontrado"
+        return ResponseEntity.ok(mapOf("message" to message))
     }
 
     @Operation(summary = "Obtener estudiantes por asistencia", description = "Devuelve una lista de estudiantes registrados en una asistencia específica.")
